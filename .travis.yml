@@ -6,6 +6,5 @@ cache:
 
 node_js:
   - stable
-  - "4.0"
 
 script: npm test
