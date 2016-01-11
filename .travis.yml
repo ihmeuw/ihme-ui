@@ -7,4 +7,7 @@ cache:
 node_js:
   - stable
 
+notifications:
+  email: false
+
 script: npm test
