@@ -2,7 +2,7 @@
   "name": "@ihme/beaut-util",
   "version": "0.1.0",
   "description": "Utility functions useful for working with data and D3.js",
-  "repository": "https://github.com/ihmeuw/beaut/tree/master/packages/beaut-utils",
+  "repository": "https://github.com/ihmeuw/beaut/tree/master/packages/beaut-util",
   "main": "index.js",
   "author": "Gabe Medrash <gmedrash@gmail.com>",
   "license": "MIT",
