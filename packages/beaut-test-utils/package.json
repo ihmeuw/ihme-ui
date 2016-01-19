@@ -1,11 +1,11 @@
 {
   "name": "@ihme/beaut-test-utils",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Testing utilities for @ihme/beaut",
   "main": "dist/index.js",
   "scripts": {
     "clean": "rm -rf ./dist && mkdir dist",
-    "prepublish": "npm run clean && ../../node_modules/.bin/babel index.js -o dist/index.js"
+    "prepublish": "npm run clean && ../../node_modules/.bin/babel src/ -d dist/"
   },
   "repository": {
     "type": "git",
