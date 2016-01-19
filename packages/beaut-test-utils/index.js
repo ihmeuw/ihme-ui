@@ -1,3 +1,5 @@
-module.exports = {
-  mocks: require('./mocks/mocks')
+import mocks from './mocks/mocks';
+
+export default {
+  mocks
 };
