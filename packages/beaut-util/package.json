@@ -3,7 +3,11 @@
   "version": "0.1.0",
   "description": "Utility functions useful for working with data and D3.js",
   "repository": "https://github.com/ihmeuw/beaut/tree/master/packages/beaut-util",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "scripts": {
+    "clean": "rm -rf ./dist && mkdir dist",
+    "prepublish": "npm run clean && ../../node_modules/.bin/babel index.js -o dist/index.js"
+  },
   "author": "Gabe Medrash <gmedrash@gmail.com>",
   "license": "MIT",
   "dependencies": {
