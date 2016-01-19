@@ -1,0 +1,15 @@
+{
+  "name": "beaut-test-utils",
+  "version": "0.1.0",
+  "description": "Testing utilities for @ihme/beaut",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ihmeuw/beaut/tree/master/packages/beaut-test-utils"
+  },
+  "author": "Gabe Medrash <gmedrash@gmail.com>",
+  "license": "MIT"
+}
