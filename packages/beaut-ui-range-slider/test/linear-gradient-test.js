@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import { shallow } from 'enzyme';
 
 import { colorSteps } from '@ihme/beaut-test-utils';
-import LinearGradient from '../components/linear-gradient';
+import LinearGradient from '../src/components/linear-gradient';
 
 describe('<LinearGradient />', () => {
   let wrapper;
