@@ -1,5 +1,1 @@
-import mocks from './mocks/mocks';
-
-export default {
-  mocks
-};
+export { colorSteps } from './mocks/colors';

@@ -2,7 +2,7 @@
  * 11 step diverging color scale
  * take from colorbrewer (http://colorbrewer2.org/)
  */
-export default [
+export const colorSteps = [
   '#a50026', // dark red
   '#d73027',
   '#f46d43',
