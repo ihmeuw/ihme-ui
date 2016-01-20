@@ -1,0 +1,34 @@
+{
+  "name": "@ihme/range-slider",
+  "version": "0.1.0",
+  "description": "Range slider as choropleth legend",
+  "main": "dist/index.js",
+  "scripts": {
+    "clean": "rm -rf ./dist && mkdir dist",
+    "prepublish": "npm run clean && ../../node_modules/.bin/babel src/ -d dist/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ihmeuw/beaut/tree/master/packages/beaut-ui-range-slider"
+  },
+  "keywords": [
+    "d3",
+    "react",
+    "choropleth",
+    "ihme"
+  ],
+  "author": "Gabe Medrash <gmedrash@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "lodash.isfinite": "^3.2.0",
+    "lodash.isnan": "^3.0.0",
+    "lodash.map": "^3.1.4",
+    "react": "^0.14.6"
+  },
+  "devDependencies": {
+    "@ihme/beaut-test-utils": "^0.1.4",
+    "enzyme": "^1.3.1",
+    "react-addons-test-utils": "^0.14.6",
+    "react-dom": "^0.14.6"
+  }
+}
