@@ -26,15 +26,18 @@ export default class RangeSlider extends React.Component {
 
   render() {
     const { margins } = this.props;
-    <svg preserveAspectRatio='none' height='100%'>
-      <defs>
-        <LinearGradient />
-      </defs>
-      <g transform={`translate(${margins.left}, ${margins.top})`}>
-        <DensityPlot />
-        <ColorLegend />
-      </g>
-    </svg>
+
+    return (
+      <svg preserveAspectRatio='none' height='100%'>
+        <defs>
+          <LinearGradient />
+        </defs>
+        <g transform={`translate(${margins.left}, ${margins.top})`}>
+          <DensityPlot />
+          <ColorLegend />
+        </g>
+      </svg>
+    );
   }
 };
 
