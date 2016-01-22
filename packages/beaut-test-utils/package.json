@@ -1,6 +1,6 @@
 {
   "name": "@ihme/beaut-test-utils",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Testing utilities for @ihme/beaut",
   "main": "dist/index.js",
   "scripts": {
