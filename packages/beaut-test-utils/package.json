@@ -1,6 +1,6 @@
 {
   "name": "@ihme/beaut-test-utils",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Testing utilities for @ihme/beaut",
   "main": "dist/index.js",
   "scripts": {
@@ -14,6 +14,11 @@
   "author": "Gabe Medrash <gmedrash@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "cuid": "^1.3.8"
+    "cuid": "^1.3.8",
+    "lodash.map": "^4.0.0",
+    "random-js": "^1.0.8"
+  },
+  "devDependencies": {
+    "lodash.isnull": "^3.0.0"
   }
 }
