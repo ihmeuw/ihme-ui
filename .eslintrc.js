@@ -1,5 +1,6 @@
 module.exports = {
   "root": true,
+  "parser": "babel-eslint",
   "extends": "airbnb",
   "plugins": [
     "react"
@@ -9,5 +10,8 @@ module.exports = {
   },
   "env": {
     "mocha": true
+  },
+  "ecmaFeatures": {
+    "experimentalObjectRestSpread": true
   }
 };
