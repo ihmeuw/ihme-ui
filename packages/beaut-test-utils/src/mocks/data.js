@@ -4,13 +4,15 @@ import random from 'random-js';
 
 /**
  * Random data generator
- * @param {String} dataQuality -> one of 'best'|'worst'|'mixed'
- *  'best' = no data quality issues (no null or missing values)
- *  'worst' = a lot of data quality issues (lots of null or missing values)
- *  'mixed' = some null values
- * @param {Number} length -> number of data
- * {String} keyField -> a field of datum that uniquely identifies it
- * @param {Any} any other property that will be passed directly to individual datum
+ * @param {Object} config -> configuration object with the following properties:
+ *  {String} dataQuality -> one of 'best'|'worst'|'mixed'
+ *    'best' = no data quality issues (no null or missing values)
+ *    'worst' = a lot of data quality issues (lots of null or missing values)
+ *    'mixed' = some null values
+ *  {Number} length -> number of data
+ *  {String} keyField -> a field of datum that uniquely identifies it
+ *  {String} valueField -> a field of datum that holds the "primary" datum (e.g., 'value' or 'mean')
+ *  {Any} any other property that will be passed directly to individual datum
  * @return {Array} array of datum objects
  */
 export const dataGenerator = (config = {}) => {
