@@ -5,10 +5,10 @@ const propTypes = {
   data: PropTypes.array.isRequired, // array of datum objects
   keyProp: PropTypes.string.isRequired, // uniquely identifying property on datum, e.g., location_id
   valueProp: PropTypes.string.isRequired, // name of prop on datum that holds
-  colorScale: PropTypes.function.isRequired, // linear color scale
-  xScale: PropTypes.function.isRequired, // scale to place circles along x-axis of range slider
-  clickHandler: PropTypes.function,
-  hoverHandler: PropTypes.function
+  colorScale: PropTypes.func.isRequired, // linear color scale
+  xScale: PropTypes.func.isRequired, // scale to place circles along x-axis of range slider
+  clickHandler: PropTypes.func, // partially applied fn that takes in datum and returns fn
+  hoverHandler: PropTypes.func // partially applied fn that takes in datum and returns fn
 };
 
 const defaultProps = {
@@ -17,7 +17,7 @@ const defaultProps = {
 };
 
 const DensityPlot = (props) => {
-  const { data, keyProp, valueProp, colorScale, xScale, clickHandler, hoverHandler } = this.props;
+  const { data, keyProp, valueProp, colorScale, xScale, clickHandler, hoverHandler } = props;
 
   return (
     <g>
@@ -31,12 +31,12 @@ const DensityPlot = (props) => {
               r='7.5'
               fill={colorScale(value)}
               cx={xScale(value)}
-              onClick={clickHandler}
-              onMouseOver={hoverHandler}
+              onClick={clickHandler(datum)}
+              onMouseOver={hoverHandler(datum)}
             >
             </circle>
           );
-        });
+        })
       }
     </g>
   );
