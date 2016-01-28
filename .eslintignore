@@ -1,6 +1,2 @@
-node_modules/
-./**/node_modules/
-coverage/
-./**/dist/
-./**/demo/bundle.js
-./**/webpack.config.js
+packages/**/webpack.config.js
+packages/**/demo/*.js
