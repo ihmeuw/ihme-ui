@@ -1,35 +1,54 @@
 import React, { PropTypes } from 'react';
 
 const propTypes = {
-  value: PropTypes.number.isRequired,
-  anchor: PropTypes.oneOf(['start', 'end']).isRequired,
-  xPosition: PropTypes.number.isRequired,
-  yPosition: PropTypes.number
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  anchor: PropTypes.oneOf(['start', 'middle', 'end']).isRequired,
+  position: PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number,
+    shift: PropTypes.number // how much to shift label left or right
+  }).isRequired
 };
 
 const defaultProps = {
-  yPosition: 22,
+  position: {
+    x: 0,
+    y: 22,
+    shift: 8
+  },
   value: null
 };
 
-const SliderLabel = (props) => {
-  const { xPosition, yPosition, value, anchor } = props;
+const positionLabel = (anchor, x, shift) => {
+  switch (anchor) {
+    case 'start':
+      return x - shift;
+    case 'middle':
+      return x;
+    case 'end':
+      return x + shift;
+    default:
+      return x;
+  };
+};
+
+const Label = (props) => {
+  const { position: { x, y, shift }, value, anchor } = props;
 
   return (
     <text
       textAnchor={anchor}
-      className='range-slider-label'
       fill='black'
-      y={yPosition}
-      x={(anchor === 'start') ? xPosition - 8 : xPosition + 8}
+      y={y}
+      x={positionLabel(anchor, x, shift)}
     >
-      {value.toFixed(1)}
+      {(typeof value === 'number') ? value.toFixed(1) : value}
     </text>
   );
 };
 
-SliderLabel.propTypes = propTypes;
+Label.propTypes = propTypes;
 
-SliderLabel.defaultProps = defaultProps;
+Label.defaultProps = defaultProps;
 
-export default SliderLabel;
+export default Label;
