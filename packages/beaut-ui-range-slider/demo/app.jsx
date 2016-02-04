@@ -29,24 +29,25 @@ const data = {
   values,
   keyField,
   valueField,
-  rangeExtent: domain
+  rangeExtent: domain,
+  unit: 'Deaths per 100,000'
 };
 
 // TODO
 // add to beaut-util lib to make resusable
-const generateColorDomain = function generateColorDomain(colorSteps, domain) {
+const generateColorDomain = function generateColorDomain(colors, xDomain) {
   // if max and min are the same number (e.g., full range of dataset is 0 -> 0)
   // return single element array
-  const [min, max] = domain;
-  if (min === max) return domain;
+  const [min, max] = xDomain;
+  if (min === max) return xDomain;
 
-  let ret = [];
-  const increment = (Math.abs(domain[1] - domain[0]) / (colorSteps.length - 1));
-  reduce(colorSteps, function(total) {
+  const ret = [];
+  const increment = (Math.abs(xDomain[1] - xDomain[0]) / (colors.length - 1));
+  reduce(colors, (total) => {
     const step = total + increment;
     ret.push(step);
     return step;
-  }, (domain[0] - increment));
+  }, (xDomain[0] - increment));
 
   return ret;
 };
@@ -58,4 +59,16 @@ const colors = {
     .range(colorSteps)
 };
 
-render(<RangeSlider colors={colors} data={data} />, document.getElementById('app'));
+class App extends React.Component {
+
+  render() {
+    return (
+      <RangeSlider
+        colors={colors}
+        data={data}
+      />
+    );
+  }
+}
+
+render(<App />, document.getElementById('app'));

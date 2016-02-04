@@ -7,16 +7,18 @@ const propTypes = {
     x: PropTypes.number.isRequired,
     y: PropTypes.number,
     shift: PropTypes.number // how much to shift label left or right
-  }).isRequired
+  }).isRequired,
+  fill: PropTypes.string
 };
 
 const defaultProps = {
   position: {
     x: 0,
-    y: 22,
-    shift: 8
+    y: 0,
+    shift: 0
   },
-  value: null
+  value: null,
+  fill: 'black'
 };
 
 const positionLabel = (anchor, x, shift) => {
@@ -29,18 +31,18 @@ const positionLabel = (anchor, x, shift) => {
       return x + shift;
     default:
       return x;
-  };
+  }
 };
 
 const Label = (props) => {
-  const { position: { x, y, shift }, value, anchor } = props;
+  const { position: { x, y, shift }, value, anchor, fill } = props;
 
   return (
     <text
       textAnchor={anchor}
-      fill='black'
-      y={y}
-      x={positionLabel(anchor, x, shift)}
+      fill={fill}
+      y={`${y}px`}
+      x={`${positionLabel(anchor, x, shift)}px`}
     >
       {(typeof value === 'number') ? value.toFixed(1) : value}
     </text>

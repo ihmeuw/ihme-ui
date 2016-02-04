@@ -23,8 +23,8 @@ const LinearGradient = (props) => {
       id={id}
       x1={`${x1}%`}
       x2={`${x2}%`}
-      y1='0%'
-      y2='0%'
+      y1="0%"
+      y2="0%"
     >
       {map(colors, (color, index) => {
         return (

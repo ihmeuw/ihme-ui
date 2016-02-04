@@ -3,6 +3,9 @@ import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import { dataGenerator } from '@ihme/beaut-test-utils';
+import maxBy from 'lodash.maxby';
+import minBy from 'lodash.minby';
+import d3Scale from 'd3-scale';
 
 import DensityPlot from '../src/components/density-plot';
 
@@ -26,16 +29,21 @@ describe('<DensityPlot />', () => {
     dataQuality: 'best'
   });
 
+  const domain = [minBy(data, 'value').value, maxBy(data, 'value').value];
+
+  const xScale = d3Scale.scaleLinear().domain(domain).range([0, 600]);
+
   let component;
 
   before(() => {
     component = (
       <DensityPlot
         data={data}
-        keyProp={'loc_id'}
-        valueProp={'value'}
+        xScale={xScale}
+        keyField={'loc_id'}
+        valueField={'value'}
         colorScale={function colorScale() { return 'blue'; }}
-        xScale={function xScale() { return 5; }}
+        width={450}
         clickHandler={clickCallback}
         hoverHandler={hoverCallback}
       />
