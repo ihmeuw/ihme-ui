@@ -4,8 +4,7 @@ import d3Scale from 'd3-scale';
 import LinearGradient from './linear-gradient';
 import DensityPlot from './density-plot';
 import Label from './label';
-
-// import Brush from './brush';
+import Brush from './brush';
 
 const propTypes = {
   margins: PropTypes.shape({
@@ -83,7 +82,7 @@ export default class RangeSlider extends React.Component {
     /* eslint-enable react/no-did-mount-set-state */
   }
 
-  static rectWidth(which, edgePosition, containerWidth) {
+  rectWidth(which, edgePosition, containerWidth) {
     if (which === 'left') return (edgePosition) ? edgePosition : 0;
 
     if (containerWidth && edgePosition) {
@@ -94,11 +93,11 @@ export default class RangeSlider extends React.Component {
     return 0;
   }
 
-  static backingInstanceWidth(el) {
+  backingInstanceWidth(el) {
     return el.getBoundingClientRect().width;
   }
 
-  static storeSvgRef(el) {
+  storeSvgRef(el) {
     this._slider = el;
   }
 
@@ -135,6 +134,11 @@ export default class RangeSlider extends React.Component {
             width={width}
           >
           </rect>
+          <Brush
+            xScale={xScale}
+            rangeExtent={data.rangeExtent}
+            width={width}
+          />
           <Label
             value={data.unit}
             anchor="middle"
