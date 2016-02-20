@@ -13,7 +13,7 @@ For example:
 
 *Utility Functions*
 - `import utils from 'beaut/util';`
-- `import { domain, scale } from 'beaut/util';`
+- `import { domain, scale } from 'beaut/utils';`
 
 *Testing Utility Functions*
 - `import testUtils from 'beaut/test-util';`
