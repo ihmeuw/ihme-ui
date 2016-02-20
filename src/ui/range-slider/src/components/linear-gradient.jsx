@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import map from 'lodash.map';
+import map from 'lodash/map';
 
 const propTypes = {
   colors: PropTypes.array.isRequired,
