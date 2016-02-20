@@ -2,7 +2,7 @@ import React from 'react';
 import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
-import { dataGenerator } from '../../../test-utils';
+import { dataGenerator } from '../../../test-utils/src/index';
 import maxBy from 'lodash/maxby';
 import minBy from 'lodash/minby';
 import d3Scale from 'd3-scale';
