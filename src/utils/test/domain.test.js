@@ -1,5 +1,5 @@
 import chai from 'chai';
-import { percentOfRange, numFromPercent, domainFromPercent } from '../src/domain';
+import { percentOfRange, numFromPercent, domainFromPercent } from '../domain';
 const expect = chai.expect;
 
 describe('domain conversion helpers', () => {

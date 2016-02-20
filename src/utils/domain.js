@@ -1,4 +1,4 @@
-import { isNaN, isUndefined } from 'lodash/lang';
+import { isNaN, isUndefined } from 'lodash';
 
 /**
  * @param {Number} num
