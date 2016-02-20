@@ -1,4 +1,4 @@
-import map from 'lodash.map';
+import map from 'lodash/map';
 import cuid from 'cuid';
 import random from 'random-js';
 
