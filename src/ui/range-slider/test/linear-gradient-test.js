@@ -2,7 +2,7 @@ import React from 'react';
 import { expect } from 'chai';
 import { shallow } from 'enzyme';
 
-import { colorSteps } from '../../../test-utils/src/index';
+import { colorSteps } from '../../../test-utils';
 import LinearGradient from '../src/components/linear-gradient';
 
 describe('<LinearGradient />', () => {

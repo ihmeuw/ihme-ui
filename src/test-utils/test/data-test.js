@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import isNull from 'lodash/isNull';
 
-import { dataGenerator } from '../src/mocks/data';
+import { dataGenerator } from '../data';
 
 describe('data', () => {
   it('generates an array of 200 objects', () => {
