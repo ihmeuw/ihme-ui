@@ -17,7 +17,7 @@ For example:
 
 *Testing Utility Functions*
 - `import testUtils from 'beaut/test-util';`
-- `import { dataMocker } from 'beaut/test-util';`
+- `import { dataMocker } from 'beaut/test-utils';`
 
 ### Code quality
   - eslint enforces AirBnB rules: https://github.com/airbnb/javascript
