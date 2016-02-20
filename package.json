@@ -2,7 +2,7 @@
   "private": "true",
   "license": "MIT",
   "scripts": {
-    "lint": "$(npm bin)/eslint packages/**/*.{js,jsx} --quiet",
+    "lint": "$(npm bin)/eslint src/**/*.{js,jsx} --quiet",
     "coverage": "$(npm bin)/babel-node $(npm bin)/isparta cover node_modules/mocha/bin/_mocha -- `scripts/get-test-directories.sh`",
     "coverage-token": "cat ./coverage/coverage.json | ./node_modules/codecov.io/bin/codecov.io.js",
     "test-only": "npm run lint && $(npm bin)/babel-node $(npm bin)/_mocha `./scripts/get-test-directories.sh`",

@@ -3,7 +3,7 @@ set -e
 
 TEST_DIRS=""
 
-for f in packages/*; do
+for f in src/*; do
   if [ -n "$TEST_ONLY" ] && [ `basename $f` != "$TEST_ONLY" ]; then
     continue
   fi

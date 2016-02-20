@@ -1,2 +1,2 @@
-packages/**/webpack.config.js
-packages/**/demo/*.js
+src/**/webpack.config.js
+src/**/demo/*.js
