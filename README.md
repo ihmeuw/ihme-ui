@@ -3,5 +3,21 @@
 # beaut
 Visualization tools
 
+### Use
+`npm install beaut`
+
+For example:
+
+*UI Components*
+- `import RangeSlider from 'beaut/ui';`
+
+*Utility Functions*
+- `import utils from 'beaut/util';`
+- `import { domain, scale } from 'beaut/util';`
+
+*Testing Utility Functions*
+- `import testUtils from 'beaut/test-util';`
+- `import { dataMocker } from 'beaut/test-util';`
+
 ### Code quality
   - eslint enforces AirBnB rules: https://github.com/airbnb/javascript
