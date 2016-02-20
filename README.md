@@ -9,7 +9,8 @@ Visualization tools
 For example:
 
 *UI Components*
-- `import RangeSlider from 'beaut/ui';`
+- `import RangeSlider from 'beaut/ui/range-slider';`
+- `import { RangeSlider } from 'beaut/ui';`
 
 *Utility Functions*
 - `import utils from 'beaut/util';`
