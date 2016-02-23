@@ -6,7 +6,8 @@ module.exports = {
     "react"
   ],
   "rules": {
-    "comma-dangle": 0
+    "comma-dangle": 0,
+    "arrow-body-style": [2, "always"]
   },
   "env": {
     "mocha": true

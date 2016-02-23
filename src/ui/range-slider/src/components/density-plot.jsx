@@ -25,8 +25,8 @@ const propTypes = {
 };
 
 const defaultProps = {
-  clickHandler: () => { return () => {}; },
-  hoverHandler: () => { return () => {}; }
+  clickHandler: () => { return () => { return; }; },
+  hoverHandler: () => { return () => { return; }; }
 };
 
 const DensityPlot = (props) => {
