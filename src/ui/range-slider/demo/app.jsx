@@ -3,14 +3,14 @@ import React from 'react';
 import { render } from 'react-dom';
 
 // component
-import RangeSlider from '../src/components/range-slider';
+import RangeSlider from '../src';
 
 // utils
-import maxBy from 'lodash.maxby';
-import minBy from 'lodash.minby';
-import reduce from 'lodash.reduce';
+import maxBy from 'lodash/maxBy';
+import minBy from 'lodash/minBy';
+import reduce from 'lodash/reduce';
 import { scaleLinear } from 'd3-scale';
-import { colorSteps, dataGenerator } from '@ihme/beaut-test-utils';
+import { dataGenerator, colorSteps } from '../../../test-utils';
 
 const valueField = 'value';
 const keyField = 'loc_id';

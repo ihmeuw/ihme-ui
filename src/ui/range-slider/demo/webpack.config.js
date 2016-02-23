@@ -3,21 +3,18 @@
 var path = require('path');
 
 module.exports = {
-  context: path.join(__dirname, 'demo'),
+  context: __dirname,
   entry: './app',
   output: {
-    path: path.join(__dirname, 'demo'),
+    path: __dirname,
     filename: 'bundle.js'
   },
   module: {
     loaders: [
       {
         test: /\.jsx?$/,
-        include: [
-          path.resolve(__dirname, 'src'),
-          path.resolve(__dirname, 'demo')
-        ],
-        loader: 'babel-loader'
+        exclude: 'node-modules/',
+        loader: 'babel'
       }
     ]
   },
