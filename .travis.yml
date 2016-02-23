@@ -10,4 +10,4 @@ node_js:
 notifications:
   email: false
 
-script: npm test
+script: npm run everything
