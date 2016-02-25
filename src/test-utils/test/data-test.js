@@ -27,4 +27,28 @@ describe('data', () => {
 
     expect(hasNullValues).to.be.true;
   });
+
+  it('generates dates for keyfield', () => {
+    const length = 20;
+    const startYear = 2016;
+    const data = dataGenerator({
+      keyField: 'year_id',
+      useDates: true,
+      length,
+      startYear
+    });
+
+    expect(data)
+      .to.have.length(20);
+
+    expect(data)
+      .to.have.deep.property('[0].year_id')
+      .that.is.a('number')
+      .that.equals(startYear - length + 1);
+
+    expect(data)
+      .to.have.deep.property('[19].year_id')
+      .that.is.a('number')
+      .that.equals(startYear);
+  });
 });

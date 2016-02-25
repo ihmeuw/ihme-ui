@@ -21,10 +21,18 @@ export const dataGenerator = (config = {}) => {
     length = 200,
     keyField = 'location_id',
     valueField = 'value',
+    useDates = false,
+    startYear = (new Date()).getFullYear(),
     ...rest
   } = config;
   const ret = new Array(length);
   const randomGenerator = random();
+
+  const yearProducer = (function* yearProducer() {
+    for (let year = startYear - length + 1; year <= startYear; year++) {
+      yield year;
+    }
+  }());
 
   const valueProducer = (() => {
     return () => {
@@ -54,7 +62,7 @@ export const dataGenerator = (config = {}) => {
 
   return map(ret, () => {
     return {
-      [keyField]: cuid(), // collision-resistant string id
+      [keyField]: useDates ? yearProducer.next().value : cuid(), // collision-resistant string id
       [valueField]: valueProducer(),
       ...rest
     };
