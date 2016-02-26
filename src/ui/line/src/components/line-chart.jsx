@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import d3Scale from 'd3-scale';
-import assign from 'lodash/assign';
 
 const propTypes = {
   data: PropTypes.shape({
@@ -65,9 +64,6 @@ const defaultProps = {
 };
 
 export default class LineChart extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
   componentWillMount() {
     const {
@@ -131,8 +127,6 @@ export default class LineChart extends React.Component {
     const { children } = this.props;
     const { dimensions, scales } = this.state;
 
-    const childProps = assign({}, scales);
-
     return (
       <svg
         width={`${dimensions.width}px`}
@@ -140,7 +134,7 @@ export default class LineChart extends React.Component {
       >
         {
           React.Children.map(children, (child) => {
-            return React.cloneElement(child, childProps);
+            return React.cloneElement(child, { scales });
           })
         }
       </svg>

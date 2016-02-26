@@ -6,6 +6,7 @@ import { dataGenerator } from '../../../test-utils';
 import maxBy from 'lodash/maxby';
 import minBy from 'lodash/minby';
 import map from 'lodash/map';
+import uniqBy from 'lodash/uniqBy';
 
 chai.use(chaiEnzyme());
 
@@ -25,18 +26,23 @@ describe('<LineChart />', () => {
 
   const lineData = [{ location: 'USA', values: data }, { location: 'Canada', values: data }];
 
-  let component;
+  let componentWithLines;
 
-  const range = [minBy(data, valueField)[valueField], maxBy(data, valueField)[valueField]];
-  const domain = [minBy(data, keyField)[keyField], maxBy(data, keyField)[keyField]];
+  const yDomain = [minBy(data, valueField)[valueField], maxBy(data, valueField)[valueField]];
+  const xDomain = map(uniqBy(data, keyField), (obj) => (obj[keyField]));
+
+  const scales = {
+    x() {},
+    y() {}
+  };
 
   before(() => {
-    component = (
+    componentWithLines = (
       <LineChart
         data={{
-          xDomain: domain,
+          xDomain: xDomain,
           xScaleType: 'ordinal',
-          yDomain: range,
+          yDomain: yDomain,
           yScaleType: 'linear',
           values: lineData,
           keyField: 'location',
@@ -60,10 +66,13 @@ describe('<LineChart />', () => {
     );
   });
 
-  it('should do something', () => {
-    const wrapper = shallow(component);
+  it('should render an svg', () => {
+    const wrapper = shallow(componentWithLines);
     expect(wrapper.find('svg')).to.have.length(1);
-    // expect(wrapper.contains('path')).to.be.true;
-    console.log(wrapper.html());
+  });
+
+  it('should render two paths', () => {
+    const wrapper = shallow(componentWithLines);
+    expect(wrapper.find('svg').children('Line')).to.have.length(2);
   });
 });
