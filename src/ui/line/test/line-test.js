@@ -1,17 +1,24 @@
 import React from 'react';
-import { expect } from 'chai';
+import chai, { expect } from 'chai';
+import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 import { dataGenerator } from '../../../test-utils';
 import maxBy from 'lodash/maxby';
 import minBy from 'lodash/minby';
 import d3Scale from 'd3-scale';
+import { line } from 'd3-shape';
 
-import Line from '../src';
+chai.use(chaiEnzyme());
+
+import { Line } from '../src';
 
 describe('<Line />', () => {
   const keyField = 'year_id';
   const valueField = 'value';
-  const bounds = 600;
+  const chartDimensions = {
+    width: 600,
+    height: 400
+  };
 
   const data = dataGenerator({
     keyField,
@@ -26,26 +33,30 @@ describe('<Line />', () => {
   const range = [minBy(data, valueField)[valueField], maxBy(data, valueField)[valueField]];
   const domain = [minBy(data, keyField)[keyField], maxBy(data, keyField)[keyField]];
 
-  const xScale = d3Scale.scaleLinear().domain(domain).range([0, bounds]);
-  const yScale = d3Scale.scaleLinear().domain(range).range([0, bounds]);
+  const xScale = d3Scale.scaleOrdinal().domain(domain).range([0, chartDimensions.width]);
+  const yScale = d3Scale.scaleLinear().domain(range).range([chartDimensions.height, 0]);
+
+  const lineFunction = line()
+    .x((datum) => { return xScale(datum[keyField]); })
+    .y((datum) => { return yScale(datum[valueField]); });
+
+  const expectedPath = lineFunction(data);
 
   before(() => {
     component = (
       <Line
         data={data}
-        xScale={xScale}
-        yScale={yScale}
-        keyField={keyField}
-        valueField={valueField}
-        width={bounds}
-        height={bounds}
+        scales={{ x: xScale, y: yScale}}
+        dataAccessors={{ x: keyField, y: valueField}}
       />
     );
   });
 
-  it('should render an SVG g node', () => {
+  it('renders an SVG path node with a d attribute', () => {
     const wrapper = shallow(component);
-    expect(wrapper.find('g'));
+    const path = wrapper.find('path');
+    expect(path).to.have.length(1);
+    expect(path).to.have.attr('d').to.equal(expectedPath);
   });
 
 });

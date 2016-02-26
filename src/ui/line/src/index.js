@@ -1,3 +1,8 @@
 import Line from './components/line';
+import MultiLine from './components/multi-line';
+import LineChart from './components/line-chart';
 
-export default Line;
+export {
+  Line,
+  LineChart
+};

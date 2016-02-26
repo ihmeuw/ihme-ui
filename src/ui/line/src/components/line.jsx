@@ -2,27 +2,42 @@ import React, { PropTypes } from 'react';
 import { line } from 'd3-shape';
 
 const propTypes = {
-  // array of datum objects
-  data: PropTypes.array.isRequired,
+  // array of objects
+  // e.g. [ {}, {}, {} ]
+  data: PropTypes.arrayOf(PropTypes.object),
 
-  // partially applied fn that takes in datum and returns fn
+  // scales from d3Scale
+  scales: PropTypes.shape({
+    x: PropTypes.func,
+    y: PropTypes.func
+  }),
+
+  dataAccessors: PropTypes.shape({
+    x: PropTypes.string,
+    y: PropTypes.string
+  }),
+
   clickHandler: PropTypes.func,
 
-  // partially applied fn that takes in datum and returns fn
   hoverHandler: PropTypes.func
 };
 
 const defaultProps = {
-  clickHandler: () => { return () => { return; }; },
-  hoverHandler: () => { return () => { return; }; }
+  dataAccessors: { x: 'x', y: 'y' },
+  clickHandler: () => { return; },
+  hoverHandler: () => { return; }
 };
 
 const Line = (props) => {
-  const { data, keyField, valueField, xScale, yScale, clickHandler, hoverHandler } = props;
+  const {
+    data,
+    scales: { x: xScale, y: yScale },
+    dataAccessors: { x: xAccessor, y: yAccessor }
+  } = props;
 
   const path = line()
-    .x((d) => { return xScale(d[keyField]); })
-    .y((d) => { return yScale(d[valueField]); });
+    .x((datum) => { return xScale(datum[xAccessor]); })
+    .y((datum) => { return yScale(datum[yAccessor]); });
 
   return (
     <path d={path(data)} />
