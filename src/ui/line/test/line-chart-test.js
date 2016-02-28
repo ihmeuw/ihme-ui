@@ -2,15 +2,16 @@ import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
-import { dataGenerator } from '../../../test-utils';
 import maxBy from 'lodash/maxby';
 import minBy from 'lodash/minby';
 import map from 'lodash/map';
 import uniqBy from 'lodash/uniqBy';
 
+import { dataGenerator } from '../../../test-utils';
+import { LineChart, Line } from '../src';
+
 chai.use(chaiEnzyme());
 
-import { LineChart, Line } from '../src';
 
 describe('<LineChart />', () => {
   const keyField = 'year_id';
