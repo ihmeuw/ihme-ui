@@ -31,18 +31,13 @@ describe('<LineChart />', () => {
   const yDomain = [minBy(data, valueField)[valueField], maxBy(data, valueField)[valueField]];
   const xDomain = map(uniqBy(data, keyField), (obj) => (obj[keyField]));
 
-  const scales = {
-    x() {},
-    y() {}
-  };
-
   before(() => {
     componentWithLines = (
       <LineChart
         data={{
-          xDomain: xDomain,
-          xScaleType: 'ordinal',
-          yDomain: yDomain,
+          xDomain,
+          xScaleType: 'point',
+          yDomain,
           yScaleType: 'linear',
           values: lineData,
           keyField: 'location',

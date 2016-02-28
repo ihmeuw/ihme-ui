@@ -33,7 +33,7 @@ describe('<Line />', () => {
   const range = [minBy(data, valueField)[valueField], maxBy(data, valueField)[valueField]];
   const domain = [minBy(data, keyField)[keyField], maxBy(data, keyField)[keyField]];
 
-  const xScale = d3Scale.scaleOrdinal().domain(domain).range([0, chartDimensions.width]);
+  const xScale = d3Scale.scalePoint().domain(domain).range([0, chartDimensions.width]);
   const yScale = d3Scale.scaleLinear().domain(range).range([chartDimensions.height, 0]);
 
   const lineFunction = line()

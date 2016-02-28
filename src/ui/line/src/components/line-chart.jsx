@@ -1,19 +1,21 @@
 import React, { PropTypes } from 'react';
 import d3Scale from 'd3-scale';
 
+const scaleTypes = ['linear', 'ordinal', 'point'];
+
 const propTypes = {
   data: PropTypes.shape({
     /* [min, max] for xScale (i.e., the domain of the data) */
     xDomain: PropTypes.array,
 
     /* type of scale */
-    xScaleType: PropTypes.oneOf(['linear', 'ordinal']),
+    xScaleType: PropTypes.oneOf(scaleTypes),
 
     /* [min, max] yScale (i.e., the range of the data) */
     yDomain: PropTypes.array,
 
     /* type of scale */
-    yScaleType: PropTypes.oneOf(['linear', 'ordinal']),
+    yScaleType: PropTypes.oneOf(scaleTypes),
 
     /* array of data
       e.g. [ {location: 'USA', values: []}, {location: 'Canada', values: []} ] */
@@ -106,6 +108,9 @@ export default class LineChart extends React.Component {
     let scale;
 
     switch (type) {
+      case 'point':
+        scale = d3Scale.scalePoint();
+        break;
       case 'ordinal':
         scale = d3Scale.scaleOrdinal();
         break;
