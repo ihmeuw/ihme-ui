@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import map from 'lodash/map';
+import omit from 'lodash/omit';
 
 import Line from './line';
 
@@ -8,19 +9,39 @@ const propTypes = {
   // e.g. [ {location: 'USA',values: []}, {location: 'Canada', values: []} ]
   data: PropTypes.arrayOf(PropTypes.object),
 
-  // describes the data objects contained in this.props.data array
-  dataDescriptor: PropTypes.shape({
-    keyField: PropTypes.string,
-    dataField: PropTypes.string
-  }),
+  // key name for topic of data
+  keyField: PropTypes.string,
+
+  // key name for values representing individual lines
+  dataField: PropTypes.string,
+
+  // scales from d3Scale
+  scales: PropTypes.shape({
+    x: PropTypes.func,
+    y: PropTypes.func
+  }).isRequired,
+
+  style: PropTypes.object,
+
+  // key names containing x, y data
+  dataAccessors: PropTypes.shape({
+    x: PropTypes.string,
+    y: PropTypes.string
+  }).isRequired,
+
+  clickHandler: PropTypes.func,
+
+  hoverHandler: PropTypes.func
 };
 
-export default class LineWrapper extends React.Component {
+export default class MultiLine extends React.Component {
 
   render() {
+    const childProps = omit(this.props, ['data', 'keyField', 'dataField']);
     const {
-      data,
-      dataDescriptor: { keyField, dataField }
+      keyField,
+      dataField,
+      data
     } = this.props;
 
     return (
@@ -31,8 +52,9 @@ export default class LineWrapper extends React.Component {
           map(data, (lineData) => {
             return (
               <Line
-                key={keyField}
+                key={lineData[keyField]}
                 data={lineData[dataField]}
+                {...childProps}
               />);
           })
         }
@@ -41,4 +63,4 @@ export default class LineWrapper extends React.Component {
   }
 }
 
-LineWrapper.propTypes = propTypes;
+MultiLine.propTypes = propTypes;

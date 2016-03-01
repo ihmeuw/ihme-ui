@@ -9,32 +9,17 @@ const SCALE_TYPES = {
 };
 
 const propTypes = {
-  data: PropTypes.shape({
-    /* [min, max] for xScale (i.e., the domain of the data) */
-    xDomain: PropTypes.array,
+  /* [min, max] for xScale (i.e., the domain of the data) */
+  xDomain: PropTypes.array,
 
-    /* type of scale */
-    xScaleType: PropTypes.oneOf(Object.keys(SCALE_TYPES)),
+  /* type of scale */
+  xScaleType: PropTypes.oneOf(Object.keys(SCALE_TYPES)),
 
-    /* [min, max] yScale (i.e., the range of the data) */
-    yDomain: PropTypes.array,
+  /* [min, max] yScale (i.e., the range of the data) */
+  yDomain: PropTypes.array,
 
-    /* type of scale */
-    yScaleType: PropTypes.oneOf(Object.keys(SCALE_TYPES)),
-
-    /* array of data
-      e.g. [ {location: 'USA', values: []}, {location: 'Canada', values: []} ] */
-    values: PropTypes.arrayOf(PropTypes.object),
-
-    /* uniquely identifying property on dataset, e.g., "location" */
-    keyField: PropTypes.string.isRequired,
-
-    /* name of prop on dataset that holds data array, e.g. "values" */
-    valueField: PropTypes.string.isRequired,
-
-    /* unit of data; axis label */
-    unit: PropTypes.string
-  }),
+  /* type of scale */
+  yScaleType: PropTypes.oneOf(Object.keys(SCALE_TYPES)),
 
   /* px width of line chart */
   width: PropTypes.number,
@@ -52,7 +37,7 @@ const propTypes = {
 
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
+    PropTypes.node
   ])
 };
 
@@ -63,11 +48,7 @@ const defaultProps = {
     bottom: 20,
     left: 20
   },
-  data: {
-    xScaleType: 'ordinal',
-    keyField: 'key',
-    valueField: 'values'
-  }
+  xScaleType: 'ordinal'
 };
 
 export default class LineChart extends React.Component {
@@ -77,7 +58,10 @@ export default class LineChart extends React.Component {
       width,
       height,
       margins,
-      data: { xDomain, xScaleType, yDomain, yScaleType }
+      xDomain,
+      xScaleType,
+      yDomain,
+      yScaleType
     } = this.props;
     const dimensions = this.calcDimensions(width, height, margins);
 
@@ -95,7 +79,10 @@ export default class LineChart extends React.Component {
       width,
       height,
       margins,
-      data: { xDomain, xScaleType, yDomain, yScaleType }
+      xDomain,
+      xScaleType,
+      yDomain,
+      yScaleType
     } = props;
     const dimensions = this.calcDimensions(width, height, margins);
 

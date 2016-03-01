@@ -1,9 +1,12 @@
 import React from 'react';
+
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
+
 import maxBy from 'lodash/maxby';
 import minBy from 'lodash/minby';
+
 import d3Scale from 'd3-scale';
 import { line } from 'd3-shape';
 
@@ -47,8 +50,8 @@ describe('<Line />', () => {
     component = (
       <Line
         data={data}
-        scales={{ x: xScale, y: yScale}}
-        dataAccessors={{ x: keyField, y: valueField}}
+        scales={{ x: xScale, y: yScale }}
+        dataAccessors={{ x: keyField, y: valueField }}
       />
     );
   });
@@ -59,5 +62,4 @@ describe('<Line />', () => {
     expect(path).to.have.length(1);
     expect(path).to.have.attr('d').to.equal(expectedPath);
   });
-
 });

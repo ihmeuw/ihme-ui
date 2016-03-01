@@ -4,5 +4,6 @@ import LineChart from './components/line-chart';
 
 export {
   Line,
-  LineChart
+  LineChart,
+  MultiLine
 };

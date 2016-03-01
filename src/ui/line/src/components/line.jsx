@@ -12,6 +12,8 @@ const propTypes = {
     y: PropTypes.func
   }).isRequired,
 
+  style: PropTypes.object,
+
   dataAccessors: PropTypes.shape({
     x: PropTypes.string,
     y: PropTypes.string
@@ -23,6 +25,7 @@ const propTypes = {
 };
 
 const defaultProps = {
+  style: { fill: 'none', stroke: 'black' },
   dataAccessors: { x: 'x', y: 'y' },
   clickHandler: () => { return; },
   hoverHandler: () => { return; }
@@ -32,6 +35,7 @@ const Line = (props) => {
   const {
     data,
     scales,
+    style,
     dataAccessors: { x: xAccessor, y: yAccessor }
   } = props;
 
@@ -44,7 +48,7 @@ const Line = (props) => {
     });
 
   return (
-    <path d={path(data)}/>
+    <path style={style} d={path(data)}/>
   );
 };
 

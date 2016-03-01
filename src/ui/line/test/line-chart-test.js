@@ -1,7 +1,9 @@
 import React from 'react';
+
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
+
 import maxBy from 'lodash/maxby';
 import minBy from 'lodash/minby';
 import map from 'lodash/map';
@@ -30,20 +32,15 @@ describe('<LineChart />', () => {
   let componentWithLines;
 
   const yDomain = [minBy(data, valueField)[valueField], maxBy(data, valueField)[valueField]];
-  const xDomain = map(uniqBy(data, keyField), (obj) => (obj[keyField]));
+  const xDomain = map(uniqBy(data, keyField), (obj) => { return (obj[keyField]); });
 
   before(() => {
     componentWithLines = (
       <LineChart
-        data={{
-          xDomain,
-          xScaleType: 'point',
-          yDomain,
-          yScaleType: 'linear',
-          values: lineData,
-          keyField: 'location',
-          valueField: 'values'
-        }}
+        xDomain={xDomain}
+        xScaleType="point"
+        yDomain={yDomain}
+        yScaleType="linear"
         width={800}
         height={600}
       >
