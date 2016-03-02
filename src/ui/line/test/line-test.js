@@ -59,7 +59,8 @@ describe('<Line />', () => {
   it('renders an SVG path node with a d attribute', () => {
     const wrapper = shallow(component);
     const path = wrapper.find('path');
+
     expect(path).to.have.length(1);
-    expect(path).to.have.attr('d').to.equal(expectedPath);
+    expect(path).to.have.attr('d', expectedPath);
   });
 });

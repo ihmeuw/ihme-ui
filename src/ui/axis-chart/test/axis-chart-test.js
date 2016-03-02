@@ -30,13 +30,13 @@ describe('<AxisChart />', () => {
 
   const lineData = [{ location: 'USA', values: data }, { location: 'Canada', values: data }];
 
-  let componentWithLines;
+  let component;
 
   const yDomain = [minBy(data, valueField)[valueField], maxBy(data, valueField)[valueField]];
   const xDomain = map(uniqBy(data, keyField), (obj) => { return (obj[keyField]); });
 
   before(() => {
-    componentWithLines = (
+    component = (
       <AxisChart
         xDomain={xDomain}
         xScaleType="point"
@@ -56,13 +56,21 @@ describe('<AxisChart />', () => {
     );
   });
 
-  it('should render an svg', () => {
-    const wrapper = shallow(componentWithLines);
-    expect(wrapper.find('svg')).to.have.length(1);
+  it('renders an svg', () => {
+    const wrapper = shallow(component);
+    expect(wrapper).to.have.tagName('svg');
   });
 
-  it('should render two paths', () => {
-    const wrapper = shallow(componentWithLines);
-    expect(wrapper.find('svg').children('p')).to.have.length(2);
+  it('renders child components', () => {
+    const wrapper = shallow(component);
+    expect(wrapper).to.have.exactly(2).descendants('p');
+  });
+
+  it('passes scales as props to child components', () => {
+    const wrapper = shallow(component);
+    expect(wrapper.find('p').first())
+      .to.have.prop('scales')
+      .that.is.an('object')
+      .that.has.keys(['x', 'y']);
   });
 });

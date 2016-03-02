@@ -38,10 +38,10 @@ describe('<MultiLine />', () => {
 
   const lineData = [{ location: 'USA', values: data }, { location: 'Canada', values: data }];
 
-  let componentWithLines;
+  let component;
 
   before(() => {
-    componentWithLines = (
+    component = (
       <MultiLine
         data={lineData}
         keyField={'location'}
@@ -52,13 +52,25 @@ describe('<MultiLine />', () => {
     );
   });
 
-  it('should render a g', () => {
-    const wrapper = shallow(componentWithLines);
+  it('renders a g', () => {
+    const wrapper = shallow(component);
     expect(wrapper.find('g')).to.have.length(1);
   });
 
-  it('should render two paths', () => {
-    const wrapper = shallow(componentWithLines);
-    expect(wrapper.find('g').children('Line')).to.have.length(2);
+  it('renders two paths', () => {
+    const wrapper = shallow(component);
+    expect(wrapper).to.have.exactly(2).descendants('Line');
+  });
+
+  it('passes a subset of its props to child components', () => {
+    const wrapper = shallow(component);
+    const child = wrapper.find('Line').first();
+    expect(child)
+      .to.have.prop('scales')
+      .that.is.an('object')
+      .that.has.keys(['x', 'y']);
+
+    expect(child)
+      .to.not.have.prop('keyField');
   });
 });
