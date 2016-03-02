@@ -45,8 +45,8 @@ const defaultProps = {
   margins: {
     top: 20,
     right: 20,
-    bottom: 20,
-    left: 20
+    bottom: 30,
+    left: 50
   },
   xScaleType: 'ordinal'
 };
@@ -108,20 +108,22 @@ export default class AxisChart extends React.Component {
   }
 
   render() {
-    const { children } = this.props;
+    const { margins, children } = this.props;
     const { dimensions, scales } = this.state;
 
     return (
       <svg
-        width={`${dimensions.width}px`}
-        height={`${dimensions.height}px`}
+        width={`${dimensions.width + margins.left + margins.right}px`}
+        height={`${dimensions.height + margins.bottom + margins.top}px`}
       >
-        {
-          React.Children.map(children, (child) => {
-            if (child === undefined || child === null) return child;
-            return React.cloneElement(child, { scales });
-          })
-        }
+        <g transform={`translate(${margins.left}, ${margins.right})`} >
+          {
+            React.Children.map(children, (child) => {
+              if (child === undefined || child === null) return child;
+              return React.cloneElement(child, { scales });
+            })
+          }
+        </g>
       </svg>
     );
   }
