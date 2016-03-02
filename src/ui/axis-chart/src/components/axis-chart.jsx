@@ -51,7 +51,7 @@ const defaultProps = {
   xScaleType: 'ordinal'
 };
 
-export default class LineChart extends React.Component {
+export default class AxisChart extends React.Component {
 
   componentWillMount() {
     const {
@@ -118,6 +118,7 @@ export default class LineChart extends React.Component {
       >
         {
           React.Children.map(children, (child) => {
+            if (child === undefined || child === null) return child;
             return React.cloneElement(child, { scales });
           })
         }
@@ -126,5 +127,5 @@ export default class LineChart extends React.Component {
   }
 }
 
-LineChart.propTypes = propTypes;
-LineChart.defaultProps = defaultProps;
+AxisChart.propTypes = propTypes;
+AxisChart.defaultProps = defaultProps;

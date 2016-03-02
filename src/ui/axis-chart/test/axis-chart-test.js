@@ -10,12 +10,13 @@ import map from 'lodash/map';
 import uniqBy from 'lodash/uniqBy';
 
 import { dataGenerator } from '../../../test-utils';
-import { LineChart, Line } from '../src';
+import { AxisChart } from '../../axis-chart/src';
+import { Line } from '../src';
 
 chai.use(chaiEnzyme());
 
 
-describe('<LineChart />', () => {
+describe('<AxisChart />', () => {
   const keyField = 'year_id';
   const valueField = 'value';
 
@@ -36,7 +37,7 @@ describe('<LineChart />', () => {
 
   before(() => {
     componentWithLines = (
-      <LineChart
+      <AxisChart
         xDomain={xDomain}
         xScaleType="point"
         yDomain={yDomain}
@@ -47,15 +48,11 @@ describe('<LineChart />', () => {
         {
           map(lineData, (dataset) => {
             return (
-              <Line
-                key={dataset.location}
-                data={dataset.values}
-                dataAccessors={{ x: keyField, y: valueField }}
-              />
+              <p key={dataset.location}/>
             );
           })
         }
-      </LineChart>
+      </AxisChart>
     );
   });
 
@@ -66,6 +63,6 @@ describe('<LineChart />', () => {
 
   it('should render two paths', () => {
     const wrapper = shallow(componentWithLines);
-    expect(wrapper.find('svg').children('Line')).to.have.length(2);
+    expect(wrapper.find('svg').children('p')).to.have.length(2);
   });
 });

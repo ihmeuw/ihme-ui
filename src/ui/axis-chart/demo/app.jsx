@@ -7,7 +7,8 @@ import map from 'lodash/map';
 import uniqBy from 'lodash/uniqBy';
 
 import { dataGenerator } from '../../../test-utils';
-import { LineChart, MultiLine } from '../src';
+import { AxisChart } from '../src';
+import { MultiLine } from '../../line/src';
 
 
 const keyField = 'year_id';
@@ -38,7 +39,7 @@ const xDomain = map(uniqBy(data, keyField), (obj) => { return (obj[keyField]); }
 class App extends React.Component {
   render() {
     return (
-      <LineChart
+      <AxisChart
         xDomain={xDomain}
         xScaleType="point"
         yDomain={yDomain}
@@ -52,7 +53,7 @@ class App extends React.Component {
           dataField={'values'}
           dataAccessors={{ x: keyField, y: valueField }}
         />
-      </LineChart>
+      </AxisChart>
     );
   }
 }
