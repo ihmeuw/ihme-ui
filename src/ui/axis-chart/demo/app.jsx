@@ -8,7 +8,7 @@ import uniqBy from 'lodash/uniqBy';
 
 import { dataGenerator } from '../../../test-utils';
 import { AxisChart } from '../src';
-import { MultiLine } from '../../line/src';
+import { MultiLine } from '../../shape/src';
 
 
 const keyField = 'year_id';
