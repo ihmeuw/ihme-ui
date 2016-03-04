@@ -11,10 +11,11 @@ function run_webpack
     return
   fi
 
+  echo "Packing: ${demo_dir}"
   ./node_modules/.bin/webpack --config "${demo_dir}/webpack.config.js" --display-error-details
 }
 
 # for each
-for dir in $(find . -d -name 'demo'); do
+for dir in $(find . -d -name 'demo'*); do
     run_webpack ${dir}
 done
