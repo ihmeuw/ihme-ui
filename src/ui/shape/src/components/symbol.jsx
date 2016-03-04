@@ -12,6 +12,9 @@ const SYMBOL_TYPES = {
 };
 
 const propTypes = {
+  /* Datum for the click and hover handlers. */
+  data: PropTypes.object,
+
   /* will match a SYMBOL_TYPE  */
   type: PropTypes.oneOf(Object.keys(SYMBOL_TYPES)),
 
@@ -21,8 +24,13 @@ const propTypes = {
   position: PropTypes.shape({
     x: PropTypes.number,
     y: PropTypes.number
-  })
+  }),
 
+  // partially applied fn that takes in datum and returns fn
+  clickHandler: PropTypes.func,
+
+  // partially applied fn that takes in datum and returns fn
+  hoverHandler: PropTypes.func
 };
 
 const defaultProps = {
@@ -31,7 +39,9 @@ const defaultProps = {
   position: {
     x: 0,
     y: 0
-  }
+  },
+  clickHandler: () => { return; },
+  hoverHandler: () => { return; }
 };
 
 /**
@@ -46,7 +56,7 @@ const getSymbolType = (type) => {
 * Public API should expose basic public API of d3Shape.symbol()
 **/
 const Symbol = (props) => {
-  const { type, size, position: { x, y } } = props;
+  const { data, type, size, position: { x, y }, clickHandler, hoverHandler } = props;
   const symbol = getSymbolType(type);
   const pathGenerator = d3Shape.symbol().type(symbol).size(size);
 
@@ -54,6 +64,8 @@ const Symbol = (props) => {
     <path
       d={pathGenerator()}
       transform={`translate(${x}, ${y})`}
+      onClick={clickHandler(data)}
+      onMouseOver={hoverHandler(data)}
     />
   );
 };
@@ -63,3 +75,4 @@ Symbol.propTypes = propTypes;
 Symbol.defaultProps = defaultProps;
 
 export default Symbol;
+export { SYMBOL_TYPES };

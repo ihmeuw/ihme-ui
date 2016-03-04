@@ -1,9 +1,12 @@
 import Line from './components/line';
 import MultiLine from './components/multi-line';
-import Symbol from './components/symbol';
+import Symbol, { SYMBOL_TYPES } from './components/symbol';
+import ScatterPlot from './components/scatter-plot';
 
 export {
   Line,
   MultiLine,
-  Symbol
+  ScatterPlot,
+  Symbol,
+  SYMBOL_TYPES
 };
