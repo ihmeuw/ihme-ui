@@ -5,7 +5,7 @@ import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 import d3Shape from 'd3-shape';
 
-import { Symbol } from '../src';
+import { Symbol } from '../';
 
 chai.use(chaiEnzyme());
 

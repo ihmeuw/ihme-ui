@@ -12,7 +12,7 @@ import uniqBy from 'lodash/uniqBy';
 import d3Scale from 'd3-scale';
 
 import { dataGenerator } from '../../../test-utils';
-import { MultiLine } from '../src';
+import { MultiLine } from '../';
 
 chai.use(chaiEnzyme());
 

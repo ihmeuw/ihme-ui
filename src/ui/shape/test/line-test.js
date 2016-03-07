@@ -11,7 +11,7 @@ import d3Scale from 'd3-scale';
 import { line } from 'd3-shape';
 
 import { dataGenerator } from '../../../test-utils';
-import { Line } from '../src';
+import { Line } from '../';
 
 chai.use(chaiEnzyme());
 

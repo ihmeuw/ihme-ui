@@ -5,7 +5,7 @@ import { maxBy, minBy, map, uniqBy } from 'lodash';
 
 import { dataGenerator } from '../../../test-utils';
 import { AxisChart } from '../../axis-chart/src';
-import { ScatterPlot } from '../src';
+import { ScatterPlot } from '../';
 
 
 const keyField = 'year_id';

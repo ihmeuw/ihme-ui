@@ -6,7 +6,7 @@ import { maxBy, minBy, map, uniqBy } from 'lodash';
 import d3Scale from 'd3-scale';
 
 import { AxisChart } from '../../axis-chart/src';
-import { Symbol, SYMBOL_TYPES } from '../src';
+import { Symbol, SYMBOL_TYPES } from '../';
 
 
 const keyField = 'x';

@@ -11,7 +11,6 @@ import uniqBy from 'lodash/uniqBy';
 
 import { dataGenerator } from '../../../test-utils';
 import { AxisChart } from '../../axis-chart/src';
-import { Line } from '../src';
 
 chai.use(chaiEnzyme());
 
