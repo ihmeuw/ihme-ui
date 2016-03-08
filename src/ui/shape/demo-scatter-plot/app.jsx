@@ -4,7 +4,7 @@ import { render } from 'react-dom';
 import { maxBy, minBy, map, uniqBy } from 'lodash';
 
 import { dataGenerator } from '../../../test-utils';
-import { AxisChart } from '../../axis-chart/src';
+import { AxisChart } from '../../axis-chart';
 import { ScatterPlot } from '../';
 
 

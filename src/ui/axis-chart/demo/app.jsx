@@ -7,7 +7,7 @@ import map from 'lodash/map';
 import uniqBy from 'lodash/uniqBy';
 
 import { dataGenerator } from '../../../test-utils';
-import { AxisChart } from '../src';
+import { AxisChart } from '../';
 import { MultiLine } from '../../shape';
 
 

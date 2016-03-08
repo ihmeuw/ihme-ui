@@ -10,7 +10,7 @@ import map from 'lodash/map';
 import uniqBy from 'lodash/uniqBy';
 
 import { dataGenerator } from '../../../test-utils';
-import { AxisChart } from '../../axis-chart/src';
+import { AxisChart } from '../';
 
 chai.use(chaiEnzyme());
 
