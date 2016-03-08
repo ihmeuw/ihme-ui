@@ -1,6 +1,8 @@
 import React from 'react';
 import { render } from 'react-dom';
 
+import d3Scale from 'd3-scale';
+
 import { maxBy, minBy, map, uniqBy } from 'lodash';
 
 import { dataGenerator } from '../../../test-utils';
@@ -28,8 +30,8 @@ const canadaData = dataGenerator({
 });
 
 const lineData = [
-  { location: 'USA', values: usaData, symbol: 'circle' },
-  { location: 'Canada', values: canadaData, symbol: 'star' }
+  { location: 'USA', values: usaData },
+  { location: 'Canada', values: canadaData }
 ];
 
 const data = [...usaData, ...canadaData];
@@ -58,6 +60,7 @@ const hoverHandler = (type) => {
   };
 };
 
+const symbolScale = d3Scale.scaleOrdinal().domain(['USA', 'Canada']).range(['circle', 'star']);
 
 class App extends React.Component {
   render() {
@@ -75,7 +78,8 @@ class App extends React.Component {
           dataAccessors={dataAccessors}
           keyField={'location'}
           dataField={'values'}
-          symbolField={'symbol'}
+          symbolField={'location'}
+          symbolScale={symbolScale}
           clickHandler={clickHandler('click')}
           hoverHandler={hoverHandler('hover')}
         />

@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import d3Shape from 'd3-shape';
 
+import { noop } from 'lodash';
+
 const SYMBOL_TYPES = {
   circle: d3Shape.symbolCircle,
   square: d3Shape.symbolSquare,
@@ -40,8 +42,8 @@ const defaultProps = {
     x: 0,
     y: 0
   },
-  clickHandler: () => { return; },
-  hoverHandler: () => { return; }
+  clickHandler: noop,
+  hoverHandler: noop
 };
 
 /**

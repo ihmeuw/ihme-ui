@@ -1,13 +1,13 @@
 import React, { PropTypes } from 'react';
 
-import { map, omit } from 'lodash';
+import { map, omit, noop, isFunction } from 'lodash';
 
 import Symbol from './symbol';
 
 
 const propTypes = {
   // array of objects
-  // e.g. [ {location: 'USA',values: []}, {location: 'Canada', values: []} ]
+  // e.g. [ {location: 'USA', values: []}, {location: 'Canada', values: []} ]
   data: PropTypes.arrayOf(PropTypes.object),
 
   // key name for topic of data
@@ -16,7 +16,11 @@ const propTypes = {
   // key name for values representing individual lines
   dataField: PropTypes.string,
 
+  // key name for value of symbol
   symbolField: PropTypes.string,
+
+  // function to transform symbol value to a shape
+  symbolScale: PropTypes.func,
 
   // scales from d3Scale
   scales: PropTypes.shape({
@@ -25,6 +29,8 @@ const propTypes = {
   }).isRequired,
 
   style: PropTypes.object,
+
+  size: PropTypes.number,
 
   // key names containing x, y data
   dataAccessors: PropTypes.shape({
@@ -38,28 +44,37 @@ const propTypes = {
 };
 
 const defaultProps = {
-  size: 64,
-  clickHandler: () => { return () => { return; }; },
-  hoverHandler: () => { return () => { return; }; }
+  clickHandler: noop,
+  hoverHandler: noop
 };
 
 const ScatterPlot = (props) => {
-  const childProps = omit(props, ['data', 'keyField', 'dataField', 'symbolField']);
+  const childProps = omit(props,
+    [
+      'data',
+      'keyField',
+      'dataField',
+      'symbolField',
+      'symbolScale',
+      'dataAccessors'
+    ]);
   const {
     data,
     keyField,
     dataField,
     symbolField,
+    symbolScale,
     dataAccessors,
-    scales,
-    size
+    scales
   } = props;
 
   return (
     <g>
       {
         map(data, (datum) => {
-          const symbolType = datum[symbolField];
+          const symbolType = isFunction(symbolScale)
+            ? symbolScale(datum[symbolField])
+            : datum[symbolField];
 
           return map(datum[dataField], (plotDatum) => {
             const position = {
@@ -69,11 +84,10 @@ const ScatterPlot = (props) => {
 
             return (
               <Symbol
-                key={`${keyField}::${plotDatum[dataAccessors.x]},${plotDatum[dataAccessors.y]}`}
+                key={`${datum[keyField]}:${plotDatum[dataAccessors.x]}`}
                 data={plotDatum}
                 type={symbolType}
                 position={position}
-                size={size}
                 {...childProps}
               />
             );
