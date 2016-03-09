@@ -7,7 +7,6 @@ import { shallow } from 'enzyme';
 import { minBy, maxBy, uniqBy, map } from 'lodash';
 
 import d3Scale from 'd3-scale';
-import d3Shape from 'd3-shape';
 
 import { dataGenerator } from '../../../test-utils';
 import { ScatterPlot, Symbol } from '../';

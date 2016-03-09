@@ -28,7 +28,9 @@ describe('<Axis />', () => {
   });
 
   it('modifies the output of d3-axis based on configuration', () => {
-    const wrapper = shallow(<Axis scale={dummyScale.range([0, 800])} ticks={6} tickValues={[1, 2, 3, 4, 5, 6]} />);
+    const wrapper = shallow(
+      <Axis scale={dummyScale.range([0, 800])} ticks={6} tickValues={[1, 2, 3, 4, 5, 6]} />
+    );
     expect(wrapper.find('.tick')).to.have.length(6);
     expect(wrapper.find('.tick').first().find('text')).to.have.text('1.0');
     expect(wrapper.find('.tick').last().find('text')).to.have.text('6.0');
