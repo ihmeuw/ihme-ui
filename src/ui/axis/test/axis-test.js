@@ -35,4 +35,12 @@ describe('<Axis />', () => {
     expect(wrapper.find('.tick').first().find('text')).to.have.text('1.0');
     expect(wrapper.find('.tick').last().find('text')).to.have.text('6.0');
   });
+
+  it('applies style to the g element', () => {
+    const wrapper = shallow(
+      <Axis scale={dummyScale} style={{ stroke: 'red' }} />
+    );
+
+    expect(wrapper).to.have.attr('style', 'stroke:red;');
+  });
 });

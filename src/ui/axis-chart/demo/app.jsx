@@ -49,6 +49,11 @@ const margins = {
   right: 70
 };
 
+const axisStyle = {
+  fontFamily: 'sans-serif',
+  fontSize: '11px'
+};
+
 class App extends React.Component {
   render() {
     return (
@@ -61,7 +66,7 @@ class App extends React.Component {
         yDomain={yDomain}
         yScaleType="linear"
       >
-        <XAxis />
+        <XAxis style={axisStyle} />
         <YAxis />
         <MultiLine
           data={lineData}

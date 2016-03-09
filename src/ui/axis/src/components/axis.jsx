@@ -18,6 +18,9 @@ const defaultPropTypes = {
   /* where to position ticks relative to axis line */
   position: PropTypes.oneOf(Object.keys(AXIS_TYPES)),
 
+  /* style object to apply to element */
+  style: PropTypes.object,
+
   /* push axis in x or y directions */
   translate: PropTypes.shape({
     x: PropTypes.number,
@@ -82,6 +85,7 @@ const Axis = (props) => {
     position,
     translate,
     scale,
+    style,
     ticks,
     tickFormat,
     tickSize,
@@ -111,6 +115,8 @@ const Axis = (props) => {
   if (tickValues) axisGenerator.tickValues(tickValues);
 
   axisGenerator(gSelection);
+
+  axisG.setAttribute('style', style);
 
   return axisG.toReact();
 };
