@@ -1,6 +1,10 @@
 import { PropTypes } from 'react';
+
 import d3Axis from 'd3-axis';
 import d3Selection from 'd3-selection';
+
+import { assign } from 'lodash';
+
 import ReactFauxDom from 'react-faux-dom';
 
 const AXIS_TYPES = {
@@ -10,7 +14,7 @@ const AXIS_TYPES = {
   left: d3Axis.axisLeft
 };
 
-const propTypes = {
+const defaultPropTypes = {
   /* where to position ticks relative to axis line */
   position: PropTypes.oneOf(Object.keys(AXIS_TYPES)),
 
@@ -19,9 +23,6 @@ const propTypes = {
     x: PropTypes.number,
     y: PropTypes.number
   }),
-
-  /* appropriate scale for axis */
-  scale: PropTypes.func.isRequired,
 
   /* number of ticks to use */
   ticks: PropTypes.number,
@@ -39,8 +40,16 @@ const propTypes = {
   tickSizeOuter: PropTypes.number,
 
   /* see d3-axis docs */
-  tickPadding: PropTypes.number
+  tickPadding: PropTypes.number,
+
+  /* see d3-axis docs */
+  tickValues: PropTypes.array
 };
+
+const propTypes = assign({}, defaultPropTypes, {
+  /* appropriate scale for axis */
+  scale: PropTypes.func.isRequired
+});
 
 const defaultProps = {
   position: 'bottom',
@@ -48,6 +57,21 @@ const defaultProps = {
     x: 0,
     y: 0
   }
+};
+
+const calcTranslate = (position, dimensions) => {
+  if (position === 'bottom') {
+    return {
+      x: 0,
+      y: dimensions.height
+    };
+  } else if (position === 'right') {
+    return {
+      x: dimensions.width,
+      y: 0
+    };
+  }
+  return defaultProps.translate;
 };
 
 /**
@@ -96,3 +120,4 @@ Axis.propTypes = propTypes;
 Axis.defaultProps = defaultProps;
 
 export default Axis;
+export { AXIS_TYPES, defaultPropTypes, calcTranslate };
