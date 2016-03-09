@@ -7,8 +7,9 @@ import map from 'lodash/map';
 import uniqBy from 'lodash/uniqBy';
 
 import { dataGenerator } from '../../../test-utils';
-import { AxisChart } from '../';
+import { AxisChart } from '../.';
 import { MultiLine } from '../../shape';
+import { XAxis, YAxis } from '../../axis';
 
 
 const keyField = 'year_id';
@@ -36,17 +37,32 @@ const data = [...usaData, ...canadaData];
 const yDomain = [minBy(data, valueField)[valueField], maxBy(data, valueField)[valueField]];
 const xDomain = map(uniqBy(data, keyField), (obj) => { return (obj[keyField]); });
 
+const dims = {
+  height: 600,
+  width: 800
+};
+
+const margins = {
+  top: 20,
+  bottom: 30,
+  left: 70,
+  right: 70
+};
+
 class App extends React.Component {
   render() {
     return (
       <AxisChart
+        width={dims.width}
+        height={dims.height}
+        margins={margins}
         xDomain={xDomain}
         xScaleType="point"
         yDomain={yDomain}
         yScaleType="linear"
-        width={800}
-        height={600}
       >
+        <XAxis />
+        <YAxis />
         <MultiLine
           data={lineData}
           keyField={'location'}
