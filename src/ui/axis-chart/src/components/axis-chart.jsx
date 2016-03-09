@@ -30,8 +30,8 @@ const propTypes = {
   /* margins to subtract from width and height */
   margins: PropTypes.shape({
     top: PropTypes.number,
-    right: PropTypes.number,
     bottom: PropTypes.number,
+    right: PropTypes.number,
     left: PropTypes.number
   }),
 
@@ -120,7 +120,7 @@ export default class AxisChart extends React.Component {
           {
             React.Children.map(children, (child) => {
               if (child === undefined || child === null) return child;
-              return React.cloneElement(child, { scales });
+              return React.cloneElement(child, { scales, dimensions });
             })
           }
         </g>
@@ -130,4 +130,5 @@ export default class AxisChart extends React.Component {
 }
 
 AxisChart.propTypes = propTypes;
+
 AxisChart.defaultProps = defaultProps;
