@@ -116,7 +116,7 @@ export default class AxisChart extends React.Component {
         width={`${dimensions.width + margins.left + margins.right}px`}
         height={`${dimensions.height + margins.bottom + margins.top}px`}
       >
-        <g transform={`translate(${margins.left}, ${margins.right})`} >
+        <g transform={`translate(${margins.left}, ${margins.top})`} >
           {
             React.Children.map(children, (child) => {
               if (child === undefined || child === null) return child;
