@@ -5,10 +5,14 @@ import Symbol from './symbol';
 
 const propTypes = {
   /*
-    array of objects
-    e.g. [ {location: 'USA', values: []}, {location: 'Canada', values: []} ]
+    array of datasets (nested) or array of datum (flat; single dataset)
+    e.g., nested: [ {location: 'USA', values: []}, {location: 'Canada', values: []} ]
+    e.g., flat: [{loc: 1, mean: 3.0, sex: 2, year: 2013}, {loc: 1, mean: 3.0, sex: 2, year: 2013}]
    */
   data: PropTypes.arrayOf(PropTypes.object),
+
+  /* whether the data given to ScatterPlot is nested (i.e., contains multiple dastasets) */
+  isNested: PropTypes.bool,
 
   /* key name for topic of data */
   keyField: PropTypes.string,
@@ -45,21 +49,19 @@ const propTypes = {
 };
 
 const defaultProps = {
+  isNested: true,
   clickHandler: noop,
   hoverHandler: noop,
+  dataField: 'values',
+  symbolField: 'type',
   colorScale: () => { return 'steelblue'; }
 };
 
-const ScatterPlot = (props) => {
-  const childProps = omit(props, [
-    'data',
-    'keyField',
-    'dataField',
-    'symbolField',
-    'symbolScale',
-    'dataAccessors'
-  ]);
-
+/*
+  TODO extract shared logic out of renderMultipleDatasets and renderSingleDataset
+ */
+/* eslint-disable react/prop-types */
+const renderMultipleDatasets = (props, childProps) => {
   const {
     data,
     keyField,
@@ -109,6 +111,62 @@ const ScatterPlot = (props) => {
       }
     </g>
   );
+};
+
+const renderSingleDataset = (props, childProps) => {
+  const {
+    data,
+    keyField,
+    dataField,
+    colorScale,
+    scales,
+  } = props;
+
+  return (
+    <g>
+      {
+        // on each iteration, plotDatum is an object
+        // e.g. { loc_id: 1234, sex: 2, age_id: 27, mean: 99.3, ub: 100, lb: 90.1 }
+        map(data, (plotDatum) => {
+          // position the symbol in the x-y plane
+          const position = {
+            x: scales.x(plotDatum[dataField]),
+            y: 0
+          };
+
+          return (
+            <Symbol
+              key={`${plotDatum[keyField]}`}
+              data={plotDatum}
+              type={'circle'}
+              position={position}
+              color={colorScale(plotDatum[dataField])}
+              {...childProps}
+            />
+          );
+        })
+      }
+    </g>
+  );
+};
+/* eslint-enable react/prop-types */
+
+const ScatterPlot = (props) => {
+  const { isNested } = props;
+  const childProps = omit(props, [
+    'data',
+    'keyField',
+    'dataField',
+    'symbolField',
+    'symbolScale',
+    'dataAccessors',
+    'colorScale',
+    'isNested',
+    'scales'
+  ]);
+
+  if (isNested) return renderMultipleDatasets(props, childProps);
+  return renderSingleDataset(props, childProps);
 };
 
 ScatterPlot.propTypes = propTypes;
