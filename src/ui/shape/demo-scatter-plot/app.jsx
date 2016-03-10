@@ -44,18 +44,18 @@ const dataAccessors = {
 };
 
 
-const clickHandler = () => {
-  return (text) => {
+const clickHandler = (text) => {
+  return (datum) => {
     return () => {
-      alert(`Data::${text[keyField]},${text[valueField]}`);
+      alert(`${text}::${datum[keyField]},${datum[valueField]}`);
     };
   };
 };
 
-const hoverHandler = (type) => {
-  return (text) => {
+const hoverHandler = (text) => {
+  return (datum) => {
     return () => {
-      console.log(`${type}::${text[keyField]},${text[valueField]}`);
+      console.log(`${text}::${datum[keyField]},${datum[valueField]}`);
     };
   };
 };
@@ -71,7 +71,6 @@ class App extends React.Component {
         xScaleType="point"
         yDomain={yDomain}
         yScaleType="linear"
-
         width={800}
         height={600}
       >
