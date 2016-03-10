@@ -4,8 +4,8 @@ import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 
-import maxBy from 'lodash/maxby';
-import minBy from 'lodash/minby';
+import maxBy from 'lodash/maxBy';
+import minBy from 'lodash/minBy';
 import map from 'lodash/map';
 import uniqBy from 'lodash/uniqBy';
 

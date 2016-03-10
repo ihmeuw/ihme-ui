@@ -3,8 +3,8 @@ import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import { dataGenerator } from '../../../test-utils';
-import maxBy from 'lodash/maxby';
-import minBy from 'lodash/minby';
+import maxBy from 'lodash/maxBy';
+import minBy from 'lodash/minBy';
 import d3Scale from 'd3-scale';
 
 import DensityPlot from '../src/components/density-plot';
