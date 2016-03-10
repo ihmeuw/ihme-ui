@@ -10,7 +10,7 @@ import maxBy from 'lodash/maxBy';
 import minBy from 'lodash/minBy';
 import { scaleLinear } from 'd3-scale';
 import { dataGenerator, colorSteps } from '../../../test-utils';
-import { Domain } from '../../../utils';
+import { generateColorDomain } from '../../../utils/domain';
 
 const valueField = 'value';
 const keyField = 'loc_id';
@@ -36,7 +36,7 @@ const data = {
 const colors = {
   steps: colorSteps,
   scale: scaleLinear()
-    .domain(Domain.generateColorDomain(colorSteps, domain))
+    .domain(generateColorDomain(colorSteps, domain))
     .range(colorSteps)
 };
 

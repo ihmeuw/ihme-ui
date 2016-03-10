@@ -13,7 +13,6 @@ import { AxisChart } from '../.';
 import { MultiLine } from '../../shape';
 import { XAxis, YAxis } from '../../axis';
 
-
 const keyField = 'year_id';
 const valueField = 'value';
 
