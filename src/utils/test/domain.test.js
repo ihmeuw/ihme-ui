@@ -1,8 +1,13 @@
-import chai from 'chai';
-import { percentOfRange, numFromPercent, domainFromPercent } from '../domain';
-const expect = chai.expect;
+import { expect } from 'chai';
 
-describe('domain conversion helpers', () => {
+import {
+  percentOfRange,
+  numFromPercent,
+  domainFromPercent,
+  generateColorDomain
+} from '../domain';
+
+describe('domain helpers', () => {
   it(`should convert a number within a range
     to it's corresponding percentage of that range`, () => {
     const specs = [
@@ -55,5 +60,22 @@ describe('domain conversion helpers', () => {
       const { oldDomain, newDomain, rangeExtent, expected } = spec;
       expect(domainFromPercent(newDomain, oldDomain, rangeExtent)).to.deep.equal(expected);
     });
+  });
+
+  it(`turns [min, max] domain into multi-step domain
+    that matches cardinality of colors array`, () => {
+    const origDomain = [0, 100];
+    const colors = Array(5);
+    expect(generateColorDomain(colors, origDomain)).to.be.an('array')
+      .of.length(5)
+      .and.to.deep.equal([0, 25, 50, 75, 100]);
+  });
+
+  it('returns [min, max] as color domain when min === max', () => {
+    const origDomain = [0, 0];
+    const colors = Array(5);
+    expect(generateColorDomain(colors, origDomain)).to.be.an('array')
+      .of.length(2)
+      .and.to.deep.equal([0, 0]);
   });
 });

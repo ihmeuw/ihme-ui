@@ -8,9 +8,9 @@ import RangeSlider from '../src';
 // utils
 import maxBy from 'lodash/maxBy';
 import minBy from 'lodash/minBy';
-import reduce from 'lodash/reduce';
 import { scaleLinear } from 'd3-scale';
 import { dataGenerator, colorSteps } from '../../../test-utils';
+import { Domain } from '../../../utils';
 
 const valueField = 'value';
 const keyField = 'loc_id';
@@ -33,29 +33,10 @@ const data = {
   unit: 'Deaths per 100,000'
 };
 
-// TODO
-// add to beaut-util lib to make resusable
-const generateColorDomain = function generateColorDomain(colors, xDomain) {
-  // if max and min are the same number (e.g., full range of dataset is 0 -> 0)
-  // return single element array
-  const [min, max] = xDomain;
-  if (min === max) return xDomain;
-
-  const ret = [];
-  const increment = (Math.abs(xDomain[1] - xDomain[0]) / (colors.length - 1));
-  reduce(colors, (total) => {
-    const step = total + increment;
-    ret.push(step);
-    return step;
-  }, (xDomain[0] - increment));
-
-  return ret;
-};
-
 const colors = {
   steps: colorSteps,
   scale: scaleLinear()
-    .domain(generateColorDomain(colorSteps, domain))
+    .domain(Domain.generateColorDomain(colorSteps, domain))
     .range(colorSteps)
 };
 

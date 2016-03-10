@@ -33,3 +33,30 @@ export const domainFromPercent = function domainFromPercent(newDomain, oldDomain
 
   return [numFromPercent(x1Pct, newDomain), numFromPercent(x2Pct, newDomain)];
 };
+
+/**
+ * Turn [min, max] domain into multi-step domain
+ * that matches cardinality of colors array
+ * @param {Array} colors -> array of colors to be used as range of scale
+ * @param {Array} domain -> [min, max] of x-scale domain
+ * @returns {Array}
+ */
+export const generateColorDomain = function generateColorDomain(colors, domain) {
+  // if max and min are the same number (e.g., full range of dataset is 0 -> 0)
+  // return single element array
+  const [min, max] = domain;
+  if (min === max) return domain;
+
+  const ret = [];
+  const increment = (Math.abs(max - min) / (colors.length - 1));
+  let step = min - increment;
+
+  // for as many colors as will exist in the scale's range
+  // create a corresponding step in the scale's domain
+  for (let i = colors.length; i > 0; i -= 1) {
+    step = step + increment;
+    ret.push(step);
+  }
+
+  return ret;
+};
