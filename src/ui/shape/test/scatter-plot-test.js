@@ -50,6 +50,7 @@ describe('<ScatterPlot />', () => {
   const yScale = d3Scale.scaleLinear().domain(yDomain).range([chartDimensions.height, 0]);
 
   const symbolScale = d3Scale.scaleOrdinal().domain(['USA', 'Canada']).range(['circle', 'star']);
+  const colorScale = d3Scale.scaleOrdinal().domain(['USA', 'Canada']).range(['red', 'blue']);
 
   const dataAccessors = {
     x: keyField,
@@ -63,6 +64,7 @@ describe('<ScatterPlot />', () => {
       <ScatterPlot
         data={scatterData}
         scales={{ x: xScale, y: yScale }}
+        colorScale={colorScale}
         dataAccessors={dataAccessors}
         keyField={'location'}
         dataField={'values'}
@@ -99,6 +101,18 @@ describe('<ScatterPlot />', () => {
       expect(symbol).to.have.prop(prop);
     };
 
-    ['data', 'type', 'position'].forEach(assertion);
+    ['data', 'type', 'position', 'color'].forEach(assertion);
+  });
+
+  it('passes a color to its children', () => {
+    const wrapper = shallow(component);
+    const usaPoint = wrapper.find(Symbol).first();
+    const caPoint = wrapper.find(Symbol).last();
+
+    expect(usaPoint)
+      .to.have.prop('color', colorScale('USA'));
+
+    expect(caPoint)
+      .to.have.prop('color', colorScale('Canada'));
   });
 });

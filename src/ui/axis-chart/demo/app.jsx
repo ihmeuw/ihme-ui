@@ -6,6 +6,8 @@ import minBy from 'lodash/minBy';
 import map from 'lodash/map';
 import uniqBy from 'lodash/uniqBy';
 
+import d3Scale from 'd3-scale';
+
 import { dataGenerator } from '../../../test-utils';
 import { AxisChart } from '../.';
 import { MultiLine } from '../../shape';
@@ -36,6 +38,7 @@ const lineData = [{ location: 'USA', values: usaData }, { location: 'Canada', va
 const data = [...usaData, ...canadaData];
 const yDomain = [minBy(data, valueField)[valueField], maxBy(data, valueField)[valueField]];
 const xDomain = map(uniqBy(data, keyField), (obj) => { return (obj[keyField]); });
+const colorScale = d3Scale.scaleOrdinal().domain(['USA', 'Canada']).range(['red', 'blue']);
 
 const dims = {
   height: 600,
@@ -73,6 +76,7 @@ class App extends React.Component {
           data={lineData}
           keyField={'location'}
           dataField={'values'}
+          colorScale={colorScale}
           dataAccessors={{ x: keyField, y: valueField }}
         />
       </AxisChart>

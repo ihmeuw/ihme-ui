@@ -36,6 +36,8 @@ describe('<MultiLine />', () => {
     y: d3Scale.scaleLinear().domain(yDomain).range([100, 0])
   };
 
+  const colorScale = d3Scale.scaleOrdinal().domain(['USA', 'Canada']).range(['red', 'blue']);
+
   const lineData = [{ location: 'USA', values: data }, { location: 'Canada', values: data }];
 
   let component;
@@ -47,6 +49,7 @@ describe('<MultiLine />', () => {
         keyField={'location'}
         dataField={'values'}
         scales={scales}
+        colorScale={colorScale}
         dataAccessors={{ x: keyField, y: valueField }}
       />
     );
@@ -72,5 +75,17 @@ describe('<MultiLine />', () => {
 
     expect(child)
       .to.not.have.prop('keyField');
+  });
+
+  it('alters styling passed to children when given a color scale', () => {
+    const wrapper = shallow(component);
+    const usaLine = wrapper.find('Line').first();
+    const caLine = wrapper.find('Line').last();
+
+    expect(usaLine)
+    .to.have.prop('stroke', colorScale('USA'));
+
+    expect(caLine)
+      .to.have.prop('stroke', colorScale('Canada'));
   });
 });

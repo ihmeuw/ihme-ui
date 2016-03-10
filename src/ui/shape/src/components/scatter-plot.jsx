@@ -1,36 +1,39 @@
 import React, { PropTypes } from 'react';
-import { map, omit, noop, isFunction } from 'lodash';
+import { flatMap, map, omit, noop, isFunction } from 'lodash';
 
 import Symbol from './symbol';
 
 const propTypes = {
-  // array of objects
-  // e.g. [ {location: 'USA', values: []}, {location: 'Canada', values: []} ]
+  /*
+    array of objects
+    e.g. [ {location: 'USA', values: []}, {location: 'Canada', values: []} ]
+   */
   data: PropTypes.arrayOf(PropTypes.object),
 
-  // key name for topic of data
+  /* key name for topic of data */
   keyField: PropTypes.string,
 
-  // key name for values representing individual lines
+  /* key name for values representing individual lines */
   dataField: PropTypes.string,
 
-  // key name for value of symbol
+  /* key name for value of symbol */
   symbolField: PropTypes.string,
 
-  // function to transform symbol value to a shape
+  /* function to transform symbol value to a shape */
   symbolScale: PropTypes.func,
 
-  // scales from d3Scale
+  /* fn that accepts keyfield, and returns stroke color for line */
+  colorScale: PropTypes.func,
+
+  /* scales from d3Scale */
   scales: PropTypes.shape({
     x: PropTypes.func,
     y: PropTypes.func
   }).isRequired,
 
-  style: PropTypes.object,
-
   size: PropTypes.number,
 
-  // key names containing x, y data
+  /* key names containing x, y data */
   dataAccessors: PropTypes.shape({
     x: PropTypes.string,
     y: PropTypes.string
@@ -43,7 +46,8 @@ const propTypes = {
 
 const defaultProps = {
   clickHandler: noop,
-  hoverHandler: noop
+  hoverHandler: noop,
+  colorScale: () => { return 'steelblue'; }
 };
 
 const ScatterPlot = (props) => {
@@ -62,6 +66,7 @@ const ScatterPlot = (props) => {
     dataField,
     symbolField,
     symbolScale,
+    colorScale,
     dataAccessors,
     scales,
   } = props;
@@ -69,12 +74,21 @@ const ScatterPlot = (props) => {
   return (
     <g>
       {
-        map(data, (datum) => {
+        // on each iteration, scatterData is an object
+        // e.g., { keyField: STRING, dataField: ARRAY }
+        flatMap(data, (scatterData) => {
+          // get symbol type (e.g., 'circle', 'triangle')
           const symbolType = isFunction(symbolScale)
-            ? symbolScale(datum[symbolField])
-            : datum[symbolField];
+            ? symbolScale(scatterData[symbolField])
+            : scatterData[symbolField];
 
-          return map(datum[dataField], (plotDatum) => {
+          // get symbol stroke
+          const symbolStroke = colorScale(scatterData[keyField]);
+
+          // on each iteration, plotDatum is an object
+          // e.g. { loc_id: 1234, sex: 2, age_id: 27, mean: 99.3, ub: 100, lb: 90.1 }
+          return map(scatterData[dataField], (plotDatum) => {
+            // position the symbol in the x-y plane
             const position = {
               x: scales.x(plotDatum[dataAccessors.x]),
               y: scales.y(plotDatum[dataAccessors.y])
@@ -82,10 +96,11 @@ const ScatterPlot = (props) => {
 
             return (
               <Symbol
-                key={`${datum[keyField]}:${plotDatum[dataAccessors.x]}`}
+                key={`${scatterData[keyField]}:${plotDatum[dataAccessors.x]}`}
                 data={plotDatum}
                 type={symbolType}
                 position={position}
+                color={symbolStroke}
                 {...childProps}
               />
             );

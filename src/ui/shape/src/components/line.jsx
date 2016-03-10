@@ -5,18 +5,22 @@ import { line } from 'd3-shape';
 import { noop } from 'lodash';
 
 const propTypes = {
-  // array of objects
-  // e.g. [ {}, {}, {} ]
+  /* array of objects
+    e.g. [ {}, {}, {} ]
+  */
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
 
-  // scales from d3Scale
+  /* scales from d3Scale */
   scales: PropTypes.shape({
     x: PropTypes.func,
     y: PropTypes.func
   }).isRequired,
 
-  /* style object to apply to element */
-  style: PropTypes.object,
+  fill: PropTypes.string,
+
+  stroke: PropTypes.string,
+
+  strokeWidth: PropTypes.number,
 
   dataAccessors: PropTypes.shape({
     x: PropTypes.string,
@@ -29,7 +33,9 @@ const propTypes = {
 };
 
 const defaultProps = {
-  style: { fill: 'none', stroke: 'black' },
+  fill: 'none',
+  stroke: 'steelblue',
+  strokeWidth: 2.5,
   dataAccessors: { x: 'x', y: 'y' },
   clickHandler: noop,
   hoverHandler: noop
@@ -39,7 +45,9 @@ const Line = (props) => {
   const {
     data,
     scales,
-    style,
+    fill,
+    stroke,
+    strokeWidth,
     dataAccessors: { x: xAccessor, y: yAccessor }
   } = props;
 
@@ -52,7 +60,12 @@ const Line = (props) => {
     });
 
   return (
-    <path style={style} d={path(data)}/>
+    <path
+      fill={fill}
+      stroke={stroke}
+      strokeWidth={`${strokeWidth}px`}
+      d={path(data)}
+    />
   );
 };
 

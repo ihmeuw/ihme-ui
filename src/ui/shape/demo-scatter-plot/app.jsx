@@ -29,7 +29,7 @@ const canadaData = dataGenerator({
   useDates: true
 });
 
-const lineData = [
+const scatterData = [
   { location: 'USA', values: usaData },
   { location: 'Canada', values: canadaData }
 ];
@@ -61,6 +61,7 @@ const hoverHandler = (type) => {
 };
 
 const symbolScale = d3Scale.scaleOrdinal().domain(['USA', 'Canada']).range(['circle', 'star']);
+const colorScale = d3Scale.scaleOrdinal().domain(['USA', 'Canada']).range(['red', 'blue']);
 
 class App extends React.Component {
   render() {
@@ -70,16 +71,18 @@ class App extends React.Component {
         xScaleType="point"
         yDomain={yDomain}
         yScaleType="linear"
+
         width={800}
         height={600}
       >
         <ScatterPlot
-          data={lineData}
+          data={scatterData}
           dataAccessors={dataAccessors}
           keyField={'location'}
           dataField={'values'}
           symbolField={'location'}
           symbolScale={symbolScale}
+          colorScale={colorScale}
           clickHandler={clickHandler('click')}
           hoverHandler={hoverHandler('hover')}
         />

@@ -20,9 +20,6 @@ const propTypes = {
   /* will match a SYMBOL_TYPE  */
   type: PropTypes.oneOf(Object.keys(SYMBOL_TYPES)),
 
-  /* style object to apply to element */
-  style: PropTypes.object,
-
   /* area in square pixels */
   size: PropTypes.number,
 
@@ -31,10 +28,14 @@ const propTypes = {
     y: PropTypes.number
   }),
 
-  // partially applied fn that takes in datum and returns fn
+  color: PropTypes.string,
+
+  strokeWidth: PropTypes.number,
+
+  /* partially applied fn that takes in datum and returns fn */
   clickHandler: PropTypes.func,
 
-  // partially applied fn that takes in datum and returns fn
+  /* partially applied fn that takes in datum and returns fn */
   hoverHandler: PropTypes.func
 };
 
@@ -45,6 +46,8 @@ const defaultProps = {
     x: 0,
     y: 0
   },
+  color: 'steelblue',
+  strokeWidth: 1,
   clickHandler: noop,
   hoverHandler: noop
 };
@@ -61,15 +64,27 @@ const getSymbolType = (type) => {
 * Public API should expose basic public API of d3Shape.symbol()
 **/
 const Symbol = (props) => {
-  const { data, type, style, size, position: { x, y }, clickHandler, hoverHandler } = props;
+  const {
+    data,
+    type,
+    size,
+    position: { x, y },
+    color,
+    strokeWidth,
+    clickHandler,
+    hoverHandler
+  } = props;
+
   const symbol = getSymbolType(type);
   const pathGenerator = d3Shape.symbol().type(symbol).size(size);
 
   return (
     <path
-      style={style}
       d={pathGenerator()}
       transform={`translate(${x}, ${y})`}
+      stroke={color}
+      fill={color}
+      strokeWidth={`${strokeWidth}px`}
       onClick={clickHandler(data)}
       onMouseOver={hoverHandler(data)}
     />
