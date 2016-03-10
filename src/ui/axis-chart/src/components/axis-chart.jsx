@@ -1,5 +1,9 @@
 import React, { PropTypes } from 'react';
+
 import d3Scale from 'd3-scale';
+
+import classNames from 'classnames';
+
 
 const SCALE_TYPES = {
   band: d3Scale.scaleBand,
@@ -8,7 +12,15 @@ const SCALE_TYPES = {
   point: d3Scale.scalePoint
 };
 
+
 const propTypes = {
+  /* extra class names to appended to the element */
+  extraClasses: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.string,
+    PropTypes.object
+  ]),
+
   /* [min, max] for xScale (i.e., the domain of the data) */
   xDomain: PropTypes.array,
 
@@ -41,7 +53,9 @@ const propTypes = {
   ])
 };
 
+
 const defaultProps = {
+  extraClasses: [],
   margins: {
     top: 20,
     right: 20,
@@ -51,27 +65,10 @@ const defaultProps = {
   xScaleType: 'ordinal'
 };
 
+
 export default class AxisChart extends React.Component {
-
   componentWillMount() {
-    const {
-      width,
-      height,
-      margins,
-      xDomain,
-      xScaleType,
-      yDomain,
-      yScaleType
-    } = this.props;
-    const dimensions = this.calcDimensions(width, height, margins);
-
-    this.setState({
-      dimensions,
-      scales: {
-        x: this.getScale(xScaleType).domain(xDomain).range([0, dimensions.width]),
-        y: this.getScale(yScaleType).domain(yDomain).range([dimensions.height, 0])
-      }
-    });
+    this.componentWillReceiveProps(this.props);
   }
 
   componentWillReceiveProps(props) {
@@ -108,17 +105,18 @@ export default class AxisChart extends React.Component {
   }
 
   render() {
-    const { margins, children } = this.props;
+    const { margins } = this.props;
     const { dimensions, scales } = this.state;
 
     return (
       <svg
         width={`${dimensions.width + margins.left + margins.right}px`}
         height={`${dimensions.height + margins.bottom + margins.top}px`}
+        className={classNames(this.props.extraClasses)}
       >
         <g transform={`translate(${margins.left}, ${margins.top})`} >
           {
-            React.Children.map(children, (child) => {
+            React.Children.map(this.props.children, (child) => {
               if (child === undefined || child === null) return child;
               return React.cloneElement(child, { scales, dimensions });
             })

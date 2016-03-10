@@ -1,5 +1,8 @@
 import React, { PropTypes } from 'react';
+
 import { line } from 'd3-shape';
+
+import { noop } from 'lodash';
 
 const propTypes = {
   // array of objects
@@ -12,6 +15,7 @@ const propTypes = {
     y: PropTypes.func
   }).isRequired,
 
+  /* style object to apply to element */
   style: PropTypes.object,
 
   dataAccessors: PropTypes.shape({
@@ -27,8 +31,8 @@ const propTypes = {
 const defaultProps = {
   style: { fill: 'none', stroke: 'black' },
   dataAccessors: { x: 'x', y: 'y' },
-  clickHandler: () => { return; },
-  hoverHandler: () => { return; }
+  clickHandler: noop,
+  hoverHandler: noop
 };
 
 const Line = (props) => {

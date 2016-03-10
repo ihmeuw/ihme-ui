@@ -20,6 +20,9 @@ const propTypes = {
   /* will match a SYMBOL_TYPE  */
   type: PropTypes.oneOf(Object.keys(SYMBOL_TYPES)),
 
+  /* style object to apply to element */
+  style: PropTypes.object,
+
   /* area in square pixels */
   size: PropTypes.number,
 
@@ -58,12 +61,13 @@ const getSymbolType = (type) => {
 * Public API should expose basic public API of d3Shape.symbol()
 **/
 const Symbol = (props) => {
-  const { data, type, size, position: { x, y }, clickHandler, hoverHandler } = props;
+  const { data, type, style, size, position: { x, y }, clickHandler, hoverHandler } = props;
   const symbol = getSymbolType(type);
   const pathGenerator = d3Shape.symbol().type(symbol).size(size);
 
   return (
     <path
+      style={style}
       d={pathGenerator()}
       transform={`translate(${x}, ${y})`}
       onClick={clickHandler(data)}
