@@ -37,7 +37,7 @@ describe('<ScatterPlot />', () => {
     useDates: true
   });
 
-  const lineData = [
+  const scatterData = [
     { location: 'USA', values: usaData },
     { location: 'Canada', values: canadaData }
   ];
@@ -61,7 +61,7 @@ describe('<ScatterPlot />', () => {
   before(() => {
     component = (
       <ScatterPlot
-        data={lineData}
+        data={scatterData}
         scales={{ x: xScale, y: yScale }}
         dataAccessors={dataAccessors}
         keyField={'location'}

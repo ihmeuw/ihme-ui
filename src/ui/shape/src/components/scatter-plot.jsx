@@ -1,9 +1,7 @@
 import React, { PropTypes } from 'react';
-
 import { map, omit, noop, isFunction } from 'lodash';
 
 import Symbol from './symbol';
-
 
 const propTypes = {
   // array of objects
@@ -49,15 +47,15 @@ const defaultProps = {
 };
 
 const ScatterPlot = (props) => {
-  const childProps = omit(props,
-    [
-      'data',
-      'keyField',
-      'dataField',
-      'symbolField',
-      'symbolScale',
-      'dataAccessors'
-    ]);
+  const childProps = omit(props, [
+    'data',
+    'keyField',
+    'dataField',
+    'symbolField',
+    'symbolScale',
+    'dataAccessors'
+  ]);
+
   const {
     data,
     keyField,
@@ -65,7 +63,7 @@ const ScatterPlot = (props) => {
     symbolField,
     symbolScale,
     dataAccessors,
-    scales
+    scales,
   } = props;
 
   return (
