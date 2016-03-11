@@ -48,7 +48,9 @@ const Line = (props) => {
     fill,
     stroke,
     strokeWidth,
-    dataAccessors: { x: xAccessor, y: yAccessor }
+    dataAccessors: { x: xAccessor, y: yAccessor },
+    clickHandler,
+    hoverHandler
   } = props;
 
   const path = line()
@@ -65,6 +67,8 @@ const Line = (props) => {
       stroke={stroke}
       strokeWidth={`${strokeWidth}px`}
       d={path(data)}
+      onClick={clickHandler(data)}
+      onMouseOver={hoverHandler(data)}
     />
   );
 };

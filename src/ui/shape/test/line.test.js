@@ -1,12 +1,9 @@
 import React from 'react';
-
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
-
-import maxBy from 'lodash/maxBy';
-import minBy from 'lodash/minBy';
-
+import sinon from 'sinon';
+import { maxBy, minBy } from 'lodash';
 import d3Scale from 'd3-scale';
 import { line } from 'd3-shape';
 
@@ -40,6 +37,18 @@ describe('<Line />', () => {
   const xScale = d3Scale.scalePoint().domain(domain).range([0, chartDimensions.width]);
   const yScale = d3Scale.scaleLinear().domain(range).range([chartDimensions.height, 0]);
 
+  const clickCallback = sinon.spy((datum) => {
+    return sinon.spy(() => {
+      return datum;
+    });
+  });
+
+  const hoverCallback = sinon.spy((datum) => {
+    return sinon.spy(() => {
+      return datum;
+    });
+  });
+
   const lineFunction = line()
     .x((datum) => { return xScale(datum[keyField]); })
     .y((datum) => { return yScale(datum[valueField]); });
@@ -52,8 +61,15 @@ describe('<Line />', () => {
         data={data}
         scales={{ x: xScale, y: yScale }}
         dataAccessors={{ x: keyField, y: valueField }}
+        clickHandler={clickCallback}
+        hoverHandler={hoverCallback}
       />
     );
+  });
+
+  afterEach(() => {
+    clickCallback.reset();
+    hoverCallback.reset();
   });
 
   it('renders an SVG path node with a d attribute', () => {
@@ -62,5 +78,23 @@ describe('<Line />', () => {
 
     expect(path).to.have.length(1);
     expect(path).to.have.attr('d', expectedPath);
+  });
+
+  it('responds to a click event', () => {
+    const wrapper = shallow(component);
+    wrapper.find('path').first().simulate('click');
+    expect(clickCallback.called).to.be.true;
+
+    const curriedSpy = clickCallback.getCall(0).returnValue.getCall(0);
+    expect(curriedSpy.returnValue).to.be.an('array');
+  });
+
+  it('responds to a mouseover event', () => {
+    const wrapper = shallow(component);
+    wrapper.find('path').first().simulate('mouseOver');
+    expect(hoverCallback.called).to.be.true;
+
+    const curriedSpy = hoverCallback.getCall(0).returnValue.getCall(0);
+    expect(curriedSpy.returnValue).to.be.an('array');
   });
 });
