@@ -56,30 +56,6 @@ const defaultProps = {
   colorScale: () => { return 'steelblue'; }
 };
 
-/* eslint-disable react/prop-types */
-const generateLine = ({ key, data, stroke }, childProps) => {
-  return (
-    <Line
-      key={`line:${key}`}
-      data={data}
-      stroke={stroke}
-      {...childProps}
-    />
-  );
-};
-
-const generateArea = ({ key, data, color }, childProps) => {
-  return (
-    <Area
-      key={`area:${key}`}
-      data={data}
-      color={color}
-      {...childProps}
-    />
-  );
-};
-/* eslint-enable react/prop-types */
-
 const MultiLine = (props) => {
   const {
     colorScale,
@@ -105,40 +81,51 @@ const MultiLine = (props) => {
         (!showUncertainty && !showLine)
           ? null
           : map(data, (lineData) => {
+            const key = lineData[keyField];
+            const values = lineData[dataField];
+            const color = colorScale(lineData[keyField]);
             // on each iteration, lineData is an object
             // e.g., { keyField: STRING, dataField: ARRAY }
 
             // if uncertainty is turned off, only draw lines
             if (!showUncertainty) {
-              return generateLine({
-                key: lineData[keyField],
-                data: lineData[dataField],
-                stroke: colorScale(lineData[keyField])
-              }, childProps);
+              return (
+                <Line
+                  key={`line:${key}`}
+                  data={values}
+                  stroke={color}
+                  {...childProps}
+                />
+              );
             }
 
             // if line is turned off, only show uncertainty
             if (!showLine) {
-              return generateArea({
-                key: lineData[keyField],
-                data: lineData[dataField],
-                color: colorScale(lineData[keyField])
-              }, childProps);
+              return (
+                <Area
+                  key={`area:${key}`}
+                  data={values}
+                  color={color}
+                  {...childProps}
+                />
+              );
             }
 
             // otherwise, show both
             return (
               <g key={`area:line:${lineData[keyField]}`}>
-                {generateLine({
-                  key: lineData[keyField],
-                  data: lineData[dataField],
-                  stroke: colorScale(lineData[keyField])
-                }, childProps)}
-                {generateArea({
-                  key: lineData[keyField],
-                  data: lineData[dataField],
-                  color: colorScale(lineData[keyField])
-                }, childProps)}
+                <Line
+                  key={`line:${key}`}
+                  data={values}
+                  stroke={color}
+                  {...childProps}
+                />
+                <Area
+                  key={`area:${key}`}
+                  data={values}
+                  color={color}
+                  {...childProps}
+                />
               </g>
             );
           })
