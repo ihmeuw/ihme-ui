@@ -15,7 +15,6 @@ const valueField = 'y';
 const data = [];
 
 Object.keys(SYMBOL_TYPES).forEach((e, i) => {
-  console.log(`${e} ${i}`);
   data.push({
     x: e,
     y: i
