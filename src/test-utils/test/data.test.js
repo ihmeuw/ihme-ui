@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import isNull from 'lodash/isNull';
+import { isNull } from 'lodash';
 
 import { dataGenerator } from '../data';
 

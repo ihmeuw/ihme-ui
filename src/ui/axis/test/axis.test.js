@@ -4,7 +4,7 @@ import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 import d3Scale from 'd3-scale';
 
-import { Axis } from '../index';
+import { Axis } from '../';
 
 chai.use(chaiEnzyme());
 

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { area } from 'd3-shape';
-import noop from 'lodash/noop';
+import { noop } from 'lodash';
 
 const propTypes = {
   /* array of objects

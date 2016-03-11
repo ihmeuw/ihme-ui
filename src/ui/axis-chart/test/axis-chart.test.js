@@ -4,10 +4,7 @@ import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 
-import maxBy from 'lodash/maxBy';
-import minBy from 'lodash/minBy';
-import map from 'lodash/map';
-import uniqBy from 'lodash/uniqBy';
+import { maxBy, minBy, map, uniqBy } from 'lodash';
 
 import { dataGenerator } from '../../../test-utils';
 import { AxisChart } from '../';

@@ -6,8 +6,7 @@ import { render } from 'react-dom';
 import RangeSlider from '../src';
 
 // utils
-import maxBy from 'lodash/maxBy';
-import minBy from 'lodash/minBy';
+import { maxBy, minBy } from 'lodash';
 import { scaleLinear } from 'd3-scale';
 import { dataGenerator, colorSteps } from '../../../test-utils';
 import { generateColorDomain } from '../../../utils/domain';

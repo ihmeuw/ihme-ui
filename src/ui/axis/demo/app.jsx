@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import d3Scale from 'd3-scale';
 
-import { Axis } from '../index';
+import { Axis } from '../';
 
 class App extends React.Component {
  render() {
