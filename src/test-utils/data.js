@@ -12,6 +12,8 @@ import random from 'random-js';
  *  {Number} length -> number of data
  *  {String} keyField -> a field of datum that uniquely identifies it
  *  {String} valueField -> a field of datum that holds the "primary" datum (e.g., 'value' or 'mean')
+ *  {Boolean} useDates -> whether to use dates for valueField
+ *  {Number} startYear -> if (useDates), values will start at startYear
  *  {Any} any other property that will be passed directly to individual datum
  * @return {Array} array of datum objects
  */
@@ -64,6 +66,8 @@ export const dataGenerator = (config = {}) => {
     return {
       [keyField]: useDates ? yearProducer.next().value : cuid(), // collision-resistant string id
       [valueField]: valueProducer(),
+      ub: valueProducer(),
+      lb: valueProducer(),
       ...rest
     };
   });

@@ -9,7 +9,7 @@ describe('data', () => {
       .with.length(200)
       .and.to.have.deep.property('[0]')
       .that.is.an('object')
-      .with.keys('location_id', 'value');
+      .with.keys('location_id', 'value', 'ub', 'lb');
   });
 
   it('passes custom props to each datum', () => {
