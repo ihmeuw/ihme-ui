@@ -1,4 +1,4 @@
-import map from 'lodash/map';
+import { map } from 'lodash';
 import cuid from 'cuid';
 import random from 'random-js';
 
@@ -12,6 +12,8 @@ import random from 'random-js';
  *  {Number} length -> number of data
  *  {String} keyField -> a field of datum that uniquely identifies it
  *  {String} valueField -> a field of datum that holds the "primary" datum (e.g., 'value' or 'mean')
+ *  {Boolean} useDates -> whether to use dates for valueField
+ *  {Number} startYear -> if (useDates), values will start at startYear
  *  {Any} any other property that will be passed directly to individual datum
  * @return {Array} array of datum objects
  */
@@ -21,10 +23,18 @@ export const dataGenerator = (config = {}) => {
     length = 200,
     keyField = 'location_id',
     valueField = 'value',
+    useDates = false,
+    startYear = (new Date()).getFullYear(),
     ...rest
   } = config;
   const ret = new Array(length);
   const randomGenerator = random();
+
+  const yearProducer = (function* yearProducer() {
+    for (let year = startYear - length + 1; year <= startYear; year++) {
+      yield year;
+    }
+  }());
 
   const valueProducer = (() => {
     return () => {
@@ -54,8 +64,10 @@ export const dataGenerator = (config = {}) => {
 
   return map(ret, () => {
     return {
-      [keyField]: cuid(), // collision-resistant string id
+      [keyField]: useDates ? yearProducer.next().value : cuid(), // collision-resistant string id
       [valueField]: valueProducer(),
+      ub: valueProducer(),
+      lb: valueProducer(),
       ...rest
     };
   });

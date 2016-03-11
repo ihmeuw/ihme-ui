@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import d3Scale from 'd3-scale';
 
 import LinearGradient from './linear-gradient';
-import DensityPlot from './density-plot';
+import { ScatterPlot } from '../../../shape';
 import Label from './label';
 import Brush from './brush';
 
@@ -118,13 +118,15 @@ export default class RangeSlider extends React.Component {
           />
         </defs>
         <g transform={`translate(${margins.left}, ${margins.top})`}>
-          <DensityPlot
+          <ScatterPlot
             data={data.values}
-            xScale={xScale}
-            width={width}
+            isNested={false}
+            scales={{ x: xScale }}
+            dataAccessors={{ x: data.valueField, y: data.keyField }}
             keyField={data.keyField}
-            valueField={data.valueField}
+            dataField={data.valueField}
             colorScale={colors.scale}
+            size={81}
           />
           <rect
             y="10px" x="0px"
