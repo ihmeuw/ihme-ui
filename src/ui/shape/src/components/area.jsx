@@ -14,9 +14,7 @@ const propTypes = {
     y: PropTypes.func
   }).isRequired,
 
-  fill: PropTypes.string,
-
-  stroke: PropTypes.string,
+  color: PropTypes.string,
 
   strokeWidth: PropTypes.number,
 
@@ -32,8 +30,7 @@ const propTypes = {
 };
 
 const defaultProps = {
-  fill: 'none',
-  stroke: 'steelblue',
+  color: 'steelblue',
   strokeWidth: 2.5,
   dataAccessors: { x: 'x', y0: 'y0', y1: 'y1' },
   clickHandler: noop,
@@ -44,8 +41,7 @@ const Area = (props) => {
   const {
     data,
     scales,
-    fill,
-    stroke,
+    color,
     strokeWidth,
     dataAccessors: { x: xAccessor, y0: y0Accessor, y1: y1Accessor },
     clickHandler,
@@ -65,8 +61,9 @@ const Area = (props) => {
 
   return (
     <path
-      fill={fill}
-      stroke={stroke}
+      className="area"
+      fill={color}
+      stroke={color}
       strokeWidth={`${strokeWidth}px`}
       d={path(data)}
       onClick={clickHandler(data)}

@@ -63,6 +63,7 @@ const Line = (props) => {
 
   return (
     <path
+      className="line"
       fill={fill}
       stroke={stroke}
       strokeWidth={`${strokeWidth}px`}

@@ -1,10 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 
-import maxBy from 'lodash/maxBy';
-import minBy from 'lodash/minBy';
-import map from 'lodash/map';
-import uniqBy from 'lodash/uniqBy';
+import { maxBy, minBy, map, uniqBy } from 'lodash';
 
 import d3Scale from 'd3-scale';
 
@@ -35,7 +32,7 @@ const canadaData = dataGenerator({
 const lineData = [{ location: 'USA', values: usaData }, { location: 'Canada', values: canadaData }];
 
 const data = [...usaData, ...canadaData];
-const yDomain = [minBy(data, valueField)[valueField], maxBy(data, valueField)[valueField]];
+const yDomain = [minBy(data, 'lb').lb, maxBy(data, 'ub').ub];
 const xDomain = map(uniqBy(data, keyField), (obj) => { return (obj[keyField]); });
 const colorScale = d3Scale.scaleOrdinal().domain(['USA', 'Canada']).range(['red', 'blue']);
 
@@ -76,7 +73,8 @@ class App extends React.Component {
           keyField={'location'}
           dataField={'values'}
           colorScale={colorScale}
-          dataAccessors={{ x: keyField, y: valueField }}
+          showUncertainty
+          dataAccessors={{ x: keyField, y: valueField, y0: 'lb', y1: 'ub' }}
         />
       </AxisChart>
     );
