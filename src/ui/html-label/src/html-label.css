@@ -1,0 +1,13 @@
+.common {
+  font-weight: bold;
+}
+
+.dark {
+  composes: common;
+  color: white;
+}
+
+.light {
+  composes: common;
+  color: black;
+}

@@ -1,0 +1,41 @@
+.common {
+  text-align: center;
+  border: none;
+  border-radius: 2px;
+  height: 27px;
+  padding: 0 10px;
+  color: black;
+}
+
+.common:active,
+.common:focus {
+  outline: none;
+}
+
+.common:disabled,
+.disabled {
+  background-color: lightgray;
+  border-color: lightgray;
+  color: white;
+}
+
+.active,
+.common:active {
+  background-color: steelblue;
+  border-color: steelblue;
+  color: white;
+}
+
+.labeled {
+  margin-left: 7px;
+}
+
+.dark {
+  composes: common;
+  background-color: white;
+}
+
+.light {
+  composes: common;
+  background-color: steelblue;
+}

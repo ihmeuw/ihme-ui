@@ -1,15 +1,24 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 
+import styles from './button.css';
+import HtmlLabel from '../../html-label';
+
 const propTypes = {
   /* array of classes to add to button */
   classes: PropTypes.array,
+
+  /* color scheme of component; see button.css */
+  theme: PropTypes.oneOf(['dark', 'light']),
+
+  /* a label to include for the button */
+  label: PropTypes.string,
 
   id: PropTypes.string,
 
   name: PropTypes.string,
 
-  disabled: PropTypes.boolean,
+  disabled: PropTypes.bool,
 
   /* text to render within button tag */
   text: PropTypes.string,
@@ -19,21 +28,48 @@ const propTypes = {
 
 const defaultProps = {
   classes: [],
-  disabled: false
+  disabled: false,
+  theme: 'light'
 };
 
 const Button = (props) => {
-  return (
+  const {
+    disabled,
+    classes,
+    id,
+    name,
+    clickHandler,
+    text,
+    label,
+    theme
+  } = props;
+
+  const button = (
     <button
-      className={classNames('beaut-btn', ...props.classes)}
-      id={props.id}
+      className={classNames({
+        [styles[props.theme]]: true,
+        [styles.labeled]: props.label,
+        [styles.disabled]: disabled
+      }, ...classes)}
+      id={id}
       type="button"
-      name={props.name}
-      disabled={props.disabled}
-      onClick={props.clickHandler}
+      name={name}
+      disabled={disabled}
+      onClick={clickHandler}
     >
-      {props.text}
+      {text}
     </button>
+  );
+
+  if (!label) return button;
+  return (
+    <HtmlLabel
+      text={label}
+      theme={theme}
+      htmlFor={id}
+    >
+      {button}
+    </HtmlLabel>
   );
 };
 

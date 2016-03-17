@@ -1,4 +1,3 @@
-module.exports = {
-  RangeSlider: require('./range-slider/index'),
-  Button: require('./button/src/button')
-};
+/* top-level lib exposure */
+export * from './html-label';
+export * from './button';

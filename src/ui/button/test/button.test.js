@@ -15,11 +15,17 @@ describe('<Button/>', () => {
   });
 
   it('spreads a list of classes into the button', () => {
-    const classes = ['foo bar baz'];
+    const classes = ['foo', 'bar', 'baz'];
     const wrapper = shallow(<Button classes={classes} />);
 
-    ['beaut-btn', ...classes].forEach((expectedClass) => {
+    classes.forEach((expectedClass) => {
       expect(wrapper).to.have.className(expectedClass);
     });
+  });
+
+  it('renders itself within a label', () => {
+    const wrapper = shallow(<Button label="A label" />);
+    expect(wrapper).to.have.tagName('label');
+    expect(wrapper).to.have.exactly(1).descendants('button');
   });
 });
