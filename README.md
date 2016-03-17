@@ -10,12 +10,12 @@ npm install beaut
 
 ### API Reference
  - UI
-   - [\<AxisChart \/\>](#axis-chart)
-   - [\<Line \/\>](#line)
+   - [\<AxisChart /\>](#axis-chart)
+   - [\<Line /\>](#line)
 
 ### UI Components
 
-#### <a name="axis-chart" href="#axis-chart">#</a> \<AxisChart \/\>
+#### <a name="axis-chart" href="#axis-chart">#</a> \<AxisChart /\>
 Container for a chart composed of other beaut/ui components, including axes, lines, points, etc. 
 An AxisChart produces `x` and `y` scales and passes those scales, along with the chart's dimensions, to its child components.
 
@@ -54,7 +54,7 @@ import { XAxis, YAxis } from 'beaut/ui/axis';
 ```
 
 
-#### <a name="line" href="#line">#</a> \<Line \/\>
+#### <a name="line" href="#line">#</a> \<Line /\>
 Line made up of array of data points.
 
 **API**
@@ -82,7 +82,7 @@ import { Line } from 'beaut/ui/shape';
 />
 ```
 
-#### <a name="range-slider" href="#range-slider">#</a> \<RangeSlider \/\>
+#### <a name="range-slider" href="#range-slider">#</a> \<RangeSlider /\>
 
 - `import RangeSlider from 'beaut/ui/range-slider';`
 - `import { RangeSlider } from 'beaut/ui';`
