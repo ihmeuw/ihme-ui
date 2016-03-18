@@ -1,0 +1,12 @@
+.DS_Store
+npm-debug.log
+coverage
+.idea
+src
+scripts
+.babelrc
+.editorconfig
+.eslintignore
+.eslintrc.js
+.travis.yml
+TODO.md
