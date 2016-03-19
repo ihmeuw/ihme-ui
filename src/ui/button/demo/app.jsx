@@ -5,6 +5,20 @@ import { render } from 'react-dom';
 import Button from '../src/button';
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = { isLoading: false };
+    this.showIsLoading = this.showIsLoading.bind(this);
+  }
+
+  showIsLoading() {
+    this.setState({
+      isLoading: !this.state.isLoading
+    });
+  }
+
+
   render() {
     return (
       <div>
@@ -63,6 +77,21 @@ class App extends React.Component {
               label="A button"
               theme="dark"
               clickHandler={function onClick() { alert('You clicked me!'); }}
+            />
+          </div>
+        </section>
+        <section>
+          <h3>A button with a spinner</h3>
+          <pre><code>
+  <Button
+    showSpinner
+  />
+          </code></pre>
+          <div>
+            <Button
+              text="Delete all files"
+              showSpinner={this.state.isLoading}
+              clickHandler={this.showIsLoading}
             />
           </div>
         </section>

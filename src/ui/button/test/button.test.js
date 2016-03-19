@@ -4,6 +4,7 @@ import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 
 import Button from '../src/button';
+import Spinner from '../../spinner';
 
 chai.use(chaiEnzyme());
 
@@ -27,5 +28,10 @@ describe('<Button/>', () => {
     const wrapper = shallow(<Button label="A label" />);
     expect(wrapper).to.have.tagName('label');
     expect(wrapper).to.have.exactly(1).descendants('button');
+  });
+
+  it('shows a spinner when showSpinner is true', () => {
+    const wrapper = shallow(<Button showSpinner />);
+    expect(wrapper).to.contain(<Spinner />);
   });
 });
