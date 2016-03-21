@@ -24,16 +24,25 @@ const propTypes = {
   /* text to render within button tag */
   text: PropTypes.string,
 
+  /* path to image to render within button tag */
+  icon: PropTypes.string,
+
   /* if true, will contain spinner */
   showSpinner: PropTypes.bool,
 
-  clickHandler: PropTypes.func,
+  clickHandler: PropTypes.func
 };
 
 const defaultProps = {
   classes: [],
   disabled: false,
   theme: 'light'
+};
+
+const getButtonContent = (showSpinner, iconPath) => {
+  if (showSpinner) return <Spinner size="small" />;
+  if (iconPath) return <img src={iconPath} />;
+  return null;
 };
 
 const Button = (props) => {
@@ -46,6 +55,7 @@ const Button = (props) => {
     text,
     showSpinner,
     label,
+    icon,
     theme
   } = props;
 
@@ -62,7 +72,8 @@ const Button = (props) => {
       disabled={disabled}
       onClick={clickHandler}
     >
-      {showSpinner ? <Spinner size="small" /> : text}
+      {getButtonContent(showSpinner, icon)}
+      {text}
     </button>
   );
 

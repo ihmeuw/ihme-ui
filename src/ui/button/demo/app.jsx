@@ -95,6 +95,38 @@ class App extends React.Component {
             />
           </div>
         </section>
+        <section>
+          <h3>A clickable button with an image</h3>
+          <pre><code>
+  <Button
+    text="Click me!"
+    clickHandler={function onClick() { alert('You clicked me!'); }}
+    icon="home3.png"
+  />
+          </code></pre>
+          <Button
+            text="Click me!"
+            clickHandler={function onClick() { alert('You clicked me!'); }}
+            icon="home3.png"
+          />
+        </section>
+        <section>
+          <h3>A clickable button with an image which changes to a spinner when clicked</h3>
+          <pre><code>
+  <Button
+    text="Click me!"
+    icon="home3.png"
+    showSpinner={this.state.isLoading}
+    clickHandler={this.showIsLoading}
+  />
+          </code></pre>
+          <Button
+            text="Click me!"
+            icon="home3.png"
+            showSpinner={this.state.isLoading}
+            clickHandler={this.showIsLoading}
+          />
+        </section>
       </div>
     );
   }

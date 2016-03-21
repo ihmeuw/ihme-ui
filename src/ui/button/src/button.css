@@ -1,10 +1,10 @@
 .common {
-  text-align: center;
   border: none;
   border-radius: 2px;
   height: 27px;
   padding: 0 10px;
   color: black;
+  display: inline-flex;
 }
 
 .common:active,
