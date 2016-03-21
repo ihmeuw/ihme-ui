@@ -32,6 +32,6 @@ describe('<Button/>', () => {
 
   it('shows a spinner when showSpinner is true', () => {
     const wrapper = shallow(<Button showSpinner />);
-    expect(wrapper).to.contain(<Spinner />);
+    expect(wrapper).to.contain(<Spinner size="small" />);
   });
 });
