@@ -7,47 +7,55 @@ import Label from './label';
 import Brush from './brush';
 
 const propTypes = {
+  /* px width */
+  width: PropTypes.number,
+
+  /* margins to subtract from width and height */
   margins: PropTypes.shape({
     top: PropTypes.number,
     right: PropTypes.number,
     bottom: PropTypes.number,
     left: PropTypes.number
   }),
-  colors: PropTypes.shape({
-    steps: PropTypes.array,
-    scale: PropTypes.func,
-    x1: PropTypes.number,
-    x2: PropTypes.number
-  }),
-  callbacks: PropTypes.shape({
-    // onClick for DensityPlot circles
-    click: PropTypes.func,
 
-    // onMouseOver for DensityPlot circles
-    mouseover: PropTypes.func,
+  /* array of color steps, e.g. ['#fff', '#ccc', '#000', ...] */
+  colorSteps: PropTypes.array,
 
-    // callback to attach to slider handles
-    slide: PropTypes.func
-  }),
-  data: PropTypes.shape({
-    // [min, max] for xScale; xScale positions <circles> and provides axis
-    domain: PropTypes.array,
+  /* function that accepts data as param, returns color */
+  colorScale: PropTypes.func,
 
-    // [min, max] for slider in data space
-    rangeExtent: PropTypes.array,
+  /* x-axis coord (as percentage) of the start of the gradient (e.g., 0) */
+  x1: PropTypes.number,
 
-    // array of datum objects
-    values: PropTypes.array,
+  /* x-axis coord (as percentage) of the end of the gradient (e.g., 100) */
+  x2: PropTypes.number,
 
-    // uniquely identifying property on datum, e.g., location_id
-    keyField: PropTypes.string.isRequired,
+  /* onClick for DensityPlot circles */
+  onClick: PropTypes.func,
 
-    // name of prop on datum that holds
-    valueField: PropTypes.string.isRequired,
+  /* onMouseOver for DensityPlot circles */
+  onMouseOver: PropTypes.func,
 
-    // unit of data; axis label
-    unit: PropTypes.string
-  })
+  /* callback to attach to slider handles */
+  onSlide: PropTypes.func,
+
+  /* [min, max] for xScale; xScale positions <circles> and provides axis */
+  domain: PropTypes.array,
+
+  /* [min, max] for slider in data space */
+  rangeExtent: PropTypes.array,
+
+  /* array of datum objects */
+  data: PropTypes.array,
+
+  /* uniquely identifying property of datum, e.g., location_id */
+  keyField: PropTypes.string.isRequired,
+
+  /* property of datum object that holds value */
+  valueField: PropTypes.string.isRequired,
+
+  /* unit of data; axis label */
+  unit: PropTypes.string
 };
 
 const defaultProps = {
@@ -56,96 +64,77 @@ const defaultProps = {
     right: 65,
     bottom: 0,
     left: 55
-  }
+  },
+  x1: 0,
+  x2: 100,
+
 };
 
 export default class RangeSlider extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      width: 600
-    };
 
-    this.storeSvgRef = this.storeSvgRef.bind(this);
-  }
-
-  componentDidMount() {
-    /* eslint-disable react/no-did-mount-set-state */
-
-    const width = this.backingInstanceWidth(this._slider);
-    if (!width) return;
-
-    this.setState({
-      width
-    });
-
-    /* eslint-enable react/no-did-mount-set-state */
-  }
-
-  rectWidth(which, edgePosition, containerWidth) {
-    if (which === 'left') return (edgePosition) ? edgePosition : 0;
-
-    if (containerWidth && edgePosition) {
-      const diff = containerWidth - edgePosition;
-      return (diff < 0) ? 0 : diff;
-    }
-
-    return 0;
-  }
-
-  backingInstanceWidth(el) {
-    return el.getBoundingClientRect().width;
-  }
-
-  storeSvgRef(el) {
-    this._slider = el;
+  getAdjustedWidth() {
+    const { width, margins } = this.props;
+    return width - (margins.left + margins.right);
   }
 
   render() {
-    const { margins, colors, data } = this.props;
-    let { width } = this.state;
-    width = width - (margins.left + margins.right);
+    const {
+      margins,
+      domain,
+      colorSteps,
+      colorScale,
+      x1,
+      x2,
+      data,
+      valueField,
+      keyField,
+      rangeExtent,
+      unit
+    } = this.props;
 
-    const xScale = d3Scale.scaleLinear().domain(data.domain).range([0, width]);
+    const adjustedWidth = this.getAdjustedWidth();
+    const xScale = d3Scale.scaleLinear().domain(domain).range([0, adjustedWidth]);
+    const linearGradientId = 'choropleth-linear-gradient-def';
 
     return (
-      <svg preserveAspectRatio="none" width="100%" height="100%" ref={this.storeSvgRef}>
+      <svg preserveAspectRatio="none" width="100%" height="100%">
         <defs>
           <LinearGradient
-            colors={colors.steps}
-            x1={colors.x1}
-            x2={colors.x2}
+            colors={colorSteps}
+            x1={x1}
+            x2={x2}
+            id={linearGradientId}
           />
         </defs>
         <g transform={`translate(${margins.left}, ${margins.top})`}>
           <ScatterPlot
-            data={data.values}
+            data={data}
             isNested={false}
             scales={{ x: xScale }}
-            dataAccessors={{ x: data.valueField, y: data.keyField }}
-            keyField={data.keyField}
-            dataField={data.valueField}
-            colorScale={colors.scale}
+            dataAccessors={{ x: valueField, y: keyField }}
+            keyField={keyField}
+            dataField={valueField}
+            colorScale={colorScale}
             size={81}
           />
           <rect
             y="10px" x="0px"
             height="15px"
             stroke="none"
-            fill="url(#choropleth-linear-gradient-def)"
-            width={width}
+            fill={`url(#${linearGradientId})`}
+            width={adjustedWidth}
           >
           </rect>
           <Brush
             xScale={xScale}
-            rangeExtent={data.rangeExtent}
-            width={width}
+            rangeExtent={rangeExtent}
+            width={adjustedWidth}
           />
           <Label
-            value={data.unit}
+            value={unit}
             anchor="middle"
             position={{
-              x: width / 2,
+              x: adjustedWidth / 2,
               y: 65
             }}
           />

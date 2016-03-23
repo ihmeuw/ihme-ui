@@ -14,41 +14,57 @@ import { generateColorDomain } from '../../../utils/domain';
 const valueField = 'value';
 const keyField = 'loc_id';
 
-const values = dataGenerator({
+const data = dataGenerator({
   keyField,
   valueField,
   length: 100,
   dataQuality: 'best'
 });
 
-const domain = [minBy(values, 'value').value, maxBy(values, 'value').value];
-
-const data = {
-  domain,
-  values,
-  keyField,
-  valueField,
-  rangeExtent: domain,
-  unit: 'Deaths per 100,000'
-};
-
-const colors = {
-  steps: colorSteps,
-  scale: scaleLinear()
-    .domain(generateColorDomain(colorSteps, domain))
-    .range(colorSteps)
-};
+const domain = [minBy(data, 'value').value, maxBy(data, 'value').value];
 
 class App extends React.Component {
-
   render() {
     return (
       <RangeSlider
-        colors={colors}
+        width={this.props.width}
+        colorSteps={colorSteps}
+        colorScale={scaleLinear().domain(generateColorDomain(colorSteps, domain)).range(colorSteps)}
+        domain={domain}
+        rangeExtent={domain}
         data={data}
+        keyField={keyField}
+        valueField={valueField}
+        unit="Deaths per 100,000"
       />
     );
   }
 }
 
-render(<App />, document.getElementById('app'));
+const container = document.getElementById('app');
+const renderApp = () => {
+  render(<App width={container.getBoundingClientRect().width} />, container);
+};
+
+renderApp();
+
+/* throttler stolen from Mozilla (https://developer.mozilla.org/en-US/docs/Web/Events/resize) */
+(() => {
+  const throttle = (type, name) => {
+    let running = false;
+    const func = () => {
+      if (running) { return; }
+      running = true;
+      requestAnimationFrame(function() {
+        window.dispatchEvent(new CustomEvent(name));
+        running = false;
+      });
+    };
+    window.addEventListener(type, func);
+  };
+
+  /* init - you can init any event */
+  throttle('resize', 'optimizedResize');
+})();
+
+window.addEventListener('optimizedResize', renderApp);
