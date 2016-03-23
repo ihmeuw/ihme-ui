@@ -1,6 +1,7 @@
 'use strict';
 
 var path = require('path');
+var autoprefixer = require('autoprefixer');
 
 module.exports = {
   devtool: 'source-map',
@@ -15,10 +16,15 @@ module.exports = {
       {
         test: /\.jsx?$/,
         exclude: 'node-modules/',
-        loader: 'babel'
-      }
+        loaders: ['babel', __dirname + '/html-pre-tag-loader']
+      },
+      {
+        test: /\.css$/,
+        loader: 'style!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss-loader'
+      },
     ]
   },
+  postcss: [autoprefixer],
   resolve: {
     extensions: ['', '.js', '.jsx']
   },
