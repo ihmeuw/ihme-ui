@@ -1,41 +1,42 @@
 import React, { PropTypes } from 'react';
+import { isNumber } from 'lodash';
+import BrushHandle from './brush-handle';
 
 const propTypes = {
-  xScale: PropTypes.func.isRequired, // linear x scale
-  rangeExtent: PropTypes.array, // [min, max] of domain user has selected; defaults to full domain
-  width: PropTypes.number
+  /* linear x scale */
+  xScale: PropTypes.func.isRequired,
+
+  /* [min, max] of domain user has selected; defaults to full domain */
+  rangeExtent: PropTypes.array,
+
+  /* width of parent container, in px */
+  width: PropTypes.number,
+
+  /*
+   * will be called with two params
+   * @param {Array} pixelExtent
+   * @param {Array} dataExtent
+   */
+  onHandleMove: PropTypes.func
 };
+
+const IDENTITY_TRANSLATE = 0;
+const IDENTITY_TRANFORM = `translate(${IDENTITY_TRANSLATE})`;
 
 export default class Brush extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      grabPoint: {
-        x1: 0,
-        x2: 0
-      },
-      position: {
-        x1: 0,
-        x2: 0
-      }
+      currentX: 0,
+      currentTranslate: IDENTITY_TRANSLATE,
+      westTranslate: IDENTITY_TRANFORM,
+      eastTranslate: IDENTITY_TRANFORM
     };
 
-    // bind event handlers to current context (once!)
-    this.grab = this.grab.bind(this);
-    this.drag = this.drag.bind(this);
-    this.drop = this.drop.bind(this);
-  }
-
-  componentWillMount() {
-    const { xScale, rangeExtent } = this.props;
-
-    this.setState({
-      position: {
-        x1: xScale(rangeExtent[0]),
-        x2: xScale(rangeExtent[1])
-      }
-    });
+    this.selectElement = this.selectElement.bind(this);
+    this.moveElement = this.moveElement.bind(this);
+    this.deSelectElement = this.deSelectElement.bind(this);
   }
 
   rectWidth(which, edgePosition, containerWidth) {
@@ -49,45 +50,73 @@ export default class Brush extends React.Component {
     return 0;
   }
 
-  grab(e) {
-    const target = e.currentTarget;
+  selectElement(handle) {
+    return (evt) => {
+      const selectedElement = evt.target;
+      const currentTranslate = selectedElement.getAttributeNS(null, 'transform')
+        .slice(10, -1)
+        .split(' ')
+        .map((num) => { return parseFloat(num); });
+
+      this.setState({
+        selectedElement,
+        currentX: evt.clientX,
+        currentTranslate,
+        handle
+      });
+    };
+  }
+
+  /**
+   *
+   * @param handle {String} oneOf(['west', 'east'])
+   * @side-effect setState
+   */
+  moveElement(evt) {
+    const { currentX, currentTranslate, selectedElement, handle } = this.state;
+    if (!selectedElement) return;
+
+    const dx = evt.clientX - currentX;
+    if (!isNumber(dx)) return;
+
+    let adjustedTranslate = currentTranslate.slice();
+    adjustedTranslate[0] += dx;
+    const newMatrix = `translate(${adjustedTranslate.join(' ')})`;
 
     this.setState({
-      grabPoint: {
-        [target.id]: e.clientX
-      },
-      currentTarget: target.id
+      currentX: evt.clientX,
+      [`${handle}Translate`]: newMatrix,
+      currentTranslate: adjustedTranslate
     });
   }
 
-  drag(e) {
-    const { currentTarget } = this.state;
-
-    if (!currentTarget) return;
-
+  deSelectElement() {
     this.setState({
-      position: {
-        [currentTarget]: e.clientX - e.currentTarget.getCTM().e
-      }
+      selectedElement: null,
+      currentX: 0,
+      currentTranslate: IDENTITY_TRANSLATE
     });
   }
-
-  drop() {
-    this.setState({
-      currentTarget: null
-    });
-  }
-
 
   render() {
     const { xScale, rangeExtent, width } = this.props;
-    const { position } = this.state;
+    const { westTranslate, eastTranslate } = this.state;
 
     const leftEdge = xScale(rangeExtent[0]);
     const rightEdge = xScale(rangeExtent[1]);
 
     return (
-      <g>
+      <g
+        style={{ pointerEvents: 'all' }}
+      >
+        <rect
+          style={{ pointerEvents: 'all', visibility: 'hidden' }}
+          onMouseMove={this.moveElement}
+          onMouseUp={this.deSelectElement}
+          height="30px"
+          width={width}
+        >
+        </rect>
         <rect
           y="10px"
           x="0px"
@@ -97,18 +126,12 @@ export default class Brush extends React.Component {
           width={this.rectWidth('left', leftEdge)}
         >
         </rect>
-        <rect
-          id="x1"
-          y="8px"
-          x={`${position.x1}px`}
-          height="17px"
-          stroke="none"
-          fill="#000"
-          width="5px"
-          onMouseDown={this.grab}
-          onMouseUp={this.drop}
-        >
-        </rect>
+        <BrushHandle
+          which="west"
+          initialPosition={leftEdge}
+          translate={westTranslate}
+          brushStart={this.selectElement}
+        />
         <rect
           y="10px"
           height="15px"
@@ -118,18 +141,12 @@ export default class Brush extends React.Component {
           width={this.rectWidth('right', rightEdge, width)}
         >
         </rect>
-        <rect
-          id="x2"
-          y="8px"
-          x={`${position.x2}px`}
-          height="17px"
-          stroke="none"
-          fill="#000"
-          width="5px"
-          onMouseDown={this.grab}
-          onMouseUp={this.drop}
-        >
-        </rect>
+        <BrushHandle
+          which="east"
+          initialPosition={rightEdge}
+          translate={eastTranslate}
+          brushStart={this.selectElement}
+        />
       </g>
     );
   }
