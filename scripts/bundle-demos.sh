@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 set -e
 
 # parameter $1 -> path to dir
@@ -15,7 +15,6 @@ function run_webpack
   ./node_modules/.bin/webpack --config "${demo_dir}/webpack.config.js" --display-error-details
 }
 
-# for each
-for dir in $(find . -d -name 'demo'*); do
+for dir in $(find . -d -regex ".*/${1+$1/}demo"*); do
     run_webpack ${dir}
 done
