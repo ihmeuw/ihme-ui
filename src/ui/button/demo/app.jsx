@@ -18,7 +18,6 @@ class App extends React.Component {
     });
   }
 
-
   render() {
     return (
       <div>
@@ -28,13 +27,13 @@ class App extends React.Component {
   <Button
     text="Click me!"
     clickHandler={function onClick() { alert('You clicked me!'); }}
-    classes={['an', 'extra', 'class']}
+    className={['an', 'extra', 'class']}
   />
           </code></pre>
           <Button
             text="Click me!"
             clickHandler={function onClick() { alert('You clicked me!'); }}
-            classes={['an', 'extra', 'class']}
+            className={['an', 'extra', 'class']}
           />
         </section>
         <section>
