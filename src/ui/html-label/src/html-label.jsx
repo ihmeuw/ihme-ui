@@ -1,23 +1,45 @@
 import React, { PropTypes } from 'react';
+
 import classNames from 'classnames';
 
 import styles from './html-label.css';
 
 const propTypes = {
-  text: PropTypes.string.isRequired,
-  children: PropTypes.element.isRequired,
-  theme: PropTypes.string,
-  htmlFor: PropTypes.string
+  children: PropTypes.element,
+
+  /* array of classes to add to label */
+  className: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object,
+    PropTypes.array
+  ]),
+
+  clickHandler: PropTypes.func,
+
+  hoverHandler: PropTypes.func,
+
+  /* ID of a labelable form-related element */
+  htmlFor: PropTypes.string,
+
+  /* path to image to render within label tag */
+  icon: PropTypes.string,
+
+  /* text to render within label tag */
+  text: PropTypes.string,
+
+  /* color scheme of component; see html-label.css */
+  theme: PropTypes.string
 };
 
 const HtmlLabel = (props) => {
   return (
     <label
-      className={classNames({
-        [styles[props.theme]]: true
-      })}
+      className={classNames(styles[props.theme], props.className)}
       htmlFor={props.htmlFor}
+      onClick={props.clickHandler}
+      onMouseOver={props.hoverHandler}
     >
+      {((path) => { return path ? <img src={path} /> : null; })(props.icon)}
       {props.text}
       {props.children}
     </label>
