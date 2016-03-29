@@ -1,3 +1,1 @@
-import RangeSlider from './components/range-slider';
-
-export default RangeSlider;
+export { default as default } from './components/range-slider';
