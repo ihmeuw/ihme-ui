@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 
 import styles from './button.css';
-import HtmlLabel from '../../html-label';
 import Spinner from '../../spinner';
 
 const propTypes = {
@@ -11,9 +10,6 @@ const propTypes = {
 
   /* color scheme of component; see button.css */
   theme: PropTypes.oneOf(['dark', 'light']),
-
-  /* a label to include for the button */
-  label: PropTypes.string,
 
   id: PropTypes.string,
 
@@ -54,16 +50,14 @@ const Button = (props) => {
     clickHandler,
     text,
     showSpinner,
-    label,
     icon,
     theme
   } = props;
 
-  const button = (
+  return (
     <button
       className={classNames({
         [styles[props.theme]]: true,
-        [styles.labeled]: props.label,
         [styles.disabled]: disabled
       }, ...classes)}
       id={id}
@@ -75,17 +69,6 @@ const Button = (props) => {
       {getButtonContent(showSpinner, icon)}
       {text}
     </button>
-  );
-
-  if (!label) return button;
-  return (
-    <HtmlLabel
-      text={label}
-      theme={theme}
-      htmlFor={id}
-    >
-      {button}
-    </HtmlLabel>
   );
 };
 

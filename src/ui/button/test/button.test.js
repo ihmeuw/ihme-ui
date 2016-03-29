@@ -24,12 +24,6 @@ describe('<Button/>', () => {
     });
   });
 
-  it('renders itself within a label', () => {
-    const wrapper = shallow(<Button label="A label" />);
-    expect(wrapper).to.have.tagName('label');
-    expect(wrapper).to.have.exactly(1).descendants('button');
-  });
-
   it('shows a spinner when showSpinner is true', () => {
     const wrapper = shallow(<Button showSpinner />);
     expect(wrapper).to.contain(<Spinner size="small" />);
