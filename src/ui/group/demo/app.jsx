@@ -1,6 +1,8 @@
 import React from 'react';
 import { render } from 'react-dom';
 
+import { concat } from 'lodash';
+
 import Group from '../';
 import { Option } from '../';
 
@@ -11,8 +13,6 @@ const data = [
   { name: 'both', value: '3' }
 ];
 
-const disabledItems = ['3'];
-
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -20,10 +20,15 @@ class App extends React.Component {
     this.state = { selectedItems: '1', disabledItems: '3' };
 
     this.setSelection = this.setSelection.bind(this);
+    this.isDisabled = this.isDisabled.bind(this);
   }
 
   setSelection({ value }) {
     this.setState({ selectedItems: value });
+  }
+
+  isDisabled(value) {
+    return concat([], this.state.disabledItems).includes(value);
   }
 
   render() {
@@ -39,7 +44,7 @@ class App extends React.Component {
                 text={datum.name}
                 value={datum.value}
                 selected={this.state.selectedItems === datum.value}
-                disabled={((value) => { return disabledItems.includes(value); })(datum.value)}
+                disabled={this.isDisabled(datum.value)}
               />
             );
           })
