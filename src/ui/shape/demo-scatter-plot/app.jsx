@@ -6,7 +6,7 @@ import d3Scale from 'd3-scale';
 import { maxBy, minBy, map, uniqBy } from 'lodash';
 
 import { dataGenerator } from '../../../test-utils';
-import { AxisChart } from '../../axis-chart';
+import AxisChart from '../../axis-chart';
 import { ScatterPlot } from '../';
 
 

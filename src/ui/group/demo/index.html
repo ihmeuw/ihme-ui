@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Group Demo</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css">
+  <style>
+    html, body {
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 100%;
+      height: 100%;
+    }
+
+    #app {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    section {
+      margin-bottom: 25px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid black;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    pre {
+      background-color: cornsilk;
+    }
+  </style>
+</head>
+<body>
+<div>
+  <section>
+    <pre>
+      <code>
+  const data = [
+    { name: 'males', value: '1' },
+    { name: 'females', value: '2' },
+    { name: 'both', value: '3' }
+  ];
+
+  const isDisabled = (value) =&gt; {
+    return disabledItems.includes(value);
+  };
+
+  &lt;Group clickHandler={this.setSelection}&gt;
+    {
+      data.map((datum, index) =&gt; {
+        return (
+          &lt;Option
+            key={index}
+            text={datum.name}
+            value={datum.value}
+            selected={this.state.selectedItems === datum.value}
+            disabled={isDisabled(datum.value)}
+          /&gt;
+        );
+      })
+    }
+  &lt;/Group&gt;
+      </code>
+    </pre>
+    <main id="app"></main>
+  </section>
+</div>
+
+<script src="../../../../node_modules/babel-polyfill/dist/polyfill.js"></script>
+<script src="bundle.js"></script>
+</body>
+</html>

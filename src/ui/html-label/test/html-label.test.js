@@ -20,4 +20,10 @@ describe('<HtmlLabel/>', () => {
     const wrapper = shallow(<HtmlLabel text="A label"><input /></HtmlLabel>);
     expect(wrapper).to.have.exactly(1).descendants('input');
   });
+
+  it('displays an icon and text', () => {
+    const wrapper = shallow(<HtmlLabel icon="image.png" text="A text" />);
+    expect(wrapper).to.have.exactly(1).descendants('img')
+      .and.to.have.text('A text');
+  });
 });

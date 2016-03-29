@@ -1,95 +1,69 @@
 import React, { PropTypes } from 'react';
+
 import classNames from 'classnames';
 
 import styles from './button.css';
-import HtmlLabel from '../../html-label';
 import Spinner from '../../spinner';
 
 const propTypes = {
   /* array of classes to add to button */
-  classes: PropTypes.array,
+  className: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object,
+    PropTypes.array
+  ]),
 
-  /* color scheme of component; see button.css */
-  theme: PropTypes.oneOf(['dark', 'light']),
+  clickHandler: PropTypes.func,
 
-  /* a label to include for the button */
-  label: PropTypes.string,
+  disabled: PropTypes.bool,
+
+  /* path to image to render within button tag */
+  icon: PropTypes.string,
 
   id: PropTypes.string,
 
   name: PropTypes.string,
 
-  disabled: PropTypes.bool,
+  /* if true, will contain spinner */
+  showSpinner: PropTypes.bool,
 
   /* text to render within button tag */
   text: PropTypes.string,
 
-  /* path to image to render within button tag */
-  icon: PropTypes.string,
-
-  /* if true, will contain spinner */
-  showSpinner: PropTypes.bool,
-
-  clickHandler: PropTypes.func
+  /* color scheme of component; see button.css */
+  theme: PropTypes.oneOf(['dark', 'light'])
 };
 
 const defaultProps = {
-  classes: [],
-  disabled: false,
-  theme: 'light'
+  disabled: false
 };
 
-const getButtonContent = (showSpinner, iconPath) => {
+const getContent = (showSpinner, iconPath) => {
   if (showSpinner) return <Spinner size="small" />;
   if (iconPath) return <img src={iconPath} />;
   return null;
 };
 
 const Button = (props) => {
-  const {
-    disabled,
-    classes,
-    id,
-    name,
-    clickHandler,
-    text,
-    showSpinner,
-    label,
-    icon,
-    theme
-  } = props;
-
-  const button = (
-    <button
-      className={classNames({
-        [styles[props.theme]]: true,
-        [styles.labeled]: props.label,
-        [styles.disabled]: disabled
-      }, ...classes)}
-      id={id}
-      type="button"
-      name={name}
-      disabled={disabled}
-      onClick={clickHandler}
-    >
-      {getButtonContent(showSpinner, icon)}
-      {text}
-    </button>
-  );
-
-  if (!label) return button;
   return (
-    <HtmlLabel
-      text={label}
-      theme={theme}
-      htmlFor={id}
+    <button
+      className={classNames(props.className, styles[props.theme], {
+        [styles.disabled]: props.disabled
+      })}
+      disabled={props.disabled}
+      id={props.id}
+      name={props.name}
+      onClick={props.clickHandler}
+      type="button"
     >
-      {button}
-    </HtmlLabel>
+      {getContent(props.showSpinner, props.icon)}
+      {props.text}
+    </button>
   );
 };
 
 Button.propTypes = propTypes;
+
 Button.defaultProps = defaultProps;
 
 export default Button;

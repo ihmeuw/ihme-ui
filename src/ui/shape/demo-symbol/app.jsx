@@ -5,7 +5,7 @@ import { maxBy, minBy, map, uniqBy } from 'lodash';
 
 import d3Scale from 'd3-scale';
 
-import { AxisChart } from '../../axis-chart';
+import AxisChart from '../../axis-chart';
 import { Symbol, SYMBOL_TYPES } from '../';
 
 
