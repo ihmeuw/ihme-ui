@@ -1,0 +1,47 @@
+.common {
+  border: 1px solid #aaaaaa;
+  height: 21px;
+  padding: 0 10px;
+  color: rgba(69, 69, 69, 0.6);
+  background-color: #fafafa;
+  display: inline-flex;
+}
+
+.common:focus {
+  outline: none;
+}
+
+.common:disabled,
+.disabled {
+  background-color: white;
+  color: rgba(204, 204, 204, 1);
+}
+
+.active:not(:disabled),
+.common:active:not(:disabled),
+.group > .selected {
+  background-color: #f5f5f5;
+  color: #27ae60;
+}
+
+.dark {
+  composes: common;
+}
+
+.light {
+  composes: common;
+}
+
+.group > *:first-child {
+  border-bottom-left-radius: 4px;
+  border-top-left-radius: 4px;
+  border-right-width: 1px;
+}
+
+.group > *:last-child {
+  border-bottom-right-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.group > *:not(:first-child):not(:last-child) {
+}
