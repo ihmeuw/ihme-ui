@@ -3,6 +3,7 @@ import React from 'react';
 import { render } from 'react-dom';
 
 import Button from '../src/button';
+import HtmlLabel from '../../html-label';
 
 class App extends React.Component {
   constructor(props) {
@@ -54,12 +55,13 @@ class App extends React.Component {
         <section>
           <h3>A button with a label on a dark background</h3>
           <pre><code>
-  <Button
-    text="Click me!"
-    label="A button"
-    theme="dark"
-    clickHandler={function onClick() { alert('You clicked me!'); }}
-  />
+  <HtmlLabel text="A button " theme="dark">
+    <Button
+      text="Click me!"
+      theme="dark"
+      clickHandler={function onClick() { alert('You clicked me!'); }}
+    />
+  </HtmlLabel>
           </code></pre>
           <div style={
             {
@@ -71,19 +73,25 @@ class App extends React.Component {
               justifyContent: 'center'
             }}
           >
-            <Button
-              text="Click me!"
-              label="A button"
+            <HtmlLabel
+              text="A button "
               theme="dark"
-              clickHandler={function onClick() { alert('You clicked me!'); }}
-            />
+            >
+              <Button
+                text="Click me!"
+                theme="dark"
+                clickHandler={function onClick() { alert('You clicked me!'); }}
+              />
+            </HtmlLabel>
           </div>
         </section>
         <section>
           <h3>A button with a spinner</h3>
           <pre><code>
   <Button
-    showSpinner
+    text="Delete all files"
+    showSpinner={this.state.isLoading}
+    clickHandler={this.showIsLoading}
   />
           </code></pre>
           <div>
