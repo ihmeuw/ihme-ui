@@ -110,37 +110,6 @@ class App extends React.Component {
     const { data, domain, rangeExtent, colorScale, x1, x2 } = this.state;
     return (
       <div id="demo-container">
-        <ChoroplethLegend
-          margins={{
-            top: 50,
-            right: 200,
-            bottom: 50,
-            left: 200
-          }}
-          width={this.props.width}
-          colorSteps={colorSteps}
-          colorScale={colorScale}
-          domain={domain}
-          rangeExtent={rangeExtent}
-          x1={x1}
-          x2={x2}
-          onSliderMove={this.brushMove}
-          data={data}
-          keyField={keyField}
-          valueField={valueField}
-          zoom={1}
-          unit="Deaths per 100,000"
-        />
-        <Button
-          label="Set color scale"
-          text="Set scale"
-          clickHandler={this.setScale}
-        />
-        <Button
-          label="Generate new data"
-          text="New data"
-          clickHandler={this.setNewData}
-        />
         <pre><code>
     <ChoroplethLegend
       margins={{
@@ -164,6 +133,38 @@ class App extends React.Component {
       unit="Deaths per 100,000"
     />
         </code></pre>
+        <ChoroplethLegend
+          margins={{
+            top: 50,
+            right: 200,
+            bottom: 50,
+            left: 200
+          }}
+          width={this.props.width}
+          colorSteps={colorSteps}
+          colorScale={colorScale}
+          domain={domain}
+          rangeExtent={rangeExtent}
+          x1={x1}
+          x2={x2}
+          onSliderMove={this.brushMove}
+          data={data}
+          keyField={keyField}
+          valueField={valueField}
+          zoom={1}
+          unit="Deaths per 100,000"
+        />
+        <Button
+          text="Set color scale"
+          theme="light"
+          clickHandler={this.setScale}
+        />
+        <span style={{ marginBottom: '5px' }} />
+        <Button
+          text="Generate new data"
+          theme="light"
+          clickHandler={this.setNewData}
+        />
       </div>
     );
   }

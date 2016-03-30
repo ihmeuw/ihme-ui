@@ -28,13 +28,15 @@ class App extends React.Component {
   <Button
     text="Click me!"
     clickHandler={function onClick() { alert('You clicked me!'); }}
-    className={['an', 'extra', 'class']}
+    theme="light"
+    className="an-extra-class"
   />
           </code></pre>
           <Button
             text="Click me!"
             clickHandler={function onClick() { alert('You clicked me!'); }}
-            className={['an', 'extra', 'class']}
+            theme="light"
+            className="an-extra-class"
           />
         </section>
         <section>
@@ -44,12 +46,14 @@ class App extends React.Component {
     text="Click me!"
     disabled
     clickHandler={function onClick() { alert('You clicked me!'); }}
+    theme="light"
   />
           </code></pre>
           <Button
             text="Click me!"
             disabled
             clickHandler={function onClick() { alert('You clicked me!'); }}
+            theme="light"
           />
         </section>
         <section>
@@ -60,6 +64,7 @@ class App extends React.Component {
       text="Click me!"
       theme="dark"
       clickHandler={function onClick() { alert('You clicked me!'); }}
+      theme="dark"
     />
   </HtmlLabel>
           </code></pre>
@@ -92,6 +97,7 @@ class App extends React.Component {
     text="Delete all files"
     showSpinner={this.state.isLoading}
     clickHandler={this.showIsLoading}
+    theme="light"
   />
           </code></pre>
           <div>
@@ -99,6 +105,7 @@ class App extends React.Component {
               text="Delete all files"
               showSpinner={this.state.isLoading}
               clickHandler={this.showIsLoading}
+              theme="light"
             />
           </div>
         </section>
@@ -109,12 +116,14 @@ class App extends React.Component {
     text="Click me!"
     clickHandler={function onClick() { alert('You clicked me!'); }}
     icon="home3.png"
+    theme="light"
   />
           </code></pre>
           <Button
             text="Click me!"
             clickHandler={function onClick() { alert('You clicked me!'); }}
             icon="home3.png"
+            theme="light"
           />
         </section>
         <section>
@@ -125,6 +134,7 @@ class App extends React.Component {
     icon="home3.png"
     showSpinner={this.state.isLoading}
     clickHandler={this.showIsLoading}
+    theme="light"
   />
           </code></pre>
           <Button
@@ -132,6 +142,7 @@ class App extends React.Component {
             icon="home3.png"
             showSpinner={this.state.isLoading}
             clickHandler={this.showIsLoading}
+            theme="light"
           />
         </section>
       </div>
