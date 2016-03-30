@@ -67,7 +67,7 @@ class App extends React.Component {
         extraClasses={['foo', 'bar']}
       >
         <XAxis style={axisStyle} />
-        <YAxis />
+        <YAxis style={axisStyle} />
         <MultiLine
           data={lineData}
           keyField={'location'}

@@ -14,8 +14,7 @@ describe('<Axis />', () => {
   it('renders a g that wraps axis', () => {
     const wrapper = shallow(<Axis scale={dummyScale} />);
     expect(wrapper)
-      .to.have.tagName('g')
-      .and.to.have.attr('class', 'axis');
+      .to.have.tagName('g');
   });
 
   it('renders ticks', () => {

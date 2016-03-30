@@ -1,11 +1,11 @@
+import ReactFauxDom from 'react-faux-dom';
 import { PropTypes } from 'react';
-
 import d3Axis from 'd3-axis';
 import d3Selection from 'd3-selection';
-
 import { assign } from 'lodash';
+import classNames from 'classnames';
 
-import ReactFauxDom from 'react-faux-dom';
+import { default as defaultStyle } from './axis.css';
 
 const AXIS_TYPES = {
   top: d3Axis.axisTop,
@@ -14,7 +14,8 @@ const AXIS_TYPES = {
   left: d3Axis.axisLeft
 };
 
-const defaultPropTypes = {
+/* these propTypes are shared by <Axis />, <XAxis />, and <YAxis /> */
+const sharedPropTypes = {
   /* where to position ticks relative to axis line */
   position: PropTypes.oneOf(Object.keys(AXIS_TYPES)),
 
@@ -49,7 +50,7 @@ const defaultPropTypes = {
   tickValues: PropTypes.array
 };
 
-const propTypes = assign({}, defaultPropTypes, {
+const propTypes = assign({}, sharedPropTypes, {
   /* appropriate scale for axis */
   scale: PropTypes.func.isRequired
 });
@@ -99,7 +100,7 @@ const Axis = (props) => {
   // context for D3 side-effects
   const axisG = ReactFauxDom.createElement('g');
   const gSelection = d3Selection.select(axisG)
-    .attr('class', 'axis')
+    .attr('class', classNames(defaultStyle.common))
     .attr('transform', `translate(${translate.x}, ${translate.y})`);
 
   // axis generator straight outta d3-axis
@@ -122,8 +123,7 @@ const Axis = (props) => {
 };
 
 Axis.propTypes = propTypes;
-
 Axis.defaultProps = defaultProps;
 
 export default Axis;
-export { AXIS_TYPES, defaultPropTypes, calcTranslate };
+export { AXIS_TYPES, sharedPropTypes, calcTranslate };

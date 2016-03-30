@@ -4,7 +4,9 @@ import {
   percentOfRange,
   numFromPercent,
   domainFromPercent,
-  generateColorDomain
+  generateColorDomain,
+  isWithinRange,
+  ensureWithinRange
 } from '../domain';
 
 describe('domain helpers', () => {
@@ -77,5 +79,36 @@ describe('domain helpers', () => {
     expect(generateColorDomain(colors, origDomain)).to.be.an('array')
       .of.length(2)
       .and.to.deep.equal([0, 0]);
+  });
+
+  it('validates that a number is within a specified range, up to and including bounding', () => {
+    const specs = [
+      { value: 1990, extent: [1990, 1994], expectation: true },
+      { value: 1994, extent: [1990, 1994], expectation: true },
+      { value: 1992, extent: [1990, 1994], expectation: true },
+      { value: 1989, extent: [1990, 1994], expectation: false },
+      { value: 1995, extent: [1990, 1994], expectation: false }
+    ];
+
+    specs.forEach((spec) => {
+      const { value, extent, expectation } = spec;
+      expect(isWithinRange(value, extent)).to.equal(expectation);
+    });
+  });
+
+  it('returns values within the extent of a specified range', () => {
+    const specs = [
+      { value: 1990, extent: [1990, 1994], expectation: 1990 },
+      { value: 1994, extent: [1990, 1994], expectation: 1994 },
+      { value: 1992, extent: [1990, 1994], expectation: 1992 },
+      { value: 1989, extent: [1990, 1994], expectation: 1990 },
+      { value: 1995, extent: [1990, 1994], expectation: 1994 },
+      { value: 1995, extent: [], expectation: 1995 }
+    ];
+
+    specs.forEach((spec) => {
+      const { value, extent, expectation } = spec;
+      expect(ensureWithinRange(value, extent)).to.equal(expectation);
+    });
   });
 });

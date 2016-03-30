@@ -1,0 +1,20 @@
+/*
+  can't use composition when styling tags
+  see https://github.com/css-modules/css-modules/issues/42
+*/
+
+.common {
+
+}
+
+.common line {
+  fill: none;
+  stroke: black;
+  shape-rendering: crispEdges;
+}
+
+.common path {
+  fill: none;
+  stroke: black;
+  shape-rendering: crispEdges;
+}

@@ -1,4 +1,4 @@
-import { isNaN, isUndefined } from 'lodash';
+import { isNaN, isUndefined, isEmpty } from 'lodash';
 
 /**
  * @param {Number} num
@@ -59,4 +59,42 @@ export const generateColorDomain = function generateColorDomain(colors, domain) 
   }
 
   return ret;
+};
+
+/**
+ * Base check that value is within the range of extent (up to and including start and end)
+ * @param {Number} value -> e.g., 1993
+ * @param {Array} extent -> e.g., [1990, 1994]
+ * @return {Boolean}
+ */
+export const isWithinRange = function withinRange(value, extent) {
+  if (value >= extent[0] && value <= extent[1]) return true;
+  return false;
+};
+
+
+/**
+ * Check that value is within the range of extent
+ * and return value or nearest value from within extent.
+ * If extent is empty, returns value.
+ *
+ * E.g.:
+ *  `ensureWithinRange(1993, [1990, 1994])` -> 1993
+ *  `ensureWithinRange(1989, [1990, 1994])` -> 1990
+ *  `ensureWithinRange(2000, [1990, 1994])` -> 1994
+ *  `ensureWithinRange(2000, [])` -> 2000
+ *
+ * @param {Number} value
+ * @param {Array} extent
+ * @return {Number}
+ */
+export const ensureWithinRange = function ensureWithinRange(value, extent) {
+  // no extent or within extent, return value
+  if (isEmpty(extent) || isWithinRange(value, extent)) return value;
+
+  // value is too high, return upper bound of extent
+  if (value > extent[1]) return extent[1];
+
+  // value is too low, return lower bound of extent
+  if (value < extent[0]) return extent[0];
 };
