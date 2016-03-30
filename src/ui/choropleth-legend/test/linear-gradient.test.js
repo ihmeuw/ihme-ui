@@ -1,27 +1,48 @@
 import React from 'react';
-import { expect } from 'chai';
+import chai, { expect } from 'chai';
+import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 
 import { colorSteps } from '../../../test-utils';
-import LinearGradient from '../src/components/linear-gradient';
+import LinearGradient from '../src/linear-gradient';
+
+chai.use(chaiEnzyme());
 
 describe('<LinearGradient />', () => {
   it('renders a linearGradient node as HTML text', () => {
-    const wrapper = shallow(<LinearGradient colors={colorSteps} />);
-    const renderedHTML = wrapper.find('linearGradient').render();
-    expect(renderedHTML.find('#choropleth-linear-gradient-def')).to.have.length(1);
+    const wrapper = shallow(
+      <LinearGradient
+        colors={colorSteps}
+        width={400}
+        height={15}
+      />
+    );
+
+    expect(wrapper.find('linearGradient')).to.have.length(1);
   });
 
   it('renders as many SVG stops as color steps passed through props', () => {
-    const wrapper = shallow(<LinearGradient colors={colorSteps} />);
+    const wrapper = shallow(
+      <LinearGradient
+        colors={colorSteps}
+        width={400}
+        height={15}
+      />
+    );
 
-    expect(wrapper.children()).to.have.length(colorSteps.length);
+    expect(wrapper.find('linearGradient').children()).to.have.length(colorSteps.length);
   });
 
   it('renders each SVG stop with a key, offset and stopColor prop', () => {
-    const wrapper = shallow(<LinearGradient colors={colorSteps} />);
+    const wrapper = shallow(
+      <LinearGradient
+        colors={colorSteps}
+        width={400}
+        height={15}
+      />
+    );
 
-    wrapper.children().forEach(node => {
+    wrapper.find('linearGradient').children().forEach(node => {
       expect(node.type()).to.equal('stop');
       expect(node.props()).to.include.keys('offset', 'stopColor');
     });
@@ -31,6 +52,8 @@ describe('<LinearGradient />', () => {
     const wrapper = shallow(
       <LinearGradient
         colors={colorSteps}
+        width={400}
+        height={15}
         x1={25}
         x2={75}
       />
