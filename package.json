@@ -22,8 +22,7 @@
     "demo": "BABEL_ENV=webpack scripts/bundle-demos.sh",
     "test": "npm run lint && BABEL_DISABLE_CACHE=1 BABEL_ENV=cli $(npm bin)/babel-node $(npm bin)/_mocha --require ./scripts/setup-jsdom.js `./scripts/get-test-directories.sh`",
     "transpile": "BABEL_DISABLE_CACHE=1 BABEL_ENV=cli $(npm bin)/babel --ignore test/,demo src --out-dir lib",
-    "prepublish": "npm run test && npm run transpile",
-    "everything": "npm run lint && npm run coverage && npm run coverage-token"
+    "travis-test": "npm run lint && npm run coverage && npm run coverage-token"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.3",

@@ -10,3 +10,4 @@ scripts
 .eslintrc.js
 .travis.yml
 TODO.md
+webpack.config.js
