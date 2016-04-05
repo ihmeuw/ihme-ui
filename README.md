@@ -1,11 +1,11 @@
-![travis badge](https://travis-ci.org/ihmeuw/beaut.svg) [![codecov.io](https://codecov.io/github/ihmeuw/beaut/coverage.svg?branch=master)](https://codecov.io/github/ihmeuw/beaut?branch=master)
+![travis badge](https://travis-ci.org/ihmeuw/ihme-ui.svg) [![codecov.io](https://codecov.io/github/ihmeuw/ihme-ui/coverage.svg?branch=master)](https://codecov.io/github/ihmeuw/ihme-ui?branch=master)
 
-# beaut
-Visualization tools
+# IHME-UI
+Visualization tools from the Institute for Health Metrics and Evaluation
 
 ### Use
 ```sh
-npm install beaut
+npm install ihme-ui
 ```
 
 ### API Reference
