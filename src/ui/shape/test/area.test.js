@@ -3,7 +3,7 @@ import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
-import { maxBy, minBy} from 'lodash';
+import { maxBy, minBy } from 'lodash';
 import d3Scale from 'd3-scale';
 import { area } from 'd3-shape';
 
