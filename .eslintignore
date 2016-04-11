@@ -1,3 +1,6 @@
 src/**/webpack.config.js
 src/**/demo/*.js
-lib
+./ui/
+./test-utils/
+./utils/
+./index.js
