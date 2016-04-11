@@ -1,5 +1,5 @@
 src/**/webpack.config.js
-src/**/demo/*.js
+src/**/demo*
 ./ui/
 ./test-utils/
 ./utils/

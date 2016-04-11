@@ -26,7 +26,7 @@
   "repository": "https://github.com/ihmeuw/ihme-ui.git",
   "bugs": "https://github.com/ihmeuw/ihme-ui/issues",
   "scripts": {
-    "lint": "$(npm bin)/eslint src/**/*.{js,jsx} --quiet || true",
+    "lint": "$(npm bin)/eslint src --ext .js,.jsx --quiet || true",
     "coverage": "BABEL_DISABLE_CACHE=1 BABEL_ENV=cli $(npm bin)/babel-node $(npm bin)/babel-istanbul cover node_modules/mocha/bin/_mocha --require ./scripts/setup-jsdom.js --report lcovonly -- `scripts/get-test-directories.sh`",
     "coverage-token": "cat ./coverage/coverage.json | ./node_modules/codecov.io/bin/codecov.io.js",
     "demo": "BABEL_ENV=webpack scripts/bundle-demos.sh",
