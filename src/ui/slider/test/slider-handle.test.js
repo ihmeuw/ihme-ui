@@ -1,7 +1,7 @@
 import React from 'react';
-import chai, {expect} from 'chai';
+import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
-import { shallow, mount } from 'enzyme';
+import { shallow } from 'enzyme';
 import sinon from 'sinon';
 
 import SliderHandle from '../src/slider-handle';
