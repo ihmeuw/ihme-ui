@@ -1,7 +1,7 @@
 {
   "name": "ihme-ui",
   "description": "Visualization tools from the Institute for Health Metrics and Evaluation",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "license": "MIT",
   "main": "index.js",
   "files": [
