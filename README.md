@@ -3,6 +3,8 @@
 # IHME-UI
 Visualization tools from the Institute for Health Metrics and Evaluation
 
+### *WORK IN PROGRESS*: Not stable until v1.0
+
 ### Use
 ```sh
 npm install ihme-ui
