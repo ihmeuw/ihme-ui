@@ -1,5 +1,6 @@
 {
   "name": "ihme-ui",
+  "description": "Visualization tools from the Institute for Health Metrics and Evaluation",
   "version": "0.2.0",
   "license": "MIT",
   "main": "index.js",
@@ -38,7 +39,7 @@
     "travis-test": "npm run lint && npm run coverage && npm run coverage-token",
     "preversion": "npm run test",
     "version": "npm run build && git add .",
-    "postversion": "git push && git push --tags && npm run clean"
+    "postversion": "git push && git push --tags"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.3",
