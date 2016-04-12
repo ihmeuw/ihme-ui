@@ -2,6 +2,10 @@ node_modules
 .DS_Store
 npm-debug.log
 coverage
-lib
 bundle.js*
 .idea
+/ui/
+/test-utils/
+/utils/
+/index.js
+/style

@@ -1,2 +1,7 @@
-export { colorSteps } from './colors';
-export { dataGenerator } from './data';
+export {
+  colorSteps
+} from './colors';
+
+export {
+  dataGenerator
+} from './data';
