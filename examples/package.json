@@ -1,0 +1,24 @@
+{
+  "name": "ihme-ui-starter",
+  "version": "1.0.0",
+  "description": "Minimum required dependencies to run ihme-ui",
+  "main": "app.js",
+  "scripts": {
+    "bundle": "webpack"
+  },
+  "author": "Gabe Medrash <gmedrash@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "ihme-ui": "*",
+    "react": "*",
+    "react-dom": "*"
+  },
+  "devDependencies": {
+    "babel-loader": "*",
+    "babel-plugin-transform-object-rest-spread": "*",
+    "babel-polyfill": "*",
+    "babel-preset-es2015-webpack": "*",
+    "babel-preset-react": "*",
+    "webpack": "^2.1.0-beta"
+  }
+}

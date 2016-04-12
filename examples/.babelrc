@@ -1,0 +1,7 @@
+{
+  "presets": ["es2015-webpack", "react"],
+  "plugins": ["transform-object-rest-spread"],
+  "ignore": [
+    "node_modules/"
+  ]
+}
