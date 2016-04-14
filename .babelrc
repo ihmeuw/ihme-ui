@@ -18,6 +18,7 @@
   },
   "plugins": ["transform-object-rest-spread", "transform-runtime"],
   "ignore": [
-    "node_modules/"
+    "node_modules/",
+    "src/test-utils/assets/"
   ]
 }

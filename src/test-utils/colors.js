@@ -1,3 +1,6 @@
+import { scaleLinear } from 'd3-scale';
+import { generateColorDomain } from '../utils';
+
 /**
  * 11 step diverging color scale
  * take from colorbrewer (http://colorbrewer2.org/)
@@ -15,3 +18,15 @@ export const colorSteps = [
   '#4575b4',
   '#313695' // dark blue
 ];
+
+/**
+ * Basic, clamped, linear color scale
+ * @param {Array} domain -> [min, max]
+ * @returns {*}
+ */
+export const baseColorScale = (domain = [0, 1]) => {
+  return scaleLinear()
+    .domain(generateColorDomain(colorSteps, domain))
+    .range(colorSteps)
+    .clamp(true);
+};
