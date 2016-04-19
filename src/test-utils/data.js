@@ -46,17 +46,17 @@ export const dataGenerator = (config = {}) => {
   const yearProducer = {
     initYear: startYear,
     currYear: startYear - length,
-    next: function() {
+    next() {
       this.currYear++;
       return this.currYear;
     }
   };
 
   const trend = {
-    increasing: (p) => {return p + linearGen();},
-    decreasing: (p) => {return p - linearGen();},
-    exponentialGrowth: (p) => {return p * expGen();},
-    exponentialDecay: (p) => {return p * 1 / expGen();}
+    increasing(p) { return p + linearGen(); },
+    decreasing(p) { return p - linearGen(); },
+    exponentialGrowth(p) { return p * expGen(); },
+    exponentialDecay(p) { return p * 1 / expGen(); }
   };
 
   let prev = intitialValue;
