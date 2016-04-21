@@ -1,0 +1,6 @@
+.common {
+  position: absolute;
+  z-index: 1000;
+  top: 1em;
+  left: 1em;
+}
