@@ -15,10 +15,10 @@ const propTypes = {
   data: PropTypes.object.isRequired,
 
   /* unique key of datum */
-  keyField: PropTypes.string.isRequired,
+  keyField: PropTypes.string,
 
   /* key of datum that holds the value to display */
-  valueField: PropTypes.string.isRequired,
+  valueField: PropTypes.string,
 
   /* function to generate `d` attribute of <path> elements */
   pathGenerator: PropTypes.func.isRequired,
@@ -59,13 +59,21 @@ const Layer = (props) => {
     <g>
       {
         map(features, (feature) => {
-          const key = feature[keyField];
+          const key = feature.hasOwnProperty(keyField)
+            ? feature[keyField]
+            : feature.properties[keyField];
+          if (!key) return null;
+
+          const fill = data.hasOwnProperty(key) && data[key].hasOwnProperty(valueField)
+            ? colorScale(data[key][valueField])
+            : '#ccc';
+
           return (
             <Path
               key={key}
               d={pathGenerator(feature.geometry)}
               locationId={key}
-              fill={colorScale(data[key][valueField])}
+              fill={fill}
               selected={includes(selectedLocations, key)}
               clickHandler={clickHandler}
               hoverHandler={hoverHandler}

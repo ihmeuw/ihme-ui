@@ -12,9 +12,7 @@ chai.use(chaiEnzyme());
 
 describe('Choropleth <Layer />', () => {
   // for some reason features 72 and 78 are wonky, so filter them out
-  const features = getGeoJSON().features.filter(feature => {
-    return feature.id !== 72 && feature.id !== 78;
-  });
+  const features = getGeoJSON().features;
 
   // keyField references the id field on the returned geoJSON
   const keyField = 'id';
