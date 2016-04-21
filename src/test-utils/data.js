@@ -73,11 +73,11 @@ export const dataGenerator = (config = {}) => {
           val = newVal;
           break;
         case 'mixed':
-          useNum = random.randomUniform()() < 0.75 ? true : false; // 75% chance of true
+          useNum = random.randomUniform()() < 0.75; // 75% chance of true
           val = useNum ? newVal : null;
           break;
         case 'worst':
-          useNum = random.randomUniform()() < 0.25 ? true : false; // 25% chance of true
+          useNum = random.randomUniform()() < 0.25; // 25% chance of true
           val = useNum ? newVal : null;
           break;
         default:
