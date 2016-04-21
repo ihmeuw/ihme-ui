@@ -1,5 +1,5 @@
 import topojson from 'topojson';
-import usTopoJSON from './assets/usTopoJSON';
+import usTopoJSON from './assets/usaTopoJSON';
 
 export const getTopoJSON = () => {
   return usTopoJSON;
