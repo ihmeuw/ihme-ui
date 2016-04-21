@@ -4,3 +4,4 @@ src/**/demo*
 ./test-utils/
 ./utils/
 ./index.js
+./src/test-utils/assets/usaTopoJSON.js
