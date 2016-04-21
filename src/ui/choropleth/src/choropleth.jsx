@@ -40,6 +40,8 @@ const propTypes = {
   /* height of containing element, in px */
   height: PropTypes.number,
 
+  scaleFactor: PropTypes.number,
+
   /*
     function called by d3.behavior.zoom;
     called with current _zoomBehavior scale and translate
@@ -58,6 +60,7 @@ const defaultProps = {
   selectedLocations: [],
   width: 600,
   height: 400,
+  scaleFactor: 1.5,
   zoomHandler() { return; }
 };
 
@@ -79,23 +82,7 @@ export default class Choropleth extends React.Component {
       .translate(initialTranslate)
       .scale(initialScale)
       .on('zoom', () => {
-        const { scale, translate } = this.state;
-
-        // keep track of difference between current zoomBehavior scale and
-        // the scale of the geometries that would roughly fit the bounds of the container
-        const deltaScale = this._zoomBehavior.scale() - scale;
-
-        // keep track of difference between current zoomBehavior translate and
-        // the translation of the geometries that would center the map within the container
-        const deltaTranslate = [
-          this._zoomBehavior.translate()[0] - translate[0],
-          this._zoomBehavior.translate()[1] - translate[1]
-        ];
-
-        this.setState({
-          deltaScale,
-          deltaTranslate
-        }, () => {
+        this.forceUpdate(() => {
           props.zoomHandler.call(null, this._zoomBehavior.scale, this._zoomBehavior.translate);
         });
       });
@@ -121,9 +108,7 @@ export default class Choropleth extends React.Component {
       {
         pathGenerator: d3.geo.path().projection(simplify),
         scale: initialScale,
-        deltaScale: 0,
         translate: initialTranslate,
-        deltaTranslate: [0, 0]
       },
       processedJSON,
       this.processData(props.data, props.keyField)
@@ -132,13 +117,19 @@ export default class Choropleth extends React.Component {
     // bind `this`
     this.storeRef = this.storeRef.bind(this);
     this.zoomIn = () => {
-      this.zoom.call(this, 'in');
+      this.updateZoomBehavior.call(this, {
+        direction: 'in'
+      });
     };
     this.zoomOut = () => {
-      this.zoom.call(this, 'out');
+      this.updateZoomBehavior.call(this, {
+        direction: 'out'
+      });
     };
     this.zoomReset = () => {
-      this.zoom.call(this, 'reset');
+      this.updateZoomBehavior.call(this, {
+        direction: 'reset'
+      });
     };
   }
 
@@ -167,11 +158,11 @@ export default class Choropleth extends React.Component {
       const bounds = topologyHasChanged ? newState.bounds : this.state.bounds;
       const scale = this.calcScale(bounds, newProps.width, newProps.height);
       const translate = this.calcTranslate(
-        newProps.width,
-        newProps.height,
-        scale,
-        bounds
-      );
+          newProps.width,
+          newProps.height,
+          scale,
+          bounds
+        );
 
       assign(newState, { scale, translate });
     }
@@ -181,7 +172,17 @@ export default class Choropleth extends React.Component {
 
     // if newState has any own and enumerable properties, update internal state
     // afterwards, make certain _zoomBehavior is in-sync with component state
-    if (Object.keys(newState).length) this.setState(newState, this.updateZoomBehavior);
+
+    if (Object.keys(newState).length) {
+      this.setState(newState, () => {
+        this.updateZoomBehavior({
+          direction: 'constant',
+          forceUpdate: false,
+          width: newProps.width,
+          height: newProps.height
+        });
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -243,67 +244,45 @@ export default class Choropleth extends React.Component {
     ];
   }
 
-  updateZoomBehavior() {
-    const { scale, deltaScale, translate, deltaTranslate } = this.state;
+  updateZoomBehavior({
+    direction,
+    forceUpdate = true,
+    width = this.props.width,
+    height = this.props.height
+  }) {
+    const { scaleFactor } = this.props;
+    const { scale: originalScale, translate: originalTranslate } = this.state;
+    const currentScale = this._zoomBehavior.scale();
 
-    // scale and translate the zoomBehavior behavior
-    this._zoomBehavior
-      .translate([
-        translate[0] + deltaTranslate[0],
-        translate[1] + deltaTranslate[1]
-      ])
-      .scale(scale * deltaScale);
-
-    this._svgSelection.call(this._zoomBehavior.event);
-  }
-
-  zoom(direction) {
-    const { width, height } = this.props;
-    const { scale, translate } = this.state;
-    let deltaScale = Math.abs(this.state.deltaScale);
-
-    // if deltaScale is below -1e4, set to zero
-    deltaScale = deltaScale < 0.01 ? 0 : deltaScale;
-
+    let newScale;
+    let newTranslate;
     const center = this.calcCenterPoint();
-    const newState = {};
-    let adjustedScale;
-    let adjustedTranslate;
 
     switch (direction) {
       case 'in':
-        // initially, deltaScale = 0
-        if (!deltaScale) deltaScale = scale * 0.05;
-
-        newState.deltaScale = deltaScale * 1.5;
-        adjustedScale = scale + newState.deltaScale;
-        adjustedTranslate = this.calcTranslate(width, height, adjustedScale, null, center);
-        newState.deltaTranslate = [
-          adjustedTranslate[0] - translate[0],
-          adjustedTranslate[1] - translate[1]
-        ];
+        newScale = currentScale * scaleFactor;
+        newTranslate = this.calcTranslate(width, height, newScale, null, center);
         break;
       case 'out':
-        // initially, deltaScale = 0
-        if (!deltaScale) deltaScale = -(scale * 0.05);
-
-        newState.deltaScale = deltaScale / 1.5;
-        adjustedScale = scale + newState.deltaScale;
-        adjustedTranslate = this.calcTranslate(width, height, adjustedScale, null, center);
-        newState.deltaTranslate = [
-          adjustedTranslate[0] - translate[0],
-          adjustedTranslate[1] - translate[1]
-        ];
+        newScale = currentScale / scaleFactor;
+        newTranslate = this.calcTranslate(width, height, newScale, null, center);
         break;
-      case 'reset': // FALL THROUGH
+      case 'reset':
+        newScale = originalScale;
+        newTranslate = originalTranslate;
+        break;
+      case 'constant':
       default:
-        newState.deltaScale = 0;
-        newState.deltaTranslate = [0, 0];
+
     }
 
-    // store new state
-    // afterwards sync zoomBehavior with component state
-    this.setState(newState, this.updateZoomBehavior);
+    // scale and translate the zoomBehavior behavior
+    this._zoomBehavior
+      .translate(newTranslate)
+      .scale(newScale);
+
+    this._svgSelection.call(this._zoomBehavior.event);
+    if (forceUpdate) this.forceUpdate();
   }
 
   /**
