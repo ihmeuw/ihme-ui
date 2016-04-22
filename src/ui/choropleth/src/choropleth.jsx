@@ -174,12 +174,16 @@ export default class Choropleth extends React.Component {
     // afterwards, make certain _zoomBehavior is in-sync with component state
 
     if (Object.keys(newState).length) {
+      const prevWidth = this.props.width;
+      const prevHeight = this.props.height;
       this.setState(newState, () => {
         this.updateZoomBehavior({
           direction: 'constant',
           forceUpdate: false,
           width: newProps.width,
-          height: newProps.height
+          height: newProps.height,
+          prevWidth,
+          prevHeight
         });
       });
     }
@@ -248,7 +252,9 @@ export default class Choropleth extends React.Component {
     direction,
     forceUpdate = true,
     width = this.props.width,
-    height = this.props.height
+    height = this.props.height,
+    prevWidth,
+    prevHeight
   }) {
     const { scaleFactor } = this.props;
     const { scale: originalScale, translate: originalTranslate } = this.state;
@@ -273,6 +279,12 @@ export default class Choropleth extends React.Component {
         break;
       case 'constant':
       default:
+        // takes the ratio of the new area and the old area of the windows.
+        // if the new area is smaller than the old area then the new scale
+        // will be proporitinally smaller than the old scale cause a zoom out
+        // and vice versa when the new area is larger than the old area.
+        newScale = currentScale * (width * height) / (prevWidth * prevHeight);
+        newTranslate = this.calcTranslate(width, height, newScale, null, center);
 
     }
 
