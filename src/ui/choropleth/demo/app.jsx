@@ -88,7 +88,7 @@ class App extends React.Component {
     return (
       <div>
         <Choropleth
-          layers={showSubnational ? ['states'] : ['country']}
+          layers={showSubnational ? [{ name: 'states', type: 'feature' }] : [{ name: 'country', type: 'feature' }, { name: 'states', type: 'mesh'}]}
           topology={topology}
           data={data}
           keyField={keyField}

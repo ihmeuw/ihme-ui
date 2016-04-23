@@ -6,7 +6,7 @@ import {
   getLocationIds
 } from '../geography';
 
-describe('geography', () => {
+describe('Geo test-utils', () => {
   it('returns topojson', () => {
     expect(getTopoJSON()).to.be.an('object')
       .and.to.include.keys(['arcs', 'objects', 'transform'])

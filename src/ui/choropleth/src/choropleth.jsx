@@ -1,15 +1,27 @@
 import React, { PropTypes } from 'react';
 import d3 from 'd3';
 import topojson from 'topojson';
-import { mapValues, assign, keyBy, reduce } from 'lodash';
+import { assign, keyBy } from 'lodash';
+import { extractGeoJSON, concatGeoJSON, computeBounds } from '../../../utils';
 
 import style from './choropleth.css';
-import Layer from './layer';
+import FeatureLayer from './feature-layer';
+import Path from './path';
 import Controls from './controls';
 
 const propTypes = {
   /* layers to display */
-  layers: PropTypes.arrayOf(PropTypes.string),
+  layers: PropTypes.arrayOf(PropTypes.shape({
+    // name corresponding to key within topojson objects collection
+    name: PropTypes.string,
+
+    // whether the layer should be a feature collection or mesh grid
+    type: PropTypes.oneOf(['feature', 'mesh']),
+
+    // optional function to filter mesh grid, passed adjacent geometries
+    // refer to https://github.com/mbostock/topojson/wiki/API-Reference#mesh
+    filterFn: PropTypes.func
+  })),
 
   /* full topojson */
   topology: PropTypes.shape({
@@ -68,7 +80,7 @@ export default class Choropleth extends React.Component {
   constructor(props) {
     super(props);
 
-    const processedJSON = this.processJSON(props.topology);
+    const processedJSON = this.processJSON(props.topology, props.layers);
     const initialScale = this.calcScale(processedJSON.bounds, props.width, props.height);
     const initialTranslate = this.calcTranslate(
       props.width,
@@ -302,37 +314,24 @@ export default class Choropleth extends React.Component {
    * measure it's full bounds
    * and extract its layers as geoJSON
    * @param {Object} geo -> valid topojson
+   * @param {Array} layers -> layers to include
    * @return {Object}
    */
-  processJSON(topology) {
+  processJSON(topology, layers) {
     // topojson::presimplify adds z dimension to arcs
     // used for dynamic simplification
     const simplifiedTopoJSON = topojson.presimplify(topology);
 
-    // transform each object in TopoJSON into GeoJSON
-    const extractedGeoJSON = mapValues(simplifiedTopoJSON.objects, (layer) => {
-      return topojson.feature(simplifiedTopoJSON, layer);
-    });
+    const extractedGeoJSON = extractGeoJSON(simplifiedTopoJSON, layers);
 
     return {
       simplifiedTopoJSON,
       // store projected bounding box (in pixel space)
       // of entire geometry
       // returns [[left, top], [right, bottom]]
-      bounds: d3.geo.path().projection(null).bounds({
+      bounds: computeBounds({
         type: 'FeatureCollection',
-        features: reduce(extractedGeoJSON, (collection, obj) => {
-          // topojson::feature will only return GeoJSON Feature or FeatureCollection
-          switch (obj.type) {
-            case 'FeatureCollection':
-              return collection.concat(obj.features);
-            case 'Feature':
-              collection.push(obj);
-              return collection;
-            default:
-              return collection;
-          }
-        }, [])
+        features: concatGeoJSON(extractedGeoJSON)
       }),
       ...extractedGeoJSON
     };
@@ -365,11 +364,22 @@ export default class Choropleth extends React.Component {
 
     const { processedData, pathGenerator } = this.state;
 
-    return layers.map(layer => {
+    return layers.map((layer) => {
+      const key = `${layer.type}-${layer.name}`;
+
+      if (layer.type === 'mesh') {
+        return (
+          <Path
+            key={key}
+            d={pathGenerator(this.state[layer.type][layer.name])}
+            fill="none"
+          />
+        );
+      }
       return (
-        <Layer
-          key={layer}
-          features={this.state[layer].features}
+        <FeatureLayer
+          key={key}
+          features={this.state[layer.type][layer.name].features}
           data={processedData}
           keyField={keyField}
           valueField={valueField}
@@ -380,7 +390,7 @@ export default class Choropleth extends React.Component {
           hoverHandler={hoverHandler}
         />
       );
-    });
+    }, this);
   }
 
   render() {

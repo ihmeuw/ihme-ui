@@ -5,14 +5,13 @@ import { shallow } from 'enzyme';
 import d3 from 'd3';
 import { getGeoJSON, getLocationIds, baseColorScale } from '../../../test-utils';
 
-import Layer from '../src/layer';
+import FeatureLayer from '../src/feature-layer';
 import Path from '../src/path';
 
 chai.use(chaiEnzyme());
 
-describe('Choropleth <Layer />', () => {
-  // for some reason features 72 and 78 are wonky, so filter them out
-  const features = getGeoJSON().features;
+describe('Choropleth <FeatureLayer />', () => {
+  const features = getGeoJSON('states', 'feature').features;
 
   // keyField references the id field on the returned geoJSON
   const keyField = 'id';
@@ -33,9 +32,9 @@ describe('Choropleth <Layer />', () => {
 
   const pathGenerator = d3.geo.path();
 
-  it('creates a path for each feature', () => {
+  it('creates a path for each feature given a collection of features', () => {
     const wrapper = shallow(
-      <Layer
+      <FeatureLayer
         features={features}
         data={data}
         keyField={keyField}

@@ -6,7 +6,7 @@ const propTypes = {
   d: PropTypes.string.isRequired,
 
   /* locationId identifying this geometry */
-  locationId: PropTypes.number.isRequired,
+  locationId: PropTypes.number,
 
   /* fill of path */
   fill: PropTypes.string,

@@ -11,7 +11,16 @@ chai.use(chaiEnzyme());
 
 describe('<Choropleth />', () => {
   const keyField = 'locationId';
-  const data = dataGenerator({ length: 10, keyField });
+  const valueField = 'mean';
+  const data = dataGenerator({
+    length: 10,
+    keyField,
+    valueField
+  });
+  const layers = [
+    { name: 'country', type: 'feature' },
+    { name: 'states', type: 'mesh', filterFn(a, b) { return a !== b; } }
+  ];
   const geo = getTopoJSON();
 
   describe('class helper methods', () => {
@@ -32,21 +41,31 @@ describe('<Choropleth />', () => {
           .that.is.an('object');
       });
     });
+  });
 
-    it('extracts topojson objects into geoJSON', () => {
-      const result = Choropleth.prototype.processJSON(geo);
+  describe('component', () => {
+    let wrapper;
+    const noop = () => { return; };
 
-      // basic expectation of wrapper
-      expect(result)
-        .to.be.an('object')
-        .and.to.have.all.keys(['simplifiedTopoJSON', 'bounds', 'country', 'states']);
+    beforeEach(() => {
+      wrapper = shallow(
+        <Choropleth
+          layers={layers}
+          topology={geo}
+          data={data}
+          keyField={keyField}
+          valueField={valueField}
+          colorScale={noop}
+          width={960}
+          height={500}
+        />
+      );
+    });
 
-      // bounds are nested array of [[left, top], [right, bottom]]
-      expect(result.bounds).to.be.an('array')
-        .that.has.deep.property('[0]')
-        .that.is.an('array')
-        .that.has.deep.property('[0]')
-        .that.is.a('number');
+    it('should have an svg and some controls', () => {
+      expect(wrapper).to.have.tagName('div');
+      expect(wrapper).to.have.descendants('svg');
+      expect(wrapper).to.have.descendants('Controls');
     });
   });
 });

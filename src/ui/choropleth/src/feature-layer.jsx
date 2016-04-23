@@ -23,7 +23,7 @@ const propTypes = {
   /* function to generate `d` attribute of <path> elements */
   pathGenerator: PropTypes.func.isRequired,
 
-  /* fn that accepts keyfield, and returns stroke color for line */
+  /* fn that accepts keyfield, and returns fill color for Path */
   colorScale: PropTypes.func.isRequired,
 
   /* array of datum[keyField], e.g., location ids */
@@ -42,7 +42,7 @@ const defaultProps = {
   selectedLocations: []
 };
 
-const Layer = (props) => {
+const FeatureLayer = (props) => {
   const {
     features,
     pathGenerator,
@@ -85,7 +85,7 @@ const Layer = (props) => {
   );
 };
 
-Layer.propTypes = propTypes;
-Layer.defaultProps = defaultProps;
+FeatureLayer.propTypes = propTypes;
+FeatureLayer.defaultProps = defaultProps;
 
-export default Layer;
+export default FeatureLayer;

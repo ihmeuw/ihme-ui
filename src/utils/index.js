@@ -23,3 +23,9 @@ export {
 export {
   eventHandleWrapper
 } from './events';
+
+export {
+  extractGeoJSON,
+  concatGeoJSON,
+  computeBounds
+} from './geo';
