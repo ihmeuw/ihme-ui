@@ -1,0 +1,85 @@
+.slider {
+  position: relative;
+  box-sizing: border-box;
+}
+
+.rounded {
+  border-radius: 4px;
+}
+
+.track {
+  composes: rounded;
+  box-sizing: border-box;
+  position: absolute;
+  width: 100%;
+  height: 5px;
+  border: 1px solid;
+  top: 20px;
+  transform: translate(-1px, 0);
+}
+
+.flag {
+  position: absolute;
+  top: 2px;
+  min-width: 20px;
+  width: auto;
+  height: 14px;
+  font-size: 8pt;
+  text-align: center;
+  vertical-align: middle;
+  color: white;
+  background-color: #27ae60;
+  transition: left 0.3s ease-out;
+}
+
+.flag.left {
+  transform: translate(-100%, 0px);
+  border-radius: 4px 0 0 4px;
+}
+
+.flag.left:after {
+  right: 0;
+  border-color: #27ae60 #27ae60 transparent transparent;
+}
+
+.flag.right {
+  transform: translate(0px, 0px);
+  border-radius: 0 4px 4px 0;
+}
+
+.flag.right:after {
+  left: 0;
+  border-color: #27ae60 transparent transparent #27ae60;
+}
+
+.flag.left:after,
+.flag.right:after {
+  content: "";
+  position: absolute;
+  font-size: 0;
+  top: 14px;
+  border-style: solid;
+  border-width: 4px 3px 4px 3px;
+}
+
+.flag.middle {
+  transform: translate(-50%, 0px);
+  border-radius: 4px;
+}
+
+.flag.middle:after {
+  content: "";
+  position: absolute;
+  top: 14px;
+  left: calc(50% - 6px);
+  border-width: 8px 6px 8px 6px;
+  border-style: solid;
+  border-color: #27ae60 transparent transparent transparent;
+}
+
+.flag span {
+  padding: 4px;
+  vertical-align: middle;
+  cursor: ew-resize;
+  pointer-events: all;
+}
