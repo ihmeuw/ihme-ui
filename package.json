@@ -67,7 +67,7 @@
     "jsdom": "^8.1.0",
     "mocha": "^2.3.4",
     "postcss-loader": "^0.8.2",
-    "react-addons-test-utils": "^0.14.7",
+    "react-addons-test-utils": "^15.0.2",
     "react-dom": "^15.0.1",
     "sinon": "^1.17.3",
     "style-loader": "^0.13.0",
