@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import d3Scale from 'd3-scale';
 import interact from 'interact.js';
-import { assignIn } from 'lodash';
+import { assignIn, bindAll } from 'lodash';
 
 import Track from './track';
 import Handle from './handle';
@@ -47,10 +47,12 @@ export default class Slider extends React.Component {
       .clamp(true)
       .domain([this.props.minValue, this.props.maxValue]);
 
-    this.onHandleMove = this.onHandleMove.bind(this);
-    this.onHandleEnd = this.onHandleEnd.bind(this);
-    this.renderHandle = this.renderHandle.bind(this);
-    this.bindInteract = this.bindInteract.bind(this);
+    bindAll(this, [
+      'onHandleMove',
+      'onHandleEnd',
+      'renderHandle',
+      'bindInteract'
+    ]);
   }
 
   onHandleEnd(event) {
