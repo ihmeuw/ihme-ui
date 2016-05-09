@@ -45,7 +45,8 @@ export default class Slider extends React.Component {
 
     this.scale = d3Scale.scaleLinear()
       .clamp(true)
-      .domain([this.props.minValue, this.props.maxValue]);
+      .domain([this.props.minValue, this.props.maxValue])
+      .range([0, this.props.width]);
 
     bindAll(this, [
       'onHandleMove',
@@ -63,7 +64,7 @@ export default class Slider extends React.Component {
 
   onHandleMove(key, offset) {
     return (event) => {
-      const value = this.scale.invert((event.pageX + offset) / this.props.width);
+      const value = this.scale.invert(event.pageX + offset);
 
       if (this.state.values[key] !== value) {
         const values = { ...this.state.values, [key]: value };
@@ -117,7 +118,7 @@ export default class Slider extends React.Component {
         <Handle
           key={ key }
           direction={ direction }
-          percentage={ this.scale(values[key]) }
+          position={ this.scale(values[key]) }
           onMove={ this.onHandleMove }
           name={ key }
           text={ values[key] }

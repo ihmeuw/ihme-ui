@@ -5,7 +5,7 @@ import style from './style.css';
 
 const propTypes = {
   direction: PropTypes.oneOf(['left', 'right', 'middle']),
-  percentage: PropTypes.number.isRequired,
+  position: PropTypes.number.isRequired,
   text: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number
@@ -32,7 +32,7 @@ export default class Handle extends React.Component {
     return (
       <div
         className={ classNames(style.flag, style[this.props.direction]) }
-        style={ { left: `${this.props.percentage * 100}%` } }
+        style={ { left: `${this.props.position}px` } }
         ref="handle"
       >
         <span>
