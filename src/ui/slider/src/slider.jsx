@@ -55,15 +55,14 @@ export default class Slider extends React.Component {
     ]);
   }
 
-  onHandleEnd(event) {
-    const key = event.target.getAttribute('handleId');
-
-    this.props.onChange(key, this.state.values[key]);
+  onHandleEnd(key) {
+    return () => {
+      this.props.onChange(key, this.state.values[key]);
+    };
   }
 
-  onHandleMove(offset) {
+  onHandleMove(key, offset) {
     return (event) => {
-      const key = event.target.getAttribute('handleId');
       const value = this.scale.invert((event.pageX + offset) / this.props.width);
 
       if (this.state.values[key] !== value) {
@@ -80,8 +79,6 @@ export default class Slider extends React.Component {
     const { width, minValue, maxValue } = this.props;
     const { offset } = ref;
 
-    ref.refs.handle.setAttribute('handleId', ref.props.name);
-
     interact(ref.refs.handle)
       .origin('parent')
       .draggable({
@@ -97,8 +94,8 @@ export default class Slider extends React.Component {
         }
       })
       .styleCursor(false)
-      .on('dragmove', this.onHandleMove(-offset))
-      .on('dragend', this.onHandleEnd);
+      .on('dragmove', this.onHandleMove(ref.props.name, -offset))
+      .on('dragend', this.onHandleEnd(ref.props.name));
   }
 
   renderHandle() {
