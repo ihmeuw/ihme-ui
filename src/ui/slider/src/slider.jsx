@@ -9,14 +9,8 @@ import Handle from './handle';
 import style from './style.css';
 
 const propTypes = {
-  height: PropTypes.oneOfType([
-    PropTypes.number,
-    PropTypes.string
-  ]),
-  width: PropTypes.oneOfType([
-    PropTypes.number,
-    PropTypes.string
-  ]),
+  height: PropTypes.number,
+  width: PropTypes.number,
   minValue: PropTypes.number.isRequired,
   maxValue: PropTypes.number.isRequired,
   value: PropTypes.oneOfType([
@@ -34,17 +28,6 @@ const defaultProps = {
   width: 200
 };
 
-function getDimension(dim) {
-  if (typeof dim === 'string') {
-    return dim;
-  }
-  return `${dim}px`;
-}
-
-function calcPercentageFromValue(value, minValue, maxValue) {
-  return (value - minValue) / (maxValue - minValue);
-}
-
 export default class Slider extends React.Component {
   constructor(props) {
     super(props);
@@ -60,18 +43,13 @@ export default class Slider extends React.Component {
       values
     };
 
-    this.scale1 = d3Scale.scaleLinear()
-      .clamp(true)
-      .domain([this.props.minValue, this.props.maxValue]);
-
     this.scale = d3Scale.scaleLinear()
       .clamp(true)
-      .range([this.props.minValue, this.props.maxValue]);
+      .domain([this.props.minValue, this.props.maxValue]);
 
     this.onHandleMove = this.onHandleMove.bind(this);
     this.onHandleEnd = this.onHandleEnd.bind(this);
     this.renderHandle = this.renderHandle.bind(this);
-    this.setWidthFromRef = this.setWidthFromRef.bind(this);
     this.bindInteract = this.bindInteract.bind(this);
   }
 
@@ -84,7 +62,7 @@ export default class Slider extends React.Component {
   onHandleMove(offset) {
     return (event) => {
       const key = event.target.getAttribute('handleId');
-      const value = this.scale(event.snap.x + offset);
+      const value = this.scale.invert((event.pageX + offset) / this.props.width);
 
       if (this.state.values[key] !== value) {
         const values = { ...this.state.values, [key]: value };
@@ -96,15 +74,8 @@ export default class Slider extends React.Component {
     };
   }
 
-  setWidthFromRef(ref) {
-    const { clientRect: { width } } = ref;
-
-    this.width = width;
-    this.scale.domain([0, width]);
-  }
-
   bindInteract(ref) {
-    const { minValue, maxValue } = this.props;
+    const { width, minValue, maxValue } = this.props;
     const { offset } = ref;
 
     ref.refs.handle.setAttribute('handleId', ref.props.name);
@@ -116,7 +87,7 @@ export default class Slider extends React.Component {
         snap: {
           targets: [
             interact.createSnapGrid({
-              x: this.width / (maxValue - minValue),
+              x: width / (maxValue - minValue),
               offset: { x: offset },
               range: Infinity
             })
@@ -129,7 +100,6 @@ export default class Slider extends React.Component {
   }
 
   renderHandle() {
-    const { minValue, maxValue } = this.props;
     const { values } = this.state;
 
     const keys = Object.keys(this.state.values);
@@ -148,7 +118,7 @@ export default class Slider extends React.Component {
         <Handle
           key={ key }
           direction={ direction }
-          percentage={ calcPercentageFromValue(values[key], minValue, maxValue) }
+          percentage={ this.scale(values[key]) }
           onMove={ this.onHandleMove }
           name={ key }
           text={ values[key] }
@@ -164,9 +134,9 @@ export default class Slider extends React.Component {
     return (
       <div
         className={ style.slider }
-        style={ { height: getDimension(height), width: getDimension(width) } }
+        style={ { height: `${height}px`, width: `${width}px` } }
       >
-        <Track ref={ this.setWidthFromRef } />
+        <Track />
         { this.renderHandle() }
       </div>
     );
