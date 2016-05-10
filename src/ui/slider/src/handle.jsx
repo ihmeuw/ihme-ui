@@ -3,6 +3,8 @@ import classNames from 'classnames';
 import interact from 'interact.js';
 import { identity } from 'lodash';
 
+import { getSnapTargetFunc } from './util';
+
 import style from './style.css';
 
 const propTypes = {
@@ -26,18 +28,6 @@ const defaultProps = {
   direction: 'middle',
   labelFunc: identity
 };
-
-function getSnapTargetFunc(snapTarget, snapGridArgs = {}) {
-  if (typeof snapTarget === 'function') {
-    return snapTarget;
-  } else if (typeof snapTarget === 'object') {
-    return interact.createSnapGrid({
-      ...snapGridArgs,
-      ...snapTarget
-    });
-  }
-  return null;
-}
 
 function getOffset(direction, width) {
   if (direction === 'left') {
