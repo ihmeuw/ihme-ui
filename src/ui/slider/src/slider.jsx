@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import d3Scale from 'd3-scale';
-import { assignIn, bindAll } from 'lodash';
+import { assignIn, bindAll, identity } from 'lodash';
 
 import Track from './track';
 import Handle from './handle';
@@ -19,12 +19,14 @@ const propTypes = {
       max: PropTypes.number
     })
   ]).isRequired,
+  labelFunc: PropTypes.func,
   onChange: PropTypes.func.isRequired
 };
 
 const defaultProps = {
   height: 24,
-  width: 200
+  width: 200,
+  labelFunc: identity
 };
 
 export default class Slider extends React.Component {
@@ -99,6 +101,7 @@ export default class Slider extends React.Component {
           onMove={ this.onHandleMove }
           onEnd={ this.onHandleEnd }
           label={ values[key] }
+          labelFunc={ this.props.labelFunc }
           snapTarget={ { x: width / (maxValue - minValue) } }
         />
       );

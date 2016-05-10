@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import interact from 'interact.js';
-import { bindAll } from 'lodash';
+import { bindAll, identity } from 'lodash';
 
 import style from './style.css';
 
@@ -12,6 +12,7 @@ const propTypes = {
     PropTypes.string,
     PropTypes.number
   ]).isRequired,
+  labelFunc: PropTypes.func,
   name: PropTypes.string.isRequired,
   onMove: PropTypes.func.isRequired,
   onEnd: PropTypes.func.isRequired,
@@ -22,7 +23,8 @@ const propTypes = {
 };
 
 const defaultProps = {
-  direction: 'middle'
+  direction: 'middle',
+  labelFunc: identity
 };
 
 function getSnapTargetFunc(snapTarget, snapGridArgs = {}) {
@@ -82,7 +84,7 @@ export default class Handle extends React.Component {
         ref={ this.bindInteract }
       >
         <span>
-          { this.props.label }
+          { this.props.labelFunc(this.props.label) }
         </span>
       </div>
     );
