@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import cuid from 'cuid';
 
-function dataGenerator(config = {}) {
+export const dataGenerator = (config = {}) => {
   const {
     primaryKeys = [
       { name: 'Sex', values: [1, 2, 3] },
@@ -9,9 +9,9 @@ function dataGenerator(config = {}) {
       { name: 'Location', values: [1, 2, 3] },
     ],
     valueKeys = [
-      { name: 'Income', range: [100, 200] },
-      { name: 'ubIncome', range: [110, 230] },
-      { name: 'lbIncome', range: [90, 170] },
+      { name: 'mean', range: [100, 200] },
+      { name: 'ub', range: [110, 230] },
+      { name: 'lb', range: [90, 170] },
       { name: 'Population', range: [200, 500] }
     ],
     year = 2000,
@@ -71,14 +71,12 @@ function dataGenerator(config = {}) {
       const idObj = { id: cuid() };
       const yObj = { year: year + i };
       const vObj = {};
-      _.forEach(valueData, (col) => {
-        Object.assign(vObj, col[i]);
-      });
+      for (let j = 0; j < valueData.length; j++) {
+        Object.assign(vObj, valueData[j][i]);
+      }
       rows.push(Object.assign({}, idObj, k, yObj, vObj));
     }
   });
 
   return rows;
-}
-
-export default dataGenerator;
+};
