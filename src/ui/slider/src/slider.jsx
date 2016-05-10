@@ -118,6 +118,7 @@ export default class Slider extends React.Component {
 
     if (this.state.values[key] !== value) {
       this.setState({ values: { ...values, [key]: value } });
+      this.props.onChange({ ...this.state.values }, key);
     }
   }
 
