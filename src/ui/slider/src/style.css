@@ -27,6 +27,7 @@
   font-size: 8pt;
   text-align: center;
   vertical-align: middle;
+  white-space: nowrap;
   color: white;
   background-color: #27ae60;
   transition: left 0.3s ease-out;
