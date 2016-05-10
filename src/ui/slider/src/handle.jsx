@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import interact from 'interact.js';
-import { bindAll, identity } from 'lodash';
+import { identity } from 'lodash';
 
 import style from './style.css';
 
@@ -53,14 +53,14 @@ export default class Handle extends React.Component {
     super(props);
 
     this.offset = 0;
-
-    bindAll(this, ['bindInteract']);
   }
 
-  bindInteract(ref) {
-    this.offset = getOffset(this.props.direction, ref.getBoundingClientRect().width);
+  componentDidMount() {
+    const { handle } = this.refs;
 
-    interact(ref)
+    this.offset = getOffset(this.props.direction, handle.getBoundingClientRect().width);
+
+    this._interactable = interact(handle)
       .origin('parent')
       .draggable({
         max: Infinity,
@@ -76,12 +76,16 @@ export default class Handle extends React.Component {
       .on('dragend', this.props.onEnd(this.props.name));
   }
 
+  componentWillUnmount() {
+    this._interactable.unset();
+  }
+
   render() {
     return (
       <div
         className={ classNames(style.flag, style[this.props.direction]) }
         style={ { left: `${this.props.position}px` } }
-        ref={ this.bindInteract }
+        ref="handle"
       >
         <span>
           { this.props.labelFunc(this.props.label) }
