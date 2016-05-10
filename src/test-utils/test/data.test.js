@@ -1,5 +1,5 @@
-const expect = require('chai').expect;
-const dataGenerator = require('./data');
+import { expect } from 'chai';
+import { dataGenerator } from '../data';
 
 describe('data generator', () => {
   it('returns an array', () => {
