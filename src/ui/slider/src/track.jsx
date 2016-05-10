@@ -14,9 +14,13 @@ const propTypes = {
 };
 
 export default class Track extends React.Component {
-  componentDidMount() {
-    const ref = this.refs.track;
+  constructor(props) {
+    super(props);
 
+    this.bindInteract = this.bindInteract.bind(this);
+  }
+
+  bindInteract(ref) {
     const snapTarget = getSnapTargetFunc(this.props.snapTarget);
 
     this._interactable = interact(ref)
@@ -36,7 +40,7 @@ export default class Track extends React.Component {
 
   render() {
     return (
-      <div ref="track" className={ style.track }></div>
+      <div ref={ this.bindInteract } className={ style.track }></div>
     );
   }
 }
