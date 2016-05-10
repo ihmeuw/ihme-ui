@@ -3,7 +3,7 @@ import { render } from 'react-dom';
 
 import Slider from '../';
 
-function onChange(key, value) {
+function onChange(value, key) {
   console.log(key, value);
 }
 

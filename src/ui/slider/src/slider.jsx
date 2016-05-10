@@ -59,7 +59,7 @@ export default class Slider extends React.Component {
 
   onHandleEnd(key) {
     return () => {
-      this.props.onChange(key, this.state.values[key]);
+      this.props.onChange({ ...this.state.values }, key);
     };
   }
 
