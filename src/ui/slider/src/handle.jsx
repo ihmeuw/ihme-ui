@@ -43,14 +43,14 @@ export default class Handle extends React.Component {
     super(props);
 
     this.offset = 0;
+
+    this.bindInteract = this.bindInteract.bind(this);
   }
 
-  componentDidMount() {
-    const { handle } = this.refs;
+  bindInteract(ref) {
+    this.offset = getOffset(this.props.direction, ref.getBoundingClientRect().width);
 
-    this.offset = getOffset(this.props.direction, handle.getBoundingClientRect().width);
-
-    this._interactable = interact(handle)
+    this._interactable = interact(ref)
       .origin('parent')
       .draggable({
         max: Infinity,
@@ -75,7 +75,7 @@ export default class Handle extends React.Component {
       <div
         className={ classNames(style.flag, style[this.props.direction]) }
         style={ { left: `${this.props.position}px` } }
-        ref="handle"
+        ref={ this.bindInteract }
       >
         <span>
           { this.props.labelFunc(this.props.label) }
