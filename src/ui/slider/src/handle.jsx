@@ -8,7 +8,7 @@ import style from './style.css';
 const propTypes = {
   direction: PropTypes.oneOf(['left', 'right', 'middle']),
   position: PropTypes.number.isRequired,
-  text: PropTypes.oneOfType([
+  label: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number
   ]).isRequired,
@@ -82,7 +82,7 @@ export default class Handle extends React.Component {
         ref={ this.bindInteract }
       >
         <span>
-          { this.props.text }
+          { this.props.label }
         </span>
       </div>
     );

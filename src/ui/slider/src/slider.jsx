@@ -98,7 +98,7 @@ export default class Slider extends React.Component {
           position={ this.scale(values[key]) }
           onMove={ this.onHandleMove }
           onEnd={ this.onHandleEnd }
-          text={ values[key] }
+          label={ values[key] }
           snapTarget={ { x: width / (maxValue - minValue) } }
         />
       );
