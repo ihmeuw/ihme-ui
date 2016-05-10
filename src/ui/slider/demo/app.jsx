@@ -7,6 +7,10 @@ function onChange(key, value) {
   console.log(key, value);
 }
 
+function labelFunc(label) {
+  return `Year: ${label}`
+}
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -21,6 +25,7 @@ class App extends React.Component {
         maxValue={ 2025 }
         onChange={ onChange }
         value={ { min: 2001, max: 2005 } }
+        labelFunc={ labelFunc }
       />
     );
   }
