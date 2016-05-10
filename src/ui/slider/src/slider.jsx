@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import d3Scale from 'd3-scale';
-import interact from 'interact.js';
 import { assignIn, bindAll } from 'lodash';
 
 import Track from './track';
@@ -51,8 +50,7 @@ export default class Slider extends React.Component {
     bindAll(this, [
       'onHandleMove',
       'onHandleEnd',
-      'renderHandle',
-      'bindInteract'
+      'renderHandle'
     ]);
   }
 
@@ -76,30 +74,8 @@ export default class Slider extends React.Component {
     };
   }
 
-  bindInteract(ref) {
-    const { width, minValue, maxValue } = this.props;
-    const { offset } = ref;
-
-    interact(ref.refs.handle)
-      .origin('parent')
-      .draggable({
-        max: Infinity,
-        snap: {
-          targets: [
-            interact.createSnapGrid({
-              x: width / (maxValue - minValue),
-              offset: { x: offset },
-              range: Infinity
-            })
-          ]
-        }
-      })
-      .styleCursor(false)
-      .on('dragmove', this.onHandleMove(ref.props.name, -offset))
-      .on('dragend', this.onHandleEnd(ref.props.name));
-  }
-
   renderHandle() {
+    const { width, maxValue, minValue } = this.props;
     const { values } = this.state;
 
     const keys = Object.keys(this.state.values);
@@ -117,12 +93,13 @@ export default class Slider extends React.Component {
       return (
         <Handle
           key={ key }
+          name={ key }
           direction={ direction }
           position={ this.scale(values[key]) }
           onMove={ this.onHandleMove }
-          name={ key }
+          onEnd={ this.onHandleEnd }
           text={ values[key] }
-          ref={ this.bindInteract }
+          snapTarget={ { x: width / (maxValue - minValue) } }
         />
       );
     });
