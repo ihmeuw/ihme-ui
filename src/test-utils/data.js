@@ -1,100 +1,84 @@
-import { map } from 'lodash';
+import _ from 'lodash';
 import cuid from 'cuid';
-import random from 'd3-random';
 
-/**
-* Random data generator
-* @param {Object} config -> configuration object with the following properties:
-*  {String} dataQuality -> one of 'best'|'worst'|'mixed'
-*    'best' = no data quality issues (no null or missing values)
-*    'worst' = a lot of data quality issues (lots of null or missing values)
-*    'mixed' = some null values
-*  {Number} length -> number of data
-*  {String} keyField -> a field of datum that uniquely identifies it
-*  {String} valueField -> a field of datum that holds the "primary" datum (e.g., 'value' or 'mean')
-*  {Boolean} useDates -> whether to use dates for valueField
-*  {Number} startYear -> if (useDates), values will start at startYear
-*  {Number} intitialValue -> seed output value
-*  {Number} changeFactor -> parameter to adjust shape of data
-*  {Number} initialDeviation -> parameter to adjust volitilty of data
-*  {String} dataTrend -> one of 'increasing'|'decreasing'|'exponentialGrowth'|'exponentialDecay'
-*  {Any} any other property that will be passed directly to individual datum
-* @return {Array} array of datum objects
-*/
-export const dataGenerator = (config = {}) => {
+function dataGenerator(config = {}) {
   const {
-    dataQuality = 'best',
-    length = 200,
-    keyField = 'location_id',
-    valueField = 'value',
-    useDates = false,
-    intitialValue = 25000,
-    changeFactor = 0.5,
-    initialDeviation = 0.5 * changeFactor * intitialValue,
-    dataTrend = 'increasing',
-    startYear = (new Date()).getFullYear(),
-    ...rest
+    primaryKeys = [
+      { name: 'Sex', values: [1, 2, 3] },
+      { name: 'Age', values: [1, 2, 3] },
+      { name: 'Location', values: [1, 2, 3] },
+    ],
+    valueKeys = [
+      { name: 'Income', range: [100, 200] },
+      { name: 'ubIncome', range: [110, 230] },
+      { name: 'lbIncome', range: [90, 170] },
+      { name: 'Population', range: [200, 500] }
+    ],
+    year = 2000,
+    length = 10
   } = config;
-  const ret = new Array(length);
-  const linearGen = random.randomNormal(
-    intitialValue * changeFactor,
-    initialDeviation * changeFactor
-  );
-  const expChange = Math.pow(1 / changeFactor, 1 / length);
-  const expGen = random.randomNormal(expChange, 0.01);
 
-  const yearProducer = {
-    initYear: startYear,
-    currYear: startYear - length,
-    next() {
-      this.currYear++;
-      return this.currYear;
-    }
-  };
-
-  const trend = {
-    increasing(p) { return p + linearGen(); },
-    decreasing(p) { return p - linearGen(); },
-    exponentialGrowth(p) { return p * expGen(); },
-    exponentialDecay(p) { return p * 1 / expGen(); }
-  };
-
-  let prev = intitialValue;
-
-  const valueProducer = (() => {
-    return () => {
-      const newVal = trend[dataTrend](prev);
-      prev = newVal;
-      let val;
-      let useNum;
-
-      switch (dataQuality) {
-        case 'best':
-          val = newVal;
-          break;
-        case 'mixed':
-          useNum = random.randomUniform()() < 0.75; // 75% chance of true
-          val = useNum ? newVal : null;
-          break;
-        case 'worst':
-          useNum = random.randomUniform()() < 0.25; // 25% chance of true
-          val = useNum ? newVal : null;
-          break;
-        default:
-          val = newVal;
-      }
-      return val;
-    };
-  })();
-
-  return map(ret, () => {
-    const value = valueProducer();
-    return {
-      [keyField]: useDates ? yearProducer.next() : cuid(), // collision-resistant string id
-      [valueField]: value,
-      ub: value + initialDeviation,
-      lb: value - initialDeviation,
-      ...rest
-    };
+  // Collect primary key values.
+  const keyStore = [];
+  _.forEach(primaryKeys, (k) => {
+    const keySpread = [];
+    _.forEach(k.values, (v) => {
+      const obj = {};
+      obj[k.name] = v;
+      keySpread.push(obj);
+    });
+    keyStore.push(keySpread);
   });
-};
+
+  // Create unique composite keys.
+  let uniqKeys = [{}];
+  _.forEach(keyStore, (keyValues) => {
+    const sto = [];
+    _.forEach(keyValues, (keyObj) => {
+      _.forEach(uniqKeys, (rowObj) => {
+        sto.push(Object.assign({}, rowObj, keyObj));
+      });
+    });
+    uniqKeys = sto;
+  });
+
+
+  function floor(number) {
+    return Math.floor(number * 10) / 10;
+  }
+
+  function delY(range) {
+    return length > 1 ? floor((range[1] - range[0]) / (length - 1)) : 0;
+  }
+
+  // Create data for value keys.
+  const valueData = [];
+  _.forEach(valueKeys, (valObj) => {
+    const col = [];
+    const dy = delY(valObj.range);
+    for (let i = 0; i < length; i++) {
+      const obj = {};
+      obj[valObj.name] = floor(valObj.range[0] + dy * i);
+      col.push(obj);
+    }
+    valueData.push(col);
+  });
+
+  // Populate rows.
+  const rows = [];
+  _.forEach(uniqKeys, (k) => {
+    for (let i = 0; i < length; i++) {
+      const idObj = { id: cuid() };
+      const yObj = { year: year + i };
+      const vObj = {};
+      _.forEach(valueData, (col) => {
+        Object.assign(vObj, col[i]);
+      });
+      rows.push(Object.assign({}, idObj, k, yObj, vObj));
+    }
+  });
+
+  return rows;
+}
+
+export default dataGenerator;
