@@ -52,6 +52,7 @@ export default class Slider extends React.Component {
     bindAll(this, [
       'onHandleMove',
       'onHandleEnd',
+      'onTrackClick',
       'renderHandle'
     ]);
   }
@@ -76,11 +77,26 @@ export default class Slider extends React.Component {
     };
   }
 
-  renderHandle() {
-    const { width, maxValue, minValue } = this.props;
+  onTrackClick(event) {
     const { values } = this.state;
 
-    const keys = Object.keys(this.state.values);
+    const value = this.scale.invert(event.snap.x);
+
+    /* Determine which handle is closer. 'min' == true, 'max' == false */
+    const comp = values.min !== undefined &&
+      (Math.abs(values.min - value) < Math.abs(values.max - value) || values.min > value);
+
+    const key = comp ? 'min' : 'max';
+
+    if (this.state.values[key] !== value) {
+      this.setState({ values: { ...values, [key]: value } });
+    }
+  }
+
+  renderHandle() {
+    const { values } = this.state;
+
+    const keys = Object.keys(values);
 
     return keys.map((key) => {
       let direction;
@@ -102,21 +118,26 @@ export default class Slider extends React.Component {
           onEnd={ this.onHandleEnd }
           label={ values[key] }
           labelFunc={ this.props.labelFunc }
-          snapTarget={ { x: width / (maxValue - minValue) } }
+          snapTarget={ this.snapTarget }
         />
       );
     });
   }
 
   render() {
-    const { height, width } = this.props;
+    const { height, width, minValue, maxValue } = this.props;
+
+    this.snapTarget = { x: width / (maxValue - minValue) };
 
     return (
       <div
         className={ style.slider }
         style={ { height: `${height}px`, width: `${width}px` } }
       >
-        <Track />
+        <Track
+          onClick={ this.onTrackClick }
+          snapTarget={ this.snapTarget }
+        />
         { this.renderHandle() }
       </div>
     );

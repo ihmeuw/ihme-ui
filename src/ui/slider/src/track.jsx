@@ -1,18 +1,37 @@
-import React from 'react';
+import React, { PropTypes }from 'react';
+import interact from 'interact.js';
+
+import { getSnapTargetFunc } from './util';
 
 import style from './style.css';
 
 const propTypes = {
-
-};
-
-const defaultProps = {
-
+  onClick: PropTypes.func.isRequired,
+  snapTarget: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.object
+  ]).isRequired
 };
 
 export default class Track extends React.Component {
-  get clientRect() {
-    return this.refs.track.getBoundingClientRect();
+  componentDidMount() {
+    const ref = this.refs.track;
+
+    const snapTarget = getSnapTargetFunc(this.props.snapTarget);
+
+    this._interactable = interact(ref)
+      .styleCursor(false)
+      .on('tap', (event) => {
+        const newEvent = {
+          ...event,
+          snap: snapTarget(event.layerX)
+        };
+        this.props.onClick(newEvent);
+      });
+  }
+
+  componentWillUnmount() {
+    this._interactable.unset();
   }
 
   render() {
@@ -23,5 +42,3 @@ export default class Track extends React.Component {
 }
 
 Track.propTypes = propTypes;
-
-Track.defaultProps = defaultProps;
