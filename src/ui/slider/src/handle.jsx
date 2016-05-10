@@ -47,6 +47,10 @@ export default class Handle extends React.Component {
     this.bindInteract = this.bindInteract.bind(this);
   }
 
+  componentWillUnmount() {
+    this._interactable.unset();
+  }
+
   bindInteract(ref) {
     this.offset = getOffset(this.props.direction, ref.getBoundingClientRect().width);
 
@@ -64,10 +68,6 @@ export default class Handle extends React.Component {
       .styleCursor(false)
       .on('dragmove', this.props.onMove(this.props.name, -this.offset))
       .on('dragend', this.props.onEnd(this.props.name));
-  }
-
-  componentWillUnmount() {
-    this._interactable.unset();
   }
 
   render() {
