@@ -8,10 +8,19 @@ import Handle from './handle';
 import style from './style.css';
 
 const propTypes = {
+  /** Height and width of Slider component */
   height: PropTypes.number,
   width: PropTypes.number,
+
+  /** Extents of slider values. */
   minValue: PropTypes.number.isRequired,
   maxValue: PropTypes.number.isRequired,
+
+  /**
+   * Initial selected value.
+   * If number, a single slider handle will be rendered.
+   * If object with keys 'min' and 'max', two slider handles will be rendered.
+   */
   value: PropTypes.oneOfType([
     PropTypes.number,
     PropTypes.shape({
@@ -19,7 +28,26 @@ const propTypes = {
       max: PropTypes.number
     })
   ]).isRequired,
+
+  /**
+   * Function applied to the selected value prior to rendering.
+   * Params:
+   *   value - selected value
+   *
+   * Returns:
+   *   'string'
+   *
+   * Default:
+   *   _.identity
+   */
   labelFunc: PropTypes.func,
+
+  /**
+   * Callback function when value is changed.
+   * Params:
+   *   value - object with keys ['min'] and 'max'
+   *   key - key of most recent value change.
+   */
   onChange: PropTypes.func.isRequired
 };
 
