@@ -20,11 +20,12 @@ export default class Track extends React.Component {
     this.bindInteract = this.bindInteract.bind(this);
   }
 
-  componentWillUnmount() {
-    this._interactable.unset();
-  }
-
   bindInteract(ref) {
+    if (!ref) {
+      this._interactable.unset();
+      return;
+    }
+
     const snapTarget = getSnapTargetFunc(this.props.snapTarget);
 
     this._interactable = interact(ref)

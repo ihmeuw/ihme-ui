@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import d3Scale from 'd3-scale';
-import { assignIn, bindAll, identity } from 'lodash';
+import { bindAll, identity, map } from 'lodash';
 
 import Track from './track';
 import Handle from './handle';
@@ -57,49 +57,52 @@ const defaultProps = {
   labelFunc: identity
 };
 
+function getValues(value) {
+  if (typeof value === 'number') {
+    return { max: value };
+  }
+  return value;
+}
+
 export default class Slider extends React.Component {
   constructor(props) {
     super(props);
 
-    const values = {};
-    if (typeof props.value === 'number') {
-      assignIn(values, { max: props.value });
-    } else {
-      assignIn(values, props.value);
-    }
-
     this.state = {
-      values
+      values: getValues(props.value),
+      scale: d3Scale.scaleLinear()
+        .clamp(true)
+        .domain([props.minValue, props.maxValue])
+        .range([0, props.width]),
+      snapTarget: { x: props.width / (props.maxValue - props.minValue) }
     };
-
-    this.scale = d3Scale.scaleLinear()
-      .clamp(true)
-      .domain([this.props.minValue, this.props.maxValue])
-      .range([0, this.props.width]);
 
     bindAll(this, [
       'onHandleMove',
-      'onHandleEnd',
       'onTrackClick',
       'renderHandle'
     ]);
   }
 
-  onHandleEnd(key) {
-    return () => {
-      this.props.onChange({ ...this.state.values }, key);
-    };
+  componentWillReceiveProps(newProps) {
+    this.setState({
+      values: getValues(newProps.value),
+      scale: this.state.scale
+        .domain([newProps.minValue, newProps.maxValue])
+        .range([0, newProps.width]),
+      snapTarget: { x: newProps.width / (newProps.maxValue - newProps.minValue) }
+    });
   }
 
   onHandleMove(key, offset) {
     return (event) => {
-      const value = this.scale.invert(event.pageX + offset);
+      const value = this.state.scale.invert(event.pageX + offset);
 
       if (this.state.values[key] !== value) {
         const values = { ...this.state.values, [key]: value };
 
         if (values.min === undefined || values.min <= values.max) {
-          this.setState({ values });
+          this.props.onChange({ ...values }, key);
         }
       }
     };
@@ -108,7 +111,7 @@ export default class Slider extends React.Component {
   onTrackClick(event) {
     const { values } = this.state;
 
-    const value = this.scale.invert(event.snap.x);
+    const value = this.state.scale.invert(event.snap.x);
 
     /* Determine which handle is closer. 'min' == true, 'max' == false */
     const comp = values.min !== undefined &&
@@ -116,25 +119,20 @@ export default class Slider extends React.Component {
 
     const key = comp ? 'min' : 'max';
 
-    if (this.state.values[key] !== value) {
-      this.setState({ values: { ...values, [key]: value } });
-      this.props.onChange({ ...this.state.values }, key);
+    if (values[key] !== value) {
+      this.props.onChange({ ...values, [key]: value }, key);
     }
   }
 
   renderHandle() {
     const { values } = this.state;
 
-    const keys = Object.keys(values);
-
-    return keys.map((key) => {
-      let direction;
-      if (keys.length === 1) {
-        direction = 'middle';
+    return map(values, (value, key) => {
+      let direction = 'middle';
+      if (key === 'max' && 'min' in values) {
+        direction = 'right';
       } else if (key === 'min') {
         direction = 'left';
-      } else if (key === 'max') {
-        direction = 'right';
       }
 
       return (
@@ -142,21 +140,18 @@ export default class Slider extends React.Component {
           key={ key }
           name={ key }
           direction={ direction }
-          position={ this.scale(values[key]) }
+          position={ this.state.scale(value) }
           onMove={ this.onHandleMove }
-          onEnd={ this.onHandleEnd }
-          label={ values[key] }
+          label={ value }
           labelFunc={ this.props.labelFunc }
-          snapTarget={ this.snapTarget }
+          snapTarget={ this.state.snapTarget }
         />
       );
     });
   }
 
   render() {
-    const { height, width, minValue, maxValue } = this.props;
-
-    this.snapTarget = { x: width / (maxValue - minValue) };
+    const { height, width } = this.props;
 
     return (
       <div
@@ -165,7 +160,7 @@ export default class Slider extends React.Component {
       >
         <Track
           onClick={ this.onTrackClick }
-          snapTarget={ this.snapTarget }
+          snapTarget={ this.state.snapTarget }
         />
         { this.renderHandle() }
       </div>

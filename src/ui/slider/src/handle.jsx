@@ -17,7 +17,6 @@ const propTypes = {
   labelFunc: PropTypes.func,
   name: PropTypes.string.isRequired,
   onMove: PropTypes.func.isRequired,
-  onEnd: PropTypes.func.isRequired,
   snapTarget: PropTypes.oneOfType([
     PropTypes.func,
     PropTypes.object
@@ -47,11 +46,12 @@ export default class Handle extends React.Component {
     this.bindInteract = this.bindInteract.bind(this);
   }
 
-  componentWillUnmount() {
-    this._interactable.unset();
-  }
-
   bindInteract(ref) {
+    if (!ref) {
+      this._interactable.unset();
+      return;
+    }
+
     this.offset = getOffset(this.props.direction, ref.getBoundingClientRect().width);
 
     this._interactable = interact(ref)
@@ -66,8 +66,7 @@ export default class Handle extends React.Component {
         }
       })
       .styleCursor(false)
-      .on('dragmove', this.props.onMove(this.props.name, -this.offset))
-      .on('dragend', this.props.onEnd(this.props.name));
+      .on('dragmove', this.props.onMove(this.props.name, -this.offset));
   }
 
   render() {
