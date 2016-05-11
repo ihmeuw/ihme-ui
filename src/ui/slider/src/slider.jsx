@@ -154,11 +154,9 @@ export default class Slider extends React.Component {
     const { values } = this.state;
 
     return map(values, (value, key) => {
-      let direction = 'middle';
+      let direction = 'left';
       if (key === 'max' && 'min' in values) {
         direction = 'right';
-      } else if (key === 'min') {
-        direction = 'left';
       }
 
       return (
@@ -171,6 +169,7 @@ export default class Slider extends React.Component {
           label={ value }
           labelFunc={ this.props.labelFunc }
           snapTarget={ this.state.snapTarget }
+          className={ classNames({ [style.connected]: values.min === values.max }) }
         />
       );
     });

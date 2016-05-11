@@ -32,7 +32,6 @@ class App extends React.Component {
         onChange={ this.onChange }
         value={ this.state.values }
         fill
-        fillColor="blue"
       />
     );
   }

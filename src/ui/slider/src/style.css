@@ -15,11 +15,20 @@
   height: 5px;
   border: 1px solid;
   top: 20px;
+  color: #ccc;
+  display: inline-flex;
+}
+
+.track-click-target {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
 }
 
 .flag {
   position: absolute;
-  bottom: calc(100% + 5px);
+  bottom: calc(100% + 3px);
   min-width: 20px;
   width: auto;
   height: 14px;
@@ -27,41 +36,27 @@
   text-align: center;
   vertical-align: middle;
   white-space: nowrap;
-  color: white;
-  background-color: #27ae60;
-  transition: left 0.3s ease-out;
+  color: #27ae60;
+  transition: left 0.3s ease-out, border 0.3s ease-out;
+  border: 0 solid #27ae60;
 }
 
 .flag.left {
+  border-right-width: 1px;
   transform: translate(-100%, 0px);
 }
 
-.flag.left:after {
-  right: 0;
-}
-
 .flag.right {
+  border-left-width: 1px;
   transform: translate(0px, 0px);
 }
 
-.flag.right:after {
-  left: 0;
+.flag.left.connected {
+
 }
 
-.flag:after {
-  content: "";
-  position: absolute;
-  height: 6px;
-  top: 100%;
-  border: 1px solid #27ae60;
-}
-
-.flag.middle {
-  transform: translate(-50%, 0px);
-}
-
-.flag.middle:after {
-  left: calc(50% - 1px);
+.flag.right.connected {
+  border-left-color: transparent;
 }
 
 .flag span {
