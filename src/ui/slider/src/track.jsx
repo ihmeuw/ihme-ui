@@ -19,7 +19,6 @@ export default class Track extends React.Component {
   constructor(props) {
     super(props);
 
-    this.bindInteract = this.bindInteract.bind(this);
     this.trackRef = this.trackRef.bind(this);
   }
 
