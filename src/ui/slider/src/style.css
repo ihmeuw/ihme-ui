@@ -34,47 +34,34 @@
 
 .flag.left {
   transform: translate(-100%, 0px);
-  border-radius: 4px 0 0 4px;
 }
 
 .flag.left:after {
   right: 0;
-  border-color: #27ae60 #27ae60 transparent transparent;
 }
 
 .flag.right {
   transform: translate(0px, 0px);
-  border-radius: 0 4px 4px 0;
 }
 
 .flag.right:after {
   left: 0;
-  border-color: #27ae60 transparent transparent #27ae60;
 }
 
-.flag.left:after,
-.flag.right:after {
+.flag:after {
   content: "";
   position: absolute;
-  font-size: 0;
-  top: 14px;
-  border-style: solid;
-  border-width: 4px 3px 4px 3px;
+  height: 6px;
+  top: 100%;
+  border: 1px solid #27ae60;
 }
 
 .flag.middle {
   transform: translate(-50%, 0px);
-  border-radius: 4px;
 }
 
 .flag.middle:after {
-  content: "";
-  position: absolute;
-  top: 14px;
-  left: calc(50% - 6px);
-  border-width: 8px 6px 8px 6px;
-  border-style: solid;
-  border-color: #27ae60 transparent transparent transparent;
+  left: calc(50% - 1px);
 }
 
 .flag span {
