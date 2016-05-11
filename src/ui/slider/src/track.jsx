@@ -23,7 +23,10 @@ export default class Track extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
-    if (!this._interactable) this.bindInteract(newProps.snapTarget);
+    if (this.props.snapTarget !== newProps.snapTarget) {
+      if (this._interactable) this._interactable.unset();
+      this.bindInteract(newProps.snapTarget);
+    }
   }
 
   componentWillUnmount() {

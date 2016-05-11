@@ -92,20 +92,24 @@ export default class Slider extends React.Component {
       'onTrackClick',
       'renderHandle',
       'renderFill',
-      'receiveTrackWidth'
+      'trackRef'
     ]);
   }
 
+  componentDidMount() {
+    this.receiveTrackWidth();
+  }
+
   componentWillReceiveProps(newProps) {
+    // If the extents or width changes, the scale and snapTarget must be recalculated.
     if ((this.props.minValue !== newProps.minValue) ||
-      (this.props.maxValue !== newProps.maxValue)) {
+      (this.props.maxValue !== newProps.maxValue) ||
+      (this.props.width !== newProps.width)) {
       this.state.scale.domain([newProps.minValue, newProps.maxValue]);
+      this.forceUpdate(this.receiveTrackWidth);
     }
 
-    this.setState({
-      ...this.state,
-      values: getValues(newProps.value)
-    });
+    this.setState({ values: getValues(newProps.value) });
   }
 
   onHandleMove(key, offset) {
@@ -138,16 +142,16 @@ export default class Slider extends React.Component {
     }
   }
 
-  receiveTrackWidth(ref) {
-    const width = ref.width;
-
+  receiveTrackWidth() {
     this.setState({
-      ...this.state,
       render: true,
-      scale: this.state.scale
-        .range([0, width]),
-      snapTarget: { x: width / (this.props.maxValue - this.props.minValue) }
+      scale: this.state.scale.range([0, this._track.width]),
+      snapTarget: { x: this._track.width / (this.props.maxValue - this.props.minValue) }
     });
+  }
+
+  trackRef(ref) {
+    this._track = ref;
   }
 
   renderHandle() {
@@ -207,7 +211,7 @@ export default class Slider extends React.Component {
         <Track
           onClick={ this.onTrackClick }
           snapTarget={ this.state.snapTarget }
-          ref={ this.receiveTrackWidth }
+          ref={ this.trackRef }
         >
           { render && this.props.fill && this.renderFill() }
           { render && this.renderHandle() }

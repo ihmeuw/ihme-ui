@@ -46,22 +46,29 @@ export default class Handle extends React.Component {
   }
 
   componentDidMount() {
-    this.bindInteract(this._handle);
+    this.bindInteract(this.props.snapTarget);
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (this.props.snapTarget !== newProps.snapTarget) {
+      if (this._interactable) this._interactable.unset();
+      this.bindInteract(newProps.snapTarget);
+    }
   }
 
   componentWillUnmount() {
     this._interactable.unset();
   }
 
-  bindInteract(ref) {
-    const offset = getOffset(this.props.direction, ref.getBoundingClientRect().width);
+  bindInteract(snapTarget) {
+    const offset = getOffset(this.props.direction, this._handle.getBoundingClientRect().width);
 
-    this._interactable = interact(ref)
+    this._interactable = interact(this._handle)
       .origin('parent')
       .draggable({
         max: Infinity,
         snap: {
-          targets: [getSnapTargetFunc(this.props.snapTarget, {
+          targets: [getSnapTargetFunc(snapTarget, {
             range: Infinity,
             offset: { x: offset }
           })]
