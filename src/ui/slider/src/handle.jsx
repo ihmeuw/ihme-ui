@@ -20,7 +20,8 @@ const propTypes = {
   snapTarget: PropTypes.oneOfType([
     PropTypes.func,
     PropTypes.object
-  ]).isRequired
+  ]).isRequired,
+  className: PropTypes.string
 };
 
 const defaultProps = {
@@ -72,7 +73,7 @@ export default class Handle extends React.Component {
   render() {
     return (
       <div
-        className={ classNames(style.flag, style[this.props.direction]) }
+        className={ classNames(this.props.className, style.flag, style[this.props.direction]) }
         style={ { left: `${this.props.position}px` } }
         ref={ this.bindInteract }
       >
