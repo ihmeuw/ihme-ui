@@ -19,7 +19,7 @@
 
 .flag {
   position: absolute;
-  top: 2px;
+  bottom: calc(100% + 5px);
   min-width: 20px;
   width: auto;
   height: 14px;

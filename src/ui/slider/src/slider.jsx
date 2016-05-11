@@ -1,14 +1,16 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 import d3Scale from 'd3-scale';
 import { bindAll, identity, map } from 'lodash';
 
 import Track from './track';
+import Fill from './fill';
 import Handle from './handle';
 
 import style from './style.css';
 
 const propTypes = {
-  /** Height and width of Slider component */
+  /** Height and width of Slider component. */
   height: PropTypes.number,
   width: PropTypes.number,
 
@@ -42,6 +44,12 @@ const propTypes = {
    */
   labelFunc: PropTypes.func,
 
+  /** Include fill in the track to indicate value. */
+  fill: PropTypes.bool,
+
+  /** Style for the fill color. */
+  fillColor: PropTypes.string,
+
   /**
    * Callback function when value is changed.
    * Params:
@@ -54,7 +62,9 @@ const propTypes = {
 const defaultProps = {
   height: 24,
   width: 200,
-  labelFunc: identity
+  labelFunc: identity,
+  fill: false,
+  fillColor: '#ccc'
 };
 
 function getValues(value) {
@@ -69,28 +79,32 @@ export default class Slider extends React.Component {
     super(props);
 
     this.state = {
+      render: false,
       values: getValues(props.value),
       scale: d3Scale.scaleLinear()
         .clamp(true)
-        .domain([props.minValue, props.maxValue])
-        .range([0, props.width]),
-      snapTarget: { x: props.width / (props.maxValue - props.minValue) }
+        .domain([props.minValue, props.maxValue]),
+      snapTarget: {}
     };
 
     bindAll(this, [
       'onHandleMove',
       'onTrackClick',
-      'renderHandle'
+      'renderHandle',
+      'renderFill',
+      'receiveTrackWidth'
     ]);
   }
 
   componentWillReceiveProps(newProps) {
+    if ((this.props.minValue !== newProps.minValue) ||
+      (this.props.maxValue !== newProps.maxValue)) {
+      this.state.scale.domain([newProps.minValue, newProps.maxValue]);
+    }
+
     this.setState({
-      values: getValues(newProps.value),
-      scale: this.state.scale
-        .domain([newProps.minValue, newProps.maxValue])
-        .range([0, newProps.width]),
-      snapTarget: { x: newProps.width / (newProps.maxValue - newProps.minValue) }
+      ...this.state,
+      values: getValues(newProps.value)
     });
   }
 
@@ -124,6 +138,18 @@ export default class Slider extends React.Component {
     }
   }
 
+  receiveTrackWidth(ref) {
+    const width = ref.width;
+
+    this.setState({
+      ...this.state,
+      render: true,
+      scale: this.state.scale
+        .range([0, width]),
+      snapTarget: { x: width / (this.props.maxValue - this.props.minValue) }
+    });
+  }
+
   renderHandle() {
     const { values } = this.state;
 
@@ -150,8 +176,29 @@ export default class Slider extends React.Component {
     });
   }
 
+  renderFill() {
+    const { values, scale } = this.state;
+
+    return map(values, (value, key) => {
+      let direction = 'left';
+      if (key === 'max' && 'min' in values) {
+        direction = 'right';
+      }
+
+      return (
+        <Fill
+          key={ key }
+          direction={ direction }
+          width={ scale(value) }
+          fillStyle={ { backgroundColor: this.props.fillColor } }
+        />
+      );
+    });
+  }
+
   render() {
     const { height, width } = this.props;
+    const { render } = this.state;
 
     return (
       <div
@@ -161,8 +208,11 @@ export default class Slider extends React.Component {
         <Track
           onClick={ this.onTrackClick }
           snapTarget={ this.state.snapTarget }
-        />
-        { this.renderHandle() }
+          ref={ this.receiveTrackWidth }
+        >
+          { render && this.props.fill && this.renderFill() }
+          { render && this.renderHandle() }
+        </Track>
       </div>
     );
   }

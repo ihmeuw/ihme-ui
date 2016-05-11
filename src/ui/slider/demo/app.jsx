@@ -31,6 +31,8 @@ class App extends React.Component {
         maxValue={ 2025 }
         onChange={ this.onChange }
         value={ this.state.values }
+        fill
+        fillColor="blue"
       />
     );
   }

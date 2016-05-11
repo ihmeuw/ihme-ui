@@ -1,11 +1,13 @@
 import React, { PropTypes }from 'react';
 import interact from 'interact.js';
+import { isEmpty } from 'lodash';
 
 import { getSnapTargetFunc } from './util';
 
 import style from './style.css';
 
 const propTypes = {
+  children: PropTypes.node,
   onClick: PropTypes.func.isRequired,
   snapTarget: PropTypes.oneOfType([
     PropTypes.func,
@@ -18,30 +20,48 @@ export default class Track extends React.Component {
     super(props);
 
     this.bindInteract = this.bindInteract.bind(this);
+    this.trackRef = this.trackRef.bind(this);
   }
 
-  bindInteract(ref) {
-    if (!ref) {
-      this._interactable.unset();
-      return;
-    }
+  componentWillReceiveProps(newProps) {
+    if (!this._interactable) this.bindInteract(newProps.snapTarget);
+  }
 
-    const snapTarget = getSnapTargetFunc(this.props.snapTarget);
+  componentWillUnmount() {
+    this._interactable.unset();
+  }
 
-    this._interactable = interact(ref)
+  get width() {
+    return this._track.clientWidth;
+  }
+
+  bindInteract(snapTarget) {
+    if (isEmpty(snapTarget)) return;
+
+    const snapTargetFunc = getSnapTargetFunc(snapTarget);
+
+    this._interactable = interact(this._track)
+      .origin('self')
       .styleCursor(false)
       .on('tap', (event) => {
         const newEvent = {
           ...event,
-          snap: snapTarget(event.layerX)
+          snap: snapTargetFunc(event.layerX)
         };
         this.props.onClick(newEvent);
       });
   }
 
+  trackRef(ref) {
+    this._track = ref;
+  }
+
   render() {
     return (
-      <div ref={ this.bindInteract } className={ style.track }></div>
+      <div className={ style.track }>
+        <div ref={ this.trackRef } className={ style['track-click-target'] }></div>
+        { this.props.children }
+      </div>
     );
   }
 }
