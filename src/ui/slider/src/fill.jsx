@@ -35,30 +35,20 @@ function getWidth(props) {
   return width;
 }
 
-class Fill extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    const { props } = this;
-
-    return (
-      <div
-        className={ classNames(style.fill, style[props.direction]) }
-        style={ {
-          height: getDimension(props.height),
-          width: getWidth(props),
-          ...props.fillStyle
-        } }
-      >
-      </div>
-    );
-  }
+export default function Fill(props) {
+  return (
+    <div
+      className={ classNames(style.fill, style[props.direction]) }
+      style={ {
+        height: getDimension(props.height),
+        width: getWidth(props),
+        ...props.fillStyle
+      } }
+    >
+    </div>
+  );
 }
 
 Fill.propTypes = propTypes;
 
 Fill.defaultProps = defaultProps;
-
-export default Fill;
