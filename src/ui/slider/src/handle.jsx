@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import interact from 'interact.js';
 import { identity } from 'lodash';
 
-import { getSnapTargetFunc } from './util';
+import { getDimension, getSnapTargetFunc } from './util';
 
 import style from './style.css';
 
@@ -42,18 +42,19 @@ export default class Handle extends React.Component {
   constructor(props) {
     super(props);
 
-    this.offset = 0;
+    this.handleRef = this.handleRef.bind(this);
+  }
 
-    this.bindInteract = this.bindInteract.bind(this);
+  componentDidMount() {
+    this.bindInteract(this._handle);
+  }
+
+  componentWillUnmount() {
+    this._interactable.unset();
   }
 
   bindInteract(ref) {
-    if (!ref) {
-      this._interactable.unset();
-      return;
-    }
-
-    this.offset = getOffset(this.props.direction, ref.getBoundingClientRect().width);
+    const offset = getOffset(this.props.direction, ref.getBoundingClientRect().width);
 
     this._interactable = interact(ref)
       .origin('parent')
@@ -62,20 +63,24 @@ export default class Handle extends React.Component {
         snap: {
           targets: [getSnapTargetFunc(this.props.snapTarget, {
             range: Infinity,
-            offset: { x: this.offset }
+            offset: { x: offset }
           })]
         }
       })
       .styleCursor(false)
-      .on('dragmove', this.props.onMove(this.props.name, -this.offset));
+      .on('dragmove', this.props.onMove(this.props.name, -offset));
+  }
+
+  handleRef(ref) {
+    this._handle = ref;
   }
 
   render() {
     return (
       <div
         className={ classNames(this.props.className, style.flag, style[this.props.direction]) }
-        style={ { left: `${this.props.position}px` } }
-        ref={ this.bindInteract }
+        style={ { left: getDimension(this.props.position) } }
+        ref={ this.handleRef }
       >
         <span>
           { this.props.labelFunc(this.props.label) }
