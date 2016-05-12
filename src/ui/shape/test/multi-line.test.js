@@ -18,11 +18,9 @@ const valueField = 'value';
 
 describe('<MultiLine />', () => {
   const data = dataGenerator({
-    keyField,
-    valueField,
-    length: 10,
-    dataQuality: 'best',
-    useDates: true
+    primaryKeys: [{ name: keyField, values: [keyField] }],
+    valueKeys: [{ name: valueField, range: [100, 200], uncertainty: true }],
+    length: 10
   });
 
   const yDomain = [minBy(data, valueField)[valueField], maxBy(data, valueField)[valueField]];
@@ -101,7 +99,7 @@ describe('<MultiLine />', () => {
           colorScale={colorScale}
           showUncertainty
           showLine={false}
-          dataAccessors={{ x: keyField, y: valueField, y0: 'lb', y1: 'ub' }}
+          dataAccessors={{ x: keyField, y: valueField, y0: 'value_lb', y1: 'value_ub' }}
         />
       );
     });
@@ -125,7 +123,7 @@ describe('<MultiLine />', () => {
           colorScale={colorScale}
           showUncertainty
           showLine
-          dataAccessors={{ x: keyField, y: valueField, y0: 'lb', y1: 'ub' }}
+          dataAccessors={{ x: keyField, y: valueField, y0: 'value_lb', y1: 'value_ub' }}
         />
       );
     });
@@ -150,7 +148,7 @@ describe('<MultiLine />', () => {
           colorScale={colorScale}
           showUncertainty={false}
           showLine={false}
-          dataAccessors={{ x: keyField, y: valueField, y0: 'lb', y1: 'ub' }}
+          dataAccessors={{ x: keyField, y: valueField, y0: 'value_lb', y1: 'value_ub' }}
         />
       );
     });

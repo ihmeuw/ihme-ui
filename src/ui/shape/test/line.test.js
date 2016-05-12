@@ -22,11 +22,9 @@ describe('<Line />', () => {
   };
 
   const data = dataGenerator({
-    keyField,
-    valueField,
-    length: 10,
-    dataQuality: 'best',
-    useDates: true
+    primaryKeys: [{ name: keyField, values: [keyField] }],
+    valueKeys: [{ name: valueField, range: [100, 200], uncertainty: true }],
+    length: 10
   });
 
   let component;

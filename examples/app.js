@@ -14,19 +14,19 @@ const keyField = 'year_id';
 const valueField = 'value';
 
 const usaData = dataGenerator({
-  keyField,
-  valueField,
-  length: 10,
-  dataQuality: 'best',
-  useDates: true
+  primaryKeys: [{ name: location, values: ['USA'] }],
+  valueKeys: [
+    { name: valueField, range: [200, 500], uncertainty: true }
+  ],
+  length: 10
 });
 
 const canadaData = dataGenerator({
-  keyField,
-  valueField,
-  length: 10,
-  dataQuality: 'best',
-  useDates: true
+  primaryKeys: [{ name: location, values: ['Canada'] }],
+  valueKeys: [
+    { name: valueField, range: [300, 550], uncertainty: true }
+  ],
+  length: 10
 });
 
 const lineData = [{ location: 'USA', values: usaData }, { location: 'Canada', values: canadaData }];
@@ -66,7 +66,7 @@ class App extends React.Component {
         yScaleType="linear"
         extraClasses={['foo', 'bar']}
       >
-        <XAxis style={axisStyle} />
+        <XAxis A />
         <YAxis style={axisStyle} />
         <MultiLine
           data={lineData}

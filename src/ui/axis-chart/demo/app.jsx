@@ -14,25 +14,25 @@ const keyField = 'year_id';
 const valueField = 'value';
 
 const usaData = dataGenerator({
-  keyField,
-  valueField,
-  length: 10,
-  dataQuality: 'best',
-  useDates: true
+  primaryKeys: [{name: location, values: ['USA']}],
+  valueKeys: [
+    {name: valueField, range: [200, 500], uncertainty: true}
+  ],
+  length: 10
 });
 
 const canadaData = dataGenerator({
-  keyField,
-  valueField,
-  length: 10,
-  dataQuality: 'best',
-  useDates: true
+  primaryKeys: [{name: location, values: ['Canada']}],
+  valueKeys: [
+    {name: valueField, range: [300, 550], uncertainty: true}
+  ],
+  length: 10
 });
 
 const lineData = [{ location: 'USA', values: usaData }, { location: 'Canada', values: canadaData }];
 
 const data = [...usaData, ...canadaData];
-const yDomain = [minBy(data, 'lb').lb, maxBy(data, 'ub').ub];
+const yDomain = [minBy(data, 'value_lb').value_lb, maxBy(data, 'value_ub').value_ub];
 const xDomain = map(uniqBy(data, keyField), (obj) => { return (obj[keyField]); });
 const colorScale = d3Scale.scaleOrdinal().domain(['USA', 'Canada']).range(['red', 'blue']);
 
@@ -74,7 +74,7 @@ class App extends React.Component {
           dataField={'values'}
           colorScale={colorScale}
           showUncertainty
-          dataAccessors={{ x: keyField, y: valueField, y0: 'lb', y1: 'ub' }}
+          dataAccessors={{ x: keyField, y: valueField, y0: 'value_lb', y1: 'value_ub' }}
         />
       </AxisChart>
     );

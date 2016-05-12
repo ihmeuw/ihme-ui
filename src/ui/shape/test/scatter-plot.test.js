@@ -29,19 +29,15 @@ describe('<ScatterPlot />', () => {
 
   describe('scatter plot of multiple datasets', () => {
     const usaData = dataGenerator({
-      keyField,
-      valueField,
-      length: 10,
-      dataQuality: 'best',
-      useDates: true
+      primaryKeys: [{ name: keyField, values: [keyField] }],
+      valueKeys: [{ name: valueField, range: [100, 200], uncertainty: true }],
+      length: 10
     });
 
     const canadaData = dataGenerator({
-      keyField,
-      valueField,
-      length: 10,
-      dataQuality: 'best',
-      useDates: true
+      primaryKeys: [{ name: keyField, values: [keyField] }],
+      valueKeys: [{ name: valueField, range: [300, 600], uncertainty: true }],
+      length: 10
     });
 
     const scatterData = [
@@ -114,11 +110,9 @@ describe('<ScatterPlot />', () => {
 
   describe('scatter of single dataset', () => {
     const data = dataGenerator({
-      keyField,
-      valueField,
-      length: 10,
-      dataQuality: 'best',
-      useDates: true
+      primaryKeys: [{ name: keyField, values: [keyField] }],
+      valueKeys: [{ name: valueField, range: [300, 600], uncertainty: true }],
+      length: 10
     });
 
     const colors = ['red', 'blue', 'green', 'yellow', 'black'];
