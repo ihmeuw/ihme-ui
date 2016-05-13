@@ -17,7 +17,7 @@ module.exports = {
       {
         test: /\.jsx?$/,
         exclude: 'node-modules/',
-        loader: 'babel'
+        loaders: ['babel', __dirname + '/html-pre-tag-loader']
       },
       {
         test: /\.css$/,
