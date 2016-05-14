@@ -52,7 +52,7 @@
 }
 
 .flag.left.connected {
-
+  border-right-width: 1px;
 }
 
 .flag.right.connected {
