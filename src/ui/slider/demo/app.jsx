@@ -14,6 +14,8 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
+    this.items = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'];
+
     this.state = {
       width: 200,
       minValue: 2001,
@@ -22,7 +24,9 @@ class App extends React.Component {
         min: 2001,
         max: 2005
       },
-      singleValue: 2015
+      singleValue: 2015,
+      listValue: 0,
+      fillColor: this.items[0]
     };
 
     this.randomGenerator = (range) => {
@@ -36,6 +40,8 @@ class App extends React.Component {
     this.onSingleValueChange = this.onSingleValueChange.bind(this);
     this.setNewMinMax = this.setNewMinMax.bind(this);
     this.setNewWidth = this.setNewWidth.bind(this);
+    this.onListValueChange = this.onListValueChange.bind(this);
+    this.listLabelFunc = this.listLabelFunc.bind(this);
   }
 
   setNewMinMax() {
@@ -82,6 +88,14 @@ class App extends React.Component {
     this.setState({ singleValue: value[key] });
   }
 
+  onListValueChange(value) {
+    this.setState({ listValue: value.min, fillColor: this.items[value.min] });
+  }
+
+  listLabelFunc(value) {
+    return this.items[value];
+  }
+
   render() {
     return (
       <div style={{ display: 'flex', justifyContent: 'space-around', width: '100%' }}>
@@ -112,9 +126,10 @@ class App extends React.Component {
             <input id="newWidth" type="text" placeholder={ `${this.nextWidth}` }/>
           </div>
         </aside>
-        <section>
-          <h3>Range slider</h3>
-          <pre><code>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <section>
+            <h3>Range slider</h3>
+            <pre><code>
     <Slider
       width={ 200 }
       height={ 24 }
@@ -127,21 +142,21 @@ class App extends React.Component {
       }}
       fill
     />
-          </code></pre>
-          <Slider
-            width={ this.state.width }
-            height={ 24 }
-            minValue={ this.state.minValue }
-            maxValue={ this.state.maxValue }
-            onChange={ this.onChange }
-            value={ this.state.rangeSliderValues }
-            step={ this.state.step }
-            fill
-          />
-        </section>
-        <section>
-          <h3>Single-value slider</h3>
-          <pre><code>
+            </code></pre>
+            <Slider
+              width={ this.state.width }
+              height={ 24 }
+              minValue={ this.state.minValue }
+              maxValue={ this.state.maxValue }
+              onChange={ this.onChange }
+              value={ this.state.rangeSliderValues }
+              step={ this.state.step }
+              fill
+            />
+          </section>
+          <section>
+            <h3>Single-value slider</h3>
+            <pre><code>
     <Slider
       width={ 200 }
       height={ 24 }
@@ -151,18 +166,47 @@ class App extends React.Component {
       value={ 2015 (initially) }
       fill
     />
-          </code></pre>
-          <Slider
-            width={ this.state.width }
-            height={ 24 }
-            minValue={ this.state.minValue }
-            maxValue={ this.state.maxValue }
-            onChange={ this.onSingleValueChange }
-            value={ this.state.singleValue }
-            step={ this.state.step }
-            fill
-          />
-        </section>
+            </code></pre>
+            <Slider
+              width={ this.state.width }
+              height={ 24 }
+              minValue={ this.state.minValue }
+              maxValue={ this.state.maxValue }
+              onChange={ this.onSingleValueChange }
+              value={ this.state.singleValue }
+              step={ this.state.step }
+              fill
+            />
+          </section>
+          <section>
+            <h3>Slider with list</h3>
+                        <pre><code>
+    items = ['red', 'orange', 'yellow', ...];
+    <Slider
+      width={ 200 }
+      height={ 24 }
+      minValue={ 0 }
+      maxValue={ items.length - 1 }
+      onChange={ function(value, key) {...} }
+      value={ this.state.value }
+      labelFunc={ function(value) {...} }
+      fill
+      fillColor={ this.state.fillColor }
+    />
+            </code></pre>
+            <Slider
+              width={this.state.width }
+              height={ 24 }
+              minValue={ 0 }
+              maxValue={ this.items.length - 1 }
+              onChange={ this.onListValueChange }
+              value={ this.state.listValue }
+              labelFunc={ this.listLabelFunc }
+              fill
+              fillColor={ this.state.fillColor }
+            />
+          </section>
+        </div>
       </div>
     );
   }
