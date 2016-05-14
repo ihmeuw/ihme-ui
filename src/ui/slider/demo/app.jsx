@@ -6,6 +6,10 @@ import { percentOfRange, numFromPercent } from '../../../utils/';
 import Slider from '../';
 import Button from '../../button';
 
+function getValueOrPlaceholder(el) {
+  return +(el.value || el.placeholder);
+}
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -21,19 +25,25 @@ class App extends React.Component {
       singleValue: 2015
     };
 
-    const randomizer = d3Random.randomUniform(1900, 2016);
-    this.randomMinMaxGenerator = () => {
-      return [Math.floor(randomizer()), Math.floor(randomizer())];
+    this.randomGenerator = (range) => {
+      return Math.floor(d3Random.randomUniform(...range)());
     };
+
+    this.nextExtent = [this.randomGenerator([1900, 2016]), this.randomGenerator([1900, 2016])] ;
+    this.nextWidth = this.randomGenerator([150, 300]);
 
     this.onChange = this.onChange.bind(this);
     this.onSingleValueChange = this.onSingleValueChange.bind(this);
     this.setNewMinMax = this.setNewMinMax.bind(this);
+    this.setNewWidth = this.setNewWidth.bind(this);
   }
 
   setNewMinMax() {
+    const minExtent = getValueOrPlaceholder(document.getElementById('minExtent'));
+    const maxExtent = getValueOrPlaceholder(document.getElementById('maxExtent'));
+
+    const newExtent = [minExtent, maxExtent].sort((a, b) => { return a - b; });
     const oldExtent = [this.state.minValue, this.state.maxValue];
-    const newExtent = this.randomMinMaxGenerator().sort((a, b) => { return a - b; });
 
     const valueSetter = (value) => {
       return Math.floor(numFromPercent(percentOfRange(value, oldExtent), newExtent));
@@ -48,6 +58,17 @@ class App extends React.Component {
       },
       singleValue: valueSetter(this.state.singleValue)
     });
+
+    this.nextExtent = [this.randomGenerator([1900, 2016]), this.randomGenerator([1900, 2016])] ;
+  }
+
+  setNewWidth() {
+    const newWidth = getValueOrPlaceholder(document.getElementById('width'));
+
+    this.setState({
+      width: newWidth
+    });
+    this.nextWidth = this.randomGenerator([150, 300]);
   }
 
   onChange(value, key) {
@@ -64,11 +85,28 @@ class App extends React.Component {
       <div style={{ display: 'flex', justifyContent: 'space-around', width: '100%' }}>
         <aside>
           <h5>Modify sliders</h5>
-          <Button
-            text="Set new min/max"
-            theme="light"
-            clickHandler={this.setNewMinMax}
-          />
+          <div>
+            <Button
+              text="Set new min/max"
+              theme="light"
+              clickHandler={this.setNewMinMax}
+            />
+          </div>
+          <div>
+            <input id="minExtent" type="text" placeholder={ `${Math.min(...this.nextExtent)}` }/>
+            <br/>
+            <input id="maxExtent" type="text" placeholder={ `${Math.max(...this.nextExtent)}` }/>
+          </div>
+          <div>
+            <Button
+              text="Set new width"
+              theme="light"
+              clickHandler={this.setNewWidth}
+            />
+          </div>
+          <div>
+            <input id="width" type="text" placeholder={ `${this.nextWidth}` }/>
+          </div>
         </aside>
         <section>
           <h3>Range slider</h3>
