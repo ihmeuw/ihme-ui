@@ -97,19 +97,24 @@ export default class Slider extends React.Component {
   }
 
   componentDidMount() {
-    this.receiveTrackWidth();
+    this.receiveTrackWidth(this.props);
   }
 
   componentWillReceiveProps(newProps) {
     // If the extents or width changes, the scale and snapTarget must be recalculated.
     if ((this.props.minValue !== newProps.minValue) ||
-      (this.props.maxValue !== newProps.maxValue) ||
-      (this.props.width !== newProps.width)) {
+      (this.props.maxValue !== newProps.maxValue)) {
       this.state.scale.domain([newProps.minValue, newProps.maxValue]);
-      this.forceUpdate(this.receiveTrackWidth);
+      this.receiveTrackWidth(newProps);
     }
 
     this.setState({ values: getValues(newProps.value) });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.width !== prevProps.width) {
+      this.receiveTrackWidth(this.props);
+    }
   }
 
   onHandleMove(key, offset) {
@@ -142,11 +147,11 @@ export default class Slider extends React.Component {
     }
   }
 
-  receiveTrackWidth() {
+  receiveTrackWidth(props) {
     this.setState({
       render: true,
       scale: this.state.scale.range([0, this._track.width]),
-      snapTarget: { x: this._track.width / (this.props.maxValue - this.props.minValue) }
+      snapTarget: { x: this._track.width / (props.maxValue - props.minValue) }
     });
   }
 
