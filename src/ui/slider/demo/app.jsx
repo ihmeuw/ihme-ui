@@ -39,8 +39,9 @@ class App extends React.Component {
   }
 
   setNewMinMax() {
-    const minExtent = getValueOrPlaceholder(document.getElementById('minExtent'));
-    const maxExtent = getValueOrPlaceholder(document.getElementById('maxExtent'));
+    const minExtent = getValueOrPlaceholder(document.getElementById('newMinExtent'));
+    const maxExtent = getValueOrPlaceholder(document.getElementById('newMaxExtent'));
+    const newStep = getValueOrPlaceholder(document.getElementById('newStep'));
 
     const newExtent = [minExtent, maxExtent].sort((a, b) => { return a - b; });
     const oldExtent = [this.state.minValue, this.state.maxValue];
@@ -52,6 +53,7 @@ class App extends React.Component {
     this.setState({
       minValue: Math.min(...newExtent),
       maxValue: Math.max(...newExtent),
+      step: newStep,
       rangeSliderValues: {
         min: valueSetter(this.state.rangeSliderValues.min),
         max: valueSetter(this.state.rangeSliderValues.max)
@@ -63,7 +65,7 @@ class App extends React.Component {
   }
 
   setNewWidth() {
-    const newWidth = getValueOrPlaceholder(document.getElementById('width'));
+    const newWidth = getValueOrPlaceholder(document.getElementById('newWidth'));
 
     this.setState({
       width: newWidth
@@ -93,9 +95,11 @@ class App extends React.Component {
             />
           </div>
           <div>
-            <input id="minExtent" type="text" placeholder={ `${Math.min(...this.nextExtent)}` }/>
+            <input id="newMinExtent" type="text" placeholder={ `${Math.min(...this.nextExtent)}` }/>
             <br/>
-            <input id="maxExtent" type="text" placeholder={ `${Math.max(...this.nextExtent)}` }/>
+            <input id="newMaxExtent" type="text" placeholder={ `${Math.max(...this.nextExtent)}` }/>
+            <br/>
+            <input id="newStep" type="text" placeholder="1"/>
           </div>
           <div>
             <Button
@@ -105,7 +109,7 @@ class App extends React.Component {
             />
           </div>
           <div>
-            <input id="width" type="text" placeholder={ `${this.nextWidth}` }/>
+            <input id="newWidth" type="text" placeholder={ `${this.nextWidth}` }/>
           </div>
         </aside>
         <section>
@@ -131,6 +135,7 @@ class App extends React.Component {
             maxValue={ this.state.maxValue }
             onChange={ this.onChange }
             value={ this.state.rangeSliderValues }
+            step={ this.state.step }
             fill
           />
         </section>
@@ -154,6 +159,7 @@ class App extends React.Component {
             maxValue={ this.state.maxValue }
             onChange={ this.onSingleValueChange }
             value={ this.state.singleValue }
+            step={ this.state.step }
             fill
           />
         </section>

@@ -18,6 +18,9 @@ const propTypes = {
   minValue: PropTypes.number.isRequired,
   maxValue: PropTypes.number.isRequired,
 
+  /** Step between slider values. */
+  step: PropTypes.number,
+
   /**
    * Initial selected value.
    * If number, a single slider handle will be rendered.
@@ -63,6 +66,7 @@ const propTypes = {
 const defaultProps = {
   height: 24,
   width: 200,
+  step: 1,
   labelFunc: identity,
   fill: false,
   fillColor: '#ccc'
@@ -80,6 +84,25 @@ function getValues(value) {
     return zipObject(['min', 'max'], value);
   }
   return value;
+}
+
+/**
+ * Determine the floating point precision of a number.
+ * @param value
+ * @returns {number}
+ */
+function getFloatPrecision(value) {
+  return value > 0 && value < 1 ? (1 - Math.ceil(Math.log(value) / Math.log(10))) : 0;
+}
+
+/**
+ * Return a number to a specified precision as a workaround for floating point funkiness.
+ * @param value
+ * @param precision
+ * @returns {number}
+ */
+function valueWithPrecision(value, precision) {
+  return +value.toFixed(precision);
 }
 
 export default class Slider extends React.Component {
@@ -111,7 +134,8 @@ export default class Slider extends React.Component {
   componentWillReceiveProps(newProps) {
     // If the extents or width changes, the scale and snapTarget must be recalculated.
     if ((this.props.minValue !== newProps.minValue) ||
-      (this.props.maxValue !== newProps.maxValue)) {
+        (this.props.maxValue !== newProps.maxValue) ||
+        (this.props.step !== newProps.step)) {
       this.state.scale.domain([newProps.minValue, newProps.maxValue]);
       this.receiveTrackWidth(newProps);
     }
@@ -127,7 +151,8 @@ export default class Slider extends React.Component {
 
   onHandleMove(key, offset) {
     return (event) => {
-      const value = this.state.scale.invert(event.pageX + offset);
+      const value = valueWithPrecision(
+        this.state.scale.invert(event.pageX + offset), this.precision);
 
       if (this.state.values[key] !== value) {
         const values = { ...this.state.values, [key]: value };
@@ -142,7 +167,7 @@ export default class Slider extends React.Component {
   onTrackClick(event) {
     const { values } = this.state;
 
-    const value = this.state.scale.invert(event.snap.x);
+    const value = valueWithPrecision(this.state.scale.invert(event.snap.x), this.precision);
 
     /* Determine which handle is closer. 'min' == true, 'max' == false */
     const comp = values.min !== undefined &&
@@ -156,10 +181,11 @@ export default class Slider extends React.Component {
   }
 
   receiveTrackWidth(props) {
+    this.precision = getFloatPrecision(props.step);
     this.setState({
       render: true,
       scale: this.state.scale.range([0, this._track.width]),
-      snapTarget: { x: this._track.width / (props.maxValue - props.minValue) }
+      snapTarget: { x: this._track.width / ((props.maxValue - props.minValue) / props.step) }
     });
   }
 
