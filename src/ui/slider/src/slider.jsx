@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import d3Scale from 'd3-scale';
-import { bindAll, identity, map } from 'lodash';
+import { bindAll, identity, map, zipObject } from 'lodash';
 
 import Track from './track';
 import Fill from './fill';
@@ -25,6 +25,7 @@ const propTypes = {
    */
   value: PropTypes.oneOfType([
     PropTypes.number,
+    PropTypes.array,
     PropTypes.shape({
       min: PropTypes.number,
       max: PropTypes.number
@@ -67,9 +68,16 @@ const defaultProps = {
   fillColor: '#ccc'
 };
 
+/**
+ * Evaluate value and return a compatible object with keys 'min' and 'max'.
+ * @param value
+ * @returns {Object}
+ */
 function getValues(value) {
   if (typeof value === 'number') {
-    return { max: value };
+    return { min: value };
+  } else if (Array.isArray(value)) {
+    return zipObject(['min', 'max'], value);
   }
   return value;
 }
@@ -124,7 +132,7 @@ export default class Slider extends React.Component {
       if (this.state.values[key] !== value) {
         const values = { ...this.state.values, [key]: value };
 
-        if (values.min === undefined || values.min <= values.max) {
+        if (values.max === undefined || values.min <= values.max) {
           this.props.onChange({ ...values }, key);
         }
       }
@@ -163,10 +171,7 @@ export default class Slider extends React.Component {
     const { values } = this.state;
 
     return map(values, (value, key) => {
-      let direction = 'left';
-      if (key === 'max' && 'min' in values) {
-        direction = 'right';
-      }
+      const direction = key === 'min' ? 'left' : 'right';
 
       return (
         <Handle
@@ -188,10 +193,7 @@ export default class Slider extends React.Component {
     const { values, scale } = this.state;
 
     return map(values, (value, key) => {
-      let direction = 'left';
-      if (key === 'max' && 'min' in values) {
-        direction = 'right';
-      }
+      const direction = key === 'min' ? 'left' : 'right';
 
       return (
         <Fill
