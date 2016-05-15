@@ -31,23 +31,25 @@
   bottom: calc(100% + 3px);
   min-width: 20px;
   width: auto;
-  height: 14px;
+  height: 1.5em;
   font-size: 8pt;
   text-align: center;
   vertical-align: middle;
   white-space: nowrap;
   color: #27ae60;
-  transition: left 0.3s ease-out, border 0.3s ease-out;
-  border: 0 solid #27ae60;
+  transition: all 0.3s ease-out;
+  background-color: transparent;
+  border: solid #27ae60;
+  border-width: 0 1px;
 }
 
 .flag.left {
-  border-right-width: 1px;
+  border-left-color: transparent;
   transform: translate(-100%, 0px);
 }
 
 .flag.right {
-  border-left-width: 1px;
+  border-right-color: transparent;
   transform: translate(0px, 0px);
 }
 
@@ -64,6 +66,20 @@
   vertical-align: middle;
   cursor: ew-resize;
   pointer-events: all;
+}
+
+.flag:focus {
+  outline: none;
+  border-radius: 5px;
+  border-color: #27ae60;
+}
+
+.flag.left.connected:focus {
+  border-radius: 5px 0 0 5px;
+}
+
+.flag.right.connected:focus {
+  border-radius: 0 5px 5px 0;
 }
 
 .fill {

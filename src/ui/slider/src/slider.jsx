@@ -120,6 +120,7 @@ export default class Slider extends React.Component {
 
     bindAll(this, [
       'onHandleMove',
+      'onHandleKeyDown',
       'onTrackClick',
       'renderHandle',
       'renderFill',
@@ -151,16 +152,33 @@ export default class Slider extends React.Component {
 
   onHandleMove(key, offset) {
     return (event) => {
-      const value = valueWithPrecision(
-        this.state.scale.invert(event.pageX + offset), this.precision);
+      const value = valueWithPrecision(this.state.scale.invert(event.pageX + offset),
+                                       this.precision);
 
-      if (this.state.values[key] !== value) {
-        const values = { ...this.state.values, [key]: value };
+      this.updateValueFromEvent(value, key);
+    };
+  }
 
-        if (values.max === undefined || values.min <= values.max) {
-          this.props.onChange({ ...values }, key);
-        }
+  onHandleKeyDown(key) {
+    return (event) => {
+      let step;
+      switch (event.keyCode) {
+        case 37:
+          step = -this.props.step;
+          break;
+        case 39:
+          step = this.props.step;
+          break;
+        default:
+          return;
       }
+
+      event.stopPropagation();
+      event.preventDefault();
+
+      const value = valueWithPrecision(this.state.values[key] + step, this.precision);
+
+      this.updateValueFromEvent(value, key);
     };
   }
 
@@ -175,8 +193,18 @@ export default class Slider extends React.Component {
 
     const key = comp ? 'min' : 'max';
 
-    if (values[key] !== value) {
-      this.props.onChange({ ...values, [key]: value }, key);
+    this.updateValueFromEvent(value, key);
+  }
+
+  updateValueFromEvent(value, key) {
+    if (value !== this.state.values[key] &&
+        value >= this.props.minValue &&
+        value <= this.props.maxValue) {
+      const values = { ...this.state.values, [key]: value };
+
+      if (values.max === undefined || values.min <= values.max) {
+        this.props.onChange({ ...values }, key);
+      }
     }
   }
 
@@ -206,6 +234,7 @@ export default class Slider extends React.Component {
           direction={ direction }
           position={ this.state.scale(value) }
           onMove={ this.onHandleMove }
+          onKeyDown={ this.onHandleKeyDown }
           label={ value }
           labelFunc={ this.props.labelFunc }
           snapTarget={ this.state.snapTarget }

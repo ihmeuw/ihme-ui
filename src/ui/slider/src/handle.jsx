@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import interact from 'interact.js';
-import { identity } from 'lodash';
+import { identity, noop } from 'lodash';
 
 import { getDimension, getSnapTargetFunc } from './util';
 
@@ -17,6 +17,7 @@ const propTypes = {
   labelFunc: PropTypes.func,
   name: PropTypes.string.isRequired,
   onMove: PropTypes.func.isRequired,
+  onKeyDown: PropTypes.func,
   snapTarget: PropTypes.oneOfType([
     PropTypes.func,
     PropTypes.object
@@ -26,7 +27,8 @@ const propTypes = {
 
 const defaultProps = {
   direction: 'middle',
-  labelFunc: identity
+  labelFunc: identity,
+  onKeyDown: noop
 };
 
 function getOffset(direction, width) {
@@ -75,7 +77,8 @@ export default class Handle extends React.Component {
         }
       })
       .styleCursor(false)
-      .on('dragmove', this.props.onMove(this.props.name, -offset));
+      .on('dragmove', this.props.onMove(this.props.name, -offset))
+      .on('tap', (event) => { event.target.focus(); });
   }
 
   handleRef(ref) {
@@ -84,15 +87,15 @@ export default class Handle extends React.Component {
 
   render() {
     return (
-      <div
+      <button
+        type="button"
         className={ classNames(this.props.className, style.flag, style[this.props.direction]) }
         style={ { left: getDimension(this.props.position) } }
         ref={ this.handleRef }
+        onKeyDown={ this.props.onKeyDown(this.props.name) }
       >
-        <span>
-          { this.props.labelFunc(this.props.label) }
-        </span>
-      </div>
+        { this.props.labelFunc(this.props.label) }
+      </button>
     );
   }
 }
