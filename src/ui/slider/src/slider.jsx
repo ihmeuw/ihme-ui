@@ -105,6 +105,19 @@ function valueWithPrecision(value, precision) {
   return +value.toFixed(precision);
 }
 
+/**
+ * Return value more similar to the input value. If one handle, only return number value.
+ * @param value
+ * @param handleCount
+ * @returns {*}
+ */
+function valueByHandleCount(value, handleCount) {
+  if (handleCount === 1) {
+    return value.min;
+  }
+  return value;
+}
+
 export default class Slider extends React.Component {
   constructor(props) {
     super(props);
@@ -117,6 +130,8 @@ export default class Slider extends React.Component {
         .domain([props.minValue, props.maxValue]),
       snapTarget: {}
     };
+
+    this.handleCount = Object.keys(this.state.values).length;
 
     bindAll(this, [
       'onHandleMove',
@@ -203,7 +218,7 @@ export default class Slider extends React.Component {
       const values = { ...this.state.values, [key]: value };
 
       if (values.max === undefined || values.min <= values.max) {
-        this.props.onChange({ ...values }, key);
+        this.props.onChange(valueByHandleCount({ ...values }, this.handleCount), key);
       }
     }
   }

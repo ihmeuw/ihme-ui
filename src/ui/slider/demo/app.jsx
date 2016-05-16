@@ -84,12 +84,14 @@ class App extends React.Component {
     this.setState({ rangeSliderValues: value });
   }
 
-  onSingleValueChange(value, key) {
-    this.setState({ singleValue: value[key] });
+  onSingleValueChange(value) {
+    console.log(value);
+    this.setState({ singleValue: value });
   }
 
   onListValueChange(value) {
-    this.setState({ listValue: value.min, fillColor: this.items[value.min] });
+    console.log(this.items[value]);
+    this.setState({ listValue: value, fillColor: this.items[value] });
   }
 
   listLabelFunc(value) {
