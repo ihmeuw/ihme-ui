@@ -188,7 +188,7 @@ export default class Slider extends React.Component {
     const value = valueWithPrecision(this.state.scale.invert(event.snap.x), this.precision);
 
     /* Determine which handle is closer. 'min' == true, 'max' == false */
-    const comp = values.min !== undefined &&
+    const comp = values.max === undefined ||
       (Math.abs(values.min - value) < Math.abs(values.max - value) || values.min > value);
 
     const key = comp ? 'min' : 'max';
