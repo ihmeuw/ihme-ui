@@ -1,6 +1,7 @@
 import React from 'react';
-import Select from 'ihme-react-select';
-import { getStringWidth } from '../../../utils';
+import Select, { propTypes } from 'ihme-react-select';
+
+import { getWidestLabel } from './utils';
 
 import style from './select.css';
 import Menu from './menu';
@@ -13,7 +14,7 @@ export default class SingleSelect extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      width: `${this.getWidestLabel(props.options, props.labelKey, props.hierarchical)}px`
+      width: `${getWidestLabel(props.options, props.labelKey, props.hierarchical + 36)}px`
     };
   }
 
@@ -23,23 +24,10 @@ export default class SingleSelect extends React.Component {
       newProps.hierarchical !== this.props.hierarchical) {
       /* eslint-disable max-len */
       this.setState({
-        width: `${this.getWidestLabel(newProps.options, newProps.labelKey, newProps.hierarchical)}px`
+        width: `${getWidestLabel(newProps.options, newProps.labelKey, newProps.hierarchical + 36)}px`
       });
       /* eslint-enable max-len */
     }
-  }
-
-  getWidestLabel(options, labelKey, hierarchical) {
-    // find longest label,
-    // then add 36px to account for width of padding, input box, etc
-    return options.reduce((maxWidth, option) => {
-      const labelWidth = getStringWidth(option[labelKey]);
-
-      // take padding into account for hierarchically displayed list
-      const fullWidth = hierarchical ? labelWidth + 5 * option.level : labelWidth;
-
-      return Math.max(maxWidth, fullWidth);
-    }, 0) + 36;
   }
 
   render() {
@@ -59,4 +47,5 @@ export default class SingleSelect extends React.Component {
   }
 }
 
+SingleSelect.propTypes = propTypes;
 SingleSelect.defaultProps = defaultProps;
