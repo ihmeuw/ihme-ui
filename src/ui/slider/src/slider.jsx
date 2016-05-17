@@ -1,190 +1,303 @@
 import React, { PropTypes } from 'react';
-import { isWithinRange } from '../../../utils/domain';
-import SliderHandle from './slider-handle';
+import classNames from 'classnames';
+import d3Scale from 'd3-scale';
+import { bindAll, identity, map, zipObject } from 'lodash';
+
+import Track from './track';
+import Fill from './fill';
+import Handle from './handle';
+
+import style from './style.css';
 
 const propTypes = {
-  /* linear x scale */
-  xScale: PropTypes.func.isRequired,
-
-  /* [min, max] of domain (in data space) user has selected; used to position slider handles */
-  rangeExtent: PropTypes.array.isRequired,
-
-  /* width of parent container, in px */
-  width: PropTypes.number.isRequired,
-
-  /* the height of element (path, line, rect) that the slider will sit atop, in px */
+  /** Height and width of Slider component. */
   height: PropTypes.number,
+  width: PropTypes.number,
 
-  /* y shift of entire slider, in px */
-  translateY: PropTypes.number,
+  /** Extents of slider values. */
+  minValue: PropTypes.number.isRequired,
+  maxValue: PropTypes.number.isRequired,
 
-  /*
-    float value used for implementing "zooming";
-    any element that needs to become larger in "presentation mode"
-    should respond to this scale factor.
-    guide:
-      zoom: 0 -> smallest possible
-      zoom: 0.5 -> half of normal size
-      zoom: 1 -> normal
-      zoom: 2 -> twice normal size
-  */
-  zoom: PropTypes.number,
+  /** Step between slider values. */
+  step: PropTypes.number,
 
-  /* top margin applied within svg document handle is placed within; used to calc origin offset */
-  marginTop: PropTypes.number,
+  /**
+   * Initial selected value.
+   * If number, a single slider handle will be rendered.
+   * If object with keys 'min' and 'max', two slider handles will be rendered.
+   */
+  value: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.array,
+    PropTypes.shape({
+      min: PropTypes.number,
+      max: PropTypes.number
+    })
+  ]).isRequired,
 
-  /* left margin applied within svg document handle is placed within; used to calc origin offset */
-  marginLeft: PropTypes.number,
+  /**
+   * Function applied to the selected value prior to rendering.
+   * Params:
+   *   value - selected value
+   *
+   * Returns:
+   *   'string'
+   *
+   * Default:
+   *   _.identity
+   */
+  labelFunc: PropTypes.func,
 
-  /* will be called with updated extent (as percentage of slider width) */
-  onSliderMove: PropTypes.func
+  /** Include fill in the track to indicate value. */
+  fill: PropTypes.bool,
+
+  /** Style for the fill color. */
+  fillColor: PropTypes.string,
+
+  /**
+   * Callback function when value is changed.
+   * Params:
+   *   value - object with keys ['min'] and 'max'
+   *   key - key of most recent value change.
+   */
+  onChange: PropTypes.func.isRequired
 };
 
 const defaultProps = {
-  height: 15,
-  zoom: 1,
-  marginTop: 0,
-  marginLeft: 0,
-  translateY: 1,
-  onSliderMove: () => { return; }
+  height: 24,
+  width: 200,
+  step: 1,
+  labelFunc: identity,
+  fill: false,
+  fillColor: '#ccc'
 };
+
+/**
+ * Evaluate value and return a compatible object with keys 'min' and 'max'.
+ * @param value
+ * @returns {Object}
+ */
+function getValues(value) {
+  if (typeof value === 'number') {
+    return { min: value };
+  } else if (Array.isArray(value)) {
+    return zipObject(['min', 'max'], value);
+  }
+  return value;
+}
+
+/**
+ * Determine the floating point precision of a number.
+ * @param value
+ * @returns {number}
+ */
+function getFloatPrecision(value) {
+  return value > 0 && value < 1 ? (1 - Math.ceil(Math.log(value) / Math.log(10))) : 0;
+}
+
+/**
+ * Return a number to a specified precision as a workaround for floating point funkiness.
+ * @param value
+ * @param precision
+ * @returns {number}
+ */
+function valueWithPrecision(value, precision) {
+  return +value.toFixed(precision);
+}
+
+/**
+ * Return value more similar to the input value. If one handle, only return number value.
+ * @param value
+ * @param handleCount
+ * @returns {*}
+ */
+function valueByHandleCount(value, handleCount) {
+  if (handleCount === 1) {
+    return value.min;
+  }
+  return value;
+}
 
 export default class Slider extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      x1: 0,
-      x2: 1
+      render: false,
+      values: getValues(props.value),
+      scale: d3Scale.scaleLinear()
+        .clamp(true)
+        .domain([props.minValue, props.maxValue]),
+      snapTarget: {}
     };
 
-    this.decoratedSliderMove = this.decoratedSliderMove.bind(this);
+    this.handleCount = Object.keys(this.state.values).length;
+
+    bindAll(this, [
+      'onHandleMove',
+      'onHandleKeyDown',
+      'onTrackClick',
+      'renderHandle',
+      'renderFill',
+      'trackRef'
+    ]);
   }
 
-  rectWidth(which, edgePosition, containerWidth) {
-    /* eslint no-self-compare:0 */
-    if (which === 'left') return (edgePosition) ? edgePosition : 0;
-
-    // make certain both containerWidth and edgePosition are numbers
-    // and not NaN (self-compare check)
-    if (typeof containerWidth === 'number' && containerWidth === containerWidth
-      && typeof edgePosition === 'number' && edgePosition === edgePosition) {
-      const diff = containerWidth - edgePosition;
-      return (diff < 0) ? 0 : diff;
-    }
-
-    return 0;
+  componentDidMount() {
+    this.receiveTrackWidth(this.props);
   }
 
-  /**
-   * Passed as moveHandler to individual brush handles
-   * @param {Array} positionInPixelSpace
-   * @param {String} which -> 'x1' or 'x2'
-   */
-  decoratedSliderMove(positionInPixelSpace, which) {
-    const { onSliderMove, width } = this.props;
-    const { x1, x2 } = this.state;
-
-    // find position of slider handle as percent of range
-    // if the slider is within tolerance of the bounds, snap to bounds
-    // without snapping behavior, it is very difficult to reset the slider handles
-    const tolerance = 0.005;
-    let positionAsPercent = positionInPixelSpace / width;
-    if (Math.abs(0 - positionAsPercent) < tolerance) positionAsPercent = 0;
-    if (Math.abs(1 - positionAsPercent) < tolerance) positionAsPercent = 1;
-
-    // prevent the slider handles from crossing
-    switch (which) {
-      case 'x1':
-        if (positionAsPercent >= x2) positionAsPercent = x2;
-        break;
-      case 'x2':
-        if (positionAsPercent <= x1) positionAsPercent = x1;
-        break;
-      default:
-        break;
+  componentWillReceiveProps(newProps) {
+    // If the extents or width changes, the scale and snapTarget must be recalculated.
+    if ((this.props.minValue !== newProps.minValue) ||
+        (this.props.maxValue !== newProps.maxValue) ||
+        (this.props.step !== newProps.step)) {
+      this.state.scale.domain([newProps.minValue, newProps.maxValue]);
+      this.receiveTrackWidth(newProps);
     }
 
-    // if user is attempting to move slider outside of bounding domain of the data
-    // don't trigger new render or fire moveHandler
-    // while xScale is already clamped, this check prevents unnecessary render cycles
-    if (!isWithinRange(positionAsPercent, [0, 1])) return;
+    this.setState({ values: getValues(newProps.value) });
+  }
 
-    // keep internal state within this component
-    this.setState({ [which]: positionAsPercent }, () => {
-      const { x1: newX1, x2: newX2 } = this.state;
+  componentDidUpdate(prevProps) {
+    if (this.props.width !== prevProps.width) {
+      this.receiveTrackWidth(this.props);
+    }
+  }
 
-      // order the range extent
-      const lowerExtent = Math.min(newX1, newX2);
-      const upperExtent = Math.max(newX1, newX2);
+  onHandleMove(key, offset) {
+    return (event) => {
+      const value = valueWithPrecision(this.state.scale.invert(event.pageX + offset),
+                                       this.precision);
 
-      // fire action handler passed in to <ChoroplethLegend />
-      // with updated range extent
-      onSliderMove([lowerExtent, upperExtent]);
+      this.updateValueFromEvent(value, key);
+    };
+  }
+
+  onHandleKeyDown(key) {
+    return (event) => {
+      let step;
+      switch (event.keyCode) {
+        case 37:
+          step = -this.props.step;
+          break;
+        case 39:
+          step = this.props.step;
+          break;
+        default:
+          return;
+      }
+
+      event.stopPropagation();
+      event.preventDefault();
+
+      const value = valueWithPrecision(this.state.values[key] + step, this.precision);
+
+      this.updateValueFromEvent(value, key);
+    };
+  }
+
+  onTrackClick(event) {
+    const { values } = this.state;
+
+    const value = valueWithPrecision(this.state.scale.invert(event.snap.x), this.precision);
+
+    /* Determine which handle is closer. 'min' == true, 'max' == false */
+    const comp = values.max === undefined ||
+      (Math.abs(values.min - value) < Math.abs(values.max - value) || values.min > value);
+
+    const key = comp ? 'min' : 'max';
+
+    this.updateValueFromEvent(value, key);
+  }
+
+  updateValueFromEvent(value, key) {
+    if (value !== this.state.values[key] &&
+        value >= this.props.minValue &&
+        value <= this.props.maxValue) {
+      const values = { ...this.state.values, [key]: value };
+
+      if (values.max === undefined || values.min <= values.max) {
+        this.props.onChange(valueByHandleCount({ ...values }, this.handleCount), key);
+      }
+    }
+  }
+
+  receiveTrackWidth(props) {
+    this.precision = getFloatPrecision(props.step);
+    this.setState({
+      render: true,
+      scale: this.state.scale.range([0, this._track.width]),
+      snapTarget: { x: this._track.width / ((props.maxValue - props.minValue) / props.step) }
     });
   }
 
-  /*
-    TODO
-    - moving the slider handles at the bounds of the slider is sticky
-    - moving the slider handles is janky
-      investigate wrapping the handles in a transition component
-      that will interpolate from oldProps.position to newProps.position
-   */
+  trackRef(ref) {
+    this._track = ref;
+  }
+
+  renderHandle() {
+    const { values } = this.state;
+
+    return map(values, (value, key) => {
+      const direction = key === 'min' ? 'left' : 'right';
+
+      return (
+        <Handle
+          key={ key }
+          name={ key }
+          direction={ direction }
+          position={ this.state.scale(value) }
+          onMove={ this.onHandleMove }
+          onKeyDown={ this.onHandleKeyDown }
+          label={ value }
+          labelFunc={ this.props.labelFunc }
+          snapTarget={ this.state.snapTarget }
+          className={ classNames({ [style.connected]: values.min === values.max }) }
+        />
+      );
+    });
+  }
+
+  renderFill() {
+    const { values, scale } = this.state;
+
+    return map(values, (value, key) => {
+      const direction = key === 'min' ? 'left' : 'right';
+
+      return (
+        <Fill
+          key={ key }
+          direction={ direction }
+          width={ scale(value) }
+          fillStyle={ { backgroundColor: this.props.fillColor } }
+        />
+      );
+    });
+  }
+
   render() {
-    const {
-      xScale,
-      rangeExtent,
-      width,
-      height,
-      translateY,
-      marginTop,
-      marginLeft,
-      zoom
-    } = this.props;
-    const [minExtent, maxExtent] = rangeExtent;
-    const leftEdgeinPx = xScale(minExtent);
-    const rightEdgeInPx = xScale(maxExtent);
+    const { height, width } = this.props;
+    const { render } = this.state;
 
     return (
-      <g transform={`translate(0, ${translateY * zoom})`}>
-        <rect
-          x="0px"
-          height={`${height}px`}
-          stroke="none"
-          fill="#cccccc"
-          width={this.rectWidth('left', leftEdgeinPx)}
+      <div
+        className={ style.slider }
+        style={ { height: `${height}px`, width: `${width}px` } }
+      >
+        <Track
+          onClick={ this.onTrackClick }
+          snapTarget={ this.state.snapTarget }
+          ref={ this.trackRef }
         >
-        </rect>
-        <SliderHandle
-          which={"x1"}
-          position={leftEdgeinPx}
-          label={minExtent}
-          onSliderMove={this.decoratedSliderMove}
-          marginTop={marginTop}
-          marginLeft={marginLeft}
-          height={height}
-        />
-        <rect
-          height={`${height}px`}
-          stroke="none"
-          fill="#cccccc"
-          x={rightEdgeInPx ? rightEdgeInPx : 0}
-          width={this.rectWidth('right', rightEdgeInPx, width)}
-        >
-        </rect>
-        <SliderHandle
-          which="x2"
-          position={rightEdgeInPx}
-          label={maxExtent}
-          onSliderMove={this.decoratedSliderMove}
-          marginTop={marginTop}
-          marginLeft={marginLeft}
-          height={height}
-        />
-      </g>
+          { render && this.props.fill && this.renderFill() }
+          { render && this.renderHandle() }
+        </Track>
+      </div>
     );
   }
 }
 
 Slider.propTypes = propTypes;
+
 Slider.defaultProps = defaultProps;

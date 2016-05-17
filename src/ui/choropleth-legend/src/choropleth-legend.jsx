@@ -4,7 +4,7 @@ import d3Scale from 'd3-scale';
 import LinearGradient from './linear-gradient';
 import { ScatterPlot } from '../../shape';
 import SvgText from '../../svg-text';
-import Slider from '../../slider';
+import Slider from './slider';
 import { XAxis } from '../../axis';
 
 const propTypes = {
