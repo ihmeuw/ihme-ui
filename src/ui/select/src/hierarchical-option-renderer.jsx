@@ -16,7 +16,7 @@ const HierarchicalOption = (props) => {
   return (
     <span
       style={{
-        marginLeft: props.option.level * 5,
+        marginLeft: (props.option.level || 0) * 5,
         fontWeight: props.option.bold ? 'bold' : 'normal'
       }}
     >
