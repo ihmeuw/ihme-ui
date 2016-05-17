@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import d3 from 'd3';
 import topojson from 'topojson';
-import { assign, keyBy } from 'lodash';
+import { assign, keyBy, isEqual } from 'lodash';
 import { extractGeoJSON, concatGeoJSON, computeBounds } from '../../../utils';
 
 import style from './choropleth.css';
@@ -158,12 +158,13 @@ export default class Choropleth extends React.Component {
     /* eslint-enable prefer-const */
 
     const topologyHasChanged = newProps.topology !== this.props.topology;
+    const layersHaveChanged = !isEqual(newProps.layers, this.props.layers);
     const dataHasChanged = newProps.data !== this.props.data;
     const resized = (newProps.width !== this.props.width) ||
       (newProps.height !== this.props.height);
 
     // if new topojson is passed in, presimplify, recalc bounds, and transform into geoJSON
-    if (topologyHasChanged) assign(newState, this.processJSON(newProps.topology));
+    if (topologyHasChanged || layersHaveChanged) assign(newState, this.processJSON(newProps.topology, newProps.layers));
 
     // if the component has been resized, set a new base scale and translate
     if (resized) {
