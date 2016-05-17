@@ -56,7 +56,6 @@ class App extends React.Component {
      <MultiSelect
        labelKey="name"
        valueKey="name"
-       name="city"
        onChange={ function (selections <Array>) {...} }
        options={ [{name: 'Albany'}, ...] }
        value={[]}
@@ -65,7 +64,6 @@ class App extends React.Component {
           <MultiSelect
             labelKey="name"
             valueKey="name"
-            name="city"
             onChange={this.onMultiSelectChange}
             options={cities}
             value={multiSelectValues}
@@ -75,26 +73,20 @@ class App extends React.Component {
           <h3>Single-select</h3>
           <pre><code>
      <SingleSelect
-       autofocus
-       clearable
        labelKey="name"
        valueKey="name"
-       name="city"
        onChange={ function (selections <Object>) {...} }
        options={ [{name: 'Albany'}, ...] }
-       value={[]}
+       value={null}
      />
           </code></pre>
-          <div style={{ flex: '1 1 auto', maxWidth: '300px', minWidth: '200px' }}>
             <SingleSelect
               labelKey="name"
               valueKey="name"
-              name="city"
               onChange={this.onSingleSelectChange}
               options={cities}
               value={singleSelectValue}
             />
-          </div>
         </section>
         <section>
           <h3>Hierarchical select</h3>
@@ -103,23 +95,19 @@ class App extends React.Component {
        hierarchical
        labelKey="name"
        valueKey="name"
-       name="city"
        onChange={ function (selections <Object>) {...} }
        options={ [{ name: 'Albany', level: 1, bold: true }, ...] }
-       value={[]}
+       value={null}
      />
           </code></pre>
-          <div style={{ flex: '1 1 auto', maxWidth: '300px', minWidth: '200px' }}>
             <SingleSelect
               hierarchical
               labelKey="name"
               valueKey="name"
-              name="city"
               onChange={this.onSingleSelectChange}
               options={hierarchicalCities}
               value={singleSelectValue}
             />
-          </div>
         </section>
       </div>
     );
