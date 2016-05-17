@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import { AutoSizer, VirtualScroll } from 'react-virtualized';
-import { getStringWidth } from '../../../utils';
 import MultiOption from './multi-option';
 import SingleOption from './single-option';
 
@@ -19,6 +18,7 @@ const propTypes = {
 };
 
 const Menu = (props) => {
+  /* eslint-disable react/prop-types */
   const {
     focusedOption,
     focusOption,
@@ -73,6 +73,7 @@ const Menu = (props) => {
       }
     </AutoSizer>
   );
+  /* eslint-enable react/prop-types */
 };
 
 Menu.propTypes = propTypes;
