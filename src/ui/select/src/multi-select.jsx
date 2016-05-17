@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import Select, { propTypes } from 'ihme-react-select';
 
 import { getWidestLabel } from './utils';
@@ -16,7 +16,7 @@ export default class MultiSelect extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      width: `${getWidestLabel(props.options, props.labelKey, props.hierarchical) + 50}px`
+      width: `${getWidestLabel(props.options, props.labelKey, props.hierarchical) + 60}px`
     };
   }
 
@@ -26,7 +26,7 @@ export default class MultiSelect extends React.Component {
         newProps.hierarchical !== this.props.hierarchical) {
       /* eslint-disable max-len */
       this.setState({
-        width: `${getWidestLabel(newProps.options, newProps.labelKey, newProps.hierarchical) + 50}px`
+        width: `${getWidestLabel(newProps.options, newProps.labelKey, newProps.hierarchical) + 60}px`
       });
       /* eslint-enable max-len */
     }

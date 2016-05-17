@@ -14,7 +14,7 @@ export default class SingleSelect extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      width: `${getWidestLabel(props.options, props.labelKey, props.hierarchical + 36)}px`
+      width: `${getWidestLabel(props.options, props.labelKey, props.hierarchical) + 50}px`
     };
   }
 
@@ -24,7 +24,7 @@ export default class SingleSelect extends React.Component {
       newProps.hierarchical !== this.props.hierarchical) {
       /* eslint-disable max-len */
       this.setState({
-        width: `${getWidestLabel(newProps.options, newProps.labelKey, newProps.hierarchical + 36)}px`
+        width: `${getWidestLabel(newProps.options, newProps.labelKey, newProps.hierarchical) + 50}px`
       });
       /* eslint-enable max-len */
     }
