@@ -11,6 +11,10 @@
   align-items: center;
 }
 
+.common:hover:not(.green) {
+  background-color: #e5e5e5;
+}
+
 .common:active,
 .common:focus {
   outline: none;
@@ -24,7 +28,7 @@
 
 .active:not(:disabled),
 .common:active:not(:disabled) {
-  background-color: #e5e5e5;
+  background-color: #d5d5d5;
   color: #27ae60;
 }
 
