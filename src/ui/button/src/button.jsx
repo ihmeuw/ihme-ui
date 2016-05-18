@@ -31,7 +31,7 @@ const propTypes = {
   text: PropTypes.string,
 
   /* color scheme of component; see button.css */
-  theme: PropTypes.oneOf(['dark', 'light'])
+  theme: PropTypes.oneOf(['green'])
 };
 
 const defaultProps = {
@@ -39,25 +39,26 @@ const defaultProps = {
 };
 
 const getContent = (showSpinner, iconPath) => {
-  if (showSpinner) return <Spinner size="small" />;
-  if (iconPath) return <img src={iconPath} />;
+  if (showSpinner) return <Spinner inline size="small" />;
+  if (iconPath) return <img className={styles.icon} src={iconPath} />;
   return null;
 };
 
 const Button = (props) => {
+  const clickHandler = props.showSpinner ? null : props.clickHandler;
   return (
     <button
-      className={classNames(props.className, styles[props.theme], {
+      className={classNames(props.className, styles.common, styles[props.theme], {
         [styles.disabled]: props.disabled
       })}
       disabled={props.disabled}
       id={props.id}
       name={props.name}
-      onClick={props.clickHandler}
+      onClick={clickHandler}
       type="button"
     >
       {getContent(props.showSpinner, props.icon)}
-      {props.text}
+      {!props.showSpinner ? <span>{props.text}</span> : null}
     </button>
   );
 };
