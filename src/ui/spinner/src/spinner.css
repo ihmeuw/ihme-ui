@@ -1,10 +1,20 @@
 .spinner {
-  display: inline-block;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
 }
 
 .inline-spinner {
   composes: spinner;
-  font-size: 1vw;
+  display: inline-flex;
+  position: relative;
+  width: auto;
+  height: auto;
 }
 
 .dot {
@@ -13,6 +23,16 @@
   display: inline-block;
   animation: bouncedelay 1200ms infinite ease-in-out;
   animation-fill-mode: both;
+}
+
+.dot:nth-child(2n) {
+  animation-delay: 180ms;
+  margin-left: 1em;
+}
+
+.dot:nth-child(3n) {
+  animation-delay: 360ms;
+  margin-left: 1em;
 }
 
 .small-dot {
@@ -27,22 +47,11 @@
   height: 1vw;
 }
 
-.big-dot {
+.large-dot {
   composes: dot;
   width: 2vw;
   height: 2vw;
 }
-
-.dot:nth-child(2n) {
-   animation-delay: 180ms;
-   margin-left: 1em;
-}
-
-.dot:nth-child(3n) {
-   animation-delay: 360ms;
-   margin-left: 1em;
-}
-
 
 @keyframes bouncedelay {
   0%, 80%, 100% {

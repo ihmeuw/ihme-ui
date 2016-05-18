@@ -27,7 +27,7 @@ describe('<Button />', () => {
 
   it('shows a spinner when showSpinner is true', () => {
     const wrapper = shallow(<Button showSpinner />);
-    expect(wrapper).to.contain(<Spinner size="small" />);
+    expect(wrapper).to.contain(<Spinner inline size="small" />);
   });
 
   it('displays text', () => {
@@ -48,7 +48,7 @@ describe('<Button />', () => {
 
   it('shows a spinner instead of icon', () => {
     const wrapper = shallow(<Button icon="image.png" showSpinner />);
-    expect(wrapper).to.contain(<Spinner size="small" />)
+    expect(wrapper).to.contain(<Spinner inline size="small" />)
       .and.to.not.have.descendants('img');
   });
 });
