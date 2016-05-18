@@ -1,0 +1,98 @@
+.slider {
+  position: relative;
+  box-sizing: border-box;
+}
+
+.rounded {
+  border-radius: 4px;
+}
+
+.track {
+  composes: rounded;
+  box-sizing: border-box;
+  position: absolute;
+  width: 100%;
+  height: 5px;
+  border: 1px solid;
+  top: 20px;
+  color: #ccc;
+  display: inline-flex;
+}
+
+.track-click-target {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+}
+
+.flag {
+  position: absolute;
+  bottom: calc(100% + 3px);
+  min-width: 20px;
+  width: auto;
+  height: 1.5em;
+  font-size: 8pt;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+  color: #27ae60;
+  transition: all 0.3s ease-out;
+  background-color: transparent;
+  border: solid #27ae60;
+  border-width: 0 1px;
+}
+
+.flag.left {
+  border-left-color: transparent;
+  transform: translate(-100%, 0px);
+}
+
+.flag.right {
+  border-right-color: transparent;
+  transform: translate(0px, 0px);
+}
+
+.flag.left.connected {
+  border-right-width: 1px;
+}
+
+.flag.right.connected {
+  border-left-color: transparent;
+}
+
+.flag span {
+  padding: 4px;
+  vertical-align: middle;
+  cursor: ew-resize;
+  pointer-events: all;
+}
+
+.flag:focus {
+  outline: none;
+  border-radius: 5px;
+  border-color: #27ae60;
+}
+
+.flag.left.connected:focus {
+  border-radius: 5px 0 0 5px;
+}
+
+.flag.right.connected:focus {
+  border-radius: 0 5px 5px 0;
+}
+
+.fill {
+  position: absolute;
+  transition: width 0.3s ease-out;
+}
+
+.fill.left {
+  left: 0;
+  border-radius: 4px 0 0 4px;
+}
+
+.fill.right {
+  right: 0;
+  border-radius: 0 4px 4px 0;
+}
