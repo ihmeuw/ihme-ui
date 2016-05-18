@@ -18,10 +18,6 @@ const ResponsiveContainerPropTypes = {
   onResize: PropTypes.func
 };
 
-/**
- * This component will remain untestable until either JSDOM supports getBoundingClientRect
- * or until we move tests into a browser environment
- */
 export default function ResponsiveContainer(props) {
   /* eslint-disable react/prop-types */
 
