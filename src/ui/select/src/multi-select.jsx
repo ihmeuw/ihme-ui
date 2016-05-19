@@ -4,7 +4,7 @@ import Select, { propTypes } from 'ihme-react-select';
 import { getWidestLabel } from './utils';
 
 import style from './select.css';
-import Menu from './menu';
+import { menuWrapper } from './menu';
 import Value from './value';
 import MultiValueRenderer from './muli-value-renderer';
 
@@ -16,7 +16,7 @@ export default class MultiSelect extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      width: `${getWidestLabel(props.options, props.labelKey, props.hierarchical) + 60}px`
+      width: getWidestLabel(props.options, props.labelKey, props.hierarchical) + 60
     };
   }
 
@@ -24,24 +24,23 @@ export default class MultiSelect extends React.Component {
     if (newProps.options !== this.props.options ||
         newProps.labelKey !== this.props.labelKey ||
         newProps.hierarchical !== this.props.hierarchical) {
-      /* eslint-disable max-len */
       this.setState({
-        width: `${getWidestLabel(newProps.options, newProps.labelKey, newProps.hierarchical) + 60}px`
+        width: getWidestLabel(newProps.options, newProps.labelKey, newProps.hierarchical) + 60
       });
-      /* eslint-enable max-len */
     }
   }
 
   render() {
+    const { width } = this.state;
     return (
       <Select
         autofocus
         clearable
         searchable
         multi
-        wrapperStyle={this.state}
+        wrapperStyle={{ width: `${width}px` }}
         className={style.select}
-        menuRenderer={Menu}
+        menuRenderer={menuWrapper(this.state)}
         valueComponent={Value}
         valueRenderer={MultiValueRenderer}
         menuStyle={{ overflow: 'hidden' }}

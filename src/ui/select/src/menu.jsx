@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
-import { AutoSizer, VirtualScroll } from 'react-virtualized';
+import { VirtualScroll } from 'react-virtualized';
 import MultiOption from './multi-option';
 import SingleOption from './single-option';
 
 import style from './menu.css';
 
-const propTypes = {
+const menuPropTypes = {
   focusedOption: PropTypes.object,
   focusOption: PropTypes.func,
   labelKey: PropTypes.string,
@@ -15,9 +15,10 @@ const propTypes = {
   multi: PropTypes.bool,
   hierarchical: PropTypes.bool,
   optionRenderer: PropTypes.func,
+  width: PropTypes.number
 };
 
-const Menu = (props) => {
+export default function Menu(props) {
   /* eslint-disable react/prop-types */
   const {
     focusedOption,
@@ -28,7 +29,8 @@ const Menu = (props) => {
     valueArray,
     multi,
     hierarchical,
-    optionRenderer
+    optionRenderer,
+    width
   } = props;
   const maxHeight = 200;
   const optionHeight = 23;
@@ -55,27 +57,24 @@ const Menu = (props) => {
   }
 
   return (
-    <AutoSizer disableHeight>
-      {
-        ({ width }) => {
-          return (
-            <VirtualScroll
-              className={style.menu}
-              height={height}
-              width={width}
-              rowHeight={optionHeight}
-              rowRenderer={wrappedRowRenderer}
-              rowCount={options.length}
-              scrollToIndex={focusedOptionIndex}
-            />
-          );
-        }
-      }
-    </AutoSizer>
+    <VirtualScroll
+      className={style.menu}
+      height={height}
+      width={width}
+      rowHeight={optionHeight}
+      rowRenderer={wrappedRowRenderer}
+      rowCount={options.length}
+      scrollToIndex={focusedOptionIndex}
+    />
   );
   /* eslint-enable react/prop-types */
-};
+}
 
-Menu.propTypes = propTypes;
+Menu.propTypes = menuPropTypes;
 
-export default Menu;
+
+export function menuWrapper({ width }) {
+  return (menuProps) => {
+    return <Menu width={width} {...menuProps} />;
+  };
+}
