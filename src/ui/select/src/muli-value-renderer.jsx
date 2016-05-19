@@ -1,13 +1,11 @@
 import { PropTypes } from 'react';
 
 const propTypes = {
-  placeholder: PropTypes.string
+  placeholder: PropTypes.string.isRequired
 };
 
-const MultiValueRenderer = (props) => {
+export default function multiValueRenderer(props) {
   return props.placeholder;
-};
+}
 
-MultiValueRenderer.propTypes = propTypes;
-
-export default MultiValueRenderer;
+multiValueRenderer.propTypes = propTypes;

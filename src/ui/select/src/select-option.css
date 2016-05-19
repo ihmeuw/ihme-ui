@@ -4,6 +4,11 @@
   padding: 0 0.5rem;
   cursor: pointer;
   color: #454545;
+  height: 20px;
+}
+
+.input {
+  margin-right: 20px;
 }
 
 .selected {

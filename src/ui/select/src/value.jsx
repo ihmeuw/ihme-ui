@@ -45,7 +45,6 @@ export default class Value extends React.Component {
     if (this.props.onClick) {
       event.stopPropagation();
       this.props.onClick(this.props.value, event);
-      return;
     }
   }
 

@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import { VirtualScroll } from 'react-virtualized';
-import MultiOption from './multi-option';
-import SingleOption from './single-option';
+import SelectOption from './select-option';
 
 import style from './menu.css';
 
@@ -23,13 +22,13 @@ export default function Menu(props) {
   const {
     focusedOption,
     focusOption,
+    hierarchical,
     labelKey,
+    multi,
     options,
+    optionRenderer,
     selectValue,
     valueArray,
-    multi,
-    hierarchical,
-    optionRenderer,
     width
   } = props;
   const maxHeight = 200;
@@ -37,23 +36,25 @@ export default function Menu(props) {
 
   const focusedOptionIndex = options.indexOf(focusedOption);
   const height = Math.min(maxHeight, options.length * optionHeight);
-  const innerRowRenderer = multi ? MultiOption : SingleOption;
 
   function wrappedRowRenderer({ index }) {
     const option = options[index];
 
-    return innerRowRenderer({
-      focusedOption,
-      focusedOptionIndex,
-      focusOption,
-      labelKey,
-      option,
-      options,
-      selectValue,
-      valueArray,
-      hierarchical,
-      optionRenderer
-    });
+    return (
+      <SelectOption
+        focusedOption={focusedOption}
+        focusedOptionIndex={focusedOptionIndex}
+        focusOption={focusOption}
+        labelKey={labelKey}
+        multi={multi}
+        option={option}
+        options={options}
+        selectValue={selectValue}
+        valueArray={valueArray}
+        hierarchical={hierarchical}
+        optionRenderer={optionRenderer}
+      />
+    );
   }
 
   return (
@@ -72,7 +73,11 @@ export default function Menu(props) {
 
 Menu.propTypes = menuPropTypes;
 
-
+/**
+ * wrapper for <Menu /> that provides it with a width
+ * @param width {Number}
+ * @returns {function()}
+ */
 export function menuWrapper({ width }) {
   return (menuProps) => {
     return <Menu width={width} {...menuProps} />;
