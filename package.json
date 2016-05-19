@@ -32,7 +32,6 @@
     "coverage-token": "cat ./coverage/coverage.json | ./node_modules/codecov.io/bin/codecov.io.js",
     "demo": "BABEL_ENV=webpack scripts/bundle-demos.sh",
     "test": "npm run lint && BABEL_DISABLE_CACHE=1 BABEL_ENV=cli $(npm bin)/babel-node $(npm bin)/_mocha --require ./scripts/setup-jsdom.js `./scripts/get-test-directories.sh`",
-    "test:data": "npm run lint && BABEL_DISABLE_CACHE=1 BABEL_ENV=cli $(npm bin)/babel-node $(npm bin)/_mocha --require ./scripts/setup-jsdom.js src/test-utils/test/data.test.js",
     "clean": "rm -rf test-utils ui utils style index.js",
     "transpile": "BABEL_DISABLE_CACHE=1 BABEL_ENV=cli $(npm bin)/babel --ignore test/,demo src --out-dir .",
     "combine-css": "scripts/concat-stylesheets.sh",

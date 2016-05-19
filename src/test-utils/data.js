@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { map, flatMap, reduce, assign } from 'lodash';
 import cuid from 'cuid';
 
 export const dataGenerator = (config = {}) => {
@@ -22,11 +22,9 @@ export const dataGenerator = (config = {}) => {
   //   [{k_2:v_1}, {k_2:v_2}, {k_2:v_3}],
   //   [{k_3:v_1}, {k_3:v_2}]
   // ]
-  const keyStore = _.map(primaryKeys, (k) => {
-    return _.map(k.values, (v) => {
-      const obj = {};
-      obj[k.name] = v;
-      return obj;
+  const keyStore = map(primaryKeys, (k) => {
+    return map(k.values, (v) => {
+      return { [k.name]: v };
     });
   });
 
@@ -51,26 +49,39 @@ export const dataGenerator = (config = {}) => {
   //   {k_1:v_2, k_2:v_3, k_3:v_2},
   //   {k_1:v_3, k_2:v_3, k_3:v_2},
   // ]
-  let uniqKeys = [{}];
-  _.forEach(keyStore, (keyValues) => {
-    const sto = [];
-    _.forEach(keyValues, (keyObj) => {
-      _.forEach(uniqKeys, (rowObj) => {
-        sto.push(Object.assign({}, rowObj, keyObj));
+  const uniqKeys = reduce(keyStore, (prev, next) => {
+    return flatMap(next, (d) => {
+      return map(prev, (e) => {
+        return assign({}, d, e);
       });
     });
-    uniqKeys = sto;
   });
 
-
+  /**
+   * Floor function modified to cut off at tenths digit.
+   * @param number {NUMBER}
+   * @return {NUMBER}
+   */
   function floor(number) {
     return Math.floor(number * 10) / 10;
   }
 
+  /**
+   * amp computes the half distance of the total range.
+   * amplitude of sinusoidal curve.
+   * @param [a, b] {ARRAY}
+   * @return {NUMBER}
+   */
   function amp(range) {
     return (range[1] - range[0]) / 2;
   }
 
+  /**
+   * sAxis computes the midpoint of the total range.
+   * sinusoidal axis.
+   * @param [a, b] {ARRAY}
+   * @return {NUMBER}
+   */
   function sAxis(range) {
     return (range[1] + range[0]) / 2;
   }
@@ -108,21 +119,20 @@ export const dataGenerator = (config = {}) => {
       const rowObj = {};
       for (let k = 0; k < valueKeys.length; k++) {
         const valObj = valueKeys[k];
-        const obj = {};
+        const amplitude = amp(valObj.range);
         // sinusoidal data generator y=Asin(2x/L+B)+D
-        const value = floor(amp(valObj.range) * sin(2 * j / length + k + i) + sAxis(valObj.range));
-        obj[valObj.name] = value;
+        const value = floor(amplitude * sin(2 * j / length + k + i) + sAxis(valObj.range));
+        const obj = { [valObj.name]: value, year_id: year + j };
         if (valObj.uncertainty) {
-          obj[`${valObj.name}_ub`] = floor(value + amp(valObj.range) / 4);
-          obj[`${valObj.name}_lb`] = floor(value - amp(valObj.range) / 4);
+          obj[`${valObj.name}_ub`] = floor(value + amplitude / 4);
+          obj[`${valObj.name}_lb`] = floor(value - amplitude / 4);
         }
-        Object.assign(rowObj, obj);
+        assign(rowObj, obj);
       }
       segment.push(rowObj);
     }
     valueData.push(segment);
   }
-
 
   // Populate rows.
   // [
@@ -130,15 +140,13 @@ export const dataGenerator = (config = {}) => {
   //   {k_1:v_2, k_2:v_1, k_3:v_1, k_a:v_2, k_b:v_2, k_c:v_2, k_d:v_2},
   //   ...
   // ]
-  const rows = [];
-  _.forEach(valueData, (valArr, i) => {
-    const yObj = { year_id: year + i };
-    _.forEach(valArr, (valRow, j) => {
-      const rowObj = { id: cuid() };
-      Object.assign(rowObj, valRow, uniqKeys[j], yObj);
-      rows.push(rowObj);
+  const rows = flatMap(valueData, (vArr) => {
+    return map(vArr, (d, i) => {
+      return assign({}, d, uniqKeys[i]);
     });
   });
 
-  return rows;
+  return map(rows, (r) => {
+    return assign(r, { id: cuid() });
+  });
 };

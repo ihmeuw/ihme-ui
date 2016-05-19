@@ -66,7 +66,7 @@ class App extends React.Component {
         yScaleType="linear"
         extraClasses={['foo', 'bar']}
       >
-        <XAxis A />
+        <XAxis style={axisStyle} />
         <YAxis style={axisStyle} />
         <MultiLine
           data={lineData}
