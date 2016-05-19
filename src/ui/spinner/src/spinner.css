@@ -10,7 +10,6 @@
 }
 
 .inline-spinner {
-  composes: spinner;
   display: inline-flex;
   position: relative;
   width: auto;
