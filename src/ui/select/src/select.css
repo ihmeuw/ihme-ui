@@ -1,0 +1,6 @@
+.select {
+  color: #999;
+  line-height: 23px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
