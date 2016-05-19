@@ -28,67 +28,64 @@ class App extends React.Component {
   <Button
     text="Click me!"
     clickHandler={function onClick() { alert('You clicked me!'); }}
-    theme="light"
     className="an-extra-class"
   />
           </code></pre>
           <Button
             text="Click me!"
             clickHandler={function onClick() { alert('You clicked me!'); }}
-            theme="light"
             className="an-extra-class"
+          />
+        </section>
+        <section>
+          <h3>A themed button</h3>
+          <pre><code>
+  <Button
+    theme="green"
+    text="Click me!"
+    clickHandler={function onClick() { alert('You clicked me!'); }}
+  />
+          </code></pre>
+          <Button
+            theme="green"
+            text="Click me!"
+            clickHandler={function onClick() { alert('You clicked me!'); }}
           />
         </section>
         <section>
           <h3>A disabled button</h3>
           <pre><code>
   <Button
-    text="Click me!"
     disabled
+    text="Click me!"
     clickHandler={function onClick() { alert('You clicked me!'); }}
-    theme="light"
   />
           </code></pre>
           <Button
             text="Click me!"
             disabled
             clickHandler={function onClick() { alert('You clicked me!'); }}
-            theme="light"
           />
         </section>
         <section>
-          <h3>A button with a label on a dark background</h3>
+          <h3>A button with a label</h3>
           <pre><code>
-  <HtmlLabel text="A button " theme="dark">
+  <HtmlLabel text="A button">
     <Button
       text="Click me!"
-      theme="dark"
       clickHandler={function onClick() { alert('You clicked me!'); }}
       theme="dark"
     />
   </HtmlLabel>
           </code></pre>
-          <div style={
-            {
-              width: '100%',
-              height: '45px',
-              backgroundColor: 'black',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
             <HtmlLabel
               text="A button "
-              theme="dark"
             >
               <Button
                 text="Click me!"
-                theme="dark"
                 clickHandler={function onClick() { alert('You clicked me!'); }}
               />
             </HtmlLabel>
-          </div>
         </section>
         <section>
           <h3>A button with a spinner</h3>
@@ -97,7 +94,6 @@ class App extends React.Component {
     text="Delete all files"
     showSpinner={this.state.isLoading}
     clickHandler={this.showIsLoading}
-    theme="light"
   />
           </code></pre>
           <div>
@@ -105,7 +101,6 @@ class App extends React.Component {
               text="Delete all files"
               showSpinner={this.state.isLoading}
               clickHandler={this.showIsLoading}
-              theme="light"
             />
           </div>
         </section>
@@ -116,14 +111,12 @@ class App extends React.Component {
     text="Click me!"
     clickHandler={function onClick() { alert('You clicked me!'); }}
     icon="home3.png"
-    theme="light"
   />
           </code></pre>
           <Button
             text="Click me!"
             clickHandler={function onClick() { alert('You clicked me!'); }}
             icon="home3.png"
-            theme="light"
           />
         </section>
         <section>
@@ -134,7 +127,6 @@ class App extends React.Component {
     icon="home3.png"
     showSpinner={this.state.isLoading}
     clickHandler={this.showIsLoading}
-    theme="light"
   />
           </code></pre>
           <Button
@@ -142,7 +134,6 @@ class App extends React.Component {
             icon="home3.png"
             showSpinner={this.state.isLoading}
             clickHandler={this.showIsLoading}
-            theme="light"
           />
         </section>
       </div>
