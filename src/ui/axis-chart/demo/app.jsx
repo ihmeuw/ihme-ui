@@ -13,28 +13,50 @@ import { XAxis, YAxis } from '../../axis';
 const keyField = 'year_id';
 const valueField = 'value';
 
-const usaData = dataGenerator({
-  primaryKeys: [{name: location, values: ['USA']}],
+const data = dataGenerator({
+  primaryKeys: [{name: 'location', values: ['A', 'B', 'C', 'D', 'E', 'F']}],
   valueKeys: [
     {name: valueField, range: [200, 500], uncertainty: true}
   ],
   length: 10
 });
 
-const canadaData = dataGenerator({
-  primaryKeys: [{name: location, values: ['Canada']}],
-  valueKeys: [
-    {name: valueField, range: [300, 550], uncertainty: true}
-  ],
-  length: 10
+const dataA = data.filter((d) => {
+  return d.location === 'A';
 });
 
-const lineData = [{ location: 'USA', values: usaData }, { location: 'Canada', values: canadaData }];
+const dataB = data.filter((d) => {
+  return d.location === 'B';
+});
 
-const data = [...usaData, ...canadaData];
+const dataC = data.filter((d) => {
+  return d.location === 'C';
+});
+
+const dataD = data.filter((d) => {
+  return d.location === 'D';
+});
+
+const dataE = data.filter((d) => {
+  return d.location === 'E';
+});
+
+const dataF = data.filter((d) => {
+  return d.location === 'F';
+});
+
+const lineData = [
+  { location: 'A', values: dataA },
+  { location: 'B', values: dataB },
+  { location: 'C', values: dataC },
+  { location: 'D', values: dataD },
+  { location: 'E', values: dataE },
+  { location: 'F', values: dataF }
+];
+
 const yDomain = [minBy(data, 'value_lb').value_lb, maxBy(data, 'value_ub').value_ub];
 const xDomain = map(uniqBy(data, keyField), (obj) => { return (obj[keyField]); });
-const colorScale = d3Scale.scaleOrdinal().domain(['USA', 'Canada']).range(['red', 'blue']);
+const colorScale = d3Scale.scaleOrdinal().domain(['A', 'B', 'C', 'D', 'E', 'F']).range(['red', 'blue', 'orange', 'green', 'salmon', 'violet']);
 
 const dims = {
   height: 600,

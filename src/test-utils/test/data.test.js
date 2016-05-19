@@ -20,6 +20,24 @@ describe('data generator', () => {
       .with.keys('foo', 'lamp', 'year_id', 'id');
   });
 
+  it('generates an array of 120 objects', () => {
+    const config = {
+      primaryKeys: [
+        { name: 'vehical', values: ['plane', 'train', 'automobile'] },
+        { name: 'season', values: ['fall', 'winter'] },
+        { name: 'hat', values: ['beret', 'pill box'] }
+      ],
+      valueKeys: [{ name: 'lamp', range: [1, 200] }],
+      length: 10
+    };
+
+    expect(dataGenerator(config)).to.be.an('array')
+      .with.length(120)
+      .and.to.have.deep.property('[0]')
+      .that.is.an('object')
+      .with.keys('vehical', 'season', 'hat', 'lamp', 'year_id', 'id');
+  });
+
   it('generates an array with values in a certain range', () => {
     const config = {
       primaryKeys: [{ name: 'foo', values: ['bar'] }],
