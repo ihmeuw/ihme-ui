@@ -25,7 +25,7 @@ export default function ResponsiveContainer(props) {
   return (
     <AutoSizer {...autoSizerProps}>
       {({ width, height }) => {
-        if (!width || !height || width < 0 || height < 0) return null;
+        if (!width || !height) return null;
         return React.Children.map(props.children, (child) => {
           if (child === undefined || child === null) return child;
           return React.cloneElement(child, { width, height });
