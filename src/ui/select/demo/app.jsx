@@ -70,6 +70,27 @@ class App extends React.Component {
           />
         </section>
         <section>
+          <h3>Hierarchical multi-select</h3>
+          <pre><code>
+     <MultiSelect
+       hierarchical
+       labelKey="name"
+       valueKey="name"
+       onChange={ function (selections <Array>) {...} }
+       options={ [{ name: 'Albany', level: 1, bold: true }, ...] }
+       value={[]}
+     />
+          </code></pre>
+          <MultiSelect
+            hierarchical
+            labelKey="name"
+            valueKey="name"
+            onChange={this.onMultiSelectChange}
+            options={hierarchicalCities}
+            value={multiSelectValues}
+          />
+        </section>
+        <section>
           <h3>Single-select</h3>
           <pre><code>
      <SingleSelect
@@ -89,7 +110,7 @@ class App extends React.Component {
             />
         </section>
         <section>
-          <h3>Hierarchical select</h3>
+          <h3>Hierarchical single-select</h3>
           <pre><code>
      <SingleSelect
        hierarchical
