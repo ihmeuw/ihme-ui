@@ -1,20 +1,27 @@
-import React from 'react';
-import Select, { propTypes } from 'ihme-react-select';
+import React, { PropTypes } from 'react';
+import Select, { propTypes as baseProps } from 'ihme-react-select';
+import { assign } from 'lodash';
 
 import { getWidestLabel } from './utils';
 
 import style from './select.css';
 import { menuWrapper } from './menu';
 
+const singleSelectPropTypes = {
+  /* width added to widest label (in px) */
+  widthPad: PropTypes.number
+};
+
 const defaultProps = {
-  placeholder: 'Select...'
+  placeholder: 'Select...',
+  widthPad: 50
 };
 
 export default class SingleSelect extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      width: getWidestLabel(props.options, props.labelKey, props.hierarchical) + 50
+      width: getWidestLabel(props.options, props.labelKey, props.hierarchical) + props.widthPad
     };
   }
 
@@ -23,7 +30,11 @@ export default class SingleSelect extends React.Component {
       newProps.labelKey !== this.props.labelKey ||
       newProps.hierarchical !== this.props.hierarchical) {
       this.setState({
-        width: getWidestLabel(newProps.options, newProps.labelKey, newProps.hierarchical) + 50
+        width: getWidestLabel(
+          newProps.options,
+          newProps.labelKey,
+          newProps.hierarchical
+        ) + newProps.widthPad
       });
     }
   }
@@ -46,5 +57,5 @@ export default class SingleSelect extends React.Component {
   }
 }
 
-SingleSelect.propTypes = propTypes;
+SingleSelect.propTypes = assign({}, baseProps, singleSelectPropTypes);
 SingleSelect.defaultProps = defaultProps;
