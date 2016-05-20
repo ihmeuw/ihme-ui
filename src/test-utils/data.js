@@ -16,43 +16,47 @@ export const dataGenerator = (config = {}) => {
     length = 10
   } = config;
 
-  // Collect primary key values.
-  // [
-  //   [{k_1:v_1}, {k_1:v_2}, {k_1:v_3}],
-  //   [{k_2:v_1}, {k_2:v_2}, {k_2:v_3}],
-  //   [{k_3:v_1}, {k_3:v_2}]
-  // ]
+/**
+  Collect primary key values.
+  [
+    [{k_1:v_1}, {k_1:v_2}, {k_1:v_3}],
+    [{k_2:v_1}, {k_2:v_2}, {k_2:v_3}],
+    [{k_3:v_1}, {k_3:v_2}]
+  ]
+*/
   const keyStore = map(primaryKeys, (k) => {
     return map(k.values, (v) => {
       return { [k.name]: v };
     });
   });
 
-  // Create unique composite keys.
-  // [
-  //   {k_1:v_1, k_2:v_1, k_3:v_1},
-  //   {k_1:v_2, k_2:v_1, k_3:v_1},
-  //   {k_1:v_3, k_2:v_1, k_3:v_1},
-  //   {k_1:v_1, k_2:v_2, k_3:v_1},
-  //   {k_1:v_2, k_2:v_2, k_3:v_1},
-  //   {k_1:v_3, k_2:v_2, k_3:v_1},
-  //   {k_1:v_1, k_2:v_3, k_3:v_1},
-  //   {k_1:v_2, k_2:v_3, k_3:v_1},
-  //   {k_1:v_3, k_2:v_3, k_3:v_1},
-  //   {k_1:v_1, k_2:v_1, k_3:v_2},
-  //   {k_1:v_2, k_2:v_1, k_3:v_2},
-  //   {k_1:v_3, k_2:v_1, k_3:v_2},
-  //   {k_1:v_1, k_2:v_2, k_3:v_2},
-  //   {k_1:v_2, k_2:v_2, k_3:v_2},
-  //   {k_1:v_3, k_2:v_2, k_3:v_2},
-  //   {k_1:v_1, k_2:v_3, k_3:v_2},
-  //   {k_1:v_2, k_2:v_3, k_3:v_2},
-  //   {k_1:v_3, k_2:v_3, k_3:v_2},
-  // ]
-  const uniqKeys = reduce(keyStore, (prev, next) => {
-    return flatMap(next, (d) => {
-      return map(prev, (e) => {
-        return assign({}, d, e);
+/**
+  Create unique composite keys.
+  [
+    {k_1:v_1, k_2:v_1, k_3:v_1},
+    {k_1:v_2, k_2:v_1, k_3:v_1},
+    {k_1:v_3, k_2:v_1, k_3:v_1},
+    {k_1:v_1, k_2:v_2, k_3:v_1},
+    {k_1:v_2, k_2:v_2, k_3:v_1},
+    {k_1:v_3, k_2:v_2, k_3:v_1},
+    {k_1:v_1, k_2:v_3, k_3:v_1},
+    {k_1:v_2, k_2:v_3, k_3:v_1},
+    {k_1:v_3, k_2:v_3, k_3:v_1},
+    {k_1:v_1, k_2:v_1, k_3:v_2},
+    {k_1:v_2, k_2:v_1, k_3:v_2},
+    {k_1:v_3, k_2:v_1, k_3:v_2},
+    {k_1:v_1, k_2:v_2, k_3:v_2},
+    {k_1:v_2, k_2:v_2, k_3:v_2},
+    {k_1:v_3, k_2:v_2, k_3:v_2},
+    {k_1:v_1, k_2:v_3, k_3:v_2},
+    {k_1:v_2, k_2:v_3, k_3:v_2},
+    {k_1:v_3, k_2:v_3, k_3:v_2},
+  ]
+*/
+  const uniqKeys = reduce(keyStore, (uniqueCombinations, primaryKeyOptions) => {
+    return flatMap(primaryKeyOptions, (keyOption) => {
+      return map(uniqueCombinations, (intermediateCombo) => {
+        return assign({}, keyOption, intermediateCombo);
       });
     });
   });
@@ -90,28 +94,30 @@ export const dataGenerator = (config = {}) => {
     return Math.sin(x);
   }
 
-  // Create data for value keys.
-  // [
-  //   [
-  //     {k_a:v_1, k_b:v_1, k_c:v_1, k_d:v_1},
-  //     {k_a:v_2, k_b:v_2, k_c:v_2, k_d:v_2},
-  //     ...
-  //     {k_a:v_18, k_b:v_18, k_c:v_18, k_d:v_18},
-  //   ],
-  //   [
-  //     {k_a:v_1, k_b:v_1, k_c:v_1, k_d:v_1},
-  //     {k_a:v_2, k_b:v_2, k_c:v_2, k_d:v_2},
-  //     ...
-  //     {k_a:v_18, k_b:v_18, k_c:v_18, k_d:v_18},
-  //   ],
-  //   ...
-  //   [
-  //     {k_a:v_1, k_b:v_1, k_c:v_1, k_d:v_1},
-  //     {k_a:v_2, k_b:v_2, k_c:v_2, k_d:v_2},
-  //     ...
-  //     {k_a:v_18, k_b:v_18, k_c:v_18, k_d:v_18},
-  //   ],
-  // ]
+/**
+  Create data for value keys.
+  [
+    [
+      {k_a:v_1, k_b:v_1, k_c:v_1, k_d:v_1},
+      {k_a:v_2, k_b:v_2, k_c:v_2, k_d:v_2},
+      ...
+      {k_a:v_18, k_b:v_18, k_c:v_18, k_d:v_18},
+    ],
+    [
+      {k_a:v_1, k_b:v_1, k_c:v_1, k_d:v_1},
+      {k_a:v_2, k_b:v_2, k_c:v_2, k_d:v_2},
+      ...
+      {k_a:v_18, k_b:v_18, k_c:v_18, k_d:v_18},
+    ],
+    ...
+    [
+      {k_a:v_1, k_b:v_1, k_c:v_1, k_d:v_1},
+      {k_a:v_2, k_b:v_2, k_c:v_2, k_d:v_2},
+      ...
+      {k_a:v_18, k_b:v_18, k_c:v_18, k_d:v_18},
+    ],
+  ]
+*/
   const valueData = [];
   for (let j = 0; j < length; j++) {
     const segment = [];
@@ -134,15 +140,17 @@ export const dataGenerator = (config = {}) => {
     valueData.push(segment);
   }
 
-  // Populate rows.
-  // [
-  //   {k_1:v_1, k_2:v_1, k_3:v_1, k_a:v_1, k_b:v_1, k_c:v_1, k_d:v_1},
-  //   {k_1:v_2, k_2:v_1, k_3:v_1, k_a:v_2, k_b:v_2, k_c:v_2, k_d:v_2},
-  //   ...
-  // ]
-  const rows = flatMap(valueData, (vArr) => {
-    return map(vArr, (d, i) => {
-      return assign({}, d, uniqKeys[i]);
+/**
+  Populate rows.
+  [
+    {k_1:v_1, k_2:v_1, k_3:v_1, k_a:v_1, k_b:v_1, k_c:v_1, k_d:v_1},
+    {k_1:v_2, k_2:v_1, k_3:v_1, k_a:v_2, k_b:v_2, k_c:v_2, k_d:v_2},
+    ...
+  ]
+*/
+  const rows = flatMap(valueData, (listOfValueKeys) => {
+    return map(listOfValueKeys, (valueKey, i) => {
+      return assign({}, valueKey, uniqKeys[i]);
     });
   });
 
