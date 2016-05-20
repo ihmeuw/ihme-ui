@@ -11,3 +11,7 @@ export {
   rangeToDomain,
   domainToRange
 } from './scale';
+
+export {
+  getStringWidth
+} from './strings';

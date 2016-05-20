@@ -14,6 +14,7 @@ npm install ihme-ui
  - UI
    - [\<AxisChart /\>](#axis-chart)
    - [\<Line /\>](#line)
+   - [\<MultiSelect /\> & \<SingleSelect /\>](#select)
  - Test Utilities
   - [dataGenerator](#dataGenerator)
 
@@ -84,6 +85,50 @@ import { Line } from 'beaut/ui/shape';
   data={[...]}
   dataAccessors={{ x: 'year', y: 'value' }}
   scales={{ x: d3Scale.ordinal..., y: d3Scale.linear... }}
+/>
+```
+
+#### <a name="selectbox" href="#select">#</a> \<MultiSelect /\> & \<SingleSelect /\>
+Select boxes built on top of [IHME-React-Select](https://github.com/ihmeuw/ihme-react-select)
+
+*NOTE:* You will need to include the following additional stylesheets:
+```html
+  <link rel="stylesheet" href="https://npmcdn.com/react-virtualized@7.0.1/styles.css">
+  <link rel="stylesheet" href="node_modules/ihme-react-select/dist/ihme-react-select.min.css">
+```
+
+**API**
+
+Both `<MultiSelect \>` and `<SingleSelect \>` expose the same API as [IHME-React-Select](https://github.com/ihmeuw/ihme-react-select/blob/master/src/Select.js#L26). At minimum, the following props should be declared:
+
+Property | Required | Type(s) | Description
+--- | :---: | :---: | ---
+`labelKey` | yes | string | key on option objects holding label (e.g., `location_name`)
+`valueKey` | yes | string | key on option objects holding value (e.g., `location_id`)
+`onChange` | yes | func | function to be executed on change in value
+`options` | yes | array | array of option objects
+`value` | yes | array or object | list of options or single option currently selected
+`hierarchical` | no | boolean | whether or not to display options hierarchically; if `true`, option objects need a `level` key
+
+**EXAMPLE**
+
+```jsx
+import { SingleSelect, MultiSelect } from 'ihme-ui/ui';
+
+<SingleSelect
+    labelKey="name"
+    valueKey="name"
+    onChange={ function (selection <Object>) {...} }
+    options={ [{location_name: 'Albany', location_id: 1 }, ...] }
+    value={{ location_name: 'Denver', location_id: 2 }}
+/>
+
+<MultiSelect
+    labelKey="name"
+    valueKey="name"
+    onChange={ function (selections <Array>) {...} }
+    options={ [{location_name: 'Albany', location_id: 1 }, ...] }
+    value={[{ location_name: 'Denver', location_id: 2 }, ...]}
 />
 ```
 

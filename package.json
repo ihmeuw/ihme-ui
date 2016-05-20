@@ -1,7 +1,7 @@
 {
   "name": "ihme-ui",
   "description": "Visualization tools from the Institute for Health Metrics and Evaluation",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "license": "MIT",
   "main": "index.js",
   "files": [
@@ -82,6 +82,7 @@
     "d3-scale": "^0.6.4",
     "d3-selection": "^0.7.0",
     "d3-shape": "^0.5.1",
+    "ihme-react-select": "git+https://github.com/ihmeuw/ihme-react-select.git",
     "interact.js": "^1.2.6",
     "lodash": "^4.5.0",
     "react": "^15.0.1",

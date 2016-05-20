@@ -1,0 +1,21 @@
+.option {
+  display: flex;
+  align-items: center;
+  padding: 0 0.5rem;
+  cursor: pointer;
+  color: #454545;
+  height: 20px;
+}
+
+.input {
+  margin-right: 20px;
+}
+
+.selected {
+  font-weight: 'bold';
+}
+
+.focused {
+  background-color: #27ae60;
+  color: #f5f5f5;
+}
