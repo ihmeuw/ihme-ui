@@ -2,7 +2,7 @@
 
 # [IHME-UI](https://github.com/ihmeuw/ihme-ui)
 
-ihme-ui is a collection of JavaScript and React-based visualization tools and user interface elements developed by the [Institute of Health Metrics and Evaluation](http://healthdata.org). These elements are used in IHME's [visualizations of global health metrics](http://www.healthdata.org/results/data-visualizations). They are shared to support the community of global health researchers visualize and disseminate their work.
+ihme-ui is a collection of JavaScript and React-based visualization tools and user interface elements developed by the [Institute of Health Metrics and Evaluation](http://healthdata.org). These elements are used in IHME's [visualizations of global health metrics](http://www.healthdata.org/results/data-visualizations).
 
 This document provides installation instructions, an overview of the elements, their APIs, and examples of their use.
 
@@ -29,8 +29,6 @@ This document provides installation instructions, an overview of the elements, t
 
 ###### WORK IN PROGRESS: Not stable until v1.0.0
 
-Current version: 0.2.2
-
 ---
 
 ## Installation
@@ -41,16 +39,12 @@ Requirements:
 
 To install ihme-ui tools and all dependencies:
 
-1. Navigate to the ihme-ui directory.
-2. Run the following command from a command-line interpreter:
 ```sh
-npm install ihme-ui
+npm install -S ihme-ui
 ```
 
 To install demo files:
 
-1. Navigate to the ihme-ui directory.
-2. Run the following command from a command-line intrepreter:
 ```sh
 npm run demo
 ```
@@ -63,7 +57,7 @@ Chart axes with customizable scales and ticks.
 
 Property | Required | Type(s) | Description
         --- | :---: | :---: | ---
-`position` | no | number | where to position ticks relative to axis line
+`position` | no | object | where to position ticks relative to axis line; will match an AXIS_TYPE (default: bottom)<br /><br />one of: top, right, bottom, left
 `scale` | yes | object | appropriate scale for object
 `style` | no | object | style object to apply to element
 `ticks` | no | number | [number of axis ticks use](https://github.com/d3/d3-axis#axis_ticks)
@@ -81,15 +75,15 @@ Chart with customizable width, height, scales, and margins.
 
 Property | Required | Type(s) | Description
         --- | :---: | :---: | ---
-`children` | no | object | React element or elements
+`children` | no | object | React element or elements<br /><br />one of type: arrayOf(PropTypes.node), node
 `extraClasses` | no | string, object | extra class names to appended to the element
 `height` | no | number | pixel height of line chart
 `margins`| no | number | margins to subtract from width and height (default: top:20 right:20 bottom:30 left:50)
 `width` | no | number | pixel width of line chart
 `xDomain` | no | object | [min, max] for xScale (i.e., the domain of the data)
-`xScaleType`| no | object | type of x scale
+`xScaleType`| no | object | type of x scale<br /><br />pne of: band, linear, ordinal, point
 `yDomain` | no | object | [min, max] yScale (i.e., the range of the data)
-`yScaleType` | no | object | type of y scale
+`yScaleType` | no | object | type of y scale<br /><br />one of: band, linear, ordinal, point
 
 ### button
 
@@ -97,7 +91,7 @@ Button with customizable id, name, class name, icon, animation, and click handle
 
 Property | Required | Type(s) | Description
         --- | :---: | :---: | ---
-`className` | no | string, object | array of classes to add to button
+`className` | no | string, object | array of classes to add to button<br /><br />one of type: string, object, array
 `clickHandler` | no | object | function to be executed on click
 `disabled` | no | boolean | boolean value to set button as disabled
 `icon` | no | string | path to image to render within button tag
@@ -128,7 +122,7 @@ Property | Required | Type(s) | Description
 `width` | yes | number | width of element in pixels
 `x1` | no | number | x-axis coord (as percentage) of the start of the gradient (e.g., 0)
 `x2` | no | number | x-axis coord (as percentage) of the end of the gradient (e.g., 100)
-`zoom` | no | number | float value used for implementing "zooming"; <br />any element that needs to become larger in "presentation mode" should respond to this scale factor. Guide: <br />zoom: 0 -> smallest possible<br />zoom: 0.5 -> half of normal size<br />zoom: 1 -> normal<br />zoom: 2 -> twice normal size
+`zoom` | no | number | float value used for implementing "zooming"; any element that needs to become larger in "presentation mode" should respond to this scale factor.<br /><br />Guide: <br />zoom: 0 -> smallest possible<br />zoom: 0.5 -> half of normal size<br />zoom: 1 -> normal<br />zoom: 2 -> twice normal size
 
 ### group
 
@@ -136,13 +130,13 @@ Button set with `selectable` property and customizable class names and interacti
 
 Property | Required | Type(s) | Description
         --- | :---: | :---: | ---
-`children` | yes | object |  React element or elements
-`className` | no | string, object |
+`children` | yes | object |  React element or elements<br /><br />one of type: arrayOf(PropTypes.node), node
+`className` | no | string, object | one of type: string, object, array
 `clickHandler` | no | object | clickHandler function with following signature: function({ value })
-`disabledItems` | no | number, string, object |
+`disabledItems` | no | number, string, object | one of type: arrayOf(number), arrayOf(string), number, string
 `hoverHandler` | no | object |
-`selectedItems` | no | number, string, object |
-`theme` | no | string | color scheme of component (one of 'dark', 'light', 'common')
+`selectedItems` | no | number, string, object | one of type: arrayOf(number), arrayOf(string), number, string
+`theme` | no | string | color scheme of component (one of: 'dark', 'light', 'common')
 
 #### options
 
@@ -150,7 +144,7 @@ Options for the group element, wrapped by group.
 
 Property | Required | Type(s) | Description
         --- | :---: | :---: - | ---
-`className` | no | string, object |
+`className` | no | string, object | one of type: string, object, array
 `clickHandler` | no | object |
 `disabled` | no | boolean | boolean value to apply disabled class styling
 `hoverHandler` | no | object |
@@ -165,8 +159,8 @@ HTML element label with customizable class name, icon, text, appearance, and int
 
 Property | Required | Type(s) | Description
         --- | :---: | :---: | ---
-`children` | no | object |  React element or elements
-`className` | no | string, object |
+`children` | no | object |  React element or elements<br /><br />one of type: arrayOf(PropTypes.node), node
+`className` | no | string, object | one of type: string, object, array
 `clickHandler` | no | object | function with following signature: function({ value })
 `hoverHandler` | no | object | function with following signature: function({ value })
 `htmlFor` | no | string | ID of a labelable form-related element
@@ -176,11 +170,11 @@ Property | Required | Type(s) | Description
 
 ### responsive-container
 
-Responsive HTML container with customizable resize callback function and responsiveness to height and wait and
+Responsive HTML container with customizable resize callback function and responsiveness to height and width. A simple wrapper for [react-virtualized](https://github.com/bvaughn/react-virtualized).
 
 Property | Required | Type(s) | Description
         --- | :---: | :---: | ---
-`children` | yes | object | React element or elements
+`children` | yes | object | React element or elements<br /><br />one of type: arrayOf(PropTypes.node), node
 `disableHeight` | no | boolean | boolean value to disable dynamic :height property
 `disableWidth` | no | boolean | boolean value to disable dynamic :width property
 `onResize` | no | object | Callback function to be invoked on resize ({height, width})
@@ -267,7 +261,7 @@ Property | Required | Type(s) | Description
 `position` | no | object | (default: x: 0, y: 0)
 `size` | no | number | area in square pixels (default: 64)
 `strokeWidth` | no | number | (default: 1)
-`type` | no | object | will match a [SYMBOL_TYPE](https://github.com/d3/d3/wiki/SVG-Shapes#symbol_type) (default: circle)
+`type` | no | object | will match a [SYMBOL_TYPE](https://github.com/d3/d3/wiki/SVG-Shapes#symbol_type) (default: circle)<br /><br />one of: 'circle', 'square', 'triangle', 'cross', 'diamond', 'star', 'wye'
 
 ### slider
 
@@ -275,15 +269,16 @@ Single- or multi-input-value selector on a track with customizable appearance an
 
 Property | Required | Type(s) | Description
         --- | :---: | :---: | ---
-`height` | no | number | the height of element (path, line, rect) that the slider will sit atop, in pixels (default: 15)
-`marginTop` | no | number | top margin applied within svg document handle is placed within; used to calc origin offset (default: 0)
-`marginLeft` | no | number | left margin applied within svg document handle is placed within; used to calc origin offset (default: 0)
-`onSliderMove` | no | object | function called with updated extent (as percentage of slider width) (default: () => { return; })
-`rangeExtent` | yes | object | [min, max] of domain (in data space) user has selected; used to position slider handles
-`translateY` | no | number | y shift of entire slider, in pixels (default: 1)
-`width` | yes | number | width of parent container, in pixels
-`xScale` | yes | object | linear x scale
-`zoom` | no | number |     float value used for implementing "zooming"; any element that needs to become larger in "presentation mode" should respond to this scale factor. Guide:<br />zoom: 0 -> smallest possible<br />zoom: 0.5 -> half of normal size<br />zoom: 1 -> normal<br />zoom: 2 -> twice normal size<br />(default: 1)
+`fill` | no | bool | boolean value to include fill in the track to indicate value (default: false)
+`fillColor` | no | string | style for the fill color (default: '#ccc')
+`height` | no | number | height of element in pixels (default: 24)
+`labelFunc` | no | object | function applied to the selected value prior to rendering.<br /><br />Parameters: value - selected value<br />returns: 'string'<br />default: \_.identity
+`onChange` | yes | object | callback function when value is changed.<br /><br />Parameters:<br />value: object with keys ['min'] and 'max'<br />key: key of most recent value change
+`minValue` | yes | number | minimum slider value
+`maxValue` | yes | number | maximum slider value
+`step` | no | number | step between slider values (default: 1)
+`value` | yes | number, object | initial selected value. If number, a single slider handle will be rendered. If object with keys 'min' and 'max', two slider handles will be rendered.<br /><br />one of type: number, array, shape
+`width` | no | number | width of element in pixels (default: 200)
 
 ### spinner
 
@@ -291,7 +286,9 @@ Animated indicator (e.g., for loading) with customizable size.
 
 Property | Required | Type(s) | Description
         --- | :---: | :---: | ---
-`size` | no | string | one of: ['small', 'medium', 'large']
+`className` | no | string, object | one of type: string, object, array
+`inline` | no | bool | display spinner inline with other elements (e.g., in a button)
+`size` | no | string | one of: 'small', 'medium', 'large'
 
 ### svg-text
 
@@ -299,11 +296,11 @@ SVG element label with customizable anchor, position, and value.
 
 Property | Required | Type(s) | Description
         --- | :---: | :---: | ---
-`anchor` | yes | string | one of: ['start', 'middle', 'end']
+`anchor` | yes | string | one of: 'start', 'middle', 'end']
 `dx` | no | number |
 `dy` | no | number |
 `fill` | no | string | (default: black)
-`value` | no | string, number |
+`value` | no | string, number | one of type: string, number
 `x` | yes | number |
 `y` | no | number |
 
