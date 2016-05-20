@@ -1,100 +1,160 @@
-import { map } from 'lodash';
+import { map, flatMap, reduce, assign } from 'lodash';
 import cuid from 'cuid';
-import random from 'd3-random';
 
-/**
-* Random data generator
-* @param {Object} config -> configuration object with the following properties:
-*  {String} dataQuality -> one of 'best'|'worst'|'mixed'
-*    'best' = no data quality issues (no null or missing values)
-*    'worst' = a lot of data quality issues (lots of null or missing values)
-*    'mixed' = some null values
-*  {Number} length -> number of data
-*  {String} keyField -> a field of datum that uniquely identifies it
-*  {String} valueField -> a field of datum that holds the "primary" datum (e.g., 'value' or 'mean')
-*  {Boolean} useDates -> whether to use dates for valueField
-*  {Number} startYear -> if (useDates), values will start at startYear
-*  {Number} intitialValue -> seed output value
-*  {Number} changeFactor -> parameter to adjust shape of data
-*  {Number} initialDeviation -> parameter to adjust volitilty of data
-*  {String} dataTrend -> one of 'increasing'|'decreasing'|'exponentialGrowth'|'exponentialDecay'
-*  {Any} any other property that will be passed directly to individual datum
-* @return {Array} array of datum objects
-*/
 export const dataGenerator = (config = {}) => {
   const {
-    dataQuality = 'best',
-    length = 200,
-    keyField = 'location_id',
-    valueField = 'value',
-    useDates = false,
-    intitialValue = 25000,
-    changeFactor = 0.5,
-    initialDeviation = 0.5 * changeFactor * intitialValue,
-    dataTrend = 'increasing',
-    startYear = (new Date()).getFullYear(),
-    ...rest
+    primaryKeys = [
+      { name: 'Sex', values: [1, 2, 3] },
+      { name: 'Age', values: [1, 2, 3] },
+      { name: 'Location', values: [1, 2] },
+    ],
+    valueKeys = [
+      { name: 'mean', range: [100, 200], uncertainty: true },
+      { name: 'Population', range: [200, 500], uncertainty: false }
+    ],
+    year = 2000,
+    length = 10
   } = config;
-  const ret = new Array(length);
-  const linearGen = random.randomNormal(
-    intitialValue * changeFactor,
-    initialDeviation * changeFactor
-  );
-  const expChange = Math.pow(1 / changeFactor, 1 / length);
-  const expGen = random.randomNormal(expChange, 0.01);
 
-  const yearProducer = {
-    initYear: startYear,
-    currYear: startYear - length,
-    next() {
-      this.currYear++;
-      return this.currYear;
-    }
-  };
+/**
+  Collect primary key values.
+  [
+    [{k_1:v_1}, {k_1:v_2}, {k_1:v_3}],
+    [{k_2:v_1}, {k_2:v_2}, {k_2:v_3}],
+    [{k_3:v_1}, {k_3:v_2}]
+  ]
+*/
+  const keyStore = map(primaryKeys, (k) => {
+    return map(k.values, (v) => {
+      return { [k.name]: v };
+    });
+  });
 
-  const trend = {
-    increasing(p) { return p + linearGen(); },
-    decreasing(p) { return p - linearGen(); },
-    exponentialGrowth(p) { return p * expGen(); },
-    exponentialDecay(p) { return p * 1 / expGen(); }
-  };
+/**
+  Create unique composite keys.
+  [
+    {k_1:v_1, k_2:v_1, k_3:v_1},
+    {k_1:v_2, k_2:v_1, k_3:v_1},
+    {k_1:v_3, k_2:v_1, k_3:v_1},
+    {k_1:v_1, k_2:v_2, k_3:v_1},
+    {k_1:v_2, k_2:v_2, k_3:v_1},
+    {k_1:v_3, k_2:v_2, k_3:v_1},
+    {k_1:v_1, k_2:v_3, k_3:v_1},
+    {k_1:v_2, k_2:v_3, k_3:v_1},
+    {k_1:v_3, k_2:v_3, k_3:v_1},
+    {k_1:v_1, k_2:v_1, k_3:v_2},
+    {k_1:v_2, k_2:v_1, k_3:v_2},
+    {k_1:v_3, k_2:v_1, k_3:v_2},
+    {k_1:v_1, k_2:v_2, k_3:v_2},
+    {k_1:v_2, k_2:v_2, k_3:v_2},
+    {k_1:v_3, k_2:v_2, k_3:v_2},
+    {k_1:v_1, k_2:v_3, k_3:v_2},
+    {k_1:v_2, k_2:v_3, k_3:v_2},
+    {k_1:v_3, k_2:v_3, k_3:v_2},
+  ]
+*/
+  const uniqKeys = reduce(keyStore, (uniqueCombinations, primaryKeyOptions) => {
+    return flatMap(primaryKeyOptions, (keyOption) => {
+      return map(uniqueCombinations, (intermediateCombo) => {
+        return assign({}, keyOption, intermediateCombo);
+      });
+    });
+  });
 
-  let prev = intitialValue;
+  /**
+   * Floor function modified to cut off at tenths digit.
+   * @param number {NUMBER}
+   * @return {NUMBER}
+   */
+  function floor(number) {
+    return Math.floor(number * 10) / 10;
+  }
 
-  const valueProducer = (() => {
-    return () => {
-      const newVal = trend[dataTrend](prev);
-      prev = newVal;
-      let val;
-      let useNum;
+  /**
+   * amp computes the half distance of the total range.
+   * amplitude of sinusoidal curve.
+   * @param [a, b] {ARRAY}
+   * @return {NUMBER}
+   */
+  function amp(range) {
+    return (range[1] - range[0]) / 2;
+  }
 
-      switch (dataQuality) {
-        case 'best':
-          val = newVal;
-          break;
-        case 'mixed':
-          useNum = random.randomUniform()() < 0.75; // 75% chance of true
-          val = useNum ? newVal : null;
-          break;
-        case 'worst':
-          useNum = random.randomUniform()() < 0.25; // 25% chance of true
-          val = useNum ? newVal : null;
-          break;
-        default:
-          val = newVal;
+  /**
+   * sAxis computes the midpoint of the total range.
+   * sinusoidal axis.
+   * @param [a, b] {ARRAY}
+   * @return {NUMBER}
+   */
+  function sAxis(range) {
+    return (range[1] + range[0]) / 2;
+  }
+
+  function sin(x) {
+    return Math.sin(x);
+  }
+
+/**
+  Create data for value keys.
+  [
+    [
+      {k_a:v_1, k_b:v_1, k_c:v_1, k_d:v_1},
+      {k_a:v_2, k_b:v_2, k_c:v_2, k_d:v_2},
+      ...
+      {k_a:v_18, k_b:v_18, k_c:v_18, k_d:v_18},
+    ],
+    [
+      {k_a:v_1, k_b:v_1, k_c:v_1, k_d:v_1},
+      {k_a:v_2, k_b:v_2, k_c:v_2, k_d:v_2},
+      ...
+      {k_a:v_18, k_b:v_18, k_c:v_18, k_d:v_18},
+    ],
+    ...
+    [
+      {k_a:v_1, k_b:v_1, k_c:v_1, k_d:v_1},
+      {k_a:v_2, k_b:v_2, k_c:v_2, k_d:v_2},
+      ...
+      {k_a:v_18, k_b:v_18, k_c:v_18, k_d:v_18},
+    ],
+  ]
+*/
+  const valueData = [];
+  for (let j = 0; j < length; j++) {
+    const segment = [];
+    for (let i = 0; i < uniqKeys.length; i++) {
+      const rowObj = {};
+      for (let k = 0; k < valueKeys.length; k++) {
+        const valObj = valueKeys[k];
+        const amplitude = amp(valObj.range);
+        // sinusoidal data generator y=Asin(2x/L+B)+D
+        const value = floor(amplitude * sin(2 * j / length + k + i) + sAxis(valObj.range));
+        const obj = { [valObj.name]: value, year_id: year + j };
+        if (valObj.uncertainty) {
+          obj[`${valObj.name}_ub`] = floor(value + amplitude / 4);
+          obj[`${valObj.name}_lb`] = floor(value - amplitude / 4);
+        }
+        assign(rowObj, obj);
       }
-      return val;
-    };
-  })();
+      segment.push(rowObj);
+    }
+    valueData.push(segment);
+  }
 
-  return map(ret, () => {
-    const value = valueProducer();
-    return {
-      [keyField]: useDates ? yearProducer.next() : cuid(), // collision-resistant string id
-      [valueField]: value,
-      ub: value + initialDeviation,
-      lb: value - initialDeviation,
-      ...rest
-    };
+/**
+  Populate rows.
+  [
+    {k_1:v_1, k_2:v_1, k_3:v_1, k_a:v_1, k_b:v_1, k_c:v_1, k_d:v_1},
+    {k_1:v_2, k_2:v_1, k_3:v_1, k_a:v_2, k_b:v_2, k_c:v_2, k_d:v_2},
+    ...
+  ]
+*/
+  const rows = flatMap(valueData, (listOfValueKeys) => {
+    return map(listOfValueKeys, (valueKey, i) => {
+      return assign({}, valueKey, uniqKeys[i]);
+    });
+  });
+
+  return map(rows, (r) => {
+    return assign(r, { id: cuid() });
   });
 };

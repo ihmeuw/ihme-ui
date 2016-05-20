@@ -17,11 +17,9 @@ describe('<AxisChart />', () => {
   const valueField = 'value';
 
   const data = dataGenerator({
-    keyField,
-    valueField,
-    length: 10,
-    dataQuality: 'best',
-    useDates: true
+    primaryKeys: [{ name: keyField, values: [keyField] }],
+    valueKeys: [{ name: valueField, range: [100, 200], uncertainty: true }],
+    length: 10
   });
 
   const lineData = [{ location: 'USA', values: data }, { location: 'Canada', values: data }];

@@ -15,18 +15,21 @@ npm install ihme-ui
    - [\<AxisChart /\>](#axis-chart)
    - [\<Line /\>](#line)
    - [\<MultiSelect /\> & \<SingleSelect /\>](#select)
+ - Test Utilities
+  - [dataGenerator](#dataGenerator)
+
 
 ### UI Components
 
 #### <a name="axis-chart" href="#axis-chart">#</a> \<AxisChart /\>
-Container for a chart composed of other beaut/ui components, including axes, lines, points, etc. 
+Container for a chart composed of other beaut/ui components, including axes, lines, points, etc.
 An AxisChart produces `x` and `y` scales and passes those scales, along with the chart's dimensions, to its child components.
 
 **API**
 
 Property | Required | Type(s) | Description
 --- | :---: | :---: | ---
-`width` | yes | number | width of the svg chart container 
+`width` | yes | number | width of the svg chart container
 `height` | yes | number | height of the svg chart container
 `margins` | no | object | keys of `top`, `bottom`, `left`, `right` <br> default: `{ top: 20, bottom: 50, left: 50, right: 20 }`
 `extraClasses` | no | array, string, object | extra class names to append to the element
@@ -64,7 +67,7 @@ Line made up of array of data points.
 
 Property | Required | Type(s) | Description
 --- | :---: | :---: | ---
-`data` | yes | array of objects | array of data 
+`data` | yes | array of objects | array of data
 `dataAccessors` | yes | object | keys of `x`, `y` with names of keys from `data` as values. <br>e.g. `{ x: 'year', y: 'value' }`
 `scales` | yes | object | keys of `x`, `y` with scale functions of type `d3-scale`. <br> e.g. `{ x: d3Scale.ordinal..., y: d3Scale.linear... }`
 `fill` | no | string | fill color type string
@@ -78,7 +81,7 @@ Property | Required | Type(s) | Description
 ```jsx
 import { Line } from 'beaut/ui/shape';
 
-<Line 
+<Line
   data={[...]}
   dataAccessors={{ x: 'year', y: 'value' }}
   scales={{ x: d3Scale.ordinal..., y: d3Scale.linear... }}
@@ -129,18 +132,71 @@ import { SingleSelect, MultiSelect } from 'ihme-ui/ui';
 />
 ```
 
-#### <a name="range-slider" href="#range-slider">#</a> \<RangeSlider /\>
+### Test Utilities
+#### <a name="dataGenerator" href="#dataGenerator">#</a> Data Generator
 
-- `import RangeSlider from 'beaut/ui/range-slider';`
-- `import { RangeSlider } from 'beaut/ui';`
+Data Generator creates fake data for testing purposes.
 
-#### <a name="utility-functions" href="#utility-functions">#</a> Utility Functions
-- `import utils from 'beaut/util';`
-- `import { domain, scale } from 'beaut/utils';`
+Usage:
+```javascript
+const config = {
+  primaryKeys = [
+    {name: 'key_1', values: ['v_11', 'v_21', ..., 'v_m1']},
+    {name: 'key_2', values: ['v_12', 'v_22', ..., 'v_m2']},
+    ...
+    {name: 'key_n', values: ['v_1n', 'v_2n', ..., 'v_mn']}
+  ],
+  valueKeys = [
+    {name: 'value_1', range: [lower_1, upper_1], uncertainty: true},
+    {name: 'value_2', range: [lower_2, upper_2], uncertainty: false},
+    ...
+    {name: 'value_k', range: [lower_k, upper_k], uncertainty: false}
+  ],
+  year: 2000,
+  length: 10
+}
+dataGenerator(config);
+```
 
-#### <a name="testing-utility-functions" href="#testing-utility-functions">#</a> Testing Utility Functions
-- `import testUtils from 'beaut/test-util';`
-- `import { dataMocker } from 'beaut/test-utils';`
+Data Generator takes an object with four properties.
+
+`primaryKeys` is an array of objects that have a `name` property that is a string, and a `values` property that is an array. The data generator will create unique composite keys based on the values arrays.
+
+`valueKeys` is an array of objects that have a `name` property that is a string, a `range` property that is an array of two numbers, and an `uncertainty` property that is a boolean. Value keys are iterated so that their values are within the range specified. If `uncertainty` is true, data generator will produce additional keys of the form `(name)_ub` and `(name)_lb` to represent upper and lower bound uncertainties.
+
+`year` is a number that represents a starting year for a series of years iterated by length. The output key is `year_id`.
+
+`length` is a number for which each unique composite key gets a new value key. If there are many composite keys, each key receives `length` number of data points.
+```javascript
+const config = {
+  primaryKeys = [
+    {name: 'A', values: [1, 2]},
+    {name: 'B', values: [1, 2, 3]}
+  ],
+  valueKeys = [
+    {name: 'value', range: [100, 200], uncertainty: false}
+  ],
+  year: 2000,
+  length: 2
+}
+//outputs
+[
+  {A: 1, B: 1, value: v_1, year_id: 2000},
+  {A: 1, B: 1, value: v_2, year_id: 2001},
+  {A: 1, B: 2, value: v_1, year_id: 2000},
+  {A: 1, B: 2, value: v_2, year_id: 2001},
+  {A: 1, B: 3, value: v_1, year_id: 2000},
+  {A: 1, B: 3, value: v_2, year_id: 2001},
+  {A: 2, B: 1, value: v_1, year_id: 2000},
+  {A: 2, B: 1, value: v_2, year_id: 2001},
+  {A: 2, B: 2, value: v_1, year_id: 2000},
+  {A: 2, B: 2, value: v_2, year_id: 2001},
+  {A: 2, B: 3, value: v_1, year_id: 2000},
+  {A: 2, B: 3, value: v_2, year_id: 2001}
+]
+```
+
+Data generator also outputs a unique `id` key for each row of data.
 
 #### <a name="code-quality" href="#code-quality">#</a> Code Quality
 - eslint enforces AirBnB rules: https://github.com/airbnb/javascript
