@@ -119,7 +119,7 @@ Data Generator takes an object with four properties.
 
 `valueKeys` is an array of objects that have a `name` property that is a string, a `range` property that is an array of two numbers, and an `uncertainty` property that is a boolean. Value keys are iterated so that their values are within the range specified. If `uncertainty` is true, data generator will produce additional keys of the form `(name)_ub` and `(name)_lb` to represent upper and lower bound uncertainties.
 
-`year` is a number that represents a starting year for a series of years iterated by length. The ouput key is `year_id`.
+`year` is a number that represents a starting year for a series of years iterated by length. The output key is `year_id`.
 
 `length` is a number for which each unique composite key gets a new value key. If there are many composite keys, each key receives `length` number of data points.
 ```javascript
