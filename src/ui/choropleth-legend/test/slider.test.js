@@ -10,7 +10,10 @@ import SliderHandle from '../src/slider-handle';
 describe('<Slider />', () => {
   const domain = [0, 100];
   const width = 1000;
-  const xScale = d3Scale.scaleLinear().domain(domain).range([0, width]).clamp(true);
+  const xScale = d3Scale.scaleLinear()
+    .domain(domain)
+    .range([0, width])
+    .clamp(true);
   const onSliderMove = sinon.spy((extent) => {
     return extent;
   });

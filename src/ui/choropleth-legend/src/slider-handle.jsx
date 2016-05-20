@@ -93,9 +93,9 @@ export default class SliderHandle extends React.Component {
         </rect>
         <SvgText
           value={label}
-          anchor={which === 'x1' ? 'end' : 'start' }
+          anchor={which === 'x1' ? 'end' : 'start'}
           x={position}
-          dx={which === 'x1' ? -8 : 8 }
+          dx={which === 'x1' ? -8 : 8}
           y={14}
         />
       </g>

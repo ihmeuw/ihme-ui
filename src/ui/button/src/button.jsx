@@ -40,7 +40,7 @@ const defaultProps = {
 
 const getContent = (showSpinner, iconPath) => {
   if (showSpinner) return <Spinner inline size="small" />;
-  if (iconPath) return <img className={styles.icon} src={iconPath} />;
+  if (iconPath) return <img className={styles.icon} alt="" src={iconPath} />;
   return null;
 };
 

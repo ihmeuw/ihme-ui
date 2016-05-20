@@ -42,7 +42,7 @@ describe('<AxisChart />', () => {
         {
           map(lineData, (dataset) => {
             return (
-              <p key={dataset.location}/>
+              <p key={dataset.location} />
             );
           })
         }

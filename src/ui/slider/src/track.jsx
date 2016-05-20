@@ -1,4 +1,4 @@
-import React, { PropTypes }from 'react';
+import React, { PropTypes } from 'react';
 import interact from 'interact.js';
 import { isEmpty } from 'lodash';
 
@@ -60,9 +60,9 @@ export default class Track extends React.Component {
 
   render() {
     return (
-      <div className={ style.track }>
-        <div ref={ this.trackRef } className={ style['track-click-target'] }></div>
-        { this.props.children }
+      <div className={style.track}>
+        <div ref={this.trackRef} className={style['track-click-target']}></div>
+        {this.props.children}
       </div>
     );
   }

@@ -38,12 +38,12 @@ function getWidth(props) {
 export default function Fill(props) {
   return (
     <div
-      className={ classNames(style.fill, style[props.direction]) }
-      style={ {
+      className={classNames(style.fill, style[props.direction])}
+      style={{
         height: getDimension(props.height),
         width: getWidth(props),
         ...props.fillStyle
-      } }
+      }}
     >
     </div>
   );

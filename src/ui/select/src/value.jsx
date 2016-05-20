@@ -71,7 +71,7 @@ export default class Value extends React.Component {
     return (
       <span style={{ marginRight: '7px' }}>
 				{this.props.children}
-			</span>
+      </span>
     );
   }
 

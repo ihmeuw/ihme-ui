@@ -49,9 +49,9 @@ describe('<SelectOptionLabel', () => {
 
     it('is bolded if option.bold is true', () => {
       const spec = [
-        { expectation: `bold`, props: { option: { bold: true } } },
-        { expectation: `normal`, props: { option: { bold: false } } },
-        { expectation: `normal`, props: { option: { } } },
+        { expectation: 'bold', props: { option: { bold: true } } },
+        { expectation: 'normal', props: { option: { bold: false } } },
+        { expectation: 'normal', props: { option: { } } },
       ];
 
       spec.forEach((test) => {
