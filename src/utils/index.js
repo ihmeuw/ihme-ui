@@ -1,4 +1,8 @@
 export {
+  hasCrappyValues
+} from './array';
+
+export {
   percentOfRange,
   numFromPercent,
   domainFromPercent,
@@ -6,19 +10,6 @@ export {
   isWithinRange,
   ensureWithinRange
 } from './domain';
-
-export {
-  rangeToDomain,
-  domainToRange
-} from './scale';
-
-export {
-  getStringWidth
-} from './strings';
-
-export {
-  propResolver
-} from './objects';
 
 export {
   eventHandleWrapper
@@ -29,3 +20,16 @@ export {
   concatGeoJSON,
   computeBounds
 } from './geo';
+
+export {
+  propResolver
+} from './objects';
+
+export {
+  rangeToDomain,
+  domainToRange
+} from './scale';
+
+export {
+  getStringWidth
+} from './strings';
