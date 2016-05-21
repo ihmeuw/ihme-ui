@@ -31,6 +31,15 @@ const propTypes = {
   ])
 };
 
+const defaultProps = {
+  item: {},
+  itemHeight: 23,
+  labelRenderer: null,
+  labelKey: '',
+  symbolColorKey: '',
+  symbolTypeKey: ''
+};
+
 function propResolver(item, property) {
   return typeof property === 'function' ? property(item) : item[property];
 }
@@ -77,3 +86,4 @@ export default function LegendItem(props) {
 }
 
 LegendItem.propTypes = propTypes;
+LegendItem.defaultProps = defaultProps;
