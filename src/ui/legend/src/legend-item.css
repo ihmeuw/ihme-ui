@@ -1,0 +1,11 @@
+.wrapper {
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.svg {
+    margin-right: 5px;
+}
