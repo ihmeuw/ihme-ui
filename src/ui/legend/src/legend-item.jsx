@@ -6,20 +6,20 @@ import { Symbol } from '../../shape';
 const propTypes = {
   item: PropTypes.object,
   itemHeight: PropTypes.number,
-  labelComponent: PropTypes.element,
+  labelRenderer: PropTypes.func,
   labelKey: PropTypes.oneOfType([
     /* either the path of label in the item objects */
     PropTypes.string,
 
     /* or a function to resolve the label, passed the current item */
-    PropTypes.function
+    PropTypes.func
   ]),
   symbolColorKey: PropTypes.oneOfType([
     /* either the path of symbol color in the item objects */
     PropTypes.string,
 
     /* or a function to resolve the symbol color, passed the current item */
-    PropTypes.function
+    PropTypes.func
   ]),
 
   symbolTypeKey: PropTypes.oneOfType([
@@ -27,57 +27,53 @@ const propTypes = {
     PropTypes.string,
 
     /* or a function to resolve the symbol type, passed the current item */
-    PropTypes.function
+    PropTypes.func
   ])
 };
 
-export default class LegendItem extends React.Component {
-  static propResolver(item, property) {
-    return typeof property === 'function' ? property(item) : item[property];
-  }
+function propResolver(item, property) {
+  return typeof property === 'function' ? property(item) : item[property];
+}
 
-  renderLabel() {
-    const {
-      item,
-      labelComponent,
-      labelKey
-    } = this.props;
+/**
+ * label renderer
+ */
+function renderLabel(props) {
+  const {
+    item,
+    labelRenderer,
+    labelKey
+  } = props;
 
-    // if a custom label component is passed in, render it
-    if (labelComponent) return <labelComponent item={item} />;
+  // if a custom label component is passed in, render it
+  if (labelRenderer) return labelRenderer({ item });
 
-    // if labelKey is a function, call it with the current item
-    // otherwise, object access
-    return LegendItem.propResolver(item, labelKey);
-  }
+  // if labelKey is a function, call it with the current item
+  // otherwise, object access
+  return propResolver(item, labelKey);
+}
 
-  renderSymbol() {
-    const {
-      item,
-      symbolColorKey,
-      symbolTypeKey
-    } = this.props;
+export default function LegendItem(props) {
+  const { item, labelKey, itemHeight, symbolColorKey, symbolTypeKey } = props;
+  const color = propResolver(item, symbolColorKey);
+  const type = propResolver(item, symbolTypeKey);
 
-    const color = LegendItem.propResolver(item, symbolColorKey);
-    const type = LegendItem.propResolver(item, symbolTypeKey);
-
-    return <Symbol type={type} color={color} />;
-  }
-
-  render() {
-    return (
-      <li style={{ height: this.props.itemHeight }} className={styles.wrapper}>
-        <svg height="16px" width="100%" className={styles.svg}>
-          <g transform="translate(8,8)">
-            {this.renderSymbol()}
-            <text transform="translate(12,4)">
-              {this.renderLabel()}
-            </text>
-          </g>
-        </svg>
-      </li>
-    );
-  }
+  return (
+    <li
+      key={propResolver(item, labelKey)}
+      style={{ height: itemHeight }}
+      className={styles.wrapper}
+    >
+      <svg height="16px" width="100%" className={styles.svg}>
+        <g transform="translate(8,8)">
+          <Symbol type={type} color={color} />
+          <text transform="translate(12,4)">
+            {renderLabel(props)}
+          </text>
+        </g>
+      </svg>
+    </li>
+  );
 }
 
 LegendItem.propTypes = propTypes;
