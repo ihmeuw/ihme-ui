@@ -9,10 +9,7 @@ import LegendTitle from './legend-title';
 
 const propTypes = {
   /* legend items to render */
-  items: PropTypes.arrayOf(PropTypes.shape({
-    /* whether this item should be rendered with a 'clear' icon */
-    clearable: PropTypes.bool
-  })),
+  items: PropTypes.arrayOf(PropTypes.object),
 
   /* custom component to render for each item, passed current item; cannot be a class */
   itemRenderer: PropTypes.func,
@@ -31,12 +28,6 @@ const propTypes = {
     PropTypes.func
   ]),
 
-  /* title for the legend */
-  title: PropTypes.string,
-
-  /* custom component to render for the title, passed props.title; cannot be a class */
-  titleRenderer: PropTypes.func,
-
   symbolColorKey: PropTypes.oneOfType([
     /* either the path of symbol color in the item objects */
     PropTypes.string,
@@ -52,6 +43,12 @@ const propTypes = {
     /* or a function to resolve the symbol type, passed the current item */
     PropTypes.func
   ]),
+
+  /* title for the legend */
+  title: PropTypes.string,
+
+  /* custom component to render for the title, passed props.title; cannot be a class */
+  titleRenderer: PropTypes.func,
 
   /* any additional classes to add to <ul> */
   ulClassName: PropTypes.oneOfType([
@@ -70,6 +67,7 @@ const propTypes = {
 };
 
 const defaultProps = {
+  items: [],
   itemRenderer: LegendItem,
   itemHeight: 23,
   titleRenderer: LegendTitle
@@ -91,7 +89,8 @@ export default class Legend extends React.Component {
       'itemRenderer',
       'title',
       'titleRenderer',
-      'className'
+      'ulClassName',
+      'wrapperClassName'
     ]);
 
     if (!isArray(items) || !items.length) return null;
