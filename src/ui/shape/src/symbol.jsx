@@ -10,7 +10,14 @@ const SYMBOL_TYPES = {
   cross: d3Shape.symbolCross,
   diamond: d3Shape.symbolDiamond,
   star: d3Shape.symbolStar,
-  wye: d3Shape.symbolWye
+  wye: d3Shape.symbolWye,
+  line: {
+    draw(context, size) {
+      const width = Math.sqrt(size);
+      const height = 1.5;
+      return context.rect(-width / 2, -height / 2, width, height);
+    }
+  }
 };
 
 const propTypes = {
