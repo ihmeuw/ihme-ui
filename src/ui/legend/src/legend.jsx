@@ -73,6 +73,8 @@ const propTypes = {
     PropTypes.array
   ]),
 
+  /* any inline styles to apply to legend wrapper */
+  wrapperStyle: PropTypes.object
 };
 
 const defaultProps = {
@@ -102,7 +104,8 @@ export default class Legend extends React.Component {
       'title',
       'titleRenderer',
       'ulClassName',
-      'wrapperClassName'
+      'wrapperClassName',
+      'wrapperStyle'
     ]);
 
     if (!isArray(items) || !items.length) return null;
@@ -114,11 +117,12 @@ export default class Legend extends React.Component {
   render() {
     const {
       wrapperClassName,
+      wrapperStyle,
       ulClassName
     } = this.props;
 
     return (
-      <div className={classNames(styles.container, wrapperClassName)}>
+      <div className={classNames(styles.container, wrapperClassName)} style={wrapperStyle}>
         {this.renderTitle()}
         <ul className={classNames(styles.list, ulClassName)}>
           {this.renderItemList()}
