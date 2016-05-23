@@ -119,7 +119,10 @@ const ChoroplethLegend = (props) => {
   } = props;
 
   const adjustedWidth = getAdjustedWidth(width, margins);
-  const xScale = d3Scale.scaleLinear().domain(domain).range([0, adjustedWidth]).clamp(true);
+  const xScale = d3Scale.scaleLinear()
+    .domain(domain)
+    .range([0, adjustedWidth])
+    .clamp(true);
   const sliderHeight = 10 + (5 * zoom);
 
   return (

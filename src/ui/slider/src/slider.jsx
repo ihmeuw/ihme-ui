@@ -244,16 +244,16 @@ export default class Slider extends React.Component {
 
       return (
         <Handle
-          key={ key }
-          name={ key }
-          direction={ direction }
-          position={ this.state.scale(value) }
-          onMove={ this.onHandleMove }
-          onKeyDown={ this.onHandleKeyDown }
-          label={ value }
-          labelFunc={ this.props.labelFunc }
-          snapTarget={ this.state.snapTarget }
-          className={ classNames({ [style.connected]: values.min === values.max }) }
+          key={key}
+          name={key}
+          direction={direction}
+          position={this.state.scale(value)}
+          onMove={this.onHandleMove}
+          onKeyDown={this.onHandleKeyDown}
+          label={value}
+          labelFunc={this.props.labelFunc}
+          snapTarget={this.state.snapTarget}
+          className={classNames({ [style.connected]: values.min === values.max })}
         />
       );
     });
@@ -267,10 +267,10 @@ export default class Slider extends React.Component {
 
       return (
         <Fill
-          key={ key }
-          direction={ direction }
-          width={ scale(value) }
-          fillStyle={ { backgroundColor: this.props.fillColor } }
+          key={key}
+          direction={direction}
+          width={scale(value)}
+          fillStyle={{ backgroundColor: this.props.fillColor }}
         />
       );
     });
@@ -282,16 +282,16 @@ export default class Slider extends React.Component {
 
     return (
       <div
-        className={ style.slider }
-        style={ { height: `${height}px`, width: `${width}px` } }
+        className={style.slider}
+        style={{ height: `${height}px`, width: `${width}px` }}
       >
         <Track
-          onClick={ this.onTrackClick }
-          snapTarget={ this.state.snapTarget }
-          ref={ this.trackRef }
+          onClick={this.onTrackClick}
+          snapTarget={this.state.snapTarget}
+          ref={this.trackRef}
         >
-          { render && this.props.fill && this.renderFill() }
-          { render && this.renderHandle() }
+          {render && this.props.fill && this.renderFill()}
+          {render && this.renderHandle()}
         </Track>
       </div>
     );

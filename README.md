@@ -25,6 +25,8 @@ This document provides installation instructions, an overview of the elements, t
   * [slider](#slider)
   * [spinner](#spinner)
   * [svg-text](#svg-text)
+* [Test Utilities](#test-utilities)
+  * [Data Generator](#data-generator)
 * [Code Quality](#code-quality)
 
 ###### WORK IN PROGRESS: Not stable until v1.0.0
@@ -42,7 +44,6 @@ To install ihme-ui tools and all dependencies:
 ```sh
 npm install -S ihme-ui
 ```
-
 To install demo files:
 
 ```sh
@@ -73,6 +74,7 @@ Property | Required | Type(s) | Description
 
 Chart with customizable width, height, scales, and margins.
 
+<<<<<<< HEAD
 Property | Required | Type(s) | Description
         --- | :---: | :---: | ---
 `children` | no | object | React element or elements<br /><br />one of type: arrayOf(PropTypes.node), node
@@ -167,6 +169,42 @@ Property | Required | Type(s) | Description
 `icon` | no |string | path to image to render within label tag
 `text` | no | string | text to render within label tag
 `theme` | no | string | color scheme of component; see html-label.css
+
+### MultiSelect and SingleSelect
+
+Select boxes built on top of [IHME-React-Select](https://github.com/ihmeuw/ihme-react-select). At minimum, the following props should be declared.
+
+Property | Required | Type(s) | Description
+        --- | :---: | :---: | ---
+`labelKey` | yes | string | key on option objects holding label (e.g., `location_name`)
+`valueKey` | yes | string | key on option objects holding value (e.g., `location_id`)
+`onChange` | yes | func | function to be executed on change in value
+`options` | yes | array | array of option objects
+`value` | yes | array or object | list of options or single option currently selected
+`hierarchical` | no | boolean | whether or not to display options hierarchically; if `true`, option objects need a `level` key
+
+#### Example
+
+```jsx
+import { SingleSelect, MultiSelect } from 'ihme-ui/ui';
+
+<SingleSelect
+    labelKey="name"
+    valueKey="name"
+    onChange={ function (selection <Object>) {...} }
+    options={ [{location_name: 'Albany', location_id: 1 }, ...] }
+    value={{ location_name: 'Denver', location_id: 2 }}
+/>
+
+<MultiSelect
+    labelKey="name"
+    valueKey="name"
+    onChange={ function (selections <Array>) {...} }
+    options={ [{location_name: 'Albany', location_id: 1 }, ...] }
+    value={[{ location_name: 'Denver', location_id: 2 }, ...]}
+/>
+```
+
 
 ### responsive-container
 
@@ -306,5 +344,75 @@ Property | Required | Type(s) | Description
 
 ---
 
-### Code Quality
+## Test Utilities
+
+### Data Generator
+
+Data Generator creates fake data for testing purposes.
+
+#### API Description
+
+Data Generator takes an object with four properties.
+
+`primaryKeys` is an array of objects that have a `name` property that is a string, and a `values` property that is an array. The data generator will create unique composite keys based on the values arrays.
+
+`valueKeys` is an array of objects that have a `name` property that is a string, a `range` property that is an array of two numbers, and an `uncertainty` property that is a boolean. Value keys are iterated so that their values are within the range specified. If `uncertainty` is true, data generator will produce additional keys of the form `(name)_ub` and `(name)_lb` to represent upper and lower bound uncertainties.
+
+`year` is a number that represents a starting year for a series of years iterated by length. The output key is `year_id`.
+
+`length` is a number for which each unique composite key gets a new value key. If there are many composite keys, each key receives `length` number of data points.
+```javascript
+const config = {
+  primaryKeys = [
+    {name: 'A', values: [1, 2]},
+    {name: 'B', values: [1, 2, 3]}
+  ],
+  valueKeys = [
+    {name: 'value', range: [100, 200], uncertainty: false}
+  ],
+  year: 2000,
+  length: 2
+}
+//outputs
+[
+  {A: 1, B: 1, value: v_1, year_id: 2000},
+  {A: 1, B: 1, value: v_2, year_id: 2001},
+  {A: 1, B: 2, value: v_1, year_id: 2000},
+  {A: 1, B: 2, value: v_2, year_id: 2001},
+  {A: 1, B: 3, value: v_1, year_id: 2000},
+  {A: 1, B: 3, value: v_2, year_id: 2001},
+  {A: 2, B: 1, value: v_1, year_id: 2000},
+  {A: 2, B: 1, value: v_2, year_id: 2001},
+  {A: 2, B: 2, value: v_1, year_id: 2000},
+  {A: 2, B: 2, value: v_2, year_id: 2001},
+  {A: 2, B: 3, value: v_1, year_id: 2000},
+  {A: 2, B: 3, value: v_2, year_id: 2001}
+]
+```
+
+Data generator also outputs a unique `id` key for each row of data.
+
+#### Example
+
+```javascript
+const config = {
+  primaryKeys = [
+    {name: 'key_1', values: ['v_11', 'v_21', ..., 'v_m1']},
+    {name: 'key_2', values: ['v_12', 'v_22', ..., 'v_m2']},
+    ...
+    {name: 'key_n', values: ['v_1n', 'v_2n', ..., 'v_mn']}
+  ],
+  valueKeys = [
+    {name: 'value_1', range: [lower_1, upper_1], uncertainty: true},
+    {name: 'value_2', range: [lower_2, upper_2], uncertainty: false},
+    ...
+    {name: 'value_k', range: [lower_k, upper_k], uncertainty: false}
+  ],
+  year: 2000,
+  length: 10
+}
+dataGenerator(config);
+```
+
+## Code Quality
 - eslint enforces AirBnB rules: https://github.com/airbnb/javascript

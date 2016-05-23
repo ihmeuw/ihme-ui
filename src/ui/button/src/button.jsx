@@ -40,7 +40,7 @@ const defaultProps = {
 
 const getContent = (showSpinner, iconPath) => {
   if (showSpinner) return <Spinner inline size="small" />;
-  if (iconPath) return <img className={styles.icon} src={iconPath} />;
+  if (iconPath) return <img className={styles.icon} alt="" src={iconPath} />;
   return null;
 };
 
@@ -48,9 +48,9 @@ const Button = (props) => {
   const clickHandler = props.showSpinner ? null : props.clickHandler;
   return (
     <button
-      className={classNames(props.className, styles.common, styles[props.theme], {
+      className={classNames(styles.common, styles[props.theme], {
         [styles.disabled]: props.disabled
-      })}
+      }, props.className)}
       disabled={props.disabled}
       id={props.id}
       name={props.name}

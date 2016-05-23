@@ -62,7 +62,7 @@ export default class Slider extends React.Component {
 
   rectWidth(which, edgePosition, containerWidth) {
     /* eslint no-self-compare:0 */
-    if (which === 'left') return (edgePosition) ? edgePosition : 0;
+    if (which === 'left') return edgePosition || 0;
 
     // make certain both containerWidth and edgePosition are numbers
     // and not NaN (self-compare check)
@@ -168,7 +168,7 @@ export default class Slider extends React.Component {
           height={`${height}px`}
           stroke="none"
           fill="#cccccc"
-          x={rightEdgeInPx ? rightEdgeInPx : 0}
+          x={rightEdgeInPx || 0}
           width={this.rectWidth('right', rightEdgeInPx, width)}
         >
         </rect>

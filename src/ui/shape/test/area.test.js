@@ -21,14 +21,12 @@ describe('<Area />', () => {
   };
 
   const data = dataGenerator({
-    keyField,
-    valueField,
-    length: 10,
-    dataQuality: 'best',
-    useDates: true
+    primaryKeys: [{ name: keyField, values: [keyField] }],
+    valueKeys: [{ name: valueField, range: [100, 200], uncertainty: true }],
+    length: 10
   });
 
-  const range = [minBy(data, 'lb')[valueField], maxBy(data, 'ub')[valueField]];
+  const range = [minBy(data, 'value_lb')[valueField], maxBy(data, 'value_ub')[valueField]];
   const domain = [minBy(data, keyField)[keyField], maxBy(data, keyField)[keyField]];
 
   const xScale = d3Scale.scalePoint().domain(domain).range([0, chartDimensions.width]);
@@ -48,8 +46,8 @@ describe('<Area />', () => {
 
   const areaFunction = area()
     .x((datum) => { return xScale(datum[keyField]); })
-    .y0((datum) => { return yScale(datum.lb); })
-    .y1((datum) => { return yScale(datum.ub); });
+    .y0((datum) => { return yScale(datum.value_lb); })
+    .y1((datum) => { return yScale(datum.value_ub); });
 
   const expectedPath = areaFunction(data);
   let component;
@@ -59,7 +57,7 @@ describe('<Area />', () => {
       <Area
         data={data}
         scales={{ x: xScale, y: yScale }}
-        dataAccessors={{ x: keyField, y0: 'lb', y1: 'ub' }}
+        dataAccessors={{ x: keyField, y0: 'value_lb', y1: 'value_ub' }}
         clickHandler={clickCallback}
         hoverHandler={hoverCallback}
       />

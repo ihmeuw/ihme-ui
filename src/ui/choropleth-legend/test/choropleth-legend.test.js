@@ -14,10 +14,9 @@ describe('<ChoroplethLegend />', () => {
   const valueField = 'value';
   const keyField = 'loc_id';
   const data = dataGenerator({
-    keyField,
-    valueField,
-    length: 10,
-    dataQuality: 'best'
+    primaryKeys: [{ name: keyField, values: [keyField] }],
+    valueKeys: [{ name: valueField, range: [100, 200], uncertainty: true }],
+    length: 10
   });
 
   const domain = [minBy(data, 'value').value, maxBy(data, 'value').value];

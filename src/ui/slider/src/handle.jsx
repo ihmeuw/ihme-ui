@@ -89,12 +89,12 @@ export default class Handle extends React.Component {
     return (
       <button
         type="button"
-        className={ classNames(this.props.className, style.flag, style[this.props.direction]) }
-        style={ { left: getDimension(this.props.position) } }
-        ref={ this.handleRef }
-        onKeyDown={ this.props.onKeyDown(this.props.name) }
+        className={classNames(this.props.className, style.flag, style[this.props.direction])}
+        style={{ left: getDimension(this.props.position) }}
+        ref={this.handleRef}
+        onKeyDown={this.props.onKeyDown(this.props.name)}
       >
-        { this.props.labelFunc(this.props.label) }
+        {this.props.labelFunc(this.props.label)}
       </button>
     );
   }
