@@ -115,6 +115,7 @@ const items = [
     labelKey="label"
     symbolColorKey="symbolColor"
     symbolTypeKey={(item) => item.symbolType}
+    title="Estimate types"
     renderClear
     onClear={(event, item) => {}}
     onClick={(event, item) => {}}
@@ -125,6 +126,7 @@ const items = [
             labelKey="label"
             symbolColorKey="symbolColor"
             symbolTypeKey={(item) => item.symbolType}
+            title="Estimate types"
             renderClear
             onClear={this.filterItem}
             onClick={this.alertClick}
