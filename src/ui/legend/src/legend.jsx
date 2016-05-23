@@ -28,6 +28,15 @@ const propTypes = {
     PropTypes.func
   ]),
 
+  /* callback when 'clear' icon is clicked; see props.renderClear */
+  onClear: PropTypes.func,
+
+  /* callback when legend item is clicked */
+  onClick: PropTypes.func,
+
+  /* whether to render a 'clear' icon ('x') inline with each legend item */
+  renderClear: PropTypes.bool,
+
   symbolColorKey: PropTypes.oneOfType([
     /* either the path of symbol color in the item objects */
     PropTypes.string,
@@ -70,6 +79,9 @@ const defaultProps = {
   items: [],
   itemRenderer: LegendItem,
   itemHeight: 23,
+  renderClear: true,
+  onClear: null,
+  onClick: null,
   titleRenderer: LegendTitle
 };
 

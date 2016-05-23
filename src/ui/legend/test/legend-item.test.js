@@ -18,6 +18,11 @@ describe('<LegendItem />', () => {
     arbitraryField: 456
   };
 
+  const mockEvent = {
+    preventDefault() {},
+    stopPropagation() {}
+  };
+
   it('accepts a labelKey that is a string', () => {
     const wrapper = shallow(<LegendItem item={item} labelKey="estimateStage" />);
     expect(wrapper.find('text')).to.have.text('GBD final');
@@ -78,5 +83,33 @@ describe('<LegendItem />', () => {
     const textNode = wrapper.find('text');
     expect(textNode).to.have.descendants('tspan');
     expect(textNode.find('tspan')).to.have.text(String(item.arbitraryField));
+  });
+
+  it('renders a "clear" icon when renderClear === true', () => {
+    const wrapper = shallow(<LegendItem item={item} renderClear />);
+    expect(wrapper.find('g'))
+      .to.have.descendants('use');
+
+    expect(wrapper.find('use')).to.have.attr('xlink:href', '#icon-cross');
+  });
+
+  it('calls onClick with event and item', () => {
+    const spy = sinon.spy();
+
+    const wrapper = shallow(<LegendItem item={item} onClick={spy} />);
+    expect(spy.called).to.be.false;
+    wrapper.simulate('click', mockEvent);
+    expect(spy.called).to.be.true;
+    expect(spy.calledWith(mockEvent, item)).to.be.true;
+  });
+
+  it('calls onClear with event and item', () => {
+    const spy = sinon.spy();
+
+    const wrapper = shallow(<LegendItem item={item} renderClear onClear={spy} />);
+    expect(spy.called).to.be.false;
+    wrapper.find('use').simulate('click', mockEvent);
+    expect(spy.called).to.be.true;
+    expect(spy.calledWith(mockEvent, item)).to.be.true;
   });
 });
