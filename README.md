@@ -140,13 +140,13 @@ Data Generator creates fake data for testing purposes.
 Usage:
 ```javascript
 const config = {
-  primaryKeys = [
+  primaryKeys: [
     {name: 'key_1', values: ['v_11', 'v_21', ..., 'v_m1']},
     {name: 'key_2', values: ['v_12', 'v_22', ..., 'v_m2']},
     ...
     {name: 'key_n', values: ['v_1n', 'v_2n', ..., 'v_mn']}
   ],
-  valueKeys = [
+  valueKeys: [
     {name: 'value_1', range: [lower_1, upper_1], uncertainty: true},
     {name: 'value_2', range: [lower_2, upper_2], uncertainty: false},
     ...
@@ -169,11 +169,11 @@ Data Generator takes an object with four properties.
 `length` is a number for which each unique composite key gets a new value key. If there are many composite keys, each key receives `length` number of data points.
 ```javascript
 const config = {
-  primaryKeys = [
+  primaryKeys: [
     {name: 'A', values: [1, 2]},
     {name: 'B', values: [1, 2, 3]}
   ],
-  valueKeys = [
+  valueKeys: [
     {name: 'value', range: [100, 200], uncertainty: false}
   ],
   year: 2000,
