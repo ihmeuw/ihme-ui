@@ -85,12 +85,14 @@ describe('<LegendItem />', () => {
     expect(textNode.find('tspan')).to.have.text(String(item.arbitraryField));
   });
 
-  it('renders a "clear" icon when renderClear === true', () => {
+  it('renders a "clear" icon when renderClear is truthy', () => {
     const wrapper = shallow(<LegendItem item={item} renderClear />);
-    expect(wrapper.find('g'))
-      .to.have.descendants('use');
+    expect(wrapper).to.have.descendants('span');
+  });
 
-    expect(wrapper.find('use')).to.have.attr('xlink:href', '#icon-cross');
+  it('does not render a "clear" icon when renderClear is falsey', () => {
+    const wrapper = shallow(<LegendItem item={item} />);
+    expect(wrapper).to.not.have.descendants('span');
   });
 
   it('calls onClick with event and item', () => {
@@ -98,7 +100,7 @@ describe('<LegendItem />', () => {
 
     const wrapper = shallow(<LegendItem item={item} onClick={spy} />);
     expect(spy.called).to.be.false;
-    wrapper.simulate('click', mockEvent);
+    wrapper.find('g').simulate('click', mockEvent);
     expect(spy.called).to.be.true;
     expect(spy.calledWith(mockEvent, item)).to.be.true;
   });
@@ -108,7 +110,7 @@ describe('<LegendItem />', () => {
 
     const wrapper = shallow(<LegendItem item={item} renderClear onClear={spy} />);
     expect(spy.called).to.be.false;
-    wrapper.find('use').simulate('click', mockEvent);
+    wrapper.find('span').simulate('click', mockEvent);
     expect(spy.called).to.be.true;
     expect(spy.calledWith(mockEvent, item)).to.be.true;
   });

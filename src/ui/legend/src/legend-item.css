@@ -6,6 +6,18 @@
     justify-content: flex-start;
 }
 
+.clickable {
+    cursor: pointer;
+}
+
+.clear {
+    composes: clickable;
+    font-weight: bold;
+    transform: rotate(45deg);
+    height: 100%;
+    margin-right: 7px;
+}
+
 .svg {
     margin-right: 5px;
 }

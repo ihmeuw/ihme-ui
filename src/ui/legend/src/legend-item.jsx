@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 
 import styles from './legend-item.css';
 import { Symbol } from '../../shape';
@@ -106,17 +107,10 @@ export default function LegendItem(props) {
       key={propResolver(item, labelKey)}
       style={{ height: itemHeight }}
       className={styles.wrapper}
-      onClick={onClick ? wrappedOnClick : null}
     >
-      <svg height="16px" width="100%" className={styles.svg}>
-        <defs>
-          <symbol id="icon-cross" viewBox="0 0 32 32">
-            <title>cross</title>
-            <path d="M22.957 23.758c-0.75 0.75-1.966 0.75-2.715 0l-4.242-4.848-4.242 4.846c-0.75 0.75-1.966 0.75-2.715 0-0.75-0.75-0.75-1.966 0-2.715l4.413-5.040-4.414-5.043c-0.75-0.75-0.75-1.965 0-2.715s1.965-0.75 2.715 0l4.243 4.85 4.242-4.85c0.75-0.75 1.965-0.75 2.715 0s0.75 1.966 0 2.715l-4.413 5.043 4.413 5.040c0.75 0.75 0.75 1.966 0 2.717z"></path>
-          </symbol>
-        </defs>
-        <g transform="translate(8,8)">
-          {renderClear ? <use onClick={onClear ? wrappedOnClear : null} xlinkHref="#icon-cross" /> : null}
+      {renderClear ? <span className={styles.clear} onClick={onClear ? wrappedOnClear : null}>+</span> : null}
+      <svg height="100%" width="100%" className={styles.svg}>
+        <g transform="translate(8,10)" onClick={onClick ? wrappedOnClick : null} className={classNames({ [styles.clickable]: typeof onClick === 'function' })}>
           <Symbol type={type} color={color} />
           <text transform="translate(12,4)">
             {renderLabel(props)}
