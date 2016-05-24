@@ -74,7 +74,6 @@ Property | Required | Type(s) | Description
 
 Chart with customizable width, height, scales, and margins.
 
-<<<<<<< HEAD
 Property | Required | Type(s) | Description
         --- | :---: | :---: | ---
 `children` | no | object | React element or elements<br /><br />one of type: arrayOf(PropTypes.node), node
