@@ -1,7 +1,7 @@
 import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 
 chai.use(chaiEnzyme());
 
@@ -28,7 +28,8 @@ describe('<Legend />', () => {
 
   it('renders a title given a string title', () => {
     const title = 'A random title';
-    const wrapper = shallow(<Legend items={items} labelKey={labelKey} title={title} />);
+    const wrapper = mount(<Legend items={items} labelKey={labelKey} title={title} />);
+    expect(wrapper).to.have.descendants('h3');
     expect(wrapper.find('h3')).to.have.text(title);
   });
 
@@ -40,12 +41,12 @@ describe('<Legend />', () => {
       return (<h1>{props.title}!</h1>);
     }
 
-    const wrapper = shallow(
+    const wrapper = mount(
       <Legend
         items={items}
         labelKey={labelKey}
         title={title}
-        titleRenderer={CustomComponent}
+        TitleComponent={CustomComponent}
       />
     );
     expect(wrapper.find('h1')).to.have.text(`${title}!`);
@@ -53,7 +54,7 @@ describe('<Legend />', () => {
   });
 
   it('renders a list of items with the default LegendItem', () => {
-    const wrapper = shallow(<Legend items={items} labelKey={labelKey} />);
+    const wrapper = mount(<Legend items={items} labelKey={labelKey} />);
     expect(wrapper.find('ul')).to.have.exactly(items.length).descendants('li');
   });
 
@@ -63,7 +64,7 @@ describe('<Legend />', () => {
       return <li key={Math.random()}>{props.item[props.labelKey]}!</li>;
     }
 
-    const wrapper = shallow(<Legend items={items} itemRenderer={Item} labelKey={labelKey} />);
+    const wrapper = mount(<Legend items={items} ItemComponent={Item} labelKey={labelKey} />);
     expect(wrapper.find('ul')).to.have.exactly(items.length).descendants('li');
   });
 

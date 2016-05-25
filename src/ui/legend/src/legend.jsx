@@ -12,14 +12,18 @@ const propTypes = {
   /* legend items to render */
   items: PropTypes.arrayOf(PropTypes.object).isRequired,
 
-  /* custom component to render for each item, passed current item; cannot be a class */
-  itemRenderer: PropTypes.func,
+  /* custom component to render for each item, passed current item;
+     must be passable to React.createElement
+   */
+  ItemComponent: PropTypes.func,
 
   /* inline styles to be applied to individual legend item <li> */
   itemStyles: PropTypes.object,
 
-  /* custom component to render for each label, passed current item; cannot be a class */
-  labelRenderer: PropTypes.func,
+  /* custom component to render for each label, passed current item;
+     must be passable to React.createElement
+  */
+  LabelComponent: PropTypes.func,
 
   labelKey: PropTypes.oneOfType([
     /* either the path of label in the item objects */
@@ -102,7 +106,7 @@ export default class Legend extends React.Component {
   }
 
   renderItemList() {
-    const { items, itemRenderer } = this.props;
+    const { items, ItemComponent, labelKey } = this.props;
     const itemProps = pick(this.props, [
       'itemStyles',
       'labelKey',
@@ -116,7 +120,7 @@ export default class Legend extends React.Component {
 
     if (!isArray(items) || !items.length) return null;
     return items.map((item) => {
-      return itemRenderer({ item, ...itemProps });
+      return <ItemComponent key={propResolver(item, labelKey)} item={item} {...itemProps} />;
     });
   }
 

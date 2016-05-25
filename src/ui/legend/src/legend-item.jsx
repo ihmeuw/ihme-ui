@@ -12,6 +12,9 @@ const propTypes = {
   /* inline-styles to be applied to individual legend item <li> */
   itemStyles: PropTypes.object,
 
+  /* custom component to render for each label, passed current item */
+  LabelComponent: PropTypes.func,
+
   labelKey: PropTypes.oneOfType([
     /* either the path of label in the item objects */
     PropTypes.string,
@@ -57,14 +60,15 @@ const defaultProps = {
  * label renderer
  */
 function renderLabel(props) {
+  /* eslint-disable react/prop-types */
   const {
     item,
-    labelRenderer,
+    LabelComponent,
     labelKey
   } = props;
 
   // if a custom label component is passed in, render it
-  if (labelRenderer) return labelRenderer({ item });
+  if (LabelComponent) return <LabelComponent item={item} />;
 
   // if labelKey is a function, call it with the current item
   // otherwise, object access
@@ -75,7 +79,6 @@ export default function LegendItem(props) {
   /* eslint-disable max-len */
   const {
     item,
-    labelKey,
     itemStyles,
     onClear,
     onClick,
@@ -102,7 +105,6 @@ export default function LegendItem(props) {
 
   return (
     <li
-      key={propResolver(item, labelKey)}
       style={itemStyles}
       className={styles.wrapper}
     >
