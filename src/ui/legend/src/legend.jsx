@@ -56,8 +56,14 @@ const propTypes = {
   /* title for the legend */
   title: PropTypes.string,
 
-  /* custom component to render for the title, passed props.title; cannot be a class */
-  titleRenderer: PropTypes.func,
+  /* custom component to render for the title;
+     passed { title: props.title, style: props.titleStyles } as props;
+     must be passable to React.createElement
+   */
+  TitleComponent: PropTypes.func,
+
+  /* inline styles to be applied to title component */
+  titleStyles: PropTypes.object,
 
   /* any additional classes to add to <ul> */
   ulClassName: PropTypes.oneOfType([
@@ -84,15 +90,15 @@ const defaultProps = {
   renderClear: true,
   onClear: null,
   onClick: null,
-  titleRenderer: LegendTitle
+  TitleComponent: LegendTitle
 };
 
 export default class Legend extends React.Component {
 
   renderTitle() {
-    const { title, titleRenderer } = this.props;
+    const { title, TitleComponent, titleStyles } = this.props;
     if (!title) return null;
-    return titleRenderer({ title });
+    return <TitleComponent title={title} style={titleStyles} />;
   }
 
   renderItemList() {
