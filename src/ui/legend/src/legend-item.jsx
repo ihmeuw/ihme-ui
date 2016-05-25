@@ -118,12 +118,14 @@ export default function LegendItem(props) {
           <path d="M-3,-3L3,3 M-3,3L3,-3" stroke="black" strokeWidth="1.5" />
         </svg>
       ) : null}
-      <div className={classNames(styles.wrapper, { [styles.clickable]: typeof onClick === 'function' })}>
+      <div
+        className={classNames(styles.wrapper, { [styles.clickable]: typeof onClick === 'function' })}
+        onClick={onClick ? wrappedOnClick : null}
+      >
         <svg
           viewBox="-8 -8 16 16" // bounds of <Symbol /> with default size of 64
           width="1em" height="1em"
           className={styles.svg}
-          onClick={onClick ? wrappedOnClick : null}
         >
           <Symbol type={type} color={color} />
         </svg>
