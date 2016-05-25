@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { isArray, omit } from 'lodash';
+import { isArray, pick } from 'lodash';
 import { propResolver } from '../../../utils';
 
 import styles from './legend.css';
@@ -102,16 +102,16 @@ export default class Legend extends React.Component {
   }
 
   renderItemList() {
-    // easier to omit the props we don't need than to declare the ones we do
     const { items, itemRenderer } = this.props;
-    const itemProps = omit(this.props, [
-      'items',
-      'itemRenderer',
-      'title',
-      'titleRenderer',
-      'ulClassName',
-      'wrapperClassName',
-      'wrapperStyle'
+    const itemProps = pick(this.props, [
+      'itemStyles',
+      'labelKey',
+      'LabelComponent',
+      'onClear',
+      'onClick',
+      'renderClear',
+      'symbolColorKey',
+      'symbolTypeKey'
     ]);
 
     if (!isArray(items) || !items.length) return null;
