@@ -119,7 +119,6 @@ const items = [
     renderClear
     onClear={(event, item) => {}}
     onClick={(event, item) => {}}
-    wrapperStyle={{ maxHeight: '150px' }}
   />
           </code></pre>
           <Legend
@@ -131,7 +130,6 @@ const items = [
             renderClear
             onClear={this.filterItem}
             onClick={this.alertClick}
-            wrapperStyle={{ maxHeight: '150px' }}
           />
           <Button
             text="Reset"
