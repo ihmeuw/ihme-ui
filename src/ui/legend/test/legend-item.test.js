@@ -2,7 +2,7 @@
 import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 import sinon from 'sinon';
 
 chai.use(chaiEnzyme());
@@ -78,14 +78,11 @@ describe('<LegendItem />', () => {
     function CustomComponent(props) {
       return <span id="custom">{props.item.arbitraryField}</span>;
     }
-    /* eslint-enable react/prop-types */
 
-    const wrapper = shallow(<LegendItem item={item} labelRenderer={CustomComponent} />);
-    const textNode = wrapper.find('span').first();
-    console.log(textNode);
-    expect(textNode).to.have.descendants('span');
-    console.log(textNode.find('#custom'));
-    expect(textNode.find('#custom')).to.have.text(String(item.arbitraryField));
+    const wrapper = mount(<LegendItem item={item} LabelComponent={CustomComponent} />);
+    const labelNode = wrapper.find('span').first();
+    expect(labelNode).to.have.descendants('span');
+    expect(labelNode.find('#custom')).to.have.text(String(item.arbitraryField));
   });
 
   it('renders a "clear" icon when renderClear is truthy', () => {
