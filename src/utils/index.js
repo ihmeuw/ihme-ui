@@ -15,3 +15,11 @@ export {
 export {
   getStringWidth
 } from './strings';
+
+export {
+  propResolver
+} from './objects';
+
+export {
+  eventHandleWrapper
+} from './events';
