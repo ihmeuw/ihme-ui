@@ -9,6 +9,10 @@ const propTypes = {
   item: PropTypes.object,
   itemHeight: PropTypes.number,
   labelRenderer: PropTypes.func,
+
+  /* inline-styles to be applied to individual legend item <li> */
+  itemStyles: PropTypes.object,
+
   labelKey: PropTypes.oneOfType([
     /* either the path of label in the item objects */
     PropTypes.string,
@@ -74,8 +78,8 @@ export default function LegendItem(props) {
   /* eslint-disable max-len */
   const {
     item,
-    itemHeight,
     labelKey,
+    itemStyles,
     onClear,
     onClick,
     renderClear,
@@ -102,7 +106,7 @@ export default function LegendItem(props) {
   return (
     <li
       key={propResolver(item, labelKey)}
-      style={{ height: itemHeight }}
+      style={itemStyles}
       className={styles.wrapper}
     >
       {renderClear ? (

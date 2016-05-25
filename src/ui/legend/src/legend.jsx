@@ -15,8 +15,8 @@ const propTypes = {
   /* custom component to render for each item, passed current item; cannot be a class */
   itemRenderer: PropTypes.func,
 
-  /* height of an individual item */
-  itemHeight: PropTypes.number,
+  /* inline styles to be applied to individual legend item <li> */
+  itemStyles: PropTypes.object,
 
   /* custom component to render for each label, passed current item; cannot be a class */
   labelRenderer: PropTypes.func,
