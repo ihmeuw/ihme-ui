@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { propResolver } from '../../../utils';
+import { propResolver, eventHandleWrapper } from '../../../utils';
 
 import styles from './legend-item.css';
 import { Symbol } from '../../shape';
@@ -89,20 +89,6 @@ export default function LegendItem(props) {
   const color = propResolver(item, symbolColorKey);
   const type = propResolver(item, symbolTypeKey);
 
-  function wrappedOnClick(event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    return onClick(event, item);
-  }
-
-  function wrappedOnClear(event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    return onClear(event, item);
-  }
-
   return (
     <li
       style={itemStyles}
@@ -113,14 +99,14 @@ export default function LegendItem(props) {
           viewBox="-8 -8 16 16"
           width="1em" height="1em"
           className={styles.clear}
-          onClick={onClear ? wrappedOnClear : null}
+          onClick={onClear ? eventHandleWrapper(onClear, item) : null}
         >
           <path d="M-3,-3L3,3 M-3,3L3,-3" stroke="black" strokeWidth="1.5" />
         </svg>
       ) : null}
       <div
         className={classNames(styles.wrapper, { [styles.clickable]: typeof onClick === 'function' })}
-        onClick={onClick ? wrappedOnClick : null}
+        onClick={onClick ? eventHandleWrapper(onClick, item) : null}
       >
         <svg
           viewBox="-8 -8 16 16" // bounds of <Symbol /> with default size of 64

@@ -19,3 +19,7 @@ export {
 export {
   propResolver
 } from './objects';
+
+export {
+  eventHandleWrapper
+} from './events';
