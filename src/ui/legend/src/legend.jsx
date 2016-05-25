@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { isArray, omit } from 'lodash';
+import { propResolver } from '../../../utils';
 
 import styles from './legend.css';
 

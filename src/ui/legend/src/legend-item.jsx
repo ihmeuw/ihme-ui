@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import { propResolver } from '../../../utils';
 
 import styles from './legend-item.css';
 import { Symbol } from '../../shape';
@@ -50,10 +51,6 @@ const defaultProps = {
   symbolColorKey: '',
   symbolTypeKey: ''
 };
-
-function propResolver(item, property) {
-  return typeof property === 'function' ? property(item) : item[property];
-}
 
 /**
  * label renderer

@@ -15,3 +15,7 @@ export {
 export {
   getStringWidth
 } from './strings';
+
+export {
+  propResolver
+} from './objects';
