@@ -9,6 +9,7 @@ chai.use(chaiEnzyme());
 
 import LegendItem from '../src/legend-item';
 import { Symbol } from '../../shape';
+import itemStyle from '../src/legend-item.css';
 
 describe('<LegendItem />', () => {
   const item = {
@@ -25,7 +26,7 @@ describe('<LegendItem />', () => {
 
   it('accepts a labelKey that is a string', () => {
     const wrapper = shallow(<LegendItem item={item} labelKey="estimateStage" />);
-    expect(wrapper.find('text')).to.have.text('GBD final');
+    expect(wrapper.find('span')).to.have.text('GBD final');
   });
 
   it('accepts a labelKey that is a function that is called with the item', () => {
@@ -34,7 +35,7 @@ describe('<LegendItem />', () => {
     });
 
     const wrapper = shallow(<LegendItem item={item} labelKey={spy} />);
-    expect(wrapper.find('text')).to.have.text('GBD final');
+    expect(wrapper.find('span')).to.have.text('GBD final');
     expect(spy.called).to.be.true;
     expect(spy.calledWith(item)).to.be.true;
   });
@@ -75,14 +76,16 @@ describe('<LegendItem />', () => {
     /* eslint-disable react/prop-types */
     // a custom label component is called with the item object
     function CustomComponent(props) {
-      return <tspan>{props.item.arbitraryField}</tspan>;
+      return <span id="custom">{props.item.arbitraryField}</span>;
     }
     /* eslint-enable react/prop-types */
 
     const wrapper = shallow(<LegendItem item={item} labelRenderer={CustomComponent} />);
-    const textNode = wrapper.find('text');
-    expect(textNode).to.have.descendants('tspan');
-    expect(textNode.find('tspan')).to.have.text(String(item.arbitraryField));
+    const textNode = wrapper.find('span').first();
+    console.log(textNode);
+    expect(textNode).to.have.descendants('span');
+    console.log(textNode.find('#custom'));
+    expect(textNode.find('#custom')).to.have.text(String(item.arbitraryField));
   });
 
   it('renders a "clear" icon when renderClear is truthy', () => {
@@ -92,7 +95,7 @@ describe('<LegendItem />', () => {
 
   it('does not render a "clear" icon when renderClear is falsey', () => {
     const wrapper = shallow(<LegendItem item={item} />);
-    expect(wrapper).to.not.have.descendants('span');
+    expect(wrapper).to.not.have.descendants(`.${itemStyle.clear}`);
   });
 
   it('calls onClick with event and item', () => {
@@ -100,7 +103,7 @@ describe('<LegendItem />', () => {
 
     const wrapper = shallow(<LegendItem item={item} onClick={spy} />);
     expect(spy.called).to.be.false;
-    wrapper.find('g').simulate('click', mockEvent);
+    wrapper.find('div').simulate('click', mockEvent);
     expect(spy.called).to.be.true;
     expect(spy.calledWith(mockEvent, item)).to.be.true;
   });
@@ -110,7 +113,7 @@ describe('<LegendItem />', () => {
 
     const wrapper = shallow(<LegendItem item={item} renderClear onClear={spy} />);
     expect(spy.called).to.be.false;
-    wrapper.find('span').simulate('click', mockEvent);
+    wrapper.find('svg').first().simulate('click', mockEvent);
     expect(spy.called).to.be.true;
     expect(spy.calledWith(mockEvent, item)).to.be.true;
   });
