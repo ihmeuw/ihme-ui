@@ -12,12 +12,9 @@
 
 .clear {
     composes: clickable;
-    font-weight: bold;
-    transform: rotate(45deg);
-    height: 100%;
-    margin-right: 7px;
+    margin-right: 0.25em;
 }
 
 .svg {
-    margin-right: 5px;
+    margin-right: 0.25em;
 }

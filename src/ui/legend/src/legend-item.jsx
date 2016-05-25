@@ -108,15 +108,29 @@ export default function LegendItem(props) {
       style={{ height: itemHeight }}
       className={styles.wrapper}
     >
-      {renderClear ? <span className={styles.clear} onClick={onClear ? wrappedOnClear : null}>+</span> : null}
-      <svg height="100%" width="100%" className={styles.svg}>
-        <g transform="translate(8,10)" onClick={onClick ? wrappedOnClick : null} className={classNames({ [styles.clickable]: typeof onClick === 'function' })}>
+      {renderClear ? (
+        <svg
+          viewBox="-8 -8 16 16"
+          width="1em" height="1em"
+          className={styles.clear}
+          onClick={onClear ? wrappedOnClear : null}
+        >
+          <path d="M-3,-3L3,3 M-3,3L3,-3" stroke="black" strokeWidth="1.5" />
+        </svg>
+      ) : null}
+      <div className={classNames(styles.wrapper, { [styles.clickable]: typeof onClick === 'function' })}>
+        <svg
+          viewBox="-8 -8 16 16" // bounds of <Symbol /> with default size of 64
+          width="1em" height="1em"
+          className={styles.svg}
+          onClick={onClick ? wrappedOnClick : null}
+        >
           <Symbol type={type} color={color} />
-          <text transform="translate(12,4)">
-            {renderLabel(props)}
-          </text>
-        </g>
-      </svg>
+        </svg>
+        <span>
+          {renderLabel(props)}
+        </span>
+      </div>
     </li>
   );
 }
