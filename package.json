@@ -38,7 +38,7 @@
     "combine-css": "scripts/concat-stylesheets.sh",
     "build": "npm run clean && npm run transpile && npm run combine-css",
     "travis-test": "npm run lint:no-fix && npm run coverage && npm run coverage-token",
-    "preversion": "npm run test",
+    "preversion": "npm run lint:no-fix && npm run test",
     "version": "npm run build && git add .",
     "postversion": "git push && git push --tags"
   },
