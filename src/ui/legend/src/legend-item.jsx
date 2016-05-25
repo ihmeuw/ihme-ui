@@ -6,9 +6,8 @@ import styles from './legend-item.css';
 import { Symbol } from '../../shape';
 
 const propTypes = {
-  item: PropTypes.object,
-  itemHeight: PropTypes.number,
-  labelRenderer: PropTypes.func,
+  /* legend item to render */
+  item: PropTypes.object.isRequired,
 
   /* inline-styles to be applied to individual legend item <li> */
   itemStyles: PropTypes.object,
@@ -19,7 +18,7 @@ const propTypes = {
 
     /* or a function to resolve the label, passed the current item */
     PropTypes.func
-  ]),
+  ]).isRequired,
 
   /* callback when 'clear' icon is clicked; see props.renderClear */
   onClear: PropTypes.func,
@@ -36,7 +35,7 @@ const propTypes = {
 
     /* or a function to resolve the symbol color, passed the current item */
     PropTypes.func
-  ]),
+  ]).isRequired,
 
   symbolTypeKey: PropTypes.oneOfType([
     /* either the path of symbol type in the item objects */
@@ -44,16 +43,14 @@ const propTypes = {
 
     /* or a function to resolve the symbol type, passed the current item */
     PropTypes.func
-  ])
+  ]).isRequired
 };
 
 const defaultProps = {
-  item: {},
-  itemHeight: 23,
-  labelRenderer: null,
-  labelKey: '',
-  symbolColorKey: '',
-  symbolTypeKey: ''
+  LabelComponent: null,
+  onClear: null,
+  onClick: null,
+  renderClear: false,
 };
 
 /**

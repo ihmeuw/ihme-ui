@@ -10,7 +10,7 @@ import LegendTitle from './legend-title';
 
 const propTypes = {
   /* legend items to render */
-  items: PropTypes.arrayOf(PropTypes.object),
+  items: PropTypes.arrayOf(PropTypes.object).isRequired,
 
   /* custom component to render for each item, passed current item; cannot be a class */
   itemRenderer: PropTypes.func,
@@ -27,7 +27,7 @@ const propTypes = {
 
     /* or a function to resolve the label, passed the current item */
     PropTypes.func
-  ]),
+  ]).isRequired,
 
   /* callback when 'clear' icon is clicked; see props.renderClear */
   onClear: PropTypes.func,
@@ -44,7 +44,7 @@ const propTypes = {
 
     /* or a function to resolve the symbol color, passed the current item */
     PropTypes.func
-  ]),
+  ]).isRequired,
 
   symbolTypeKey: PropTypes.oneOfType([
     /* either the path of symbol type in the item objects */
@@ -52,7 +52,7 @@ const propTypes = {
 
     /* or a function to resolve the symbol type, passed the current item */
     PropTypes.func
-  ]),
+  ]).isRequired,
 
   /* title for the legend */
   title: PropTypes.string,
@@ -80,15 +80,14 @@ const propTypes = {
     PropTypes.array
   ]),
 
-  /* any inline styles to apply to legend wrapper */
-  wrapperStyle: PropTypes.object
+  /* inline styles to apply to legend wrapper */
+  wrapperStyles: PropTypes.object
 };
 
 const defaultProps = {
   items: [],
-  itemRenderer: LegendItem,
-  itemHeight: 23,
-  renderClear: true,
+  ItemComponent: LegendItem,
+  renderClear: false,
   onClear: null,
   onClick: null,
   TitleComponent: LegendTitle
@@ -124,12 +123,12 @@ export default class Legend extends React.Component {
   render() {
     const {
       wrapperClassName,
-      wrapperStyle,
+      wrapperStyles,
       ulClassName
     } = this.props;
 
     return (
-      <div className={classNames(styles.container, wrapperClassName)} style={wrapperStyle}>
+      <div className={classNames(styles.container, wrapperClassName)} style={wrapperStyles}>
         {this.renderTitle()}
         <ul className={classNames(styles.list, ulClassName)}>
           {this.renderItemList()}
