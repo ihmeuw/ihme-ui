@@ -130,7 +130,6 @@ describe('<ScatterPlot />', () => {
         <ScatterPlot
           data={data}
           isNested={false}
-          is2d={false}
           scales={{ x: xScale }}
           colorScale={colorScale}
           dataAccessors={dataAccessors}

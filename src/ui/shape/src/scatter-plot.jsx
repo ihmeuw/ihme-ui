@@ -14,11 +14,6 @@ const propTypes = {
   /* whether the data given to ScatterPlot is nested (i.e., contains multiple dastasets) */
   isNested: PropTypes.bool,
 
-  /* whether the data given to ScaterPlot is to be displayed in
-   two-dimensions (true)
-   or one-dimension (false)*/
-  is2D: PropTypes.bool,
-
   /* key name for topic of data */
   keyField: PropTypes.string,
 
@@ -55,7 +50,6 @@ const propTypes = {
 
 const defaultProps = {
   isNested: true,
-  is2d: true,
   clickHandler: noop,
   hoverHandler: noop,
   dataField: 'values',
@@ -89,10 +83,8 @@ const renderMultipleDatasets = (props, childProps) => {
           const symbolType = isFunction(symbolScale)
             ? symbolScale(scatterData[symbolField])
             : scatterData[symbolField];
-
           // get symbol stroke
           const symbolStroke = colorScale(scatterData[keyField]);
-
           // on each iteration, plotDatum is an object
           // e.g. { loc_id: 1234, sex: 2, age_id: 27, mean: 99.3, ub: 100, lb: 90.1 }
           return map(scatterData[dataField], (plotDatum) => {
@@ -101,7 +93,6 @@ const renderMultipleDatasets = (props, childProps) => {
               x: scales.x(plotDatum[dataAccessors.x]),
               y: scales.y(plotDatum[dataAccessors.y])
             };
-
             return (
               <Symbol
                 key={`${scatterData[keyField]}:${plotDatum[dataAccessors.x]}`}
@@ -126,9 +117,8 @@ const renderSingleDataset = (props, childProps) => {
     dataField,
     colorScale,
     scales,
-    dataAccessors,
-    is2d
   } = props;
+
   return (
     <g>
       {
@@ -137,13 +127,12 @@ const renderSingleDataset = (props, childProps) => {
         map(data, (plotDatum) => {
           // position the symbol in the x-y plane
           const position = {
-            x: scales.x(plotDatum[dataAccessors.x]),
-            y: is2d ? scales.y(plotDatum[dataAccessors.y]) : 0
+            x: scales.x(plotDatum[dataField]),
+            y: 0
           };
-
           return (
             <Symbol
-              key={`${data[keyField]}:${plotDatum[dataAccessors.x]}`}
+              key={`${plotDatum[keyField]}`}
               data={plotDatum}
               type={'circle'}
               position={position}
@@ -169,7 +158,6 @@ const ScatterPlot = (props) => {
     'dataAccessors',
     'colorScale',
     'isNested',
-    'is2d',
     'scales'
   ]);
 
