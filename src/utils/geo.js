@@ -26,11 +26,13 @@ export const extractGeoJSON = function extractGeoJSON(topology, layers) {
     if (!topology.objects.hasOwnProperty(layer.name)) return map;
 
     switch (layer.type) {
-      case 'mesh':
+      // wrap case in braces to create local scope
+      case 'mesh': {
         // if filterFn is undefined, the meshgrid will be unfiltered
         const filter = layer.filterFn || defaultMeshFilter;
         map.mesh[layer.name] = topojson.mesh(topology, topology.objects[layer.name], filter);
         break;
+      }
       case 'feature': // FALL THROUGH
       default:
         map.feature[layer.name] = topojson.feature(topology, topology.objects[layer.name]);

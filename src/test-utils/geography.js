@@ -12,8 +12,8 @@ export const getGeoJSON = (feature, type = 'feature') => {
     );
   }
 
-  if (type === 'feature') return topojson.feature(usTopoJSON, usTopoJSON.objects[feature]);
   if (type === 'mesh') return topojson.mesh(usTopoJSON, usTopoJSON.objects[feature]);
+  return topojson.feature(usTopoJSON, usTopoJSON.objects[feature]);
 };
 
 export const getLocationIds = (features) => {
