@@ -155,6 +155,6 @@ export const dataGenerator = (config = {}) => {
   });
 
   return map(rows, (r) => {
-    return assign(r, { id: cuid() });
+    return assign({ id: cuid() }, r);
   });
 };
