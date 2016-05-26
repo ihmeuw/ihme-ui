@@ -92,16 +92,13 @@ const MultiScatter = (props) => {
     'symbolScale',
     'colorScale',
   ]);
-  /*
-    {size, dataAccessors, clickHandler, hoverHandler}
-  */
 
   return (
     <g>
       {
         map(data, (scatterData) => {
-          const key = scatterData[keyField]; // scatterData.location e.g. 'Brazil'
-          const values = scatterData[dataField]; // scatterData.values
+          const key = scatterData[keyField];
+          const values = scatterData[dataField];
           const color = colorScale(scatterData[keyField]);
           const symbolType = symbolScale(scatterData[keyField]);
 
