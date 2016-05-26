@@ -29,11 +29,20 @@ const propTypes = {
   /* array of datum[keyField], e.g., location ids */
   selectedLocations: PropTypes.arrayOf(PropTypes.number),
 
-  /* passed to path; partially applied fn that takes in datum and returns fn */
-  clickHandler: PropTypes.func,
+  /* passed to each path; signature: function(locationId, event) {...} */
+  onClick: PropTypes.func,
 
-  /* passed to path; partially applied fn that takes in datum and returns fn */
-  hoverHandler: PropTypes.func
+  /* passed to each path; signature: function(locationId, event) {...} */
+  onMouseOver: PropTypes.func,
+
+  /* passed to each path; signature: function(locationId, event) {...} */
+  onMouseMove: PropTypes.func,
+
+  /* passed to each path; signature: function(locationId, event) {...} */
+  onMouseDown: PropTypes.func,
+
+  /* passed to each path; signature: function(locationId, event) {...} */
+  onMouseOut: PropTypes.func
 };
 
 const defaultProps = {
@@ -51,8 +60,11 @@ const FeatureLayer = (props) => {
     keyField,
     valueField,
     selectedLocations,
-    clickHandler,
-    hoverHandler
+    onClick,
+    onMouseOver,
+    onMouseMove,
+    onMouseDown,
+    onMouseOut
   } = props;
 
   return (
@@ -71,12 +83,16 @@ const FeatureLayer = (props) => {
           return (
             <Path
               key={key}
-              d={pathGenerator(feature.geometry)}
+              feature={feature.geometry}
+              pathGenerator={pathGenerator}
               locationId={key}
               fill={fill}
               selected={includes(selectedLocations, key)}
-              clickHandler={clickHandler}
-              hoverHandler={hoverHandler}
+              onClick={onClick}
+              onMouseOver={onMouseOver}
+              onMouseMove={onMouseMove}
+              onMouseDown={onMouseDown}
+              onMouseOut={onMouseOut}
             />
           );
         })

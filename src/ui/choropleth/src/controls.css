@@ -3,4 +3,12 @@
   z-index: 1000;
   top: 1em;
   left: 1em;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* override button's default justify-content: space-between */
+.common > .button {
+  justify-content: center;
 }

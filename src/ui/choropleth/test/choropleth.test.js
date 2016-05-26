@@ -3,7 +3,7 @@ import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 
-import { dataGenerator, getTopoJSON } from '../../../test-utils';
+import { dataGenerator, getTopoJSON, getLocationIds } from '../../../test-utils';
 
 import Choropleth from '../src/choropleth';
 
@@ -12,20 +12,23 @@ chai.use(chaiEnzyme());
 describe('<Choropleth />', () => {
   const keyField = 'locationId';
   const valueField = 'mean';
-  const data = dataGenerator({
-    length: 10,
-    keyField,
-    valueField
-  });
   const layers = [
     { name: 'country', type: 'feature' },
     { name: 'states', type: 'mesh', filterFn(a, b) { return a !== b; } }
   ];
   const geo = getTopoJSON();
+  const locIds = [102, ...getLocationIds(geo.objects.states.geometries)];
+  const data = dataGenerator({
+    primaryKeys: [{ name: keyField, values: locIds }],
+    valueKeys: [
+      { name: valueField, range: [200, 500] }
+    ],
+    length: 1
+  });
 
   describe('class helper methods', () => {
     it('transforms data from array to object keyed by keyField', () => {
-      const result = Choropleth.prototype.processData(data, keyField);
+      const result = Choropleth.processData(data, keyField);
 
       // basic expectation of wrapper object
       expect(result)
@@ -66,6 +69,14 @@ describe('<Choropleth />', () => {
       expect(wrapper).to.have.tagName('div');
       expect(wrapper).to.have.descendants('svg');
       expect(wrapper).to.have.descendants('Controls');
+    });
+
+    it('renders both mesh and feature layers', () => {
+      // mesh layer
+      expect(wrapper).to.have.exactly(1).descendants('Path');
+
+      // feature layer
+      expect(wrapper).to.have.exactly(1).descendants('FeatureLayer');
     });
   });
 });

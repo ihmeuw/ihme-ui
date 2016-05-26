@@ -8,7 +8,7 @@ import d3 from 'd3';
  * @param {Array} layers -> layers to include
  * @return {Object} -> { mesh: {...}, feature: {...}  }
  */
-export const extractGeoJSON = function extractGeoJSON(topology, layers) {
+export function extractGeoJSON(topology, layers) {
   const initialMap = {
     mesh: {},
     feature: {}
@@ -41,14 +41,14 @@ export const extractGeoJSON = function extractGeoJSON(topology, layers) {
     return map;
     /* eslint-enable no-param-reassign */
   }, initialMap);
-};
+}
 
 /**
  *
  * @param {Object} extractedGeoJSON -> expect type of object returned by extractGeoJSON
  * @returns {Array} array of features
  */
-export const concatGeoJSON = function concatGeoJSON(extractedGeoJSON) {
+export function concatGeoJSON(extractedGeoJSON) {
   // iterate over each property of extractedGeoJSON ('mesh' & 'feature')
   // reduce to single array of features
   return reduce(extractedGeoJSON, (collection, type) => {
@@ -71,13 +71,88 @@ export const concatGeoJSON = function concatGeoJSON(extractedGeoJSON) {
 
     return collection.concat(combinedFeatures);
   }, []);
-};
+}
 
 /**
  * compute projected bounding box (in pixel space) of geometry
  * @param featureCollection
  * @returns {Array} [[left, top], [right, bottom]]
  */
-export const computeBounds = function computeBounds(feature) {
+export function computeBounds(feature) {
   return d3.geo.path().projection(null).bounds(feature);
-};
+}
+
+/**
+ * calculate center point of geometry given
+ * current translation, scale, and container dimensions
+ * @returns {Array}
+ */
+export function calcCenterPoint(width, height, scale, translate) {
+  // mike bostock math
+  return [(width - 2 * translate[0]) / scale, (height - 2 * translate[1]) / scale];
+}
+
+/**
+ * calculate scale at which the topology will fit centered in its container
+ * @param {Array} bounds
+ * @param {Number} width
+ * @param {Number} height
+ * @returns {Number}
+ */
+export function calcScale(bounds, width, height) {
+  // mike bostock math
+  // aspectX = rightEdge - leftEdge / width
+  const aspectX = (Math.abs(bounds[1][0] - bounds[0][0])) / width;
+
+  // aspectY = bottomEdge - topEdge / height
+  const aspectY = (Math.abs(bounds[1][1] - bounds[0][1])) / height;
+
+  return (0.95 / Math.max(aspectX, aspectY));
+}
+
+/**
+ * calculate translations at which the topology will fit centered in its container
+ * @param {Number} width
+ * @param {Number} height
+ * @param {Number} scale
+ * @param {Array} bounds -> optional bounds of topology;
+ *                          if not passed in, must pass in center
+ * @param {Array} center -> optional center point of topology;
+ *                          if not passed in, must pass in bounds
+ * @returns {Array}
+ */
+export function calcTranslate(width, height, scale, bounds, center) {
+  const geometryX = center ? center[0] : bounds[1][0] + bounds[0][0];
+  const geometryY = center ? center[1] : bounds[1][1] + bounds[0][1];
+
+  // mike bostock math
+  return [
+    (width - (scale * geometryX)) / 2,
+    (height - (scale * geometryY)) / 2
+  ];
+}
+
+/**
+ * @param geoJSON {Object} -> expect object as returned by ihme-ui/utils/geo/extractGeoJSON
+ * @returns {Array}
+ */
+export function concatAndComputeGeoJSONBounds(geoJSON) {
+  // returns projected bounding box (in pixel space)
+  // of entire geometry
+  // returns [[left, top], [right, bottom]]
+  return computeBounds({
+    type: 'FeatureCollection',
+    features: concatGeoJSON(geoJSON)
+  });
+}
+
+/**
+ * simple wrapper around topojson.presimplify
+ * @param topology {Object} topojon
+ * @returns {Object} toposjon
+ */
+export function simplifyTopoJSON(topology) {
+  // topojson::presimplify adds z dimension to arcs
+  // used for dynamic simplification
+  return topojson.presimplify(topology);
+}

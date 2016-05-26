@@ -1,8 +1,15 @@
 import React, { PropTypes } from 'react';
 import d3 from 'd3';
-import topojson from 'topojson';
-import { assign, keyBy, isEqual } from 'lodash';
-import { extractGeoJSON, concatGeoJSON, computeBounds } from '../../../utils';
+import { assign, keyBy, isEqual, mapValues } from 'lodash';
+import {
+  calcCenterPoint,
+  calcScale,
+  calcTranslate,
+  concatAndComputeGeoJSONBounds,
+  extractGeoJSON,
+  hasCrappyValues,
+  simplifyTopoJSON
+} from '../../../utils';
 
 import style from './choropleth.css';
 import FeatureLayer from './feature-layer';
@@ -58,13 +65,22 @@ const propTypes = {
     function called by d3.behavior.zoom;
     called with current _zoomBehavior scale and translate
   */
-  zoomHandler: PropTypes.func,
+  onZoom: PropTypes.func,
 
-  /* passed to path; partially applied fn that takes in datum and returns fn */
-  clickHandler: PropTypes.func,
+  /* passed to each path; signature: function(locationId, event) {...} */
+  onClick: PropTypes.func,
 
-  /* passed to path; partially applied fn that takes in datum and returns fn */
-  hoverHandler: PropTypes.func
+  /* passed to each path; signature: function(locationId, event) {...} */
+  onMouseOver: PropTypes.func,
+
+  /* passed to each path; signature: function(locationId, event) {...} */
+  onMouseMove: PropTypes.func,
+
+  /* passed to each path; signature: function(locationId, event) {...} */
+  onMouseDown: PropTypes.func,
+
+  /* passed to each path; signature: function(locationId, event) {...} */
+  onMouseOut: PropTypes.func
 };
 
 const defaultProps = {
@@ -73,20 +89,33 @@ const defaultProps = {
   width: 600,
   height: 400,
   scaleFactor: 1.5,
-  zoomHandler() { return; }
+  onZoom() { return; }
 };
 
 export default class Choropleth extends React.Component {
+  /**
+   * Because <Layer /> expects data to be an object with locationIds as keys
+   * Need to process data as such
+   * @param {Array} data -> array of datum objects
+   * @return {Object} keys are keyField (e.g., locationId), values are datum objects
+   */
+  static processData(data, keyField) {
+    return { processedData: keyBy(data, keyField) };
+  }
+
   constructor(props) {
     super(props);
 
-    const processedJSON = this.processJSON(props.topology, props.layers);
-    const initialScale = this.calcScale(processedJSON.bounds, props.width, props.height);
-    const initialTranslate = this.calcTranslate(
+    const simplifiedTopoJSON = simplifyTopoJSON(props.topology);
+    const extractedGeoJSON = this.topoToGeo(simplifiedTopoJSON, props.layers);
+    const bounds = concatAndComputeGeoJSONBounds(extractedGeoJSON);
+
+    const initialScale = calcScale(bounds, props.width, props.height);
+    const initialTranslate = calcTranslate(
       props.width,
       props.height,
       initialScale,
-      processedJSON.bounds
+      bounds
     );
 
     // set up _zoomBehavior behavior
@@ -95,7 +124,7 @@ export default class Choropleth extends React.Component {
       .scale(initialScale)
       .on('zoom', () => {
         this.forceUpdate(() => {
-          props.zoomHandler.call(null, this._zoomBehavior.scale, this._zoomBehavior.translate);
+          props.onZoom.call(null, this._zoomBehavior.scale, this._zoomBehavior.translate);
         });
       });
 
@@ -103,7 +132,8 @@ export default class Choropleth extends React.Component {
     const simplify = d3.geo.transform({
       point(x, y, z) {
         const scale = zoomBehavior.scale();
-        const translate = zoomBehavior.translate();
+        let translate = zoomBehavior.translate();
+        if (hasCrappyValues(translate)) translate = [0, 0];
 
         // mike bostock math
         const area = 1 / scale / scale;
@@ -122,8 +152,9 @@ export default class Choropleth extends React.Component {
         scale: initialScale,
         translate: initialTranslate,
       },
-      processedJSON,
-      this.processData(props.data, props.keyField)
+      { simplifiedTopoJSON, bounds },
+      extractedGeoJSON,
+      Choropleth.processData(props.data, props.keyField)
     );
 
     // bind `this`
@@ -164,24 +195,52 @@ export default class Choropleth extends React.Component {
       (newProps.height !== this.props.height);
 
     // if new topojson is passed in, presimplify, recalc bounds, and transform into geoJSON
-    if (topologyHasChanged || layersHaveChanged) assign(newState, this.processJSON(newProps.topology, newProps.layers));
+    if (topologyHasChanged) {
+      const simplifiedTopoJSON = simplifyTopoJSON(newProps.topology);
+      const extractedGeoJSON = this.topoToGeo(simplifiedTopoJSON, newProps.layers);
+      const bounds = concatAndComputeGeoJSONBounds(extractedGeoJSON);
+      assign(
+        newState,
+        { simplifiedTopoJSON },
+        { extractedGeoJSON },
+        { bounds }
+      );
+    }
+
+    // if only the layer definition has changed,
+    // extract any layers from topojson that had not previously been
+    if (!topologyHasChanged && layersHaveChanged) {
+      const extractedGeoJSON = this.topoToGeo(this.state.simplifiedTopoJSON, newProps.layers);
+      const relevantGeoJSON = this.getRelevantGeoJSON(newProps.layers, extractedGeoJSON);
+      const bounds = concatAndComputeGeoJSONBounds(extractedGeoJSON);
+      const allGeoJSON = mapValues(relevantGeoJSON, (geoJSONMap, type) => {
+        if (!this.state.hasOwnProperty(type)) return geoJSONMap;
+        return assign({}, this.state[type], geoJSONMap);
+      });
+
+      assign(
+        newState,
+        allGeoJSON,
+        { bounds }
+      );
+    }
 
     // if the component has been resized, set a new base scale and translate
     if (resized) {
       const bounds = topologyHasChanged ? newState.bounds : this.state.bounds;
-      const scale = this.calcScale(bounds, newProps.width, newProps.height);
-      const translate = this.calcTranslate(
-          newProps.width,
-          newProps.height,
-          scale,
-          bounds
-        );
+      const scale = calcScale(bounds, newProps.width, newProps.height);
+      const translate = calcTranslate(
+        newProps.width,
+        newProps.height,
+        scale,
+        bounds
+      );
 
       assign(newState, { scale, translate });
     }
 
     // if the data has changed, transform it to be consumable by <Layer />
-    if (dataHasChanged) assign(newState, this.processData(newProps.data, newProps.keyField));
+    if (dataHasChanged) assign(newState, Choropleth.processData(newProps.data, newProps.keyField));
 
     // if newState has any own and enumerable properties, update internal state
     // afterwards, make certain _zoomBehavior is in-sync with component state
@@ -207,58 +266,37 @@ export default class Choropleth extends React.Component {
     this._svgSelection.on('.zoom', null);
   }
 
-  /**
-   * calculate center point of geometry given
-   * current translation, scale, and container dimensions
-   * @returns {Array}
-   */
-  calcCenterPoint() {
-    const { width, height } = this.props;
-    const scale = this._zoomBehavior.scale();
-    const translate = this._zoomBehavior.translate();
-
-    // mike bostock math
-    return [(width - 2 * translate[0]) / scale, (height - 2 * translate[1]) / scale];
+  getRelevantGeoJSON(layers, unCachedGeoJSON) {
+    /* eslint-disable no-param-reassign */
+    return layers.reduce((accum, layer) => {
+      if (!accum.hasOwnProperty(layer.type)) accum[layer.type] = {};
+      if (unCachedGeoJSON &&
+        unCachedGeoJSON.hasOwnProperty(layer.type) &&
+        unCachedGeoJSON[layer.type].hasOwnProperty(layer.name)) {
+        accum[layer.type][layer.name] = unCachedGeoJSON[layer.type][layer.name];
+      } else {
+        accum[layer.type][layer.name] = this.state[layer.type][layer.name];
+      }
+      return accum;
+    }, {});
+    /* eslint-enable no-param-reassign */
   }
 
   /**
-   * calculate scale at which the topology will fit centered in its container
-   * @param {Array} bounds
-   * @param {Number} width
-   * @param {Number} height
-   * @returns {Number}
+   * extract topoJSON layers as geoJSON
+   * @param {Object} topology -> valid topojson
+   * @param {Array} layers -> layers to include
+   * @return {Object}
    */
-  calcScale(bounds, width, height) {
-    // mike bostock math
-    // aspectX = rightEdge - leftEdge / width
-    const aspectX = (Math.abs(bounds[1][0] - bounds[0][0])) / width;
+  topoToGeo(topology, layers) {
+    const unConvertedLayers = layers.filter((layer) => {
+      // failsafe, check that `this` has state set up already (e.g., called within constructor)
+      // and that it has a key for each type
+      if (!this.hasOwnProperty('state') || !this.state.hasOwnProperty(layer.type)) return true;
+      return !this.state[layer.type].hasOwnProperty(layer.name);
+    });
 
-    // aspectY = bottomEdge - topEdge / height
-    const aspectY = (Math.abs(bounds[1][1] - bounds[0][1])) / height;
-
-    return (0.95 / Math.max(aspectX, aspectY));
-  }
-
-  /**
-   * calculate translations at which the topology will fit centered in its container
-   * @param {Number} width
-   * @param {Number} height
-   * @param {Number} scale
-   * @param {Array} bounds -> optional bounds of topology;
-   *                          if not passed in, must pass in center
-   * @param {Array} center -> optional center point of topology;
-   *                          if not passed in, must pass in bounds
-   * @returns {Array}
-   */
-  calcTranslate(width, height, scale, bounds, center) {
-    const geometryX = center ? center[0] : bounds[1][0] + bounds[0][0];
-    const geometryY = center ? center[1] : bounds[1][1] + bounds[0][1];
-
-    // mike bostock math
-    return [
-      (width - (scale * geometryX)) / 2,
-      (height - (scale * geometryY)) / 2
-    ];
+    return extractGeoJSON(topology, unConvertedLayers);
   }
 
   updateZoomBehavior({
@@ -275,16 +313,16 @@ export default class Choropleth extends React.Component {
 
     let newScale;
     let newTranslate;
-    const center = this.calcCenterPoint();
+    const center = calcCenterPoint(width, height, currentScale, this._zoomBehavior.translate());
 
     switch (direction) {
       case 'in':
         newScale = currentScale * scaleFactor;
-        newTranslate = this.calcTranslate(width, height, newScale, null, center);
+        newTranslate = calcTranslate(width, height, newScale, null, center);
         break;
       case 'out':
         newScale = currentScale / scaleFactor;
-        newTranslate = this.calcTranslate(width, height, newScale, null, center);
+        newTranslate = calcTranslate(width, height, newScale, null, center);
         break;
       case 'reset':
         newScale = originalScale;
@@ -297,7 +335,7 @@ export default class Choropleth extends React.Component {
         // will be proporitinally smaller than the old scale cause a zoom out
         // and vice versa when the new area is larger than the old area.
         newScale = currentScale * (width * height) / (prevWidth * prevHeight);
-        newTranslate = this.calcTranslate(width, height, newScale, null, center);
+        newTranslate = calcTranslate(width, height, newScale, null, center);
 
     }
 
@@ -310,60 +348,29 @@ export default class Choropleth extends React.Component {
     if (forceUpdate) this.forceUpdate();
   }
 
-  /**
-   * process topojson for dynamic simplification
-   * measure it's full bounds
-   * and extract its layers as geoJSON
-   * @param {Object} geo -> valid topojson
-   * @param {Array} layers -> layers to include
-   * @return {Object}
-   */
-  processJSON(topology, layers) {
-    // topojson::presimplify adds z dimension to arcs
-    // used for dynamic simplification
-    const simplifiedTopoJSON = topojson.presimplify(topology);
-
-    const extractedGeoJSON = extractGeoJSON(simplifiedTopoJSON, layers);
-
-    return {
-      simplifiedTopoJSON,
-      // store projected bounding box (in pixel space)
-      // of entire geometry
-      // returns [[left, top], [right, bottom]]
-      bounds: computeBounds({
-        type: 'FeatureCollection',
-        features: concatGeoJSON(extractedGeoJSON)
-      }),
-      ...extractedGeoJSON
-    };
-  }
-
-  /**
-   * Because <Layer /> expects data to be an object with locationIds as keys
-   * Need to process data as such
-   * @param {Array} data -> array of datum objects
-   * @return {Object} keys are keyField (e.g., locationId), values are datum objects
-   */
-  processData(data, keyField) {
-    return { processedData: keyBy(data, keyField) };
-  }
-
   storeRef(ref) {
     this._svgSelection = ref ? d3.select(ref) : null;
   }
 
   renderLayers() {
     const {
+      width,
+      height,
       layers,
       keyField,
       valueField,
       colorScale,
       selectedLocations,
-      clickHandler,
-      hoverHandler
+      onClick,
+      onMouseOver,
+      onMouseMove,
+      onMouseDown,
+      onMouseOut
     } = this.props;
 
     const { processedData, pathGenerator } = this.state;
+
+    if (!width || !height) return null;
 
     return layers.map((layer) => {
       const key = `${layer.type}-${layer.name}`;
@@ -372,7 +379,8 @@ export default class Choropleth extends React.Component {
         return (
           <Path
             key={key}
-            d={pathGenerator(this.state[layer.type][layer.name])}
+            feature={this.state.mesh[layer.name]}
+            pathGenerator={pathGenerator}
             fill="none"
           />
         );
@@ -387,18 +395,21 @@ export default class Choropleth extends React.Component {
           pathGenerator={pathGenerator}
           colorScale={colorScale}
           selectedLocations={selectedLocations}
-          clickHandler={clickHandler}
-          hoverHandler={hoverHandler}
+          onClick={onClick}
+          onMouseOver={onMouseOver}
+          onMouseMove={onMouseMove}
+          onMouseDown={onMouseDown}
+          onMouseOut={onMouseOut}
         />
       );
-    }, this);
+    });
   }
 
   render() {
     const { width, height } = this.props;
 
     return (
-      <div width={`${width}px`} height={`${height}px`} className={style.common}>
+      <div style={{ width: `${width}px`, height: `${height}px` }} className={style.common}>
         <Controls
           onZoomIn={this.zoomIn}
           onZoomReset={this.zoomReset}
@@ -409,7 +420,7 @@ export default class Choropleth extends React.Component {
           width={`${width}px`}
           height={`${height}px`}
           overflow="hidden"
-          style={{ pointEvents: 'all' }}
+          style={{ pointerEvents: 'all' }}
         >
           {this.renderLayers()}
         </svg>

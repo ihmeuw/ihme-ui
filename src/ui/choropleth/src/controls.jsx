@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-import style from './controls.css';
+import styles from './controls.css';
 import Button from '../../button';
 
 const propTypes = {
@@ -14,21 +14,16 @@ const propTypes = {
   onZoomOut: PropTypes.func.isRequired
 };
 
-const defaultProps = {
-
-};
-
 const Controls = (props) => {
   return (
-    <div className={style.common}>
-      <Button text="in" clickHandler={props.onZoomIn} />
-      <Button text="reset" clickHandler={props.onZoomReset} />
-      <Button text="out" clickHandler={props.onZoomOut} />
+    <div className={styles.common}>
+      <Button className={styles.button} text="+" clickHandler={props.onZoomIn} />
+      <Button className={styles.button} text="•" clickHandler={props.onZoomReset} />
+      <Button className={styles.button} text="-" clickHandler={props.onZoomOut} />
     </div>
   );
 };
 
 Controls.propTypes = propTypes;
-Controls.defaultProps = defaultProps;
 
 export default Controls;

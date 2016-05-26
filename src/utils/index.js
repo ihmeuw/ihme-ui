@@ -16,9 +16,14 @@ export {
 } from './events';
 
 export {
-  extractGeoJSON,
+  calcCenterPoint,
+  calcScale,
+  calcTranslate,
+  computeBounds,
+  concatAndComputeGeoJSONBounds,
   concatGeoJSON,
-  computeBounds
+  extractGeoJSON,
+  simplifyTopoJSON
 } from './geo';
 
 export {

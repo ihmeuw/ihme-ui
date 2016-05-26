@@ -1,29 +1,30 @@
+/* eslint-disable no-unused-expressions */
 import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
+import d3 from 'd3';
+import { getGeoJSON } from '../../../test-utils';
 
 import Path from '../src/path';
 
 chai.use(chaiEnzyme());
 
 describe('Choropleth <Path />', () => {
-  const path = 'M 100 100 L 300 100 L 200 300 z';
-  let clickSpy;
-  const clickHandler = (locationId) => {
-    clickSpy = sinon.spy(() => { return locationId; });
-    return clickSpy;
-  };
+  const pathGenerator = d3.geo.path();
+  const feature = getGeoJSON('states', 'feature').features[0];
+  const onClick = sinon.spy();
 
   afterEach(() => {
-    if (typeof clickSpy === 'function' && clickSpy.called) clickSpy.reset();
+    onClick.reset();
   });
 
   it('returns a path', () => {
     const wrapper = shallow(
       <Path
-        d={path}
+        pathGenerator={pathGenerator}
+        feature={feature}
         locationId={6}
       />
     );
@@ -31,24 +32,49 @@ describe('Choropleth <Path />', () => {
     expect(wrapper).to.have.tagName('path');
   });
 
-  it('partially applies locationId to a given clickHandler', () => {
+  it('calls onClick with locationId', () => {
     const wrapper = shallow(
       <Path
-        d={path}
+        pathGenerator={pathGenerator}
+        feature={feature}
         locationId={6}
-        clickHandler={clickHandler}
+        onClick={onClick}
       />
     );
 
-    wrapper.simulate('click');
-    expect(clickSpy.calledOnce).to.be.true;
-    expect(clickSpy.returnValues[0]).to.equal(6);
+    const event = {
+      preventDefault() {}
+    };
+
+    wrapper.simulate('click', event);
+    expect(onClick.calledOnce).to.be.true;
+    expect(onClick.calledWith(6, event)).to.be.true;
+  });
+
+  it('does not call onClick if being dragged', () => {
+    const wrapper = shallow(
+      <Path
+        pathGenerator={pathGenerator}
+        feature={feature}
+        locationId={6}
+        onClick={onClick}
+      />
+    );
+
+    const event = {
+      preventDefault() {}
+    };
+
+    wrapper.simulate('mouseMove', event);
+    wrapper.simulate('click', event);
+    expect(onClick.calledOnce).to.be.false;
   });
 
   it('sets strokeWidth to 2px when selected, 1px when unselected', () => {
     const wrapper = shallow(
       <Path
-        d={path}
+        pathGenerator={pathGenerator}
+        feature={feature}
         locationId={6}
         selected
       />
