@@ -5,14 +5,12 @@ import { maxBy, minBy, memoize, bindAll } from 'lodash';
 import { scaleLinear } from 'd3-scale';
 import topojson from 'topojson';
 
-import { colorSteps, dataGenerator, getLocationIds, getTopoJSON } from '../../../test-utils';
+import { colorSteps, dataGenerator, getLocationIds } from '../../../test-utils';
 import { generateColorDomain } from '../../../utils/domain';
 
 import ResponsiveContainer from '../../responsive-container';
 import Choropleth from '../';
 import Button from '../../button';
-
-const usaTopoJSON = getTopoJSON();
 
 class App extends React.Component {
   constructor(props) {
@@ -22,8 +20,8 @@ class App extends React.Component {
 
     this.state = {
       selections: [],
-      showSubnational: true,
-      ...this.updateData('country', usaTopoJSON)
+      showSubnational: false,
+      ...this.updateData('country', props.topology)
     };
 
     bindAll(this, [
@@ -65,7 +63,7 @@ class App extends React.Component {
     const layer = this.state.showSubnational ? 'country' : 'states';
     this.setState({
       showSubnational: !this.state.showSubnational,
-      ...this.updateData(layer, usaTopoJSON)
+      ...this.updateData(layer, this.props.topology)
     });
   }
 
@@ -99,8 +97,8 @@ class App extends React.Component {
         <div style={{ flex: '1 0 auto', maxWidth: '70%' }}>
           <ResponsiveContainer>
             <Choropleth
-              layers={showSubnational ? [{ name: 'states', type: 'feature' }, { name: 'country', type: 'mesh' }] : [{ name: 'country', type: 'mesh' }]}
-              topology={usaTopoJSON}
+              layers={showSubnational ? [{ name: 'states', type: 'feature' }, { name: 'country', type: 'mesh' }] : [{ name: 'country', type: 'feature' }]}
+              topology={this.props.topology}
               data={data}
               keyField={keyField}
               valueField={valueField}
@@ -119,4 +117,9 @@ class App extends React.Component {
   }
 }
 
-render(<App/>, document.getElementById('app'));
+d3.json("//gist.githubusercontent.com/GabeMedrash/c5bbeb09ea2eee12635e664737656e00/raw/ed72a2ce609b5ccb2ebff361118501c47ee6f290/usa.json", function(error, topology) {
+  if (error) throw error;
+  render(<App topology={topology} />, document.getElementById('app'));
+});
+
+
