@@ -96,9 +96,10 @@ export function calcCenterPoint(width, height, scale, translate) {
  * @param {Array} bounds
  * @param {Number} width
  * @param {Number} height
+ * @param {Number} proportion
  * @returns {Number}
  */
-export function calcScale(bounds, width, height) {
+export function calcScale(bounds, width, height, proportion = 0.95) {
   // mike bostock math
   // aspectX = rightEdge - leftEdge / width
   const aspectX = (Math.abs(bounds[1][0] - bounds[0][0])) / width;
@@ -106,7 +107,7 @@ export function calcScale(bounds, width, height) {
   // aspectY = bottomEdge - topEdge / height
   const aspectY = (Math.abs(bounds[1][1] - bounds[0][1])) / height;
 
-  return (0.95 / Math.max(aspectX, aspectY));
+  return (proportion / Math.max(aspectX, aspectY));
 }
 
 /**
