@@ -39,7 +39,6 @@ export function extractGeoJSON(topology, layers) {
     }
 
     return map;
-    /* eslint-enable no-param-reassign */
   }, initialMap);
 }
 
