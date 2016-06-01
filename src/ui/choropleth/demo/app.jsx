@@ -89,14 +89,14 @@ class App extends React.Component {
     });
   }
 
-  selectLocation(locId) {
+  selectLocation(_, locId) {
     const { selections } = this.state;
 
     let newSelections;
     if (selections.includes(locId)) {
       newSelections = selections.filter((loc) => { return loc !== locId; });
     } else {
-      newSelections = [locId, ...selections];
+      newSelections = [...selections, locId];
     }
 
     this.setState({
