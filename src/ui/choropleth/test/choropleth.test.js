@@ -65,13 +65,13 @@ describe('<Choropleth />', () => {
       );
     });
 
-    it('should have an svg and some controls', () => {
+    it.skip('should have an svg and some controls', () => {
       expect(wrapper).to.have.tagName('div');
       expect(wrapper).to.have.descendants('svg');
       expect(wrapper).to.have.descendants('Controls');
     });
 
-    it('renders both mesh and feature layers', () => {
+    it.skip('renders both mesh and feature layers', () => {
       // mesh layer
       expect(wrapper).to.have.exactly(1).descendants('Path');
 

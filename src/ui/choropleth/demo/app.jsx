@@ -1,27 +1,31 @@
 import React from 'react';
 import { render } from 'react-dom';
 
-import { maxBy, minBy, memoize, bindAll } from 'lodash';
+import { maxBy, minBy, memoize, bindAll, filter, flatMap } from 'lodash';
 import { scaleLinear } from 'd3-scale';
-import topojson from 'topojson';
 
-import { colorSteps, dataGenerator, getLocationIds } from '../../../test-utils';
+import { colorSteps, dataGenerator } from '../../../test-utils';
 import { generateColorDomain } from '../../../utils/domain';
 
 import ResponsiveContainer from '../../responsive-container';
 import Choropleth from '../';
 import Button from '../../button';
 
+const LAYERS = {
+  global: { name: 'global', type: 'feature' },
+  subnational: { name: 'subnational', type: 'feature' }
+};
+
 class App extends React.Component {
   constructor(props) {
     super(props);
 
-    this.updateData = memoize(this.updateData);
+    const initialVisibleLayer = [LAYERS.global];
 
     this.state = {
       selections: [],
-      showSubnational: false,
-      ...this.updateData('country', props.topology)
+      layers: initialVisibleLayer,
+      ...this.updateData(initialVisibleLayer, props.topology)
     };
 
     bindAll(this, [
@@ -30,15 +34,25 @@ class App extends React.Component {
     ]);
   }
 
-  updateData(layer, topology) {
+  updateData(layers, topology) {
+    const layerNames = layers.map(layer => layer.name);
     const keyField = 'id';
     const valueField = 'mean';
-    const geoJSON = topojson.feature(topology, topology.objects[layer]);
-    const locIds = getLocationIds(geoJSON.features);
+    const collections = filter(topology.objects, (collection, name) => {
+      return layerNames.includes(name);
+    });
+    const locIds = flatMap(collections, (collection) => {
+      return collection.geometries.map((geometry) => geometry.id);
+    });
+
+    // calc upper and lower bounds of data
+    const val1 = Math.random() * 100 | 0;
+    const val2 = Math.random() * 100 | 0;
+
     const data = dataGenerator({
       primaryKeys: [{ name: keyField, values: locIds }],
       valueKeys: [
-        { name: valueField, range: [200, 500] }
+        { name: valueField, range: [Math.min(val1, val2), Math.max(val1, val2)] }
       ],
       length: 1
     });
@@ -58,12 +72,20 @@ class App extends React.Component {
     };
   }
 
+
   toggleSubnational() {
-    // TODO reverse logic
-    const layer = this.state.showSubnational ? 'country' : 'states';
+    const layerNames = this.state.layers.map(layer => layer.name);
+    let newLayers;
+
+    if (layerNames.includes('subnational')) {
+      newLayers = filter(this.state.layers, layer => layer.name !== 'subnational');
+    } else {
+      newLayers = [...this.state.layers, LAYERS.subnational];
+    }
+
     this.setState({
-      showSubnational: !this.state.showSubnational,
-      ...this.updateData(layer, this.props.topology)
+      layers: newLayers,
+      ...this.updateData(newLayers, this.props.topology)
     });
   }
 
@@ -89,7 +111,7 @@ class App extends React.Component {
       valueField,
       colorScale,
       selections,
-      showSubnational
+      layers
     } = this.state;
 
     return (
@@ -97,7 +119,7 @@ class App extends React.Component {
         <div style={{ flex: '1 0 auto', maxWidth: '70%' }}>
           <ResponsiveContainer>
             <Choropleth
-              layers={showSubnational ? [{ name: 'states', type: 'feature' }, { name: 'country', type: 'mesh' }] : [{ name: 'country', type: 'feature' }]}
+              layers={layers}
               topology={this.props.topology}
               data={data}
               keyField={keyField}
@@ -117,7 +139,7 @@ class App extends React.Component {
   }
 }
 
-d3.json("//gist.githubusercontent.com/GabeMedrash/c5bbeb09ea2eee12635e664737656e00/raw/ed72a2ce609b5ccb2ebff361118501c47ee6f290/usa.json", function(error, topology) {
+d3.json("//gist.githubusercontent.com/GabeMedrash/1dce23941015acc17d3fa2a670083d8f/raw/b0ae443ac0ad6d3a2425e12382680e5829345b60/world.topo.json", function(error, topology) {
   if (error) throw error;
   render(<App topology={topology} />, document.getElementById('app'));
 });

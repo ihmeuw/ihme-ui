@@ -48,7 +48,7 @@ describe('Choropleth <Path />', () => {
 
     wrapper.simulate('click', event);
     expect(onClick.calledOnce).to.be.true;
-    expect(onClick.calledWith(6, event)).to.be.true;
+    expect(onClick.calledWith(event, 6)).to.be.true;
   });
 
   it('does not call onClick if being dragged', () => {

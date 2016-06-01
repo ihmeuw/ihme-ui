@@ -9,7 +9,7 @@ const propTypes = {
 
   /*
     unlike in other components, data should be an object keyed by location id
-    this allows constant-time lookup of a location's value
+    this allows quick lookup of a location's value
     e.g. { 6: { mean: 2, lb: 1, ub: 3, ... }, 570: { mean: 4, lb: 3, ub: 5, ... } }
   */
   data: PropTypes.object.isRequired,
@@ -29,19 +29,19 @@ const propTypes = {
   /* array of datum[keyField], e.g., location ids */
   selectedLocations: PropTypes.arrayOf(PropTypes.number),
 
-  /* passed to each path; signature: function(locationId, event) {...} */
+  /* passed to each path; signature: function(event, locationId) {...} */
   onClick: PropTypes.func,
 
-  /* passed to each path; signature: function(locationId, event) {...} */
+  /* passed to each path; signature: function(event, locationId) {...} */
   onMouseOver: PropTypes.func,
 
-  /* passed to each path; signature: function(locationId, event) {...} */
+  /* passed to each path; signature: function(event, locationId) {...} */
   onMouseMove: PropTypes.func,
 
-  /* passed to each path; signature: function(locationId, event) {...} */
+  /* passed to each path; signature: function(event, locationId) {...} */
   onMouseDown: PropTypes.func,
 
-  /* passed to each path; signature: function(locationId, event) {...} */
+  /* passed to each path; signature: function(event, locationId) {...} */
   onMouseOut: PropTypes.func
 };
 
@@ -51,7 +51,7 @@ const defaultProps = {
   selectedLocations: []
 };
 
-const FeatureLayer = (props) => {
+export default function FeatureLayer(props) {
   const {
     features,
     pathGenerator,
@@ -99,9 +99,7 @@ const FeatureLayer = (props) => {
       }
     </g>
   );
-};
+}
 
 FeatureLayer.propTypes = propTypes;
 FeatureLayer.defaultProps = defaultProps;
-
-export default FeatureLayer;

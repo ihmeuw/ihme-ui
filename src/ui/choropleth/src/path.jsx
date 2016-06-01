@@ -50,6 +50,10 @@ export default class Path extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      path: props.pathGenerator(props.feature)
+    };
+
     bindAll(this, [
       'onClick',
       'onMouseDown',
@@ -58,13 +62,24 @@ export default class Path extends React.Component {
     ]);
   }
 
+  componentWillReceiveProps(newProps) {
+    const featureHasChanged = newProps.feature !== this.props.feature;
+    const projectionHasChanged = newProps.pathGenerator !== this.props.pathGenerator;
+
+    if (projectionHasChanged || featureHasChanged) {
+      this.setState({
+        path: newProps.pathGenerator(newProps.feature)
+      });
+    }
+  }
+
   onClick(e) {
     e.preventDefault();
 
     // if being dragged, don't fire onClick
     if (this.dragging) return;
 
-    this.props.onClick(this.props.locationId, e);
+    this.props.onClick(e, this.props.locationId);
   }
 
   onMouseDown(e) {
@@ -72,7 +87,7 @@ export default class Path extends React.Component {
 
     // clear mouseMove flag
     this.dragging = false;
-    this.props.onMouseDown(this.props.locationId, e);
+    this.props.onMouseDown(e, this.props.locationId);
   }
 
   onMouseMove(e) {
@@ -80,27 +95,28 @@ export default class Path extends React.Component {
 
     // set flag to prevent onClick handler from firing when map is being dragged
     this.dragging = true;
-    this.props.onMouseMove(this.props.locationId, e);
+    this.props.onMouseMove(e, this.props.locationId);
   }
 
   onMouseOut(e) {
     e.preventDefault();
 
-    this.props.onMouseOut(this.props.locationId, e);
+    this.props.onMouseOut(e, this.props.locationId);
   }
 
   onMouseOver(e) {
     e.preventDefault();
 
-    this.props.onMouseOver(this.props.locationId, e);
+    this.props.onMouseOver(e, this.props.locationId);
   }
 
   render() {
-    const { feature, pathGenerator, fill, selected } = this.props;
+    const { fill, selected } = this.props;
+    const { path } = this.state;
 
     return (
       <path
-        d={pathGenerator(feature)}
+        d={path}
         style={{
           fill,
           strokeWidth: selected ? '2px' : '1px',
