@@ -21,6 +21,16 @@ const propTypes = {
   /* step between slider values. */
   step: PropTypes.number,
 
+  /* inline styles applied to outermost wrappper */
+  wrapperStyles: PropTypes.object,
+
+  /* any additional classes to add to outermost wrapper */
+  wrapperClassName: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object,
+    PropTypes.array
+  ]),
+
   /*
    * Initial selected value.
    * If number, a single slider handle will be rendered.
@@ -277,13 +287,19 @@ export default class Slider extends React.Component {
   }
 
   render() {
-    const { height, width } = this.props;
+    const { height, width, wrapperStyles, wrapperClassName } = this.props;
     const { render } = this.state;
+
+    const styles = {
+      height: `${height}px`,
+      width: `${width}px`,
+      ...wrapperStyles
+    };
 
     return (
       <div
-        className={style.slider}
-        style={{ height: `${height}px`, width: `${width}px` }}
+        className={classNames(style.slider, wrapperClassName)}
+        style={styles}
       >
         <Track
           onClick={this.onTrackClick}
