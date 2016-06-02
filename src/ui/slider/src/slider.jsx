@@ -10,18 +10,18 @@ import Handle from './handle';
 import style from './style.css';
 
 const propTypes = {
-  /** Height and width of Slider component. */
+  /* height and width of Slider component. */
   height: PropTypes.number,
   width: PropTypes.number,
 
-  /** Extents of slider values. */
+  /* extents of slider values. */
   minValue: PropTypes.number.isRequired,
   maxValue: PropTypes.number.isRequired,
 
-  /** Step between slider values. */
+  /* step between slider values. */
   step: PropTypes.number,
 
-  /**
+  /*
    * Initial selected value.
    * If number, a single slider handle will be rendered.
    * If object with keys 'min' and 'max', two slider handles will be rendered.
@@ -35,8 +35,8 @@ const propTypes = {
     })
   ]).isRequired,
 
-  /**
-   * Function applied to the selected value prior to rendering.
+  /*
+   * function applied to the selected value prior to rendering.
    * Params:
    *   value - selected value
    *
@@ -48,14 +48,14 @@ const propTypes = {
    */
   labelFunc: PropTypes.func,
 
-  /** Include fill in the track to indicate value. */
+  /* include fill in the track to indicate value. */
   fill: PropTypes.bool,
 
-  /** Style for the fill color. */
+  /* style for the fill color. */
   fillColor: PropTypes.string,
 
-  /**
-   * Callback function when value is changed.
+  /*
+   * callback function when value is changed.
    * Params:
    *   value - object with keys ['min'] and 'max'
    *   key - key of most recent value change.
