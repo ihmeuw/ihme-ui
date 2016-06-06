@@ -2,10 +2,9 @@ import React from 'react';
 import { render } from 'react-dom';
 
 import { maxBy, minBy, memoize, bindAll, filter, flatMap } from 'lodash';
-import { scaleLinear } from 'd3-scale';
+import { scaleQuantize } from 'd3-scale';
 
 import { colorSteps, dataGenerator } from '../../../test-utils';
-import { generateColorDomain } from '../../../utils/domain';
 
 import ResponsiveContainer from '../../responsive-container';
 import Choropleth from '../';
@@ -15,6 +14,10 @@ const LAYERS = {
   global: { name: 'global', type: 'feature' },
   subnational: { name: 'subnational', type: 'feature' }
 };
+
+const keyField = 'id';
+const valueField = 'mean';
+const dataRange = [0, 100];
 
 class App extends React.Component {
   constructor(props) {
@@ -36,8 +39,6 @@ class App extends React.Component {
 
   updateData(layers, topology) {
     const layerNames = layers.map(layer => layer.name);
-    const keyField = 'id';
-    const valueField = 'mean';
     const collections = filter(topology.objects, (collection, name) => {
       return layerNames.includes(name);
     });
@@ -45,29 +46,21 @@ class App extends React.Component {
       return collection.geometries.map((geometry) => geometry.id);
     });
 
-    // calc upper and lower bounds of data
-    const val1 = Math.random() * 100 | 0;
-    const val2 = Math.random() * 100 | 0;
-
     const data = dataGenerator({
       primaryKeys: [{ name: keyField, values: locIds }],
-      valueKeys: [
-        { name: valueField, range: [Math.min(val1, val2), Math.max(val1, val2)] }
-      ],
+      valueKeys: [{ name: valueField, range: dataRange }],
       length: 1
     });
 
-    const domain = [minBy(data, valueField)[valueField], maxBy(data, valueField)[valueField]];
-    const colorScale = scaleLinear()
-      .domain(generateColorDomain(colorSteps, domain))
-      .range(colorSteps)
-      .clamp(true);
+    const colorScale = scaleQuantize()
+      .domain(dataRange)
+      .range(colorSteps);
 
     return {
       keyField,
       valueField,
       data,
-      domain,
+      domain: dataRange,
       colorScale
     };
   }
