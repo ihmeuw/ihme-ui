@@ -7,8 +7,8 @@ import ChoroplethLegend from '../';
 import Button from '../../button';
 
 // utils
-import { maxBy, minBy } from 'lodash';
 import { scaleLinear } from 'd3-scale';
+import { maxBy, minBy, range } from 'lodash';
 import { dataGenerator, colorSteps } from '../../../test-utils';
 import { generateColorDomain, isWithinRange, numFromPercent } from '../../../utils/domain';
 
@@ -39,9 +39,9 @@ class App extends React.Component {
 
   getNewData() {
     const data = dataGenerator({
-      keyField,
-      valueField,
-      length: 200,
+      primaryKeys: [{ name: keyField, values: range(0, 100) }],
+      valueKeys: [{ name: valueField, range: [0, 100] }],
+      length: 1,
       dataQuality: 'best'
     });
 
