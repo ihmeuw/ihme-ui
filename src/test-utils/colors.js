@@ -1,5 +1,4 @@
-import { scaleLinear } from 'd3-scale';
-import { generateColorDomain } from '../utils';
+import { scaleQuantize } from 'd3-scale';
 
 /**
  * 11 step diverging color scale
@@ -25,8 +24,7 @@ export const colorSteps = [
  * @returns {*}
  */
 export const baseColorScale = (domain = [0, 1]) => {
-  return scaleLinear()
-    .domain(generateColorDomain(colorSteps, domain))
-    .range(colorSteps)
-    .clamp(true);
+  return scaleQuantize()
+    .domain(domain)
+    .range(colorSteps);
 };
