@@ -4,7 +4,7 @@ import d3 from 'd3';
 
 /**
  * extract topojson layers as geoJSON
- * @param {Object} geo -> valid topojson
+ * @param {Object} topology -> valid topojson
  * @param {Array} layers -> layers to include
  * @return {Object} -> { mesh: {...}, feature: {...}  }
  */
@@ -77,8 +77,8 @@ export function concatGeoJSON(extractedGeoJSON) {
  * @param featureCollection
  * @returns {Array} [[left, top], [right, bottom]]
  */
-export function computeBounds(feature) {
-  return d3.geo.path().projection(null).bounds(feature);
+export function computeBounds(featureCollection) {
+  return d3.geo.path().projection(null).bounds(featureCollection);
 }
 
 /**
@@ -148,8 +148,8 @@ export function concatAndComputeGeoJSONBounds(geoJSON) {
 
 /**
  * simple wrapper around topojson.presimplify
- * @param topology {Object} topojon
- * @returns {Object} toposjon
+ * @param topology {Object} topojson
+ * @returns {Object} topojson
  */
 export function simplifyTopoJSON(topology) {
   // topojson::presimplify adds z dimension to arcs
