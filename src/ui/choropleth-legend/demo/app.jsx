@@ -7,10 +7,10 @@ import ChoroplethLegend from '../';
 import Button from '../../button';
 
 // utils
-import { scaleLinear } from 'd3-scale';
 import { maxBy, minBy, range } from 'lodash';
+import { scaleQuantize } from 'd3-scale';
 import { dataGenerator, colorSteps } from '../../../test-utils';
-import { generateColorDomain, isWithinRange, numFromPercent } from '../../../utils/domain';
+import { isWithinRange, numFromPercent } from '../../../utils/domain';
 
 const valueField = 'value';
 const keyField = 'loc_id';
@@ -80,10 +80,9 @@ class App extends React.Component {
 
   baseColorScale(rangeExtent, generateNewBaseScale) {
     const createBaseScale = (colorDomain = this.state.colorDomain) => {
-      return scaleLinear()
-        .domain(generateColorDomain(colorSteps, colorDomain))
-        .range(colorSteps)
-        .clamp(true);
+      return scaleQuantize()
+        .domain(colorDomain)
+        .range(colorSteps);
     };
 
     const baseScale = generateNewBaseScale ? createBaseScale(rangeExtent) : createBaseScale();
