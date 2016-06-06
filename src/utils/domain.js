@@ -42,12 +42,14 @@ export const domainFromPercent = function domainFromPercent(newDomain, oldDomain
  * @returns {Array}
  */
 export const generateColorDomain = function generateColorDomain(colors, domain) {
+  // TODO - evaluate this function for usefulness.
   // if max and min are the same number (e.g., full range of dataset is 0 -> 0)
   // return single element array
   const [min, max] = domain;
   if (min === max) return domain;
 
   const ret = [];
+  // FIXME - divide by zero for color lists with only one color
   const increment = (Math.abs(max - min) / (colors.length - 1));
   let step = min - increment;
 
