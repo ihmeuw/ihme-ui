@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 
-import { find, maxBy, minBy, memoize, bindAll, filter, flatMap, values, xor } from 'lodash';
+import { find, bindAll, filter, flatMap, values, xor } from 'lodash';
 import { scaleQuantize } from 'd3-scale';
 
 import { colorSteps, dataGenerator } from '../../../test-utils';
