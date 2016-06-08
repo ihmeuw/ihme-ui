@@ -1,11 +1,12 @@
 import React, { PropTypes } from 'react';
 import d3 from 'd3';
-import { keyBy, isEqual, mapValues } from 'lodash';
+import { keyBy, filter, has } from 'lodash';
 import {
   calcScale,
   calcTranslate,
   concatAndComputeGeoJSONBounds,
-  extractGeoJSON
+  extractGeoJSON,
+  quickMerge,
 } from '../../../utils';
 
 import style from './choropleth.css';
@@ -94,80 +95,71 @@ export default class Choropleth extends React.Component {
   constructor(props) {
     super(props);
 
-    const extractedGeoJSON = this.topoToGeo(props.topology, props.layers);
+    const extractedGeoJSON = extractGeoJSON(props.topology, props.layers);
     const bounds = concatAndComputeGeoJSONBounds(extractedGeoJSON);
 
     const scale = calcScale(props.width, props.height, bounds);
-    const translate = calcTranslate(
-      props.width,
-      props.height,
-      scale,
-      bounds
-    );
+    const translate = calcTranslate(props.width, props.height, scale, bounds);
+
+    this.cache = {
+      ...extractedGeoJSON,
+    };
 
     this.state = {
       pathGenerator: this.createPathGenerator(scale, translate),
       scale,
       translate,
       bounds,
-      ...extractedGeoJSON,
       ...processData(props.data, props.keyField)
     };
   }
 
-  componentWillReceiveProps(newProps) {
-    // build up newState
-    let newState = {};
+  componentWillReceiveProps(nextProps) {
+    // build up new state
+    let state = {};
 
-    const topologyHasChanged = newProps.topology !== this.props.topology;
-    const layersHaveChanged = !isEqual(newProps.layers, this.props.layers);
-    const dataHasChanged = newProps.data !== this.props.data;
-    const resized = (newProps.width !== this.props.width) ||
-      (newProps.height !== this.props.height);
+    const topologyHasChanged = nextProps.topology !== this.props.topology;
+    const layersHaveChanged = nextProps.layers !== this.props.layers;
+    const dataHasChanged = nextProps.data !== this.props.data;
+    const resized = (nextProps.width !== this.props.width) ||
+                    (nextProps.height !== this.props.height);
 
-    // if new topojson is passed in, presimplify, recalc bounds, and transform into geoJSON
     if (topologyHasChanged) {
-      const extractedGeoJSON = this.topoToGeo(newProps.topology, newProps.layers);
-      const bounds = concatAndComputeGeoJSONBounds(extractedGeoJSON);
-      newState = {
-        ...extractedGeoJSON,
-        bounds
+      // if new topojson is passed in, presimplify, recalc bounds, and transform into geoJSON
+      this.cache = {
+        ...extractGeoJSON(nextProps.topology, nextProps.layers),
       };
-    }
 
-    // if only the layer definition has changed,
-    // extract any layers from topojson that had not previously been
-    if (!topologyHasChanged && layersHaveChanged) {
-      const extractedGeoJSON = this.topoToGeo(newProps.topology, newProps.layers);
-      const relevantGeoJSON = this.getRelevantGeoJSON(newProps.layers, extractedGeoJSON);
-      const bounds = concatAndComputeGeoJSONBounds(extractedGeoJSON);
-      const allGeoJSON = mapValues(relevantGeoJSON, (geoJSONMap, type) => {
-        if (!this.state.hasOwnProperty(type)) return geoJSONMap;
-        return { ...this.state[type], ...geoJSONMap };
+      state = {
+        bounds: concatAndComputeGeoJSONBounds(this.cache),
+      };
+    } else if (layersHaveChanged) {
+      // process uncached layers
+      const uncachedLayers = filter(nextProps.layers, (layer) => {
+        return !has(this.cache[layer.type], layer.name);
       });
 
-      newState = {
-        ...newState,
-        ...allGeoJSON,
-        bounds
-      };
+      if (uncachedLayers.length) {
+        this.cache = {
+          ...quickMerge({}, this.cache, extractGeoJSON(nextProps.topology, uncachedLayers)),
+        };
+
+        state = {
+          bounds: concatAndComputeGeoJSONBounds(this.cache),
+        };
+      }
     }
 
     // if the component has been resized, set a new base scale and translate
     if (resized) {
-      const bounds = topologyHasChanged ? newState.bounds : this.state.bounds;
-      const scale = calcScale(newProps.width, newProps.height, bounds);
-      const translate = calcTranslate(
-        newProps.width,
-        newProps.height,
-        scale,
-        bounds
-      );
+      const bounds = topologyHasChanged ? state.bounds : this.state.bounds;
+      const scale = calcScale(nextProps.width, nextProps.height, bounds);
+      const translate = calcTranslate(nextProps.width, nextProps.height, scale, bounds);
 
       const pathGenerator = this.createPathGenerator(scale, translate);
 
-      newState = {
-        ...newState,
+      state = {
+        ...state,
         scale,
         translate,
         pathGenerator
@@ -176,30 +168,14 @@ export default class Choropleth extends React.Component {
 
     // if the data has changed, transform it to be consumable by <Layer />
     if (dataHasChanged) {
-      newState = {
-        ...newState,
+      state = {
+        ...state,
         ...processData(nextProps.data, nextProps.keyField)
       };
     }
 
-    // if newState has any own and enumerable properties, update internal state
-    if (Object.keys(newState).length) this.setState(newState);
-  }
-
-  getRelevantGeoJSON(layers, unCachedGeoJSON) {
-    return layers.reduce((accum, layer) => {
-      /* eslint-disable no-param-reassign */
-
-      if (!accum.hasOwnProperty(layer.type)) accum[layer.type] = {};
-      if (unCachedGeoJSON &&
-        unCachedGeoJSON.hasOwnProperty(layer.type) &&
-        unCachedGeoJSON[layer.type].hasOwnProperty(layer.name)) {
-        accum[layer.type][layer.name] = unCachedGeoJSON[layer.type][layer.name];
-      } else {
-        accum[layer.type][layer.name] = this.state[layer.type][layer.name];
-      }
-      return accum;
-    }, {});
+    // if new state has any own and enumerable properties, update internal state
+    if (Object.keys(state).length) this.setState(state);
   }
 
   /**
@@ -223,23 +199,6 @@ export default class Choropleth extends React.Component {
     return d3.geo.path().projection(transform);
   }
 
-  /**
-   * extract topoJSON layers as geoJSON
-   * @param {Object} topology -> valid topojson
-   * @param {Array} layers -> layers to include
-   * @return {Object}
-   */
-  topoToGeo(topology, layers) {
-    const unConvertedLayers = layers.filter((layer) => {
-      // failsafe, check that `this` has state set up already (e.g., called within constructor)
-      // and that it has a key for each type
-      if (!this.hasOwnProperty('state') || !this.state.hasOwnProperty(layer.type)) return true;
-      return !this.state[layer.type].hasOwnProperty(layer.name);
-    });
-
-    return extractGeoJSON(topology, unConvertedLayers);
-  }
-
   renderLayers() {
     const {
       layers,
@@ -251,18 +210,23 @@ export default class Choropleth extends React.Component {
       onMouseOver,
       onMouseMove,
       onMouseDown,
-      onMouseOut
+      onMouseOut,
     } = this.props;
 
-    const { processedData, pathGenerator } = this.state;
+    const {
+      processedData,
+      pathGenerator,
+    } = this.state;
 
     return layers.map((layer) => {
+      if (!layer.visible) return null;
+
       const key = `${layer.type}-${layer.name}`;
 
       return (
         <FeatureLayer
           key={key}
-          features={this.state[layer.type][layer.name].features}
+          features={this.cache[layer.type][layer.name].features}
           data={processedData}
           keyField={keyField}
           valueField={valueField}
