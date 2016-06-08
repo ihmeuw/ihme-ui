@@ -18,7 +18,7 @@ const propTypes = {
     name: PropTypes.string.isRequired,
 
     // whether the layer should be a feature collection or mesh grid
-    // TODO mesh layer support implemetation
+    // TODO mesh layer support implementation
     type: PropTypes.oneOf(['feature', 'mesh']).isRequired,
 
     // TODO mesh layer support implementation
