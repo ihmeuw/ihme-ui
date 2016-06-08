@@ -96,7 +96,7 @@ export default class Choropleth extends React.Component {
     const extractedGeoJSON = this.topoToGeo(props.topology, props.layers);
     const bounds = concatAndComputeGeoJSONBounds(extractedGeoJSON);
 
-    const scale = calcScale(bounds, props.width, props.height);
+    const scale = calcScale(props.width, props.height, bounds);
     const translate = calcTranslate(
       props.width,
       props.height,
@@ -155,7 +155,7 @@ export default class Choropleth extends React.Component {
     // if the component has been resized, set a new base scale and translate
     if (resized) {
       const bounds = topologyHasChanged ? newState.bounds : this.state.bounds;
-      const scale = calcScale(bounds, newProps.width, newProps.height);
+      const scale = calcScale(newProps.width, newProps.height, bounds);
       const translate = calcTranslate(
         newProps.width,
         newProps.height,

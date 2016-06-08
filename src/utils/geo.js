@@ -94,13 +94,13 @@ export function calcCenterPoint(width, height, scale, translate) {
 
 /**
  * calculate scale at which the topology will fit centered in its container
- * @param {Array} bounds
  * @param {Number} width
  * @param {Number} height
+ * @param {Array} bounds
  * @param {Number} proportion
  * @returns {Number}
  */
-export function calcScale(bounds, width, height, proportion = 1) {
+export function calcScale(width, height, bounds, proportion = 1) {
   // mike bostock math
   // aspectX = rightEdge - leftEdge / width
   const aspectX = (Math.abs(bounds[1][0] - bounds[0][0])) / width;
