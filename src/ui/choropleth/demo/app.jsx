@@ -19,6 +19,10 @@ const keyField = 'id';
 const valueField = 'mean';
 const dataRange = [0, 100];
 
+const colorScale = scaleQuantize()
+  .domain(dataRange)
+  .range(colorSteps);
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -28,6 +32,11 @@ class App extends React.Component {
     this.state = {
       selections: [],
       layers,
+      domain: dataRange,
+      keyField,
+      valueField,
+      colorScale,
+      ...this.updateData(layers, props.topology)
     };
 
     bindAll(this, [
@@ -51,17 +60,7 @@ class App extends React.Component {
       length: 1
     });
 
-    const colorScale = scaleQuantize()
-      .domain(dataRange)
-      .range(colorSteps);
-
-    return {
-      keyField,
-      valueField,
-      data,
-      domain: dataRange,
-      colorScale
-    };
+    return { data, };
   }
 
   toggleVisibility(layerName) {
