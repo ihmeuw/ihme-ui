@@ -76,18 +76,7 @@ class App extends React.Component {
   }
 
   selectLocation(_, locId) {
-    const { selections } = this.state;
-
-    let newSelections;
-    if (selections.includes(locId)) {
-      newSelections = selections.filter((loc) => { return loc !== locId; });
-    } else {
-      newSelections = [...selections, locId];
-    }
-
-    this.setState({
-      selections: newSelections
-    });
+    this.setState({ selections: xor(this.state.selections, [locId]), });
   }
 
   render() {
