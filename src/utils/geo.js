@@ -2,44 +2,45 @@ import topojson from 'topojson';
 import { reduce } from 'lodash';
 import d3 from 'd3';
 
+const defaultMeshFilter = (a, b) => { return a !== b; };
+
 /**
  * extract topojson layers as geoJSON
  * @param {Object} topology -> valid topojson
  * @param {Array} layers -> layers to include
+ *   each layer is an object with keys 'name', 'type', and, optionally, 'filterFn'
+ *   'name' must map to a key in topology.objects
+ *   'type' is one of 'feature' or 'mesh', defaults to 'feature'
  * @return {Object} -> { mesh: {...}, feature: {...}  }
  */
 export function extractGeoJSON(topology, layers) {
-  const initialMap = {
-    mesh: {},
-    feature: {}
-  };
-
-  const defaultMeshFilter = () => { return true; };
-
-  return reduce(layers, (map, layer) => {
-    /* eslint-disable no-param-reassign */
-    // each layer is an object with keys 'name', 'type', and, optionally, 'filterFn'
-    // 'name' should map to a key in topology.objects
-    // 'type' is one of 'feature' or 'mesh', defaults to 'feature'
-
+  return reduce(layers, (acc, layer) => {
     // make certain the layer exists on the topojson
-    if (!topology.objects.hasOwnProperty(layer.name)) return map;
+    if (!topology.objects.hasOwnProperty(layer.name)) return acc;
 
     switch (layer.type) {
-      // wrap case in braces to create local scope
-      case 'mesh': {
-        // if filterFn is undefined, the meshgrid will be unfiltered
-        const filter = layer.filterFn || defaultMeshFilter;
-        map.mesh[layer.name] = topojson.mesh(topology, topology.objects[layer.name], filter);
-        break;
-      }
+      case 'mesh':
+        // if filterFn is undefined, the mesh grid will be unfiltered
+        return {
+          ...acc,
+          mesh: {
+            ...acc.mesh,
+            [layer.name]: topojson.mesh(topology,
+                                        topology.objects[layer.name],
+                                        layer.filterFn || defaultMeshFilter),
+          }
+        };
       case 'feature': // FALL THROUGH
       default:
-        map.feature[layer.name] = topojson.feature(topology, topology.objects[layer.name]);
+        return {
+          ...acc,
+          feature: {
+            ...acc.feature,
+            [layer.name]: topojson.feature(topology, topology.objects[layer.name]),
+          }
+        };
     }
-
-    return map;
-  }, initialMap);
+  }, {});
 }
 
 /**
