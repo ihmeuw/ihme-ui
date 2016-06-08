@@ -80,18 +80,18 @@ const defaultProps = {
   height: 400
 };
 
-/**
- * Because <Layer /> expects data to be an object with locationIds as keys
- * Need to process data as such
- * @param {Array} data -> array of datum objects
- * @param {String} keyField -> name of key field
- * @return {Object} keys are keyField (e.g., locationId), values are datum objects
- */
-function processData(data, keyField) {
-  return { processedData: keyBy(data, keyField) };
-}
-
 export default class Choropleth extends React.Component {
+  /**
+   * Because <Layer /> expects data to be an object with locationIds as keys
+   * Need to process data as such
+   * @param {Array} data -> array of datum objects
+   * @param {String} keyField -> name of key field
+   * @return {Object} keys are keyField (e.g., locationId), values are datum objects
+   */
+  static processData(data, keyField) {
+    return { processedData: keyBy(data, keyField) };
+  }
+
   constructor(props) {
     super(props);
 
@@ -110,7 +110,7 @@ export default class Choropleth extends React.Component {
       scale,
       translate,
       bounds,
-      ...processData(props.data, props.keyField)
+      ...Choropleth.processData(props.data, props.keyField)
     };
   }
 
@@ -170,7 +170,7 @@ export default class Choropleth extends React.Component {
     if (dataHasChanged) {
       state = {
         ...state,
-        ...processData(nextProps.data, nextProps.keyField)
+        ...Choropleth.processData(nextProps.data, nextProps.keyField)
       };
     }
 
