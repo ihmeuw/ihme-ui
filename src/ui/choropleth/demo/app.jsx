@@ -12,7 +12,7 @@ import Button from '../../button';
 
 const LAYERS = {
   global: { name: 'global', type: 'feature', visible: true },
-  subnational: { name: 'subnational', type: 'feature', visible: true },
+  subnational: { name: 'subnational', type: 'feature', visible: false },
 };
 
 const keyField = 'id';
