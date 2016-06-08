@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 
-import { maxBy, minBy, memoize, bindAll, filter, flatMap } from 'lodash';
+import { find, maxBy, minBy, memoize, bindAll, filter, flatMap, values, xor } from 'lodash';
 import { scaleQuantize } from 'd3-scale';
 
 import { colorSteps, dataGenerator } from '../../../test-utils';
@@ -11,8 +11,8 @@ import Choropleth from '../';
 import Button from '../../button';
 
 const LAYERS = {
-  global: { name: 'global', type: 'feature' },
-  subnational: { name: 'subnational', type: 'feature' }
+  global: { name: 'global', type: 'feature', visible: true },
+  subnational: { name: 'subnational', type: 'feature', visible: true },
 };
 
 const keyField = 'id';
@@ -23,17 +23,16 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
-    const initialVisibleLayer = [LAYERS.global];
+    const layers = values(LAYERS);
 
     this.state = {
       selections: [],
-      layers: initialVisibleLayer,
-      ...this.updateData(initialVisibleLayer, props.topology)
+      layers,
     };
 
     bindAll(this, [
-      'toggleSubnational',
-      'selectLocation'
+      'toggleVisibility',
+      'selectLocation',
     ]);
   }
 
@@ -65,21 +64,16 @@ class App extends React.Component {
     };
   }
 
+  toggleVisibility(layerName) {
+    return () => {
+      const layers = this.state.layers.slice(0);
 
-  toggleSubnational() {
-    const layerNames = this.state.layers.map(layer => layer.name);
-    let newLayers;
-
-    if (layerNames.includes('subnational')) {
-      newLayers = filter(this.state.layers, layer => layer.name !== 'subnational');
-    } else {
-      newLayers = [...this.state.layers, LAYERS.subnational];
+      const layer = find(layers, { name: layerName });
+      if (layer) {
+        layer.visible = !layer.visible;
+        this.setState({ layers, })
+      }
     }
-
-    this.setState({
-      layers: newLayers,
-      ...this.updateData(newLayers, this.props.topology)
-    });
   }
 
   selectLocation(_, locId) {
@@ -112,7 +106,7 @@ class App extends React.Component {
         <div style={{ flex: '1 0 auto', maxWidth: '70%' }}>
           <ResponsiveContainer>
             <Choropleth
-              layers={layers}
+              layers={filter(layers, { visible: true })}
               topology={this.props.topology}
               data={data}
               keyField={keyField}
@@ -125,7 +119,7 @@ class App extends React.Component {
         </div>
         <Button
           text="Toggle subnational"
-          clickHandler={this.toggleSubnational}
+          clickHandler={this.toggleVisibility('subnational')}
         />
       </div>
     );
