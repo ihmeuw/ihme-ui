@@ -27,7 +27,8 @@ export {
 } from './geo';
 
 export {
-  propResolver
+  propResolver,
+  quickMerge,
 } from './objects';
 
 export {
