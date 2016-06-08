@@ -242,8 +242,6 @@ export default class Choropleth extends React.Component {
 
   renderLayers() {
     const {
-      width,
-      height,
       layers,
       keyField,
       valueField,
@@ -257,8 +255,6 @@ export default class Choropleth extends React.Component {
     } = this.props;
 
     const { processedData, pathGenerator } = this.state;
-
-    if (!width || !height) return null;
 
     return layers.map((layer) => {
       const key = `${layer.type}-${layer.name}`;
