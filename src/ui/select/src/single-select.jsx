@@ -8,8 +8,11 @@ import style from './select.css';
 import { menuWrapper } from './menu';
 
 const singleSelectPropTypes = {
+  /* width applied to outermost wrapper */
+  width: PropTypes.number,
+
   /* width added to widest label (in px) */
-  widthPad: PropTypes.number
+  widthPad: PropTypes.number,
 };
 
 const defaultProps = {
@@ -21,7 +24,7 @@ export default class SingleSelect extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      width: getWidestLabel(props.options, props.labelKey, props.hierarchical) + props.widthPad
+      menuWidth: getWidestLabel(props.options, props.labelKey, props.hierarchical) + props.widthPad
     };
   }
 
@@ -30,7 +33,7 @@ export default class SingleSelect extends React.Component {
       newProps.labelKey !== this.props.labelKey ||
       newProps.hierarchical !== this.props.hierarchical) {
       this.setState({
-        width: getWidestLabel(
+        menuWidth: getWidestLabel(
           newProps.options,
           newProps.labelKey,
           newProps.hierarchical
@@ -40,16 +43,24 @@ export default class SingleSelect extends React.Component {
   }
 
   render() {
-    const { width } = this.state;
+    const {
+      menuContainerStyle,
+      menuStyle,
+      width,
+      wrapperStyle,
+    } = this.props;
+    const { menuWidth } = this.state;
+
     return (
       <Select
         className={style.select}
         autofocus
         clearable
         searchable
-        wrapperStyle={{ width: `${width}px` }}
+        wrapperStyle={assign({}, { width: `${width}px` }, wrapperStyle)}
         menuRenderer={menuWrapper(this.state)}
-        menuStyle={{ overflow: 'hidden' }}
+        menuStyle={assign({}, { overflow: 'hidden', width: `${menuWidth}px` }, menuStyle)}
+        menuContainerStyle={assign({}, { width: `${menuWidth}px` }, menuContainerStyle)}
         autosize={false}
         {...this.props}
       />

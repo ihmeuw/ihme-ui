@@ -10,6 +10,9 @@ import Value from './value';
 import multiValueRenderer from './muli-value-renderer';
 
 const multiSelectPropTypes = {
+  /* width applied to outermost wrapper */
+  width: PropTypes.number,
+
   /* width added to widest label (in px) */
   widthPad: PropTypes.number
 };
@@ -23,7 +26,7 @@ export default class MultiSelect extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      width: getWidestLabel(props.options, props.labelKey, props.hierarchical) + props.widthPad
+      menuWidth: getWidestLabel(props.options, props.labelKey, props.hierarchical) + props.widthPad
     };
   }
 
@@ -32,7 +35,7 @@ export default class MultiSelect extends React.Component {
         newProps.labelKey !== this.props.labelKey ||
         newProps.hierarchical !== this.props.hierarchical) {
       this.setState({
-        width: getWidestLabel(
+        menuWidth: getWidestLabel(
           newProps.options,
           newProps.labelKey,
           newProps.hierarchical
@@ -42,20 +45,29 @@ export default class MultiSelect extends React.Component {
   }
 
   render() {
-    const { width } = this.state;
+    const {
+      menuContainerStyle,
+      menuStyle,
+      resetValue,
+      width,
+      wrapperStyle,
+    } = this.props;
+    const { menuWidth } = this.state;
+
     return (
       <Select
         autofocus
         clearable
         searchable
         multi
-        wrapperStyle={{ width: `${width}px` }}
+        wrapperStyle={assign({}, { width: `${width}px` }, wrapperStyle)}
         className={style.select}
         menuRenderer={menuWrapper(this.state)}
         valueComponent={Value}
         valueRenderer={multiValueRenderer}
-        menuStyle={{ overflow: 'hidden' }}
-        resetValue={[]}
+        menuStyle={assign({}, { overflow: 'hidden', width: `${menuWidth}px` }, menuStyle)}
+        menuContainerStyle={assign({}, { width: `${menuWidth}px` }, menuContainerStyle)}
+        resetValue={resetValue || []}
         autosize={false}
         {...this.props}
       />
