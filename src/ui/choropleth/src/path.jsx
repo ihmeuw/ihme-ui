@@ -33,17 +33,30 @@ const propTypes = {
   onMouseDown: PropTypes.func,
 
   /* signature: function(locationId, event) {...} */
-  onMouseOut: PropTypes.func
+  onMouseOut: PropTypes.func,
+
+  className: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+  selectedClassName: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+  style: PropTypes.object,
+  selectedStyle: PropTypes.object,
 };
 
 const defaultProps = {
   fill: '#4682b4',
   selected: false,
+  style: {
+    strokeWidth: '1px',
+    stroke: '#000',
+  },
+  selectedStyle: {
+    strokeWidth: '2px',
+    stroke: '#000',
+  },
   onClick() { return noop; },
   onMouseOver() { return noop; },
   onMouseMove() { return noop; },
   onMouseDown() { return noop; },
-  onMouseOut() { return noop; }
+  onMouseOut() { return noop; },
 };
 
 export default class Path extends React.Component {
@@ -111,17 +124,19 @@ export default class Path extends React.Component {
   }
 
   render() {
-    const { fill, selected } = this.props;
+    const { fill, selected, style, selectedStyle, className, selectedClassName } = this.props;
     const { path } = this.state;
+
+    if (fill) {
+      style.fill = fill;
+      selectedStyle.fill = fill;
+    }
 
     return (
       <path
         d={path}
-        style={{
-          fill,
-          strokeWidth: selected ? '2px' : '1px',
-          stroke: '#000'
-        }}
+        className={selected ? selectedClassName : className}
+        style={selected ? selectedStyle : style}
         onClick={this.onClick}
         onMouseDown={this.onMouseDown}
         onMouseMove={this.onMouseMove}
