@@ -42,7 +42,12 @@ const propTypes = {
   onMouseDown: PropTypes.func,
 
   /* passed to each path; signature: function(event, locationId) {...} */
-  onMouseOut: PropTypes.func
+  onMouseOut: PropTypes.func,
+
+  pathClassName: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+  pathSelectedClassName: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+  pathStyle: PropTypes.object,
+  pathSelectedStyle: PropTypes.object,
 };
 
 const defaultProps = {
@@ -93,6 +98,10 @@ export default function FeatureLayer(props) {
               onMouseMove={onMouseMove}
               onMouseDown={onMouseDown}
               onMouseOut={onMouseOut}
+              className={props.pathClassName}
+              selectedClassName={props.pathSelectedClassName}
+              style={props.pathStyle}
+              selectedStyle={props.pathSelectedStyle}
             />
           );
         })
