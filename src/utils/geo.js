@@ -2,7 +2,7 @@ import topojson from 'topojson';
 import { reduce } from 'lodash';
 import d3 from 'd3';
 
-const defaultMeshFilter = (a, b) => { return a !== b; };
+const defaultMeshFilter = () => { return true; };
 
 /**
  * extract topojson layers as geoJSON
