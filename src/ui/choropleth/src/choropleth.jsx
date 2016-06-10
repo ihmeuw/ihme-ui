@@ -13,72 +13,6 @@ import style from './choropleth.css';
 import FeatureLayer from './feature-layer';
 import Path from './path';
 
-const propTypes = {
-  /* layers to display */
-  layers: PropTypes.arrayOf(PropTypes.shape({
-    // name corresponding to key within topojson objects collection
-    name: PropTypes.string.isRequired,
-
-    // whether the layer should be a feature collection or mesh grid
-    type: PropTypes.oneOf(['feature', 'mesh']).isRequired,
-
-    // optional function to filter mesh grid, passed adjacent geometries
-    // refer to https://github.com/mbostock/topojson/wiki/API-Reference#mesh
-    filterFn: PropTypes.func
-  })).isRequired,
-
-  /* full topojson */
-  topology: PropTypes.shape({
-    arcs: PropTypes.array,
-    objects: PropTypes.object,
-    transform: PropTypes.object,
-    type: PropTypes.string
-  }).isRequired,
-
-  /* array of datum objects */
-  data: PropTypes.arrayOf(PropTypes.object).isRequired,
-
-  /* unique key of datum */
-  keyField: PropTypes.string.isRequired,
-
-  /* key of datum that holds the value to display */
-  valueField: PropTypes.string.isRequired,
-
-  /* fn that accepts keyfield, and returns stroke color for line */
-  colorScale: PropTypes.func.isRequired,
-
-  /* array of datum[keyField], e.g., location ids */
-  selectedLocations: PropTypes.arrayOf(PropTypes.number),
-
-  /* width of containing element, in px */
-  width: PropTypes.number,
-
-  /* height of containing element, in px */
-  height: PropTypes.number,
-
-  /* passed to each path; signature: function(event, locationId) {...} */
-  onClick: PropTypes.func,
-
-  /* passed to each path; signature: function(event, locationId) {...} */
-  onMouseOver: PropTypes.func,
-
-  /* passed to each path; signature: function(event, locationId) {...} */
-  onMouseMove: PropTypes.func,
-
-  /* passed to each path; signature: function(event, locationId) {...} */
-  onMouseDown: PropTypes.func,
-
-  /* passed to each path; signature: function(event, locationId) {...} */
-  onMouseOut: PropTypes.func,
-};
-
-const defaultProps = {
-  layers: [],
-  selectedLocations: [],
-  width: 600,
-  height: 400
-};
-
 export default class Choropleth extends React.Component {
   /**
    * Because <Layer /> expects data to be an object with locationIds as keys
@@ -278,5 +212,68 @@ export default class Choropleth extends React.Component {
   }
 }
 
-Choropleth.propTypes = propTypes;
-Choropleth.defaultProps = defaultProps;
+Choropleth.propTypes = {
+  /* layers to display */
+  layers: PropTypes.arrayOf(PropTypes.shape({
+    // name corresponding to key within topojson objects collection
+    name: PropTypes.string.isRequired,
+
+    // whether the layer should be a feature collection or mesh grid
+    type: PropTypes.oneOf(['feature', 'mesh']).isRequired,
+
+    // optional function to filter mesh grid, passed adjacent geometries
+    // refer to https://github.com/mbostock/topojson/wiki/API-Reference#mesh
+    filterFn: PropTypes.func
+  })).isRequired,
+
+  /* full topojson */
+  topology: PropTypes.shape({
+    arcs: PropTypes.array,
+    objects: PropTypes.object,
+    transform: PropTypes.object,
+    type: PropTypes.string
+  }).isRequired,
+
+  /* array of datum objects */
+  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+
+  /* unique key of datum */
+  keyField: PropTypes.string.isRequired,
+
+  /* key of datum that holds the value to display */
+  valueField: PropTypes.string.isRequired,
+
+  /* fn that accepts keyfield, and returns stroke color for line */
+  colorScale: PropTypes.func.isRequired,
+
+  /* array of datum[keyField], e.g., location ids */
+  selectedLocations: PropTypes.arrayOf(PropTypes.number),
+
+  /* width of containing element, in px */
+  width: PropTypes.number,
+
+  /* height of containing element, in px */
+  height: PropTypes.number,
+
+  /* passed to each path; signature: function(event, locationId) {...} */
+  onClick: PropTypes.func,
+
+  /* passed to each path; signature: function(event, locationId) {...} */
+  onMouseOver: PropTypes.func,
+
+  /* passed to each path; signature: function(event, locationId) {...} */
+  onMouseMove: PropTypes.func,
+
+  /* passed to each path; signature: function(event, locationId) {...} */
+  onMouseDown: PropTypes.func,
+
+  /* passed to each path; signature: function(event, locationId) {...} */
+  onMouseOut: PropTypes.func,
+};
+
+Choropleth.defaultProps = {
+  layers: [],
+  selectedLocations: [],
+  width: 600,
+  height: 400
+};

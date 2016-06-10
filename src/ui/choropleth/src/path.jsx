@@ -1,64 +1,6 @@
 import React, { PropTypes } from 'react';
 import { noop, bindAll } from 'lodash';
 
-const propTypes = {
-  /* a GeoJSON feature or geometry object; see https://github.com/d3/d3/wiki/Geo-Paths#_path */
-  feature: PropTypes.oneOfType([
-    PropTypes.array,
-    PropTypes.object
-  ]).isRequired,
-
-  /* a function which accepts a `feature` and returns a valid `d` attribute */
-  pathGenerator: PropTypes.func.isRequired,
-
-  /* locationId identifying this geometry */
-  locationId: PropTypes.number,
-
-  /* fill of path */
-  fill: PropTypes.string,
-
-  /* whether or not this geometry is selected */
-  selected: PropTypes.bool,
-
-  /* signature: function(locationId, event) {...} */
-  onClick: PropTypes.func,
-
-  /* signature: function(locationId, event) {...} */
-  onMouseOver: PropTypes.func,
-
-  /* signature: function(locationId, event) {...} */
-  onMouseMove: PropTypes.func,
-
-  /* signature: function(locationId, event) {...} */
-  onMouseDown: PropTypes.func,
-
-  /* signature: function(locationId, event) {...} */
-  onMouseOut: PropTypes.func,
-
-  className: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-  selectedClassName: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-  style: PropTypes.object,
-  selectedStyle: PropTypes.object,
-};
-
-const defaultProps = {
-  fill: '#4682b4',
-  selected: false,
-  style: {
-    strokeWidth: '1px',
-    stroke: '#000',
-  },
-  selectedStyle: {
-    strokeWidth: '2px',
-    stroke: '#000',
-  },
-  onClick() { return noop; },
-  onMouseOver() { return noop; },
-  onMouseMove() { return noop; },
-  onMouseDown() { return noop; },
-  onMouseOut() { return noop; },
-};
-
 export default class Path extends React.Component {
   constructor(props) {
     super(props);
@@ -147,5 +89,59 @@ export default class Path extends React.Component {
   }
 }
 
-Path.propTypes = propTypes;
-Path.defaultProps = defaultProps;
+Path.propTypes = {
+  /* a GeoJSON feature or geometry object; see https://github.com/d3/d3/wiki/Geo-Paths#_path */
+  feature: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.object
+  ]).isRequired,
+
+  /* a function which accepts a `feature` and returns a valid `d` attribute */
+  pathGenerator: PropTypes.func.isRequired,
+
+  /* locationId identifying this geometry */
+  locationId: PropTypes.number,
+
+  /* fill of path */
+  fill: PropTypes.string,
+
+  /* whether or not this geometry is selected */
+  selected: PropTypes.bool,
+
+  /* signature: function(locationId, event) {...} */
+  onClick: PropTypes.func,
+
+  /* signature: function(locationId, event) {...} */
+  onMouseOver: PropTypes.func,
+
+  /* signature: function(locationId, event) {...} */
+  onMouseMove: PropTypes.func,
+
+  /* signature: function(locationId, event) {...} */
+  onMouseDown: PropTypes.func,
+
+  /* signature: function(locationId, event) {...} */
+  onMouseOut: PropTypes.func,
+
+  className: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+  selectedClassName: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+  style: PropTypes.object,
+  selectedStyle: PropTypes.object,
+};
+
+Path.defaultProps = {
+  selected: false,
+  style: {
+    strokeWidth: '1px',
+    stroke: '#000',
+  },
+  selectedStyle: {
+    strokeWidth: '2px',
+    stroke: '#000',
+  },
+  onClick() { return noop; },
+  onMouseOver() { return noop; },
+  onMouseMove() { return noop; },
+  onMouseDown() { return noop; },
+  onMouseOut() { return noop; },
+};
