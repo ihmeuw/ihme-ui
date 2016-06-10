@@ -36,7 +36,8 @@ describe('Geo utils', () => {
   });
 
   it('concatenates the results of extractGeoJSON into a single array', () => {
-    expect(concatenatedGeoJSON).to.be.an('array').of.length(2);
+    // only Features are supported by `d3.geo.path` functions.
+    expect(concatenatedGeoJSON).to.be.an('array').of.length(1);
     concatenatedGeoJSON.forEach((obj) => {
       expect(obj).to.be.an('object')
         .and.to.have.property('type');

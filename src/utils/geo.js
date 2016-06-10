@@ -44,7 +44,7 @@ export function extractGeoJSON(topology, layers) {
 }
 
 /**
- *
+ * Combine and return all GeoJSON 'features' in one array.
  * @param {Object} extractedGeoJSON -> expect type of object returned by extractGeoJSON
  * @returns {Array} array of features
  */
@@ -54,22 +54,18 @@ export function concatGeoJSON(extractedGeoJSON) {
   return reduce(extractedGeoJSON, (collection, type) => {
     // extractedGeoJSON[type] will be one of [extractedGeoJSON.mesh, extractedGeoJSON.feature]
     // each is an object with geoJSON features or geometric objects
-    const combinedFeatures = reduce(type, (intermediateCollection, geoJSON) => {
+    return [...collection, ...reduce(type, (intermediateCollection, geoJSON) => {
       switch (geoJSON.type) {
         // topojson::feature will only return GeoJSON Feature or FeatureCollection
         // topojson::mesh will return GeoJSON MultiLineString
         case 'FeatureCollection':
-          return intermediateCollection.concat(geoJSON.features);
-        case 'MultiLineString': // FALL THROUGH
+          return [...intermediateCollection, ...geoJSON.features];
         case 'Feature':
-          intermediateCollection.push(geoJSON);
-          return intermediateCollection;
+          return [...intermediateCollection, geoJSON];
         default:
           return intermediateCollection;
       }
-    }, []);
-
-    return collection.concat(combinedFeatures);
+    }, [])];
   }, []);
 }
 
