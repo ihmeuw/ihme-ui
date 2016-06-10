@@ -16,7 +16,7 @@ const defaultMeshFilter = () => { return true; };
 export function extractGeoJSON(topology, layers) {
   return reduce(layers, (acc, layer) => {
     // make certain the layer exists on the topojson
-    if (!topology.objects.hasOwnProperty(layer.name)) return acc;
+    if (!topology.objects.hasOwnProperty(layer.object)) return acc;
 
     switch (layer.type) {
       case 'mesh':
@@ -26,7 +26,7 @@ export function extractGeoJSON(topology, layers) {
           mesh: {
             ...acc.mesh,
             [layer.name]: topojson.mesh(topology,
-                                        topology.objects[layer.name],
+                                        topology.objects[layer.object],
                                         layer.filterFn || defaultMeshFilter),
           }
         };
@@ -36,7 +36,7 @@ export function extractGeoJSON(topology, layers) {
           ...acc,
           feature: {
             ...acc.feature,
-            [layer.name]: topojson.feature(topology, topology.objects[layer.name]),
+            [layer.name]: topojson.feature(topology, topology.objects[layer.object]),
           }
         };
     }

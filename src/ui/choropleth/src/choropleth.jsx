@@ -159,7 +159,7 @@ export default class Choropleth extends React.Component {
           return (
             <FeatureLayer
               key={key}
-              features={cache[layer.type][layer.name].features}
+              features={cache.feature[layer.name].features}
               data={processedData}
               keyField={keyField}
               valueField={valueField}
@@ -215,8 +215,10 @@ export default class Choropleth extends React.Component {
 Choropleth.propTypes = {
   /* layers to display */
   layers: PropTypes.arrayOf(PropTypes.shape({
-    // name corresponding to key within topojson objects collection
     name: PropTypes.string.isRequired,
+
+    // name corresponding to key within topojson objects collection
+    object: PropTypes.string.isRequired,
 
     // whether the layer should be a feature collection or mesh grid
     type: PropTypes.oneOf(['feature', 'mesh']).isRequired,

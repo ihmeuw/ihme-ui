@@ -10,10 +10,17 @@ import ResponsiveContainer from '../../responsive-container';
 import Choropleth from '../';
 import Button from '../../button';
 
-const LAYERS = {
-  global: { name: 'global', type: 'feature', visible: true },
-  subnational: { name: 'subnational', type: 'feature', visible: false },
-};
+const LAYERS = [
+  { name: 'global', object: 'global', type: 'feature', visible: true, },
+  { name: 'subnational', object: 'subnational', type: 'feature', visible: false, },
+  { name: 'boundary', object: 'global', type: 'mesh', visible: true, style: { stroke: 'red', strokeWidth: '1px' }, },
+];
+
+function func(selections) {
+  return (a) => {
+    return selections.include(a.id);
+  }
+}
 
 const keyField = 'id';
 const valueField = 'mean';
@@ -27,7 +34,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
-    const layers = values(LAYERS);
+    const layers = LAYERS.slice(0);
 
     this.state = {
       selections: [],
