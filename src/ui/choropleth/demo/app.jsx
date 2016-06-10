@@ -13,12 +13,12 @@ import Button from '../../button';
 const LAYERS = [
   { name: 'global', object: 'global', type: 'feature', visible: true, },
   { name: 'subnational', object: 'subnational', type: 'feature', visible: false, },
-  { name: 'boundary', object: 'global', type: 'mesh', visible: true, style: { stroke: 'red', strokeWidth: '1px' }, },
+  { name: 'boundary', object: 'global', type: 'mesh', visible: true, style: { stroke: 'red', strokeWidth: '1px' }, filterFn: func([71, 102])},
 ];
 
 function func(selections) {
   return (a) => {
-    return selections.include(a.id);
+    return selections.includes(a.id);
   }
 }
 
