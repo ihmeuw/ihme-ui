@@ -71,11 +71,6 @@ const propTypes = {
 
   /* passed to each path; signature: function(event, locationId) {...} */
   onMouseOut: PropTypes.func,
-
-  featurePathClassName: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-  featurePathSelectedClassName: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-  featurePathStyle: PropTypes.object,
-  featurePathSelectedStyle: PropTypes.object,
 };
 
 const defaultProps = {
@@ -241,10 +236,10 @@ export default class Choropleth extends React.Component {
           onMouseMove={onMouseMove}
           onMouseDown={onMouseDown}
           onMouseOut={onMouseOut}
-          pathClassName={this.props.featurePathClassName}
-          pathSelectedClassName={this.props.featurePathSelectedClassName}
-          pathStyle={this.props.featurePathStyle}
-          pathSelectedStyle={this.props.featurePathSelectedStyle}
+          pathClassName={layer.className}
+          pathSelectedClassName={layer.selectedClassName}
+          pathStyle={layer.style}
+          pathSelectedStyle={layer.selectedStyle}
         />
       );
     });
