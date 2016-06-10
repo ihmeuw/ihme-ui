@@ -29,7 +29,7 @@
   "scripts": {
     "lint": "$(npm bin)/eslint src --fix --ext .js,.jsx --quiet",
     "lint:no-fix": "$(npm bin)/eslint src --ext .js,.jsx --quiet",
-    "coverage": "BABEL_DISABLE_CACHE=1 BABEL_ENV=cli $(npm bin)/babel-node $(npm bin)/babel-istanbul cover node_modules/mocha/bin/_mocha --require ./scripts/setup-jsdom.js --report lcovonly -- `scripts/get-test-directories.sh`",
+    "coverage": "BABEL_DISABLE_CACHE=1 BABEL_ENV=cli $(npm bin)/babel-node $(npm bin)/babel-istanbul cover $(npm bin)/_mocha --require ./scripts/setup-jsdom.js --report lcovonly -- `scripts/get-test-directories.sh`",
     "coverage-token": "cat ./coverage/coverage.json | ./node_modules/codecov.io/bin/codecov.io.js",
     "demo": "BABEL_ENV=webpack scripts/bundle-demos.sh",
     "test": "BABEL_DISABLE_CACHE=1 BABEL_ENV=cli $(npm bin)/babel-node $(npm bin)/_mocha --require ./scripts/setup-jsdom.js `./scripts/get-test-directories.sh`",
