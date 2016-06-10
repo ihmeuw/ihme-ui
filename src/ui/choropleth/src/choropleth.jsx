@@ -11,6 +11,7 @@ import {
 
 import style from './choropleth.css';
 import FeatureLayer from './feature-layer';
+import Path from './path';
 
 const propTypes = {
   /* layers to display */
@@ -19,10 +20,8 @@ const propTypes = {
     name: PropTypes.string.isRequired,
 
     // whether the layer should be a feature collection or mesh grid
-    // TODO mesh layer support implementation
     type: PropTypes.oneOf(['feature', 'mesh']).isRequired,
 
-    // TODO mesh layer support implementation
     // optional function to filter mesh grid, passed adjacent geometries
     // refer to https://github.com/mbostock/topojson/wiki/API-Reference#mesh
     filterFn: PropTypes.func
@@ -221,27 +220,43 @@ export default class Choropleth extends React.Component {
 
       const key = `${layer.type}-${layer.name}`;
 
-      return (
-        <FeatureLayer
-          key={key}
-          features={cache[layer.type][layer.name].features}
-          data={processedData}
-          keyField={keyField}
-          valueField={valueField}
-          pathGenerator={pathGenerator}
-          colorScale={colorScale}
-          selectedLocations={selectedLocations}
-          onClick={onClick}
-          onMouseOver={onMouseOver}
-          onMouseMove={onMouseMove}
-          onMouseDown={onMouseDown}
-          onMouseOut={onMouseOut}
-          pathClassName={layer.className}
-          pathSelectedClassName={layer.selectedClassName}
-          pathStyle={layer.style}
-          pathSelectedStyle={layer.selectedStyle}
-        />
-      );
+      switch (layer.type) {
+        case 'feature':
+          return (
+            <FeatureLayer
+              key={key}
+              features={cache[layer.type][layer.name].features}
+              data={processedData}
+              keyField={keyField}
+              valueField={valueField}
+              pathGenerator={pathGenerator}
+              colorScale={colorScale}
+              selectedLocations={selectedLocations}
+              onClick={onClick}
+              onMouseOver={onMouseOver}
+              onMouseMove={onMouseMove}
+              onMouseDown={onMouseDown}
+              onMouseOut={onMouseOut}
+              pathClassName={layer.className}
+              pathSelectedClassName={layer.selectedClassName}
+              pathStyle={layer.style}
+              pathSelectedStyle={layer.selectedStyle}
+            />
+          );
+        case 'mesh':
+          return (
+            <Path
+              key={key}
+              fill="none"
+              feature={cache.mesh[layer.name]}
+              pathGenerator={pathGenerator}
+              className={layer.className}
+              style={layer.style}
+            />
+          );
+        default:
+          return null;
+      }
     });
   }
 
