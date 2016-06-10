@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import d3 from 'd3';
+import { presimplify } from 'topojson';
 import { keyBy, filter, has } from 'lodash';
 import {
   calcScale,
@@ -28,7 +29,7 @@ export default class Choropleth extends React.Component {
   constructor(props) {
     super(props);
 
-    const extractedGeoJSON = extractGeoJSON(props.topology, props.layers);
+    const extractedGeoJSON = extractGeoJSON(presimplify(props.topology), props.layers);
     const bounds = concatAndComputeGeoJSONBounds(extractedGeoJSON);
 
     const scale = calcScale(props.width, props.height, bounds);
@@ -56,7 +57,7 @@ export default class Choropleth extends React.Component {
 
     if (topologyHasChanged) {
       // if new topojson is passed in, presimplify, recalc bounds, and transform into geoJSON
-      const cache = { ...extractGeoJSON(nextProps.topology, nextProps.layers) };
+      const cache = { ...extractGeoJSON(presimplify(nextProps.topology), nextProps.layers) };
 
       state = {
         cache,
@@ -117,12 +118,12 @@ export default class Choropleth extends React.Component {
     // in a future release, this simplification projection can use the z-attribute
     // from topojson.presimplify to *actually* simplify
     const transform = d3.geo.transform({
-      point(x, y) {
+      point(x, y, z) {
         // mike bostock math
         const pointX = x * scale + translate[0];
         const pointY = y * scale + translate[1];
 
-        this.stream.point(pointX, pointY);
+        if (z >= 1) this.stream.point(pointX, pointY);
       }
     });
 
