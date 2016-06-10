@@ -106,15 +106,12 @@ export default class Choropleth extends React.Component {
     const scale = calcScale(props.width, props.height, bounds);
     const translate = calcTranslate(props.width, props.height, scale, bounds);
 
-    this.cache = {
-      ...extractedGeoJSON,
-    };
-
     this.state = {
       pathGenerator: this.createPathGenerator(scale, translate),
       scale,
       translate,
       bounds,
+      cache: { ...extractedGeoJSON, },
       ...Choropleth.processData(props.data, props.keyField)
     };
   }
@@ -131,26 +128,26 @@ export default class Choropleth extends React.Component {
 
     if (topologyHasChanged) {
       // if new topojson is passed in, presimplify, recalc bounds, and transform into geoJSON
-      this.cache = {
-        ...extractGeoJSON(nextProps.topology, nextProps.layers),
-      };
+      const cache = { ...extractGeoJSON(nextProps.topology, nextProps.layers) };
 
       state = {
-        bounds: concatAndComputeGeoJSONBounds(this.cache),
+        cache,
+        bounds: concatAndComputeGeoJSONBounds(cache),
       };
     } else if (layersHaveChanged) {
       // process uncached layers
       const uncachedLayers = filter(nextProps.layers, (layer) => {
-        return !has(this.cache[layer.type], layer.name);
+        return !has(this.state.cache[layer.type], layer.name);
       });
 
       if (uncachedLayers.length) {
-        this.cache = {
-          ...quickMerge({}, this.cache, extractGeoJSON(nextProps.topology, uncachedLayers)),
+        const cache = {
+          ...quickMerge({}, this.state.cache, extractGeoJSON(nextProps.topology, uncachedLayers)),
         };
 
         state = {
-          bounds: concatAndComputeGeoJSONBounds(this.cache),
+          cache,
+          bounds: concatAndComputeGeoJSONBounds(cache),
         };
       }
     }
@@ -219,6 +216,7 @@ export default class Choropleth extends React.Component {
     } = this.props;
 
     const {
+      cache,
       processedData,
       pathGenerator,
     } = this.state;
@@ -231,7 +229,7 @@ export default class Choropleth extends React.Component {
       return (
         <FeatureLayer
           key={key}
-          features={this.cache[layer.type][layer.name].features}
+          features={cache[layer.type][layer.name].features}
           data={processedData}
           keyField={keyField}
           valueField={valueField}
