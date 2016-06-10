@@ -13,8 +13,8 @@ describe('<Choropleth />', () => {
   const keyField = 'locationId';
   const valueField = 'mean';
   const layers = [
-    { name: 'country', type: 'feature' },
-    { name: 'states', type: 'mesh', filterFn(a, b) { return a !== b; } }
+    { name: 'country', object: 'country', type: 'feature' },
+    { name: 'states', object: 'states', type: 'mesh', filterFn(a, b) { return a !== b; } }
   ];
   const geo = getTopoJSON();
   const locIds = [102, ...getLocationIds(geo.objects.states.geometries)];
