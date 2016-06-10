@@ -13,10 +13,11 @@ import Button from '../../button';
 const LAYERS = [
   { name: 'global', object: 'global', type: 'feature', visible: true, },
   { name: 'subnational', object: 'subnational', type: 'feature', visible: false, },
-  { name: 'boundary', object: 'global', type: 'mesh', visible: true, style: { stroke: 'red', strokeWidth: '1px' }, filterFn: func([71, 102])},
+  { name: 'boundary', object: 'global', type: 'mesh', visible: true, style: { stroke: 'red', strokeWidth: '1px' }, filterFn: boundaryFilterFn([101, 102, 130])},
+  // { name: 'subnational-boundary', object: 'subnational', type: 'mesh', visible: true, style: { stroke: 'blue', strokeWidth: '1px' }, },
 ];
 
-function func(selections) {
+function boundaryFilterFn(selections) {
   return (a) => {
     return selections.includes(a.id);
   }
@@ -101,7 +102,7 @@ class App extends React.Component {
         <div style={{ flex: '1 0 auto', maxWidth: '70%' }}>
           <ResponsiveContainer>
             <Choropleth
-              layers={filter(layers, { visible: true })}
+              layers={layers}
               topology={this.props.topology}
               data={data}
               keyField={keyField}
