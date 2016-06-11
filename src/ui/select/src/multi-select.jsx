@@ -62,7 +62,7 @@ export default class MultiSelect extends React.Component {
         multi
         wrapperStyle={assign({}, { width: `${width}px` }, wrapperStyle)}
         className={style.select}
-        menuRenderer={menuWrapper(this.state)}
+        menuRenderer={menuWrapper({ width: menuWidth })}
         valueComponent={Value}
         valueRenderer={multiValueRenderer}
         menuStyle={assign({}, { overflow: 'hidden', width: `${menuWidth}px` }, menuStyle)}

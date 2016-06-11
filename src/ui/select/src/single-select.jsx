@@ -58,7 +58,7 @@ export default class SingleSelect extends React.Component {
         clearable
         searchable
         wrapperStyle={assign({}, { width: `${width}px` }, wrapperStyle)}
-        menuRenderer={menuWrapper(this.state)}
+        menuRenderer={menuWrapper({ width: menuWidth })}
         menuStyle={assign({}, { overflow: 'hidden', width: `${menuWidth}px` }, menuStyle)}
         menuContainerStyle={assign({}, { width: `${menuWidth}px` }, menuContainerStyle)}
         autosize={false}
