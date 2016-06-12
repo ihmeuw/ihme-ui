@@ -57,7 +57,7 @@ export function concatGeoJSON(extractedGeoJSON) {
     return [...collection, ...reduce(type, (intermediateCollection, geoJSON) => {
       switch (geoJSON.type) {
         // topojson::feature will only return GeoJSON Feature or FeatureCollection
-        // topojson::mesh will return GeoJSON MultiLineString
+        // topojson::mesh is excluded because it is not used in bounds calculations
         case 'FeatureCollection':
           return [...intermediateCollection, ...geoJSON.features];
         case 'Feature':
