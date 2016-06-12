@@ -56,8 +56,7 @@ export const generateColorDomain = function generateColorDomain(colors, domain) 
  * @return {Boolean}
  */
 export const isWithinRange = function withinRange(value, extent) {
-  if (value >= extent[0] && value <= extent[1]) return true;
-  return false;
+  return !!(value >= extent[0] && value <= extent[1]);
 };
 
 
