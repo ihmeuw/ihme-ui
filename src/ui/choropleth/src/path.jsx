@@ -123,9 +123,12 @@ Path.propTypes = {
   /* signature: function(locationId, event) {...} */
   onMouseOut: PropTypes.func,
 
+  /* classname and style to apply to unselected path */
   className: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-  selectedClassName: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
   style: PropTypes.object,
+
+  /* classname and style to apply to selected path */
+  selectedClassName: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
   selectedStyle: PropTypes.object,
 };
 
