@@ -6,12 +6,15 @@ import styles from './button.css';
 import Spinner from '../../spinner';
 
 const propTypes = {
-  /* array of classes to add to button */
+  /* additional class names to add to button */
   className: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.object,
     PropTypes.array
   ]),
+
+  /* additional style to add to button */
+  style: PropTypes.object,
 
   clickHandler: PropTypes.func,
 
@@ -31,7 +34,7 @@ const propTypes = {
   text: PropTypes.string,
 
   /* color scheme of component; see button.css */
-  theme: PropTypes.oneOf(['green'])
+  theme: PropTypes.oneOf(['green']),
 };
 
 const defaultProps = {
@@ -48,9 +51,11 @@ const Button = (props) => {
   const clickHandler = props.showSpinner ? null : props.clickHandler;
   return (
     <button
-      className={classNames(styles.common, styles[props.theme], {
-        [styles.disabled]: props.disabled
-      }, props.className)}
+      style={props.style}
+      className={classNames(styles.common,
+                            styles[props.theme],
+                            { [styles.disabled]: props.disabled },
+                            props.className)}
       disabled={props.disabled}
       id={props.id}
       name={props.name}
