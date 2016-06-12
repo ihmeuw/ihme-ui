@@ -76,12 +76,6 @@ export const isWithinRange = function withinRange(value, extent) {
  * @return {Number}
  */
 export const ensureWithinRange = function ensureWithinRange(value, extent) {
-  // value is too high, return upper bound of extent
-  if (value > extent[1]) return extent[1];
-
-  // value is too low, return lower bound of extent
-  if (value < extent[0]) return extent[0];
-
-  // no extent or within extent, return value
-  return value;
+  if (extent.length < 1) return value;
+  return Math.min(Math.max(Math.min(...extent), value), Math.max(...extent));
 };
