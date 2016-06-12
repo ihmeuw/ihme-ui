@@ -75,13 +75,11 @@ class App extends React.Component {
 
   toggleVisibility(layerName) {
     return () => {
-      const layers = this.state.layers.slice(0);
-
-      const layer = find(layers, { name: layerName });
-      if (layer) {
+      console.log('layers', filter(this.state.layers, layerName));
+      forEach(filter(this.state.layers, layerName), (layer) => {
         layer.visible = !layer.visible;
-        this.setState({ layers, })
-      }
+      });
+      this.setState({ ...this.state.layers, });
     }
   }
 
@@ -115,10 +113,16 @@ class App extends React.Component {
             />
           </ResponsiveContainer>
         </div>
-        <Button
-          text="Toggle subnational"
-          clickHandler={this.toggleVisibility('subnational')}
-        />
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <Button style={{ margin: '0.2em' }}
+                  text="Toggle subnational"
+                  clickHandler={this.toggleVisibility({ name: 'subnational' })}
+          />
+          <Button style={{ margin: '0.2em' }}
+                  text="Toggle boundaries"
+                  clickHandler={this.toggleVisibility({ type: 'mesh' })}
+          />
+        </div>
       </div>
     );
   }
