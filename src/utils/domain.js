@@ -1,4 +1,4 @@
-import { isNaN, isUndefined } from 'lodash';
+import { isNaN, isUndefined, map, range as range_ } from 'lodash';
 
 /**
  * @param {Number} num
@@ -42,25 +42,11 @@ export const domainFromPercent = function domainFromPercent(newDomain, oldDomain
  * @returns {Array}
  */
 export const generateColorDomain = function generateColorDomain(colors, domain) {
-  // TODO - evaluate this function for usefulness.
-  // if max and min are the same number (e.g., full range of dataset is 0 -> 0)
-  // return single element array
-  const [min, max] = domain;
-  if (min === max) return domain;
+  if (colors.length < 2 || domain.length < 2 || domain[0] === domain[1]) return domain;
 
-  const ret = [];
-  // FIXME - divide by zero for color lists with only one color
-  const increment = (Math.abs(max - min) / (colors.length - 1));
-  let step = min - increment;
-
-  // for as many colors as will exist in the scale's range
-  // create a corresponding step in the scale's domain
-  for (let i = colors.length; i > 0; i -= 1) {
-    step = step + increment;
-    ret.push(step);
-  }
-
-  return ret;
+  return map(range_(colors.length), (i) => {
+    return i * (Math.abs(domain[1] - domain[0]) / (colors.length - 1));
+  });
 };
 
 /**
