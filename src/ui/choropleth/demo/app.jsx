@@ -1,10 +1,11 @@
 import React from 'react';
 import { render } from 'react-dom';
 
-import { find, bindAll, filter, flatMap, values, xor } from 'lodash';
-import { scaleQuantize } from 'd3-scale';
+import { forEach, bindAll, filter, flatMap, values, xor } from 'lodash';
+import { scaleLinear } from 'd3-scale';
 
 import { colorSteps, dataGenerator } from '../../../test-utils';
+import { generateColorDomain } from '../../../utils/domain';
 
 import ResponsiveContainer from '../../responsive-container';
 import Choropleth from '../';
@@ -27,9 +28,10 @@ const keyField = 'id';
 const valueField = 'mean';
 const dataRange = [0, 100];
 
-const colorScale = scaleQuantize()
-  .domain(dataRange)
-  .range(colorSteps);
+const colorScale = scaleLinear()
+  .domain(generateColorDomain(colorSteps, dataRange))
+  .range(colorSteps)
+  .clamp(true);
 
 class App extends React.Component {
   constructor(props) {

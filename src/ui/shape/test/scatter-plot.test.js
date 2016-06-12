@@ -9,6 +9,7 @@ import { minBy, maxBy, uniqBy, map } from 'lodash';
 import d3Scale from 'd3-scale';
 
 import { dataGenerator } from '../../../test-utils';
+import { generateColorDomain } from '../../../utils/domain';
 import { ScatterPlot, Symbol } from '../';
 
 chai.use(chaiEnzyme());
@@ -118,7 +119,9 @@ describe('<ScatterPlot />', () => {
     const xDomain = map(uniqBy(data, keyField), (obj) => { return obj[keyField]; });
 
     const xScale = d3Scale.scalePoint().domain(xDomain).range([0, chartDimensions.width]);
-    const colorScale = d3Scale.scaleQuantize().domain(xDomain).range(colors);
+    const colorScale = d3Scale.scaleLinear()
+      .domain(generateColorDomain(colors, xDomain))
+      .range(colors);
 
     let component;
 
