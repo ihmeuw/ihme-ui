@@ -1,5 +1,6 @@
 src/**/webpack.config.js
 src/**/demo*
+src/test-utils/assets/usaTopoJSON.js
 ./ui/
 ./test-utils/
 ./utils/
