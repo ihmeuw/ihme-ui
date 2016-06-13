@@ -77,20 +77,24 @@ export default class Slider extends React.Component {
 
   /**
    * Passed as moveHandler to individual brush handles
-   * @param {Array} positionInPixelSpace
+   * @param {Number} positionChange -> num pixels the handle has been dragged
    * @param {String} which -> 'x1' or 'x2'
    */
-  decoratedSliderMove(positionInPixelSpace, which) {
+  decoratedSliderMove(positionChange, which) {
     const { onSliderMove, width } = this.props;
     const { x1, x2 } = this.state;
 
+    const percentChange = positionChange / width;
+    let positionAsPercent = which === 'x1' ? x1 + percentChange : x2 + percentChange;
+
     // find position of slider handle as percent of range
-    // if the slider is within tolerance of the bounds, snap to bounds
+    // if the slider handle is being moved towards 0 (positionChange < 0)
+    // or towards 1 (positionChange > 0)
+    // and if the slider is within tolerance of the bounds, snap to bounds
     // without snapping behavior, it is very difficult to reset the slider handles
     const tolerance = 0.005;
-    let positionAsPercent = positionInPixelSpace / width;
-    if (Math.abs(0 - positionAsPercent) < tolerance) positionAsPercent = 0;
-    if (Math.abs(1 - positionAsPercent) < tolerance) positionAsPercent = 1;
+    if (positionChange < 0 && Math.abs(0 - positionAsPercent) < tolerance) positionAsPercent = 0;
+    if (positionChange > 0 && Math.abs(1 - positionAsPercent) < tolerance) positionAsPercent = 1;
 
     // prevent the slider handles from crossing
     switch (which) {
@@ -111,11 +115,11 @@ export default class Slider extends React.Component {
 
     // keep internal state within this component
     this.setState({ [which]: positionAsPercent }, () => {
-      const { x1: newX1, x2: newX2 } = this.state;
+      const { x1: nextX1, x2: nextX2 } = this.state;
 
       // order the range extent
-      const lowerExtent = Math.min(newX1, newX2);
-      const upperExtent = Math.max(newX1, newX2);
+      const lowerExtent = Math.min(nextX1, nextX2);
+      const upperExtent = Math.max(nextX1, nextX2);
 
       // fire action handler passed in to <ChoroplethLegend />
       // with updated range extent
@@ -123,13 +127,6 @@ export default class Slider extends React.Component {
     });
   }
 
-  /*
-    TODO
-    - moving the slider handles at the bounds of the slider is sticky
-    - moving the slider handles is janky
-      investigate wrapping the handles in a transition component
-      that will interpolate from oldProps.position to newProps.position
-   */
   render() {
     const {
       xScale,

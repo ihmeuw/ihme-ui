@@ -54,7 +54,7 @@ export default class SliderHandle extends React.Component {
 
   onHandleMove(evt) {
     const { onSliderMove, which } = this.props;
-    onSliderMove(evt.clientX, which);
+    onSliderMove(evt.dx, which);
   }
 
   storeReference(el) {
@@ -64,7 +64,7 @@ export default class SliderHandle extends React.Component {
   bindInteract(el) {
     const { marginTop, marginLeft } = this.props;
     this._interactable = interact(el)
-      .origin({ x: marginLeft, y: marginTop })
+      .origin({ x: marginLeft + el.getBoundingClientRect().width, y: marginTop })
       .draggable({
         max: Infinity
       })

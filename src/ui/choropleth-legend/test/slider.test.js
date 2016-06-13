@@ -64,7 +64,7 @@ describe('<Slider />', () => {
       expect(onSliderMove.callCount).to.equal(0);
 
       // trigger dragmove handler
-      wrapper.find(SliderHandle).get(0).onHandleMove({ clientX: 4 });
+      wrapper.find(SliderHandle).get(0).onHandleMove({ dx: 10 });
 
       expect(onSliderMove.callCount).to.equal(1);
     });
@@ -73,13 +73,13 @@ describe('<Slider />', () => {
       expect(onSliderMove.callCount).to.equal(0);
 
       // trigger dragmove handler outside of parent el
-      // clientX is set to 1010 because width of Brush is 1000;
-      // supplied evt handler will be snapped to 0 or 1 if the clientX,
-      // as percent of width of slider, is within 0.005 of 0 or 1
-      // therefore abs(1 - (1010 (clientX) / 1000 (width))) >= 0.005 (tolerance), so
+      // dx is set to 10 because width of Brush is 1000;
+      // supplied evt handler will be snapped to 0 or 1 if the percentChange in the handle,
+      // is within 0.005 of 1
+      // therefore abs(1 - (10 (dx) / 1000 (width))) >= 0.005 (tolerance), so
       // it is not snapped, and we can test the intended behavior to not
       // call supplied sliderMove evt when brush handle is moved outside of slider bounds
-      wrapper.find(SliderHandle).get(1).onHandleMove({ clientX: 1010 });
+      wrapper.find(SliderHandle).get(1).onHandleMove({ dx: 10 });
 
       expect(onSliderMove.callCount).to.equal(0);
     });
@@ -89,15 +89,16 @@ describe('<Slider />', () => {
 
       expect(wrapper.state().x1).to.equal(0);
 
-      // 15 (clientX) / 1000 (width) > 0.005 === no snapping
-      x1Handle.onHandleMove({ clientX: 15 });
-      wrapper.update();
-      expect(wrapper.state().x1).to.not.equal(0);
-
-      // 4 (clientX) / 1000 (width) < 0.005 === snapping
-      x1Handle.onHandleMove({ clientX: 4 });
+      // 0.008 (x1) - 4 (clientX) / 1000 (width) < 0.005 === snapping
+      x1Handle.setState({ x1: 0.008 });
+      x1Handle.onHandleMove({ dx: -4, which: 'x1' });
       wrapper.update();
       expect(wrapper.state().x1).to.equal(0);
+
+      // 0 (x1) + 15 (clientX) / 1000 (width) > 0.005 === no snapping
+      x1Handle.onHandleMove({ dx: 15, which: 'x1' });
+      wrapper.update();
+      expect(wrapper.state().x1).to.not.equal(0);
     });
   });
 });
