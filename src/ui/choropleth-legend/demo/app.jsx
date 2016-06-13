@@ -155,13 +155,11 @@ class App extends React.Component {
         />
         <Button
           text="Set color scale"
-          theme="light"
           clickHandler={this.setScale}
         />
         <span style={{ marginBottom: '5px' }} />
         <Button
           text="Generate new data"
-          theme="light"
           clickHandler={this.setNewData}
         />
       </div>
