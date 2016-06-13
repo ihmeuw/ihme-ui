@@ -9,7 +9,10 @@ import { XAxis } from '../../axis';
 
 const propTypes = {
   /* px width */
-  width: PropTypes.number.isRequired,
+  width: PropTypes.number,
+
+  /* px height */
+  height: PropTypes.number,
 
   /* margins to subtract from width and height */
   margins: PropTypes.shape({
@@ -97,84 +100,120 @@ const getAdjustedWidth = (width, margins) => {
 };
 
 const tickFormat = (d) => {
-  return (d >= 1000) ? `${(d / 1000)}k` : d;
+  if (d >= 1000) return `${(d / 1000)}k`;
+
+  const fractional = Number(d.toFixed(2));
+  const decimals = (fractional % 1).toFixed(2).split();
+  const len = decimals.length;
+  const hundreds = Number(decimals[(len - 1)]);
+  const tens = Number(decimals[(len - 2)]);
+
+  if (hundreds) return fractional;
+  if (tens) return Number(d.toFixed(1));
+  return d;
 };
 
-const ChoroplethLegend = (props) => {
-  const {
-    width,
-    margins,
-    domain,
-    colorSteps,
-    colorScale,
-    x1,
-    x2,
-    data,
-    valueField,
-    keyField,
-    rangeExtent,
-    onSliderMove,
-    zoom,
-    unit
-  } = props;
+export default class ChoroplethLegend extends React.Component {
+  constructor(props) {
+    super(props);
 
-  const adjustedWidth = getAdjustedWidth(width, margins);
-  const xScale = d3Scale.scaleLinear()
-    .domain(domain)
-    .range([0, adjustedWidth])
-    .clamp(true);
-  const sliderHeight = 10 + (5 * zoom);
+    const adjustedWidth = getAdjustedWidth(props.width, props.margins);
 
-  return (
-    <svg preserveAspectRatio="none" width={width} height="100%">
-      <g transform={`translate(${margins.left}, ${margins.top})`}>
-        <ScatterPlot
-          data={data}
-          isNested={false}
-          scales={{ x: xScale }}
-          dataAccessors={{ x: valueField, y: keyField }}
-          keyField={keyField}
-          dataField={valueField}
-          colorScale={colorScale}
-          size={180 * zoom}
-        />
-        <g transform={`translate(0, ${10 + (5 * zoom)})`}>
-          <LinearGradient
-            colors={colorSteps}
-            x1={x1}
-            x2={x2}
-            width={adjustedWidth}
-            height={sliderHeight}
-          />
-          <Slider
-            xScale={xScale}
-            rangeExtent={rangeExtent}
-            width={adjustedWidth}
-            height={15}
-            translateY={0}
-            onSliderMove={onSliderMove}
-            marginTop={margins.top}
-            marginLeft={margins.left}
-            zoom={zoom}
-          />
-          <XAxis
+    this.state = {
+      adjustedWidth,
+      xScale: this.generateLinearScale(props.domain, adjustedWidth)
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.domain !== this.props.domain ||
+      nextProps.width !== this.props.width ||
+      nextProps.margins !== this.props.margins) {
+      const adjustedWidth = getAdjustedWidth(nextProps.width, nextProps.margins);
+      this.setState({
+        adjustedWidth,
+        xScale: this.generateLinearScale(nextProps.domain, adjustedWidth)
+      });
+    }
+  }
+
+  generateLinearScale(domain, width) {
+    return d3Scale.scaleLinear()
+      .domain(domain)
+      .range([0, width])
+      .clamp(true);
+  }
+
+  render() {
+    const {
+      width,
+      height,
+      margins,
+      colorSteps,
+      colorScale,
+      x1,
+      x2,
+      data,
+      valueField,
+      keyField,
+      rangeExtent,
+      onSliderMove,
+      zoom,
+      unit
+    } = this.props;
+    const { adjustedWidth, xScale } = this.state;
+
+    const sliderHeight = 10 + (5 * zoom);
+
+    return (
+      <svg width={width} height={height}>
+        <g transform={`translate(${margins.left}, ${margins.top})`}>
+          <ScatterPlot
+            data={data}
+            isNested={false}
             scales={{ x: xScale }}
-            translate={{ x: 0, y: 20 }}
-            tickFormat={tickFormat}
+            dataAccessors={{ x: valueField, y: keyField }}
+            keyField={keyField}
+            dataField={valueField}
+            colorScale={colorScale}
+            size={180 * zoom}
           />
-          <SvgText
-            value={unit}
-            anchor="middle"
-            x={adjustedWidth / 2}
-            y={65}
-          />
+          <g transform={`translate(0, ${10 + (5 * zoom)})`}>
+            <LinearGradient
+              colors={colorSteps}
+              x1={x1}
+              x2={x2}
+              width={adjustedWidth}
+              height={sliderHeight}
+            />
+            <Slider
+              xScale={xScale}
+              rangeExtent={rangeExtent}
+              width={adjustedWidth}
+              height={15}
+              translateY={0}
+              onSliderMove={onSliderMove}
+              marginTop={margins.top}
+              marginLeft={margins.left}
+              zoom={zoom}
+            />
+            <XAxis
+              scales={{ x: xScale }}
+              translate={{ x: 0, y: 20 }}
+              tickFormat={tickFormat}
+            />
+            <SvgText
+              value={unit}
+              anchor="middle"
+              x={adjustedWidth / 2}
+              y={65}
+            />
+          </g>
         </g>
-      </g>
-    </svg>
-  );
-};
+      </svg>
+    );
+  }
+}
 
 ChoroplethLegend.propTypes = propTypes;
 ChoroplethLegend.defaultProps = defaultProps;
-
-export default ChoroplethLegend;
