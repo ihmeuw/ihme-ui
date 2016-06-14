@@ -24,7 +24,7 @@ function boundaryFilterFn(selections) {
   }
 }
 
-const keyField = 'id';
+const keyField = 'location_id';
 const valueField = 'mean';
 const dataRange = [0, 100];
 

@@ -23,9 +23,7 @@ export default function FeatureLayer(props) {
     <g>
       {
         map(features, (feature) => {
-          const key = feature.hasOwnProperty(keyField)
-            ? feature[keyField]
-            : feature.properties[keyField];
+          const key = feature[keyField] || feature.properties[keyField];
           if (!key) return null;
 
           const fill = data.hasOwnProperty(key) && data[key].hasOwnProperty(valueField)
@@ -68,7 +66,7 @@ FeatureLayer.propTypes = {
   */
   data: PropTypes.object.isRequired,
 
-  /* unique key of datum */
+  /* mapping of datum key field to geoJSON feature key. default: 'id' */
   keyField: PropTypes.string,
 
   /* key of datum that holds the value to display */
@@ -105,7 +103,7 @@ FeatureLayer.propTypes = {
 };
 
 FeatureLayer.defaultProps = {
-  keyField: 'location_id',
+  keyField: 'id',
   dataField: 'mean',
   selectedLocations: []
 };
