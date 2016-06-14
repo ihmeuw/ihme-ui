@@ -133,7 +133,7 @@ export default class Choropleth extends React.Component {
   renderLayers() {
     const {
       layers,
-      keyField,
+      geoJSONKeyField,
       valueField,
       colorScale,
       selectedLocations,
@@ -162,7 +162,7 @@ export default class Choropleth extends React.Component {
               key={key}
               features={cache.feature[layer.name].features}
               data={processedData}
-              keyField={keyField}
+              keyField={geoJSONKeyField}
               valueField={valueField}
               pathGenerator={pathGenerator}
               colorScale={colorScale}
@@ -242,6 +242,9 @@ Choropleth.propTypes = {
 
   /* unique key of datum */
   keyField: PropTypes.string.isRequired,
+
+  /* mapping of datum key field to geoJSON feature key. default: 'id' (from <Feature />) */
+  geoJSONKeyField: PropTypes.string,
 
   /* key of datum that holds the value to display */
   valueField: PropTypes.string.isRequired,
