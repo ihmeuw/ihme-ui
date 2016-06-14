@@ -62,20 +62,21 @@ const propTypes = {
     y: PropTypes.string
   }).isRequired,
 
-  clickHandler: PropTypes.func,
+  onClick: PropTypes.func,
 
-  hoverHandler: PropTypes.func
+  onHover: PropTypes.func
 };
 
 const defaultProps = {
-  clickHandler: noop,
-  hoverHandler: noop,
+  onClick: noop,
+  onHover: noop,
   dataField: 'values',
   symbolField: 'type',
-  colorScale: () => { return 'steelblue'; }
+  colorScale: () => { return 'steelblue'; },
+  symbolScale: () => { return 'circle'; }
 };
 
-const MultiScatter = (props) => {
+export default function MultiScatter(props) {
   const {
     colorScale,
     symbolScale,
@@ -115,10 +116,8 @@ const MultiScatter = (props) => {
       }
     </g>
   );
-};
+}
 
 MultiScatter.propTypes = propTypes;
 
 MultiScatter.defaultProps = defaultProps;
-
-export default MultiScatter;

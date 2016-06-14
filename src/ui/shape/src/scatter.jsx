@@ -47,18 +47,18 @@ const propTypes = {
     y: PropTypes.string
   }).isRequired,
 
-  clickHandler: PropTypes.func,
+  onClick: PropTypes.func,
 
-  hoverHandler: PropTypes.func
+  onHover: PropTypes.func
 };
 const defaultProps = {
-  clickHandler: noop,
-  hoverHandler: noop,
+  onClick: noop,
+  onHover: noop,
   symbolType: 'circle',
   color: 'steelblue'
 };
 
-const Scatter = (props) => {
+export default function Scatter(props) {
   const {
     data,
     symbolType,
@@ -96,10 +96,8 @@ const Scatter = (props) => {
       }
     </g>
   );
-};
+}
 
 Scatter.propTypes = propTypes;
 
 Scatter.defaultProps = defaultProps;
-
-export default Scatter;
