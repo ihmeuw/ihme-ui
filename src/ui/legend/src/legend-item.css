@@ -17,4 +17,9 @@
 
 .svg {
     margin-right: 0.25em;
+    flex: 1 0 auto;
+}
+
+.label {
+    flex: 1 1 auto;
 }
