@@ -69,16 +69,11 @@ export default class Path extends React.Component {
     const { fill, selected, style, selectedStyle, className, selectedClassName } = this.props;
     const { path } = this.state;
 
-    if (fill) {
-      style.fill = fill;
-      selectedStyle.fill = fill;
-    }
-
     return (
       <path
         d={path}
         className={selected ? selectedClassName : className}
-        style={selected ? selectedStyle : style}
+        style={selected ? { fill, ...selectedStyle } : { fill, ...style }}
         onClick={this.onClick}
         onMouseDown={this.onMouseDown}
         onMouseMove={this.onMouseMove}
