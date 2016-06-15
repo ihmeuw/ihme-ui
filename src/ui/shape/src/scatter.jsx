@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 
 import { map, omit, noop } from 'lodash';
+import d3Scale from 'd3-scale';
 
 import Symbol from './symbol';
 
@@ -22,7 +23,7 @@ const propTypes = {
   scales: PropTypes.shape({
     x: PropTypes.func,
     y: PropTypes.func
-  }).isRequired,
+  }),
 
   /*
     string for the type of symbol to be used
@@ -33,6 +34,11 @@ const propTypes = {
     string for the color of this data group
   */
   color: PropTypes.string,
+
+  /*
+    function for a scale of colors. If present, overrides color
+  */
+  colorScale: PropTypes.func,
 
   /*
     size of symbols
@@ -54,6 +60,10 @@ const propTypes = {
 const defaultProps = {
   onClick: noop,
   onHover: noop,
+  scales: {
+    x: d3Scale.scaleLinear(),
+    y: d3Scale.scaleLinear()
+  },
   symbolType: 'circle',
   color: 'steelblue'
 };
@@ -63,9 +73,14 @@ export default function Scatter(props) {
     data,
     symbolType,
     color,
+    colorScale,
     scales,
     dataAccessors
   } = props;
+
+  // test to make sure both scales are present.
+  if (!scales.x) scales.x = d3Scale.scaleLinear();
+  if (!scales.y) scales.y = d3Scale.scaleLinear();
 
   const childProps = omit(props, [
     'data',
@@ -78,17 +93,17 @@ export default function Scatter(props) {
   return (
     <g>
       {
-        map(data, (plotDatum) => {
+        map(data, (plotDatum, i) => {
           return (
             <Symbol
-              key={`${plotDatum[dataAccessors.x]}:${plotDatum[dataAccessors.y]}`}
+              key={`${plotDatum[dataAccessors.x]}:${plotDatum[dataAccessors.y]}:${i}`}
               data={plotDatum}
               type={symbolType}
               position={{
                 x: plotDatum[dataAccessors.x] ? scales.x(plotDatum[dataAccessors.x]) : 0,
                 y: plotDatum[dataAccessors.y] ? scales.y(plotDatum[dataAccessors.y]) : 0
               }}
-              color={color}
+              color={colorScale ? colorScale(plotDatum[dataAccessors.x]) : color}
               {...childProps}
             />
           );

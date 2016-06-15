@@ -20,7 +20,7 @@ This document provides installation instructions, an overview of the elements, t
     * [area](#area)
     * [line](#line)
     * [multi-line](#multi-line)
-    * [scatter-plot](#scatter-plot)
+    * [scatter](#scatter)
     * [symbol](#symbol)
   * [slider](#slider)
   * [spinner](#spinner)
@@ -266,20 +266,35 @@ Property | Required | Type(s) | Description
 `showLine` | no | boolean | whether or not to draw lines (e.g., mean estimate lines)
 `showUncertainty` | no | boolean | whether or not to draw uncertainty areas for lines
 
-#### scatter-plot
+#### scatter
 
 Scatterplot element with customizable appearance, data, data accessors, and interaction handlers.
 
 Property | Required | Type(s) | Description
         --- | :---: | :---: | ---
-`clickHandler` | no | object | partially applied function that takes in datum and returns function
+`onClick` | no | object | partially applied function that takes in datum and returns function
+`color` | no | string | (default: steelblue)
+`colorScale` | no | object | function that accepts keyfield, and returns color for each symbol, overrides color above
+`data` | yes | object | array of objects e.g. [ {}, {}, {} ]
+`dataAccessors` | yes | object | key names containing x, y data
+`onHover` | no | object | partially applied function that takes in datum and returns function
+`scales` | yes | object | [scales from d3Scale](https://github.com/d3/d3/wiki/Quantitative-Scales)
+`size` | no | number |
+`symbolType` | no | string | key name for value of symbol (default: circle)
+
+#### multi-scatter
+
+Scatterplot element with customizable appearance, data, data accessors, and interaction handlers.
+
+Property | Required | Type(s) | Description
+        --- | :---: | :---: | ---
 `colorScale` | no | object | function that accepts keyfield, and returns stroke color for line
-`data` | no | object | array of datasets (nested) or array of datum (flat; single dataset)<br />e.g., nested: [ {location: 'USA', values: []}, {location: 'Canada', values: []} ]<br />e.g., flat: [{loc: 1, mean: 3.0, sex: 2, year: 2013}, {loc: 1, mean: 3.0, sex: 2, year: 2013}]
+`data` | no | object | array of objects e.g. [ {location: 'USA',values: []}, {location: 'Canada', values: []}
 `dataAccessors` | yes | object | key names containing x, y data
 `dataField` | no | string | key name for values representing individual lines
-`hoverHandler` | no | object | partially applied function that takes in datum and returns function
-`isNested` | no | boolean | whether the data given to ScatterPlot is nested (i.e., contains multiple dastasets)
 `keyField` | no | string | key name for topic of data
+`onClick` | no | object | partially applied function that takes in datum and returns function
+`onHover` | no | object | partially applied function that takes in datum and returns function
 `scales` | yes | object | [scales from d3Scale](https://github.com/d3/d3/wiki/Quantitative-Scales)
 `size` | no | number |
 `symbolField` | no | string | key name for value of symbol

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import d3Scale from 'd3-scale';
 
 import LinearGradient from './linear-gradient';
-import { ScatterPlot } from '../../shape';
+import { Scatter } from '../../shape';
 import SvgText from '../../svg-text';
 import Slider from './slider';
 import { XAxis } from '../../axis';
@@ -36,13 +36,13 @@ const propTypes = {
 
   /*
     onClick for DensityPlot circles
-    same API as ScatterPlot onClick
+    same API as Scatter onClick
   */
   onClick: PropTypes.func,
 
   /*
     onMouseOver for DensityPlot circles
-    same API as ScatterPlot onMouseOver
+    same API as Scatter onMouseOver
   */
   onMouseOver: PropTypes.func,
 
@@ -168,11 +168,10 @@ export default class ChoroplethLegend extends React.Component {
     return (
       <svg width={width} height={height}>
         <g transform={`translate(${margins.left}, ${margins.top})`}>
-          <ScatterPlot
+          <Scatter
             data={data}
-            isNested={false}
             scales={{ x: xScale }}
-            dataAccessors={{ x: valueField, y: keyField }}
+            dataAccessors={{ x: valueField }}
             keyField={keyField}
             dataField={valueField}
             colorScale={colorScale}
