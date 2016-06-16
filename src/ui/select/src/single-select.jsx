@@ -55,7 +55,6 @@ export default class SingleSelect extends React.Component {
       <Select
         className={style.select}
         autofocus
-        clearable
         searchable
         wrapperStyle={assign({}, { width: `${width}px` }, wrapperStyle)}
         menuRenderer={menuWrapper({ width: menuWidth })}
