@@ -4,8 +4,7 @@ npm-debug.log
 coverage
 bundle.js*
 .idea
-/ui/
-/test-utils/
-/utils/
-/index.js
-/style
+dist
+lib
+es
+style
