@@ -44,8 +44,11 @@ export const domainFromPercent = function domainFromPercent(newDomain, oldDomain
 export const generateColorDomain = function generateColorDomain(colors, domain) {
   if (colors.length < 2 || domain.length < 2 || domain[0] === domain[1]) return domain;
 
+  const step = Math.abs(domain[1] - domain[0]) / (colors.length - 1);
+  const domainMin = Math.min(...domain);
+
   return map(range_(colors.length), (i) => {
-    return i * (Math.abs(domain[1] - domain[0]) / (colors.length - 1));
+    return i * step + domainMin;
   });
 };
 

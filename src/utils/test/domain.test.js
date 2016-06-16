@@ -64,13 +64,34 @@ describe('domain helpers', () => {
     });
   });
 
-  it(`turns [min, max] domain into multi-step domain
+  describe('generateColorDomain', () => {
+    it(`turns [min, max] domain into multi-step domain
     that matches cardinality of colors array`, () => {
-    const origDomain = [0, 100];
-    const colors = Array(5);
-    expect(generateColorDomain(colors, origDomain)).to.be.an('array')
-      .of.length(5)
-      .and.to.deep.equal([0, 25, 50, 75, 100]);
+      const origDomain = [0, 100];
+      const colors = Array(5);
+      expect(generateColorDomain(colors, origDomain)).to.be.an('array')
+        .of.length(5)
+        .and.to.deep.equal([0, 25, 50, 75, 100]);
+    });
+    it('is capable of starting at a number other than 0', () => {
+      const origDomain = [0.05, 0.5];
+      const colors = Array(11);
+      expect(generateColorDomain(colors, origDomain)).to.be.an('array')
+        .of.length(11)
+        .and.to.deep.equal([
+          0.05,
+          0.095,
+          0.14,
+          0.185,
+          0.22999999999999998,
+          0.27499999999999997,
+          0.32,
+          0.365,
+          0.41,
+          0.45499999999999996,
+          0.49999999999999994
+        ]);
+    });
   });
 
   it('returns [min, max] as color domain when min === max', () => {
