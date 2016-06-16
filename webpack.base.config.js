@@ -2,13 +2,11 @@
 
 var path = require('path');
 var autoprefixer = require('autoprefixer');
+var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var _ = require('lodash');
 
 module.exports = {
-  output: {
-    libraryTarget: 'commonjs2',
-    path: __dirname
-  },
   module: {
     loaders: [
       {
@@ -17,17 +15,18 @@ module.exports = {
           ExtractTextPlugin.extract('style-loader'),
           'css-loader?modules&importLoaders=1&localIdentName=[name]__[local]--[hash:base64:5]',
           'postcss-loader'
-        ]
-      }
-    ]
+        ],
+      },
+    ],
   },
   plugins: [
-    new ExtractTextPlugin('style/' + path.parse(process.argv[2]).name + '.css')
+    new webpack.optimize.OccurrenceOrderPlugin(),
+    new ExtractTextPlugin('style/' + path.parse(process.argv[2]).name + '.css'),
   ],
   postcss: [autoprefixer({ browsers: ['last 2 versions'] })],
   resolve: {
-    extensions: ['', '.js', '.jsx']
+    extensions: ['', '.js', '.jsx'],
   },
   stats: false,
-  progress: true
+  progress: true,
 };
