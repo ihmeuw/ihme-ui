@@ -1,4 +1,4 @@
-src/**/webpack.config.js
+**/*.config.js
 src/**/demo*
 src/test-utils/assets/usaTopoJSON.js
 ./ui/
