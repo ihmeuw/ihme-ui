@@ -162,26 +162,7 @@ export default class Choropleth extends React.Component {
   }
 
   renderLayers() {
-    const {
-      layers,
-      geoJSONKeyField,
-      valueField,
-      colorScale,
-      selectedLocations,
-      onClick,
-      onMouseOver,
-      onMouseMove,
-      onMouseDown,
-      onMouseOut,
-    } = this.props;
-
-    const {
-      cache,
-      processedData,
-      pathGenerator,
-    } = this.state;
-
-    return layers.map((layer) => {
+    return this.props.layers.map((layer) => {
       if (!layer.visible) return null;
 
       const key = `${layer.type}-${layer.name}`;
@@ -191,18 +172,18 @@ export default class Choropleth extends React.Component {
           return (
             <FeatureLayer
               key={key}
-              features={cache.feature[layer.name].features}
-              data={processedData}
-              keyField={geoJSONKeyField}
-              valueField={valueField}
-              pathGenerator={pathGenerator}
-              colorScale={colorScale}
-              selectedLocations={selectedLocations}
-              onClick={onClick}
-              onMouseOver={onMouseOver}
-              onMouseMove={onMouseMove}
-              onMouseDown={onMouseDown}
-              onMouseOut={onMouseOut}
+              features={this.state.cache.feature[layer.name].features}
+              data={this.state.processedData}
+              keyField={this.props.geoJSONKeyField}
+              valueField={this.props.valueField}
+              pathGenerator={this.state.pathGenerator}
+              colorScale={this.props.colorScale}
+              selectedLocations={this.props.selectedLocations}
+              onClick={this.props.onClick}
+              onMouseOver={this.props.onMouseOver}
+              onMouseMove={this.props.onMouseMove}
+              onMouseDown={this.props.onMouseDown}
+              onMouseOut={this.props.onMouseOut}
               pathClassName={layer.className}
               pathSelectedClassName={layer.selectedClassName}
               pathStyle={layer.style}
@@ -214,8 +195,8 @@ export default class Choropleth extends React.Component {
             <Path
               key={key}
               fill="none"
-              feature={cache.mesh[layer.name]}
-              pathGenerator={pathGenerator}
+              feature={this.state.cache.mesh[layer.name]}
+              pathGenerator={this.state.pathGenerator}
               className={layer.className}
               style={layer.style}
             />
