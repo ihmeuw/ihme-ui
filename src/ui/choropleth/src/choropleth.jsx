@@ -3,6 +3,7 @@ import d3 from 'd3';
 import { presimplify } from 'topojson';
 import { keyBy, filter, has } from 'lodash';
 import {
+  calcCenterPoint,
   calcScale,
   calcTranslate,
   concatAndComputeGeoJSONBounds,
@@ -32,8 +33,10 @@ export default class Choropleth extends React.Component {
     const extractedGeoJSON = extractGeoJSON(presimplify(props.topology), props.layers);
     const bounds = concatAndComputeGeoJSONBounds(extractedGeoJSON);
 
-    const scale = calcScale(props.width, props.height, bounds);
-    const translate = calcTranslate(props.width, props.height, scale, bounds);
+    const scale = this.scale = calcScale(props.width, props.height, bounds);
+    this.scaleFactor = 1;
+    const translate = this.translate = calcTranslate(props.width, props.height, scale, bounds);
+
 
     this.state = {
       pathGenerator: this.createPathGenerator(scale, translate),
@@ -43,6 +46,20 @@ export default class Choropleth extends React.Component {
       cache: { ...extractedGeoJSON, },
       ...Choropleth.processData(props.data, props.keyField)
     };
+
+    this.zoom = d3.behavior.zoom();
+
+    this.saveSvgRef = this.saveSvgRef.bind(this);
+    this.zoomEvent = this.zoomEvent.bind(this);
+  }
+
+  componentDidMount() {
+    this._svg.call(
+      this.zoom
+        .scale(this.state.scale)
+        .translate(this.state.translate)
+        // .scaleExtent([1, 2])
+        .on('zoom', this.zoomEvent));
   }
 
   componentWillReceiveProps(nextProps) {
@@ -57,12 +74,18 @@ export default class Choropleth extends React.Component {
 
     if (topologyHasChanged) {
       // if new topojson is passed in, presimplify, recalc bounds, and transform into geoJSON
-      const cache = { ...extractGeoJSON(presimplify(nextProps.topology), nextProps.layers) };
 
-      state = {
-        cache,
-        bounds: concatAndComputeGeoJSONBounds(cache),
-      };
+      state.cache = { ...extractGeoJSON(presimplify(nextProps.topology), nextProps.layers) };
+
+      const bounds = concatAndComputeGeoJSONBounds(state.cache);
+      if (bounds !== this.state.bounds) {
+        state.bounds = bounds;
+
+        const scale = calcScale(nextProps.width, nextProps.height, bounds);
+        if (scale !== this.state.scale) {
+          state.scale = scale;
+        }
+      }
     } else if (layersHaveChanged) {
       // process uncached layers
       const uncachedLayers = filter(nextProps.layers, (layer) => {
@@ -70,30 +93,37 @@ export default class Choropleth extends React.Component {
       });
 
       if (uncachedLayers.length) {
-        const cache = {
-          ...quickMerge({}, this.state.cache, extractGeoJSON(nextProps.topology, uncachedLayers)),
+        state.cache = {
+          ...quickMerge({}, this.state.cache, extractGeoJSON(nextProps.topology, uncachedLayers))
         };
 
-        state = {
-          cache,
-          bounds: concatAndComputeGeoJSONBounds(cache),
-        };
+        const bounds = concatAndComputeGeoJSONBounds(state.cache);
+        if (bounds !== this.state.bounds) {
+          state.bounds = bounds;
+
+          const scale = calcScale(nextProps.width, nextProps.height, bounds);
+          if (scale !== this.state.scale) {
+            state.scale = scale;
+          }
+        }
       }
     }
 
     // if the component has been resized, set a new base scale and translate
     if (resized) {
-      const bounds = topologyHasChanged ? state.bounds : this.state.bounds;
-      const scale = calcScale(nextProps.width, nextProps.height, bounds);
-      const translate = calcTranslate(nextProps.width, nextProps.height, scale, bounds);
+      const bounds = state.bounds || this.state.bounds;
 
-      const pathGenerator = this.createPathGenerator(scale, translate);
+      const scale = this.scale = calcScale(nextProps.width, nextProps.height, bounds);
+      const nextScale = scale * this.scaleFactor;
+
+      const center = calcCenterPoint(this.props.width, this.props.height,
+                                     this.zoom.scale(), this.zoom.translate());
+      const translate = calcTranslate(nextProps.width, nextProps.height, nextScale, null, center);
 
       state = {
         ...state,
-        scale,
+        scale: nextScale,
         translate,
-        pathGenerator
       };
     }
 
@@ -105,8 +135,14 @@ export default class Choropleth extends React.Component {
       };
     }
 
+    this.zoom.scale(state.scale || this.state.scale);
+    this.zoom.translate(state.translate || this.state.translate);
+
+    this.zoom.event(this._svg);
+
+    // TODO - determine behavior for new topojson
     // if new state has any own and enumerable properties, update internal state
-    if (Object.keys(state).length) this.setState(state);
+    // if (Object.keys(state).length) this.setState(state);
   }
 
   /**
@@ -120,14 +156,35 @@ export default class Choropleth extends React.Component {
     const transform = d3.geo.transform({
       point(x, y, z) {
         // mike bostock math
+        const area = 1 / scale / scale;
         const pointX = x * scale + translate[0];
         const pointY = y * scale + translate[1];
 
-        if (z >= 1) this.stream.point(pointX, pointY);
+        if (z >= area) {
+          this.stream.point(pointX, pointY);
+        }
       }
     });
 
     return d3.geo.path().projection(transform);
+  }
+
+  zoomEvent() {
+    this.scaleFactor = this.zoom.scale() / this.scale;
+
+    const scale = this.zoom.scale();
+    const translate = this.zoom.translate();
+    const pathGenerator = this.createPathGenerator(scale, translate);
+
+    this.setState({
+      scale,
+      translate,
+      pathGenerator,
+    });
+  }
+
+  saveSvgRef(ref) {
+    this._svg = ref && d3.select(ref);
   }
 
   renderLayers() {
@@ -201,12 +258,15 @@ export default class Choropleth extends React.Component {
     return (
       <div style={{ width: `${width}px`, height: `${height}px` }} className={style.common}>
         <svg
+          ref={this.saveSvgRef}
           width={`${width}px`}
           height={`${height}px`}
           overflow="hidden"
           style={{ pointerEvents: 'all' }}
         >
           {this.renderLayers()}
+          <line x1={0} y1={height / 2} x2={width} y2={height / 2} stroke="black" strokeWidth="1" />
+          <line x1={width / 2} y1={0} x2={width / 2} y2={height} stroke="black" strokeWidth="1" />
         </svg>
       </div>
     );
