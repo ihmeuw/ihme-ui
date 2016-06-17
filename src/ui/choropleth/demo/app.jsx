@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from 'react-dom';
 
 import { forEach, bindAll, filter, flatMap, values, xor } from 'lodash';
+import { json } from 'd3-request';
 import { scaleLinear } from 'd3-scale';
 
 import { colorSteps, dataGenerator } from '../../../test-utils';
@@ -128,7 +129,7 @@ class App extends React.Component {
   }
 }
 
-d3.json("https://gist.githubusercontent.com/GabeMedrash/1dce23941015acc17d3fa2a670083d8f/raw/b0ae443ac0ad6d3a2425e12382680e5829345b60/world.topo.json", function(error, topology) {
+json("https://gist.githubusercontent.com/GabeMedrash/1dce23941015acc17d3fa2a670083d8f/raw/b0ae443ac0ad6d3a2425e12382680e5829345b60/world.topo.json", function(error, topology) {
   if (error) throw error;
   render(<App topology={topology} />, document.getElementById('app'));
 });
