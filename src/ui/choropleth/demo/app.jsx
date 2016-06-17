@@ -12,11 +12,11 @@ import ResponsiveContainer from '../../responsive-container';
 import Choropleth from '../';
 import Button from '../../button';
 
-// Note that an Array is used because order is maintained.
+// Array is used to maintain layer order.
 const LAYERS = [
   { name: 'global', object: 'global', type: 'feature', visible: true, },
   { name: 'subnational', object: 'subnational', type: 'feature', visible: false, },
-  { name: 'boundary', object: 'global', type: 'mesh', visible: true, style: { stroke: 'red', strokeWidth: '1px' }, filterFn: boundaryFilterFn([101, 102, 130])},
+  { name: 'boundary', object: 'global', type: 'mesh', visible: false, style: { stroke: 'red', strokeWidth: '1px' }, filterFn: boundaryFilterFn([101, 102, 130])},
 ];
 
 function boundaryFilterFn(selections) {
