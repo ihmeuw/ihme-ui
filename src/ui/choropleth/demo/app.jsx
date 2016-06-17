@@ -112,6 +112,7 @@ class App extends React.Component {
               colorScale={colorScale}
               selectedLocations={selections}
               onClick={this.selectLocation}
+              controls
             />
           </ResponsiveContainer>
         </div>

@@ -14,6 +14,7 @@ import {
 import style from './choropleth.css';
 import FeatureLayer from './feature-layer';
 import Path from './path';
+import Controls from './controls';
 
 export default class Choropleth extends React.Component {
   /**
@@ -51,6 +52,8 @@ export default class Choropleth extends React.Component {
 
     this.saveSvgRef = this.saveSvgRef.bind(this);
     this.zoomEvent = this.zoomEvent.bind(this);
+    this.zoomTo = this.zoomTo.bind(this);
+    this.zoomReset = this.zoomReset.bind(this);
   }
 
   componentDidMount() {
@@ -157,6 +160,24 @@ export default class Choropleth extends React.Component {
     });
   }
 
+  zoomTo(scale) {
+    return () => {
+      const center = calcCenterPoint(this.props.width, this.props.height,
+                                     this.zoom.scale(), this.zoom.translate());
+      this.zoom.scale(scale);
+      this.zoom.translate(calcTranslate(this.props.width, this.props.height,
+                                        this.zoom.scale(), null, center));
+      this.zoom.event(this._svg);
+    };
+  }
+
+  zoomReset() {
+    this.zoom.scale(this.scale);
+    this.zoom.translate(calcTranslate(this.props.width, this.props.height,
+                                      this.scale, this.state.bounds, null));
+    this.zoom.event(this._svg);
+  }
+
   saveSvgRef(ref) {
     this._svg = ref && d3.select(ref);
   }
@@ -212,6 +233,11 @@ export default class Choropleth extends React.Component {
 
     return (
       <div style={{ width: `${width}px`, height: `${height}px` }} className={style.common}>
+        {this.props.controls && <Controls
+          onZoomIn={this.zoomTo(this.zoom.scale() * 1.1)}
+          onZoomOut={this.zoomTo(this.zoom.scale() / 1.1)}
+          onZoomReset={this.zoomReset}
+        />}
         <svg
           ref={this.saveSvgRef}
           width={`${width}px`}
@@ -220,8 +246,6 @@ export default class Choropleth extends React.Component {
           style={{ pointerEvents: 'all' }}
         >
           {this.renderLayers()}
-          <line x1={0} y1={height / 2} x2={width} y2={height / 2} stroke="black" strokeWidth="1" />
-          <line x1={width / 2} y1={0} x2={width / 2} y2={height} stroke="black" strokeWidth="1" />
         </svg>
       </div>
     );
@@ -290,11 +314,15 @@ Choropleth.propTypes = {
 
   /* passed to each path; signature: function(event, locationId) {...} */
   onMouseOut: PropTypes.func,
+
+  /* show zoom controls */
+  controls: PropTypes.bool,
 };
 
 Choropleth.defaultProps = {
   layers: [],
   selectedLocations: [],
   width: 600,
-  height: 400
+  height: 400,
+  controls: false,
 };
