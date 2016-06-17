@@ -76,11 +76,12 @@ class App extends React.Component {
 
   toggleVisibility(layerName) {
     return () => {
-      console.log('layers', filter(this.state.layers, layerName));
-      forEach(filter(this.state.layers, layerName), (layer) => {
+      const layers = [...this.state.layers];
+
+      forEach(filter(layers, layerName), (layer) => {
         layer.visible = !layer.visible;
       });
-      this.setState({ ...this.state.layers, });
+      this.setState({ layers, });
     }
   }
 
