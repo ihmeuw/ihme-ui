@@ -151,8 +151,6 @@ export default class Choropleth extends React.Component {
    * @returns {Function}
    */
   createPathGenerator(scale, translate) {
-    // in a future release, this simplification projection can use the z-attribute
-    // from topojson.presimplify to *actually* simplify
     const transform = d3.geo.transform({
       point(x, y, z) {
         // mike bostock math
