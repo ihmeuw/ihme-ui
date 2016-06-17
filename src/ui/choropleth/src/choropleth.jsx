@@ -64,37 +64,19 @@ export default class Choropleth extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     // build up new state
-    let state = {};
+    const state = {};
 
-    const topologyHasChanged = nextProps.topology !== this.props.topology;
-    const layersHaveChanged = nextProps.layers !== this.props.layers;
-    const dataHasChanged = nextProps.data !== this.props.data;
-    const resized = (nextProps.width !== this.props.width) ||
-                    (nextProps.height !== this.props.height);
+    // if topology or layers change, calc new bounds, and if bounds change, calc new scale
+    if (nextProps.topology !== this.props.topology || nextProps.layers !== this.props.layers) {
+      const cache = nextProps.topology === this.props.topology ? { ...this.state.cache } : {};
 
-    if (topologyHasChanged) {
-      // if new topojson is passed in, presimplify, recalc bounds, and transform into geoJSON
-
-      state.cache = { ...extractGeoJSON(presimplify(nextProps.topology), nextProps.layers) };
-
-      const bounds = concatAndComputeGeoJSONBounds(state.cache);
-      if (bounds !== this.state.bounds) {
-        state.bounds = bounds;
-
-        const scale = calcScale(nextProps.width, nextProps.height, bounds);
-        if (scale !== this.state.scale) {
-          state.scale = scale;
-        }
-      }
-    } else if (layersHaveChanged) {
-      // process uncached layers
       const uncachedLayers = filter(nextProps.layers, (layer) => {
-        return !has(this.state.cache[layer.type], layer.name);
+        return !has(cache[layer.type], layer.name);
       });
 
       if (uncachedLayers.length) {
         state.cache = {
-          ...quickMerge({}, this.state.cache, extractGeoJSON(nextProps.topology, uncachedLayers))
+          ...quickMerge({}, cache, extractGeoJSON(nextProps.topology, uncachedLayers))
         };
 
         const bounds = concatAndComputeGeoJSONBounds(state.cache);
@@ -110,7 +92,7 @@ export default class Choropleth extends React.Component {
     }
 
     // if the component has been resized, set a new base scale and translate
-    if (resized) {
+    if ((nextProps.width !== this.props.width) || (nextProps.height !== this.props.height)) {
       const bounds = state.bounds || this.state.bounds;
 
       const scale = this.scale = calcScale(nextProps.width, nextProps.height, bounds);
@@ -120,29 +102,23 @@ export default class Choropleth extends React.Component {
                                      this.zoom.scale(), this.zoom.translate());
       const translate = calcTranslate(nextProps.width, nextProps.height, nextScale, null, center);
 
-      state = {
-        ...state,
-        scale: nextScale,
-        translate,
-      };
+      state.scale = nextScale;
+      state.translate = translate;
     }
 
     // if the data has changed, transform it to be consumable by <Layer />
-    if (dataHasChanged) {
-      state = {
-        ...state,
-        ...Choropleth.processData(nextProps.data, nextProps.keyField)
-      };
+    if (nextProps.data !== this.props.data) {
+      Object.assign(state, ...Choropleth.processData(nextProps.data, nextProps.keyField));
     }
 
-    this.zoom.scale(state.scale || this.state.scale);
-    this.zoom.translate(state.translate || this.state.translate);
-
-    this.zoom.event(this._svg);
-
-    // TODO - determine behavior for new topojson
     // if new state has any own and enumerable properties, update internal state
-    // if (Object.keys(state).length) this.setState(state);
+    if (Object.keys(state).length) {
+      this.setState(state);
+
+      this.zoom.scale(state.scale || this.state.scale);
+      this.zoom.translate(state.translate || this.state.translate);
+      this.zoom.event(this._svg);
+    }
   }
 
   /**
