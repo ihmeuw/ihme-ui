@@ -53,7 +53,7 @@ describe('<Legend />', () => {
     expect(wrapper).to.not.have.descendants('h3');
   });
 
-  it('renders a title element with a className supplied as a string', () => {
+  it('renders a title element with a class name supplied as a string', () => {
     /* eslint-disable react/prop-types */
     const title = 'Some title';
     const className = 'legend__title--classy';
@@ -62,13 +62,13 @@ describe('<Legend />', () => {
         items={items}
         labelKey={labelKey}
         title={title}
-        titleClassNames={className}
+        titleClassName={className}
       />
     );
     expect(wrapper.find('h3')).to.have.className(className);
   });
 
-  it('renders a title element with one or more classNames supplied as an array', () => {
+  it('renders a title element with one or more class names supplied as an array', () => {
     /* eslint-disable react/prop-types */
     const title = 'Some title';
     const classNames = ['legend__title--classy', 'legend__title--unclassy'];
@@ -77,7 +77,7 @@ describe('<Legend />', () => {
         items={items}
         labelKey={labelKey}
         title={title}
-        titleClassNames={classNames}
+        titleClassName={classNames}
       />
     );
     for (const name of classNames) {
@@ -85,7 +85,7 @@ describe('<Legend />', () => {
     }
   });
 
-  it('renders a title element with one or more classNames supplied as keys in an object', () => {
+  it('renders a title element with one or more class names supplied as keys in an object', () => {
     /* eslint-disable react/prop-types */
     const title = 'Some title';
     const classNames = {
@@ -97,7 +97,7 @@ describe('<Legend />', () => {
         items={items}
         labelKey={labelKey}
         title={title}
-        titleClassNames={classNames}
+        titleClassName={classNames}
       />
     );
     for (const name of Object.keys(classNames)) {
