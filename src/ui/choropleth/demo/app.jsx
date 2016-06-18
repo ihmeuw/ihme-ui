@@ -113,6 +113,7 @@ class App extends React.Component {
               selectedLocations={selections}
               onClick={this.selectLocation}
               controls
+              zoomStep={1.1}
             />
           </ResponsiveContainer>
         </div>

@@ -231,8 +231,8 @@ export default class Choropleth extends React.Component {
     return (
       <div style={{ width: `${width}px`, height: `${height}px` }} className={style.common}>
         {this.props.controls && <Controls
-          onZoomIn={this.zoomTo(this.zoom.scale() * 1.1)}
-          onZoomOut={this.zoomTo(this.zoom.scale() / 1.1)}
+          onZoomIn={this.zoomTo(this.zoom.scale() * this.props.zoomStep)}
+          onZoomOut={this.zoomTo(this.zoom.scale() / this.props.zoomStep)}
           onZoomReset={this.zoomReset}
         />}
         <svg
@@ -314,6 +314,10 @@ Choropleth.propTypes = {
 
   /* show zoom controls */
   controls: PropTypes.bool,
+
+  /* amount to zoom in/out from zoom controls. current zoom scale is multiplied by prop value.
+   e.g. 1.1 is equal to 10% steps, 2.0 is equal to 100% steps */
+  zoomStep: PropTypes.number,
 };
 
 Choropleth.defaultProps = {
@@ -322,4 +326,5 @@ Choropleth.defaultProps = {
   width: 600,
   height: 400,
   controls: false,
+  zoomStep: 1.1,
 };
