@@ -67,6 +67,13 @@ const propTypes = {
    */
   TitleComponent: PropTypes.func,
 
+  /* extra class names to append to the title component */
+  titleClassName: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.string,
+    PropTypes.object
+  ]),
+
   /* inline styles to be applied to title component */
   titleStyles: PropTypes.object,
 
@@ -94,15 +101,21 @@ const defaultProps = {
   renderClear: false,
   onClear: null,
   onClick: null,
-  TitleComponent: LegendTitle
+  TitleComponent: LegendTitle,
 };
 
 export default class Legend extends React.Component {
 
   renderTitle() {
-    const { title, TitleComponent, titleStyles } = this.props;
+    const { title, TitleComponent, titleClassName, titleStyles } = this.props;
     if (!title) return null;
-    return <TitleComponent title={title} style={titleStyles} />;
+    return (
+      <TitleComponent
+        title={title}
+        className={classNames(titleClassName)}
+        style={titleStyles}
+      />
+    );
   }
 
   renderItemList() {
