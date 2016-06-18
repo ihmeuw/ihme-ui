@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import d3 from 'd3';
 import { presimplify } from 'topojson';
-import { keyBy, filter, has } from 'lodash';
+import { bindAll, keyBy, filter, has } from 'lodash';
 import {
   calcCenterPoint,
   calcScale,
@@ -50,10 +50,7 @@ export default class Choropleth extends React.Component {
 
     this.zoom = d3.behavior.zoom();
 
-    this.saveSvgRef = this.saveSvgRef.bind(this);
-    this.zoomEvent = this.zoomEvent.bind(this);
-    this.zoomTo = this.zoomTo.bind(this);
-    this.zoomReset = this.zoomReset.bind(this);
+    bindAll(this, ['saveSvgRef', 'zoomEvent', 'zoomTo', 'zoomReset']);
   }
 
   componentDidMount() {
