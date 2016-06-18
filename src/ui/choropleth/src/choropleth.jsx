@@ -34,14 +34,15 @@ export default class Choropleth extends React.Component {
     const extractedGeoJSON = extractGeoJSON(presimplify(props.topology), props.layers);
     const bounds = concatAndComputeGeoJSONBounds(extractedGeoJSON);
 
-    const scale = this.scale = calcScale(props.width, props.height, bounds);
-    this.scaleFactor = 1;
+    const scale = calcScale(props.width, props.height, bounds);
 
     const translate = calcTranslate(props.width, props.height, scale, bounds, null);
 
     this.state = {
       bounds,
       scale,
+      scaleBase: scale,
+      scaleFactor: 1,
       translate,
       pathGenerator: this.createPathGenerator(scale, translate),
       cache: { ...extractedGeoJSON, },
@@ -94,13 +95,15 @@ export default class Choropleth extends React.Component {
     if ((nextProps.width !== this.props.width) || (nextProps.height !== this.props.height)) {
       const bounds = state.bounds || this.state.bounds;
 
-      const scale = this.scale = calcScale(nextProps.width, nextProps.height, bounds);
-      const nextScale = scale * this.scaleFactor;
+      const scale = calcScale(nextProps.width, nextProps.height, bounds);
+      const nextScale = scale * this.state.scaleFactor;
 
       const center = calcCenterPoint(this.props.width, this.props.height,
                                      this.zoom.scale(), this.zoom.translate());
       const translate = calcTranslate(nextProps.width, nextProps.height, nextScale, null, center);
 
+      // to prevent unnecessary extra render, set this.state.scaleBase from here
+      this.state.scaleBase = scale;
       state.scale = nextScale;
       state.translate = translate;
     }
@@ -144,7 +147,6 @@ export default class Choropleth extends React.Component {
 
   zoomEvent() {
     const scale = this.zoom.scale();
-    this.scaleFactor = scale / this.scale;
 
     const translate = this.zoom.translate();
 
@@ -152,6 +154,7 @@ export default class Choropleth extends React.Component {
 
     this.setState({
       scale,
+      scaleFactor: scale / this.state.scaleBase,
       translate,
       pathGenerator,
     });
@@ -169,9 +172,9 @@ export default class Choropleth extends React.Component {
   }
 
   zoomReset() {
-    this.zoom.scale(this.scale);
+    this.zoom.scale(this.state.scaleBase);
     this.zoom.translate(calcTranslate(this.props.width, this.props.height,
-                                      this.scale, this.state.bounds, null));
+                                      this.state.scaleBase, this.state.bounds, null));
     this.zoom.event(this._svg);
   }
 
