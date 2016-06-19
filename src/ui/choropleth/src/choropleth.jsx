@@ -82,30 +82,34 @@ export default class Choropleth extends React.Component {
         const bounds = concatAndComputeGeoJSONBounds(state.cache);
         if (bounds !== this.state.bounds) {
           state.bounds = bounds;
-
-          const scale = calcScale(nextProps.width, nextProps.height, bounds);
-          if (scale !== this.state.scale) {
-            state.scale = scale;
-          }
         }
       }
     }
 
-    // if the component has been resized, set a new base scale and translate
-    if ((nextProps.width !== this.props.width) || (nextProps.height !== this.props.height)) {
+    // if the component has been resized or has new bounds, set a new base scale and translate
+    if ((nextProps.width !== this.props.width) ||
+        (nextProps.height !== this.props.height) ||
+        state.bounds) {
       const bounds = state.bounds || this.state.bounds;
 
-      const scale = calcScale(nextProps.width, nextProps.height, bounds);
-      const nextScale = scale * this.state.scaleFactor;
+      state.scaleBase = calcScale(nextProps.width, nextProps.height, bounds);
+      state.scale = state.scaleBase * this.state.scaleFactor;
 
-      const center = calcCenterPoint(this.props.width, this.props.height,
-                                     this.zoom.scale(), this.zoom.translate());
-      const translate = calcTranslate(nextProps.width, nextProps.height, nextScale, null, center);
+      if (state.bounds) {
+        // if state.bounds is set when topology or layers change drastically, reset calculations
+        state.translate = calcTranslate(nextProps.width, nextProps.height,
+                                        state.scaleBase, bounds, null);
+      } else {
+        // else calculate new translate from previous center point
+        const center = calcCenterPoint(this.props.width, this.props.height,
+                                       this.zoom.scale(), this.zoom.translate());
+        state.translate = calcTranslate(nextProps.width, nextProps.height,
+                                        state.scale, null, center);
+      }
 
-      // to prevent unnecessary extra render, set this.state.scaleBase from here
-      this.state.scaleBase = scale;
-      state.scale = nextScale;
-      state.translate = translate;
+      state.pathGenerator = this.createPathGenerator(state.scale, state.translate);
+      this.zoom.scale(state.scale);
+      this.zoom.translate(state.translate);
     }
 
     // if the data has changed, transform it to be consumable by <Layer />
@@ -116,10 +120,6 @@ export default class Choropleth extends React.Component {
     // if new state has any own and enumerable properties, update internal state
     if (Object.keys(state).length) {
       this.setState(state);
-
-      this.zoom.scale(state.scale || this.state.scale);
-      this.zoom.translate(state.translate || this.state.translate);
-      this.zoom.event(this._svg);
     }
   }
 
