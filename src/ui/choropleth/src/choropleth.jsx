@@ -219,7 +219,7 @@ export default class Choropleth extends React.Component {
               feature={this.state.cache.mesh[layer.name]}
               pathGenerator={this.state.pathGenerator}
               className={layer.className}
-              style={layer.style}
+              style={{ ...layer.style, pointerEvents: 'none' }}
             />
           );
         default:
