@@ -68,7 +68,15 @@ export default class Choropleth extends React.Component {
 
     // if topology or layers change, calc new bounds, and if bounds change, calc new scale
     if (nextProps.topology !== this.props.topology || nextProps.layers !== this.props.layers) {
-      const cache = nextProps.topology === this.props.topology ? { ...this.state.cache } : {};
+      let topology;
+      let cache;
+      if (nextProps.topology === this.props.topology) {
+        topology = nextProps.topology;
+        cache = { ...this.state.cache };
+      } else {
+        topology = presimplify(nextProps.topology);
+        cache = {};
+      }
 
       const uncachedLayers = filter(nextProps.layers, (layer) => {
         return !has(cache[layer.type], layer.name);
@@ -76,7 +84,7 @@ export default class Choropleth extends React.Component {
 
       if (uncachedLayers.length) {
         state.cache = {
-          ...quickMerge({}, cache, extractGeoJSON(nextProps.topology, uncachedLayers))
+          ...quickMerge({}, cache, extractGeoJSON(topology, uncachedLayers))
         };
 
         const bounds = concatAndComputeGeoJSONBounds(state.cache);
