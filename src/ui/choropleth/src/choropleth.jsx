@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import d3 from 'd3';
 import { presimplify } from 'topojson';
-import { bindAll, keyBy, filter, has } from 'lodash';
+import { bindAll, filter, has, keyBy } from 'lodash';
 import {
   calcCenterPoint,
   calcScale,
