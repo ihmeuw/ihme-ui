@@ -78,8 +78,10 @@ export default class Choropleth extends React.Component {
         cache = {};
       }
 
-      const uncachedLayers = filter(nextProps.layers, (layer) => {
-        return !has(cache[layer.type], layer.name);
+      const visibleLayers = filter(nextProps.layers, { visible: true });
+
+      const uncachedLayers = filter(visibleLayers, (layer) => {
+        return layer.type === 'mesh' || !has(cache[layer.type], layer.name);
       });
 
       if (uncachedLayers.length) {
