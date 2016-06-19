@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 
-import { forEach, bindAll, filter, flatMap, values, xor } from 'lodash';
+import { bindAll, filter, find, flatMap, forEach, includes, values, xor } from 'lodash';
 import { json } from 'd3-request';
 import { scaleLinear } from 'd3-scale';
 
@@ -21,7 +21,7 @@ const LAYERS = [
 
 function boundaryFilterFn(selections) {
   return (a) => {
-    return selections.includes(a.id);
+    return includes(selections, a.id);
   }
 }
 
@@ -59,7 +59,7 @@ class App extends React.Component {
   updateData(layers, topology) {
     const layerNames = layers.map(layer => layer.name);
     const collections = filter(topology.objects, (collection, name) => {
-      return layerNames.includes(name);
+      return includes(layerNames, name);
     });
     const locIds = flatMap(collections, (collection) => {
       return collection.geometries.map((geometry) => geometry.id);
