@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import d3 from 'd3';
 import { presimplify } from 'topojson';
-import { bindAll, filter, has, keyBy } from 'lodash';
+import { bindAll, filter, has, isEqual, keyBy } from 'lodash';
 import {
   calcCenterPoint,
   calcScale,
@@ -90,7 +90,7 @@ export default class Choropleth extends React.Component {
         };
 
         const bounds = concatAndComputeGeoJSONBounds(state.cache);
-        if (bounds !== this.state.bounds) {
+        if (!isEqual(bounds, this.state.bounds)) {
           state.bounds = bounds;
         }
       }
