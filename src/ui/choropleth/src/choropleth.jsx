@@ -248,6 +248,10 @@ export default class Choropleth extends React.Component {
         style={{ ...this.props.style, width: `${width}px`, height: `${height}px` }}
       >
         {this.props.controls && <Controls
+          className={this.props.controlsClassName}
+          style={this.props.controlsStyle}
+          buttonClassName={this.props.controlsButtonClassName}
+          buttonStyle={this.props.controlsButtonStyle}
           onZoomIn={this.zoomTo(this.zoom.scale() * this.props.zoomStep)}
           onZoomOut={this.zoomTo(this.zoom.scale() / this.props.zoomStep)}
           onZoomReset={this.zoomReset}
@@ -341,9 +345,19 @@ Choropleth.propTypes = {
     PropTypes.object,
     PropTypes.string,
   ]),
+  controlsClassName: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+  ]),
+  controlsButtonClassName: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+  ]),
 
   /* style to apply to rendered components */
   style: PropTypes.object,
+  controlsStyle: PropTypes.object,
+  controlsButtonStyle: PropTypes.object,
 };
 
 Choropleth.defaultProps = {

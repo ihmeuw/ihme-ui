@@ -1,14 +1,30 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 
 import style from './controls.css';
 import Button from '../../button';
 
 const Controls = (props) => {
   return (
-    <div className={style.common}>
-      <Button className={style.button} text="+" clickHandler={props.onZoomIn} />
-      <Button className={style.button} text="•" clickHandler={props.onZoomReset} />
-      <Button className={style.button} text="-" clickHandler={props.onZoomOut} />
+    <div className={classNames(style.common, props.className)} style={props.style}>
+      <Button
+        className={classNames(style.button, props.buttonClassName)}
+        clickHandler={props.onZoomIn}
+        style={props.buttonStyle}
+        text="+"
+      />
+      <Button
+        className={classNames(style.button, props.buttonClassName)}
+        clickHandler={props.onZoomReset}
+        style={props.buttonStyle}
+        text="•"
+      />
+      <Button
+        className={classNames(style.button, props.buttonClassName)}
+        clickHandler={props.onZoomOut}
+        style={props.buttonStyle}
+        text="-"
+      />
     </div>
   );
 };
@@ -21,7 +37,21 @@ Controls.propTypes = {
   onZoomReset: PropTypes.func.isRequired,
 
   /* click handler for zoom out button */
-  onZoomOut: PropTypes.func.isRequired
+  onZoomOut: PropTypes.func.isRequired,
+
+  /* class name to add to rendered components */
+  className: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+  ]),
+  buttonClassName: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+  ]),
+
+  /* style to apply to rendered components */
+  style: PropTypes.object,
+  buttonStyle: PropTypes.object,
 };
 
 export default Controls;
