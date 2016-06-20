@@ -7,7 +7,7 @@ import { assign } from 'lodash';
 
 import { default as defaultStyle } from './axis.css';
 
-const AXIS_TYPES = {
+export const AXIS_TYPES = {
   top: axisTop,
   right: axisRight,
   bottom: axisBottom,
@@ -15,7 +15,7 @@ const AXIS_TYPES = {
 };
 
 /* these propTypes are shared by <Axis />, <XAxis />, and <YAxis /> */
-const sharedPropTypes = {
+export const sharedPropTypes = {
   /* where to position ticks relative to axis line */
   position: PropTypes.oneOf(Object.keys(AXIS_TYPES)),
 
@@ -63,7 +63,7 @@ const defaultProps = {
   },
 };
 
-const calcTranslate = (position, dimensions) => {
+export const calcTranslate = (position, dimensions) => {
   if (position === 'bottom') {
     return {
       x: 0,
@@ -81,7 +81,7 @@ const calcTranslate = (position, dimensions) => {
 /**
  * Expose basic public API of d3-axis
  */
-const Axis = (props) => {
+export default function Axis(props) {
   const {
     position,
     translate,
@@ -120,10 +120,7 @@ const Axis = (props) => {
   axisG.setAttribute('style', style);
 
   return axisG.toReact();
-};
+}
 
 Axis.propTypes = propTypes;
 Axis.defaultProps = defaultProps;
-
-export default Axis;
-export { AXIS_TYPES, sharedPropTypes, calcTranslate };

@@ -27,7 +27,7 @@ const defaultProps = {
   position: 'bottom',
 };
 
-const XAxis = (props) => {
+export default function XAxis(props) {
   const { scales, dimensions, position, translate } = props;
   const childProps = omit(props, ['scales', 'translate', 'dimensions']);
   const translation = translate || calcTranslate(position, dimensions);
@@ -39,9 +39,7 @@ const XAxis = (props) => {
       {...childProps}
     />
   );
-};
+}
 
 XAxis.propTypes = propTypes;
 XAxis.defaultProps = defaultProps;
-
-export default XAxis;

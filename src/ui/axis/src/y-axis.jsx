@@ -27,7 +27,7 @@ const defaultProps = {
   position: 'left',
 };
 
-const YAxis = (props) => {
+export default function YAxis(props) {
   const { scales, dimensions, position, translate } = props;
   const childProps = omit(props, ['scales', 'translate', 'dimensions']);
   const translation = translate || calcTranslate(position, dimensions);
@@ -39,9 +39,7 @@ const YAxis = (props) => {
       {...childProps}
     />
   );
-};
+}
 
 YAxis.propTypes = propTypes;
 YAxis.defaultProps = defaultProps;
-
-export default YAxis;
