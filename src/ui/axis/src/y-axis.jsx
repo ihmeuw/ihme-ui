@@ -28,13 +28,12 @@ const defaultProps = {
 };
 
 export default function YAxis(props) {
-  const { scales, dimensions, position, translate } = props;
   const childProps = omit(props, ['scales', 'translate', 'dimensions']);
-  const translation = translate || calcTranslate(position, dimensions);
+  const translation = props.translate || calcTranslate(props.position, props.dimensions);
 
   return (
     <Axis
-      scale={scales.y}
+      scale={props.scales.y}
       translate={translation}
       {...childProps}
     />

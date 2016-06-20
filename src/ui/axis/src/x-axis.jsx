@@ -28,13 +28,12 @@ const defaultProps = {
 };
 
 export default function XAxis(props) {
-  const { scales, dimensions, position, translate } = props;
   const childProps = omit(props, ['scales', 'translate', 'dimensions']);
-  const translation = translate || calcTranslate(position, dimensions);
+  const translation = props.translate || calcTranslate(props.position, props.dimensions);
 
   return (
     <Axis
-      scale={scales.x}
+      scale={props.scales.x}
       translate={translation}
       {...childProps}
     />

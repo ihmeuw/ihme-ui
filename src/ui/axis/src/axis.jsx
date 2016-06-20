@@ -82,42 +82,28 @@ export const calcTranslate = (position, dimensions) => {
  * Expose basic public API of d3-axis
  */
 export default function Axis(props) {
-  const {
-    position,
-    translate,
-    scale,
-    style,
-    ticks,
-    tickFormat,
-    tickSize,
-    tickSizeInner,
-    tickSizeOuter,
-    tickPadding,
-    tickValues,
-  } = props;
-
   // create faux DOM element to use as
   // context for D3 side-effects
   const axisG = ReactFauxDom.createElement('g');
   const gSelection = select(axisG)
     .attr('class', classNames(defaultStyle.common))
-    .attr('transform', `translate(${translate.x}, ${translate.y})`);
+    .attr('transform', `translate(${props.translate.x}, ${props.translate.y})`);
 
   // axis generator straight outta d3-axis
-  const axisGenerator = AXIS_TYPES[position](scale);
+  const axisGenerator = AXIS_TYPES[props.position](props.scale);
 
   // if we have configuration for the axis, apply it
-  if (ticks) axisGenerator.ticks(ticks);
-  if (tickFormat) axisGenerator.tickFormat(tickFormat);
-  if (tickSize) axisGenerator.tickSize(tickSize);
-  if (tickSizeInner) axisGenerator.tickSizeInner(tickSizeInner);
-  if (tickSizeOuter) axisGenerator.tickSizeOuter(tickSizeOuter);
-  if (tickPadding) axisGenerator.tickPadding(tickPadding);
-  if (tickValues) axisGenerator.tickValues(tickValues);
+  if (props.ticks) axisGenerator.ticks(props.ticks);
+  if (props.tickFormat) axisGenerator.tickFormat(props.tickFormat);
+  if (props.tickSize) axisGenerator.tickSize(props.tickSize);
+  if (props.tickSizeInner) axisGenerator.tickSizeInner(props.tickSizeInner);
+  if (props.tickSizeOuter) axisGenerator.tickSizeOuter(props.tickSizeOuter);
+  if (props.tickPadding) axisGenerator.tickPadding(props.tickPadding);
+  if (props.tickValues) axisGenerator.tickValues(props.tickValues);
 
   axisGenerator(gSelection);
 
-  axisG.setAttribute('style', style);
+  axisG.setAttribute('style', props.style);
 
   return axisG.toReact();
 }
