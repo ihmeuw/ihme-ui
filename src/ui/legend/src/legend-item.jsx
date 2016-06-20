@@ -98,14 +98,16 @@ export default function LegendItem(props) {
         <svg
           viewBox="-8 -8 16 16"
           width="1em" height="1em"
-          className={styles.clear}
+          className={classNames(styles.clickable, styles.svg)}
           onClick={onClear ? eventHandleWrapper(onClear, item) : null}
         >
           <path d="M-3,-3L3,3 M-3,3L3,-3" stroke="black" strokeWidth="1.5" />
         </svg>
       ) : null}
       <div
-        className={classNames(styles.wrapper, { [styles.clickable]: typeof onClick === 'function' })}
+        className={classNames(styles.wrapper, {
+          [styles.clickable]: typeof onClick === 'function',
+        })}
         onClick={onClick ? eventHandleWrapper(onClick, item) : null}
       >
         <svg
