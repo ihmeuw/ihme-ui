@@ -1,17 +1,17 @@
-import ReactFauxDom from 'react-faux-dom';
 import { PropTypes } from 'react';
-import d3Axis from 'd3-axis';
-import d3Selection from 'd3-selection';
-import { assign } from 'lodash';
+import ReactFauxDom from 'react-faux-dom';
 import classNames from 'classnames';
+import { axisBottom, axisLeft, axisRight, axisTop } from 'd3-axis';
+import { select } from 'd3-selection';
+import { assign } from 'lodash';
 
 import { default as defaultStyle } from './axis.css';
 
 const AXIS_TYPES = {
-  top: d3Axis.axisTop,
-  right: d3Axis.axisRight,
-  bottom: d3Axis.axisBottom,
-  left: d3Axis.axisLeft,
+  top: axisTop,
+  right: axisRight,
+  bottom: axisBottom,
+  left: axisLeft,
 };
 
 /* these propTypes are shared by <Axis />, <XAxis />, and <YAxis /> */
@@ -99,7 +99,7 @@ const Axis = (props) => {
   // create faux DOM element to use as
   // context for D3 side-effects
   const axisG = ReactFauxDom.createElement('g');
-  const gSelection = d3Selection.select(axisG)
+  const gSelection = select(axisG)
     .attr('class', classNames(defaultStyle.common))
     .attr('transform', `translate(${translate.x}, ${translate.y})`);
 
