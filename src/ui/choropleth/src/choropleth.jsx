@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 import d3 from 'd3';
 import { presimplify } from 'topojson';
 import { bindAll, filter, has, isEqual, keyBy } from 'lodash';
@@ -242,7 +243,10 @@ export default class Choropleth extends React.Component {
     const { width, height } = this.props;
 
     return (
-      <div style={{ width: `${width}px`, height: `${height}px` }} className={style.common}>
+      <div
+        className={classNames(style.common, this.props.className)}
+        style={{ ...this.props.style, width: `${width}px`, height: `${height}px` }}
+      >
         {this.props.controls && <Controls
           onZoomIn={this.zoomTo(this.zoom.scale() * this.props.zoomStep)}
           onZoomOut={this.zoomTo(this.zoom.scale() / this.props.zoomStep)}
@@ -331,6 +335,15 @@ Choropleth.propTypes = {
   /* amount to zoom in/out from zoom controls. current zoom scale is multiplied by prop value.
    e.g. 1.1 is equal to 10% steps, 2.0 is equal to 100% steps */
   zoomStep: PropTypes.number,
+
+  /* class name to add rendered components */
+  className: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+  ]),
+
+  /* style to apply to rendered components */
+  style: PropTypes.object,
 };
 
 Choropleth.defaultProps = {
