@@ -10,7 +10,7 @@ const propTypes = assign({}, sharedPropTypes, {
   /* scales are provided by axis-chart, only x-scale is used by XAxis */
   scales: PropTypes.shape({
     x: PropTypes.func.isRequired,
-    y: PropTypes.func
+    y: PropTypes.func,
   }),
 
   /*
@@ -19,12 +19,12 @@ const propTypes = assign({}, sharedPropTypes, {
   */
   dimensions: PropTypes.shape({
     width: PropTypes.number,
-    height: PropTypes.number
-  })
+    height: PropTypes.number,
+  }),
 });
 
 const defaultProps = {
-  position: 'bottom'
+  position: 'bottom',
 };
 
 const XAxis = (props) => {

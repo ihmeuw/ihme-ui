@@ -10,7 +10,7 @@ const propTypes = assign({}, sharedPropTypes, {
   /* scales are provided by axis-chart, only y scale is used by YAxis */
   scales: PropTypes.shape({
     x: PropTypes.func,
-    y: PropTypes.func.isRequired
+    y: PropTypes.func.isRequired,
   }),
 
   /*
@@ -19,12 +19,12 @@ const propTypes = assign({}, sharedPropTypes, {
    */
   dimensions: PropTypes.shape({
     width: PropTypes.number,
-    height: PropTypes.number
-  })
+    height: PropTypes.number,
+  }),
 });
 
 const defaultProps = {
-  position: 'left'
+  position: 'left',
 };
 
 const YAxis = (props) => {

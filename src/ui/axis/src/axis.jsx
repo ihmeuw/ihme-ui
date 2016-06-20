@@ -11,7 +11,7 @@ const AXIS_TYPES = {
   top: d3Axis.axisTop,
   right: d3Axis.axisRight,
   bottom: d3Axis.axisBottom,
-  left: d3Axis.axisLeft
+  left: d3Axis.axisLeft,
 };
 
 /* these propTypes are shared by <Axis />, <XAxis />, and <YAxis /> */
@@ -25,7 +25,7 @@ const sharedPropTypes = {
   /* push axis in x or y directions */
   translate: PropTypes.shape({
     x: PropTypes.number,
-    y: PropTypes.number
+    y: PropTypes.number,
   }),
 
   /* number of ticks to use */
@@ -47,32 +47,32 @@ const sharedPropTypes = {
   tickPadding: PropTypes.number,
 
   /* see d3-axis docs */
-  tickValues: PropTypes.array
+  tickValues: PropTypes.array,
 };
 
 const propTypes = assign({}, sharedPropTypes, {
   /* appropriate scale for axis */
-  scale: PropTypes.func.isRequired
+  scale: PropTypes.func.isRequired,
 });
 
 const defaultProps = {
   position: 'bottom',
   translate: {
     x: 0,
-    y: 0
-  }
+    y: 0,
+  },
 };
 
 const calcTranslate = (position, dimensions) => {
   if (position === 'bottom') {
     return {
       x: 0,
-      y: dimensions.height
+      y: dimensions.height,
     };
   } else if (position === 'right') {
     return {
       x: dimensions.width,
-      y: 0
+      y: 0,
     };
   }
   return defaultProps.translate;
@@ -93,7 +93,7 @@ const Axis = (props) => {
     tickSizeInner,
     tickSizeOuter,
     tickPadding,
-    tickValues
+    tickValues,
   } = props;
 
   // create faux DOM element to use as
