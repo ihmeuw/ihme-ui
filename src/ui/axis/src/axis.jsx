@@ -3,7 +3,6 @@ import ReactFauxDom from 'react-faux-dom';
 import classNames from 'classnames';
 import { axisBottom, axisLeft, axisRight, axisTop } from 'd3-axis';
 import { select } from 'd3-selection';
-import { assign } from 'lodash';
 
 import { default as defaultStyle } from './axis.css';
 
@@ -14,55 +13,12 @@ export const AXIS_TYPES = {
   left: axisLeft,
 };
 
+const DEFAULT_TRANSLATE = {
+  x: 0,
+  y: 0,
+};
+
 /* these propTypes are shared by <Axis />, <XAxis />, and <YAxis /> */
-export const sharedPropTypes = {
-  /* where to position ticks relative to axis line */
-  position: PropTypes.oneOf(Object.keys(AXIS_TYPES)),
-
-  /* style object to apply to element */
-  style: PropTypes.object,
-
-  /* push axis in x or y directions */
-  translate: PropTypes.shape({
-    x: PropTypes.number,
-    y: PropTypes.number,
-  }),
-
-  /* number of ticks to use */
-  ticks: PropTypes.number,
-
-  /* see d3-axis docs */
-  tickFormat: PropTypes.func,
-
-  /* see d3-axis docs */
-  tickSize: PropTypes.number,
-
-  /* see d3-axis docs */
-  tickSizeInner: PropTypes.number,
-
-  /* see d3-axis docs */
-  tickSizeOuter: PropTypes.number,
-
-  /* see d3-axis docs */
-  tickPadding: PropTypes.number,
-
-  /* see d3-axis docs */
-  tickValues: PropTypes.array,
-};
-
-const propTypes = assign({}, sharedPropTypes, {
-  /* appropriate scale for axis */
-  scale: PropTypes.func.isRequired,
-});
-
-const defaultProps = {
-  position: 'bottom',
-  translate: {
-    x: 0,
-    y: 0,
-  },
-};
-
 export const calcTranslate = (position, dimensions) => {
   if (position === 'bottom') {
     return {
@@ -75,7 +31,7 @@ export const calcTranslate = (position, dimensions) => {
       y: 0,
     };
   }
-  return defaultProps.translate;
+  return DEFAULT_TRANSLATE;
 };
 
 /**
@@ -108,5 +64,45 @@ export default function Axis(props) {
   return axisG.toReact();
 }
 
-Axis.propTypes = propTypes;
-Axis.defaultProps = defaultProps;
+Axis.propTypes = {
+  /* where to position ticks relative to axis line */
+  position: PropTypes.oneOf(Object.keys(AXIS_TYPES)),
+
+  /* style object to apply to element */
+  style: PropTypes.object,
+
+  /* push axis in x or y directions */
+  translate: PropTypes.shape({
+    x: PropTypes.number,
+    y: PropTypes.number,
+  }),
+
+  /* number of ticks to use */
+  ticks: PropTypes.number,
+
+  /* see d3-axis docs */
+  tickFormat: PropTypes.func,
+
+  /* see d3-axis docs */
+  tickSize: PropTypes.number,
+
+  /* see d3-axis docs */
+  tickSizeInner: PropTypes.number,
+
+  /* see d3-axis docs */
+  tickSizeOuter: PropTypes.number,
+
+  /* see d3-axis docs */
+  tickPadding: PropTypes.number,
+
+  /* see d3-axis docs */
+  tickValues: PropTypes.array,
+
+  /* appropriate scale for axis */
+  scale: PropTypes.func.isRequired,
+};
+
+Axis.defaultProps = {
+  position: 'bottom',
+  translate: DEFAULT_TRANSLATE,
+};

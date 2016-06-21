@@ -1,9 +1,24 @@
 import React, { PropTypes } from 'react';
-import { assign, omit } from 'lodash';
+import { omit } from 'lodash';
 
-import Axis, { sharedPropTypes, calcTranslate } from './axis';
+import Axis, { calcTranslate } from './axis';
 
-const propTypes = assign({}, sharedPropTypes, {
+export default function YAxis(props) {
+  const childProps = omit(props, ['scales', 'translate', 'dimensions']);
+  const translation = props.translate || calcTranslate(props.position, props.dimensions);
+
+  return (
+    <Axis
+      scale={props.scale || props.scales.y}
+      translate={translation}
+      {...childProps}
+    />
+  );
+}
+
+YAxis.propTypes = {
+  ...Axis.propTypes,
+
   /* OVERRIDE - where to position ticks relative to axis line */
   position: PropTypes.oneOf(['left', 'right']),
 
@@ -16,29 +31,13 @@ const propTypes = assign({}, sharedPropTypes, {
   /*
    dimensions are provided by axis-chart
    used for calculating translate, required if translate is not specified
-   */
+  */
   dimensions: PropTypes.shape({
     width: PropTypes.number,
     height: PropTypes.number,
   }),
-});
-
-const defaultProps = {
-  position: 'left',
 };
 
-export default function YAxis(props) {
-  const childProps = omit(props, ['scales', 'translate', 'dimensions']);
-  const translation = props.translate || calcTranslate(props.position, props.dimensions);
-
-  return (
-    <Axis
-      scale={props.scales.y}
-      translate={translation}
-      {...childProps}
-    />
-  );
-}
-
-YAxis.propTypes = propTypes;
-YAxis.defaultProps = defaultProps;
+YAxis.defaultProps = {
+  position: 'left',
+};
