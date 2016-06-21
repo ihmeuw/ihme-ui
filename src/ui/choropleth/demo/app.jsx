@@ -1,7 +1,8 @@
 import React from 'react';
 import { render } from 'react-dom';
 
-import { forEach, bindAll, filter, flatMap, values, xor } from 'lodash';
+import { bindAll, filter, find, flatMap, forEach, includes, values, xor } from 'lodash';
+import { json } from 'd3-request';
 import { scaleLinear } from 'd3-scale';
 
 import { colorSteps, dataGenerator } from '../../../test-utils';
@@ -11,16 +12,16 @@ import ResponsiveContainer from '../../responsive-container';
 import Choropleth from '../';
 import Button from '../../button';
 
-// Note that an Array is used because order is maintained.
+// Array is used to maintain layer order.
 const LAYERS = [
   { name: 'global', object: 'global', type: 'feature', visible: true, },
   { name: 'subnational', object: 'subnational', type: 'feature', visible: false, },
-  { name: 'boundary', object: 'global', type: 'mesh', visible: true, style: { stroke: 'red', strokeWidth: '1px' }, filterFn: boundaryFilterFn([101, 102, 130])},
+  { name: 'boundary', object: 'global', type: 'mesh', visible: false, style: { stroke: 'red', strokeWidth: '1px' }, filterFn: boundaryFilterFn([101, 102, 130])},
 ];
 
 function boundaryFilterFn(selections) {
   return (a) => {
-    return selections.includes(a.id);
+    return includes(selections, a.id);
   }
 }
 
@@ -58,7 +59,7 @@ class App extends React.Component {
   updateData(layers, topology) {
     const layerNames = layers.map(layer => layer.name);
     const collections = filter(topology.objects, (collection, name) => {
-      return layerNames.includes(name);
+      return includes(layerNames, name);
     });
     const locIds = flatMap(collections, (collection) => {
       return collection.geometries.map((geometry) => geometry.id);
@@ -75,11 +76,12 @@ class App extends React.Component {
 
   toggleVisibility(layerName) {
     return () => {
-      console.log('layers', filter(this.state.layers, layerName));
-      forEach(filter(this.state.layers, layerName), (layer) => {
+      const layers = [...this.state.layers];
+
+      forEach(filter(layers, layerName), (layer) => {
         layer.visible = !layer.visible;
       });
-      this.setState({ ...this.state.layers, });
+      this.setState({ layers, });
     }
   }
 
@@ -110,6 +112,8 @@ class App extends React.Component {
               colorScale={colorScale}
               selectedLocations={selections}
               onClick={this.selectLocation}
+              controls
+              zoomStep={1.1}
             />
           </ResponsiveContainer>
         </div>
@@ -128,7 +132,7 @@ class App extends React.Component {
   }
 }
 
-d3.json("https://gist.githubusercontent.com/GabeMedrash/1dce23941015acc17d3fa2a670083d8f/raw/b0ae443ac0ad6d3a2425e12382680e5829345b60/world.topo.json", function(error, topology) {
+json("https://gist.githubusercontent.com/GabeMedrash/1dce23941015acc17d3fa2a670083d8f/raw/b0ae443ac0ad6d3a2425e12382680e5829345b60/world.topo.json", function(error, topology) {
   if (error) throw error;
   render(<App topology={topology} />, document.getElementById('app'));
 });

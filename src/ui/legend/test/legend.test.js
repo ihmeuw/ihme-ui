@@ -53,6 +53,58 @@ describe('<Legend />', () => {
     expect(wrapper).to.not.have.descendants('h3');
   });
 
+  it('renders a title element with a class name supplied as a string', () => {
+    /* eslint-disable react/prop-types */
+    const title = 'Some title';
+    const className = 'legend__title--classy';
+    const wrapper = mount(
+      <Legend
+        items={items}
+        labelKey={labelKey}
+        title={title}
+        titleClassName={className}
+      />
+    );
+    expect(wrapper.find('h3')).to.have.className(className);
+  });
+
+  it('renders a title element with one or more class names supplied as an array', () => {
+    /* eslint-disable react/prop-types */
+    const title = 'Some title';
+    const classNames = ['legend__title--classy', 'legend__title--unclassy'];
+    const wrapper = mount(
+      <Legend
+        items={items}
+        labelKey={labelKey}
+        title={title}
+        titleClassName={classNames}
+      />
+    );
+    for (const name of classNames) {
+      expect(wrapper.find('h3')).to.have.className(name);
+    }
+  });
+
+  it('renders a title element with one or more class names supplied as keys in an object', () => {
+    /* eslint-disable react/prop-types */
+    const title = 'Some title';
+    const classNames = {
+      'legend__title--classy': true,
+      'legend__title--unclassy': true,
+    };
+    const wrapper = mount(
+      <Legend
+        items={items}
+        labelKey={labelKey}
+        title={title}
+        titleClassName={classNames}
+      />
+    );
+    for (const name of Object.keys(classNames)) {
+      expect(wrapper.find('h3')).to.have.className(name);
+    }
+  });
+
   it('renders a list of items with the default LegendItem', () => {
     const wrapper = mount(<Legend items={items} labelKey={labelKey} />);
     expect(wrapper.find('ul')).to.have.exactly(items.length).descendants('li');

@@ -32,14 +32,12 @@ describe('<Choropleth />', () => {
 
       // basic expectation of wrapper object
       expect(result)
-        .to.be.an('object')
-        .with.property('processedData')
-        .that.is.an('object');
+        .to.be.an('object');
 
       // each unique data::keyField should have a corresponding key in result.processedData
       const expectedKeys = data.map((datum) => { return datum[keyField]; });
       expectedKeys.forEach((key) => {
-        expect(result.processedData)
+        expect(result)
           .to.have.property(key)
           .that.is.an('object');
       });

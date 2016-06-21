@@ -142,14 +142,3 @@ export function concatAndComputeGeoJSONBounds(geoJSON) {
     features: concatGeoJSON(geoJSON)
   });
 }
-
-/**
- * simple wrapper around topojson.presimplify
- * @param topology {Object} topojson
- * @returns {Object} topojson
- */
-export function simplifyTopoJSON(topology) {
-  // topojson::presimplify adds z dimension to arcs
-  // used for dynamic simplification
-  return topojson.presimplify(topology);
-}

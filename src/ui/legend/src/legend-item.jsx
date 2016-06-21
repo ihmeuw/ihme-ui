@@ -9,8 +9,21 @@ const propTypes = {
   /* legend item to render */
   item: PropTypes.object.isRequired,
 
+  /* classname(s) to apply to li */
+  itemClassName: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.string,
+    PropTypes.object
+  ]),
+
   /* inline-styles to be applied to individual legend item <li> */
-  itemStyles: PropTypes.object,
+  itemStyles: PropTypes.oneOfType([
+    // if passed an object, will be applied directly inline to the li
+    PropTypes.object,
+
+    // if passed a function, will be called with the current item
+    PropTypes.func,
+  ]),
 
   /* custom component to render for each label, passed current item */
   LabelComponent: PropTypes.func,
@@ -79,6 +92,7 @@ export default function LegendItem(props) {
   /* eslint-disable max-len */
   const {
     item,
+    itemClassName,
     itemStyles,
     onClear,
     onClick,
@@ -89,23 +103,27 @@ export default function LegendItem(props) {
   const color = propResolver(item, symbolColorKey);
   const type = propResolver(item, symbolTypeKey);
 
+  const inlineStyles = typeof itemStyles === 'function' ? itemStyles(item) : itemStyles;
+
   return (
     <li
-      style={itemStyles}
-      className={styles.wrapper}
+      style={inlineStyles}
+      className={classNames(styles.li, itemClassName)}
     >
       {renderClear ? (
         <svg
           viewBox="-8 -8 16 16"
           width="1em" height="1em"
-          className={styles.clear}
+          className={classNames(styles.clickable, styles.svg)}
           onClick={onClear ? eventHandleWrapper(onClear, item) : null}
         >
           <path d="M-3,-3L3,3 M-3,3L3,-3" stroke="black" strokeWidth="1.5" />
         </svg>
       ) : null}
       <div
-        className={classNames(styles.wrapper, { [styles.clickable]: typeof onClick === 'function' })}
+        className={classNames(styles['label-symbol-wrapper'], {
+          [styles.clickable]: typeof onClick === 'function',
+        })}
         onClick={onClick ? eventHandleWrapper(onClick, item) : null}
       >
         <svg
@@ -115,7 +133,7 @@ export default function LegendItem(props) {
         >
           <Symbol type={type} color={color} />
         </svg>
-        <span>
+        <span className={styles.label}>
           {renderLabel(props)}
         </span>
       </div>

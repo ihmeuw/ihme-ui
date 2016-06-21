@@ -17,8 +17,21 @@ const propTypes = {
    */
   ItemComponent: PropTypes.func,
 
-  /* inline styles to be applied to individual legend item <li> */
-  itemStyles: PropTypes.object,
+  /* classname(s) to apply to li */
+  itemClassName: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.string,
+    PropTypes.object
+  ]),
+
+  /* inline-styles to be applied to individual legend item <li> */
+  itemStyles: PropTypes.oneOfType([
+    // if passed an object, will be applied directly inline to the li
+    PropTypes.object,
+
+    // if passed a function, will be called with the current item
+    PropTypes.func,
+  ]),
 
   /* custom component to render for each label, passed current item;
      must be passable to React.createElement
@@ -67,6 +80,13 @@ const propTypes = {
    */
   TitleComponent: PropTypes.func,
 
+  /* extra class names to append to the title component */
+  titleClassName: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.string,
+    PropTypes.object
+  ]),
+
   /* inline styles to be applied to title component */
   titleStyles: PropTypes.object,
 
@@ -94,20 +114,27 @@ const defaultProps = {
   renderClear: false,
   onClear: null,
   onClick: null,
-  TitleComponent: LegendTitle
+  TitleComponent: LegendTitle,
 };
 
 export default class Legend extends React.Component {
 
   renderTitle() {
-    const { title, TitleComponent, titleStyles } = this.props;
+    const { title, TitleComponent, titleClassName, titleStyles } = this.props;
     if (!title) return null;
-    return <TitleComponent title={title} style={titleStyles} />;
+    return (
+      <TitleComponent
+        title={title}
+        className={classNames(titleClassName)}
+        style={titleStyles}
+      />
+    );
   }
 
   renderItemList() {
     const { items, ItemComponent, labelKey } = this.props;
     const itemProps = pick(this.props, [
+      'itemClassName',
       'itemStyles',
       'labelKey',
       'LabelComponent',
