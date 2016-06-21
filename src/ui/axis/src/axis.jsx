@@ -3,6 +3,7 @@ import ReactFauxDom from 'react-faux-dom';
 import classNames from 'classnames';
 import { axisBottom, axisLeft, axisRight, axisTop } from 'd3-axis';
 import { select } from 'd3-selection';
+import { intersection } from 'lodash';
 
 import style from './axis.css';
 
@@ -64,6 +65,27 @@ export default function Axis(props) {
   return axisG.toReact();
 }
 
+export const AXIS_SCALE_PROP_TYPES = {
+  scale: PropTypes.func.isRequired,
+};
+
+export function oneOfProp(propTypes) {
+  return (props, propName, componentName, location, propFullName) => {
+    let error = null;
+    const validProps = intersection(Object.keys(props), Object.keys(propTypes));
+    if (validProps.length === 1) {
+      if (validProps[0] === propName) {
+        error = propTypes[propName](props, propName, componentName, location, propFullName);
+      }
+    } else {
+      /* eslint-disable max-len */
+      error = `Exactly one of prop [\`${Object.keys(propTypes).join('`,`')}\`] must be specified in \`${componentName}\`.`;
+      /* eslint-enable max-len */
+    }
+    return error && new Error(error);
+  };
+}
+
 Axis.propTypes = {
   /* where to position ticks relative to axis line */
   position: PropTypes.oneOf(Object.keys(AXIS_TYPES)),
@@ -99,7 +121,7 @@ Axis.propTypes = {
   tickValues: PropTypes.array,
 
   /* appropriate scale for axis */
-  scale: PropTypes.func.isRequired,
+  scale: oneOfProp(AXIS_SCALE_PROP_TYPES),
 };
 
 Axis.defaultProps = {
