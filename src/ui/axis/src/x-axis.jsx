@@ -5,7 +5,7 @@ import Axis, { calcTranslate, oneOfProp, AXIS_SCALE_PROP_TYPES } from './axis';
 
 export default function XAxis(props) {
   const axisProps = omit(props, ['scales', 'translate', 'dimensions']);
-  const translation = props.translate || calcTranslate(props.position, props.dimensions);
+  const translation = props.translate || calcTranslate(props.orientation, props.dimensions);
 
   return (
     <Axis
@@ -27,8 +27,8 @@ const X_AXIS_SCALE_PROP_TYPES = {
 XAxis.propTypes = {
   ...Axis.propTypes,
 
-  /* OVERRIDE - where to position ticks relative to axis line */
-  position: PropTypes.oneOf(['top', 'bottom']),
+  /* OVERRIDE - orientation of ticks relative to axis line */
+  orientation: PropTypes.oneOf(['top', 'bottom']),
 
   /* scales are provided by axis-chart, only x scale is used by XAxis */
   scale: oneOfProp(X_AXIS_SCALE_PROP_TYPES),
@@ -45,5 +45,5 @@ XAxis.propTypes = {
 };
 
 XAxis.defaultProps = {
-  position: 'bottom',
+  orientation: 'bottom',
 };

@@ -19,7 +19,7 @@ class App extends React.Component {
         <XAxis
           scale={d3Scale.scaleLinear().range([0, 800 - (margins.right + margins.left)])}
           translate={{ x: 0, y: 600 - (margins.bottom + margins.top) }}
-          position="bottom"
+          orientation="bottom"
         />
         <YAxis
           scale={
@@ -27,7 +27,7 @@ class App extends React.Component {
             .domain([200, 500])
             .range([600 - (margins.bottom + margins.top), 0])
           }
-          position="left"
+          orientation="left"
         />
       </g>
     </svg>

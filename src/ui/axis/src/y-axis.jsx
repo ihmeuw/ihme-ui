@@ -5,7 +5,7 @@ import Axis, { calcTranslate, oneOfProp, AXIS_SCALE_PROP_TYPES } from './axis';
 
 export default function YAxis(props) {
   const axisProps = omit(props, ['scales', 'translate', 'dimensions']);
-  const translation = props.translate || calcTranslate(props.position, props.dimensions);
+  const translation = props.translate || calcTranslate(props.orientation, props.dimensions);
 
   return (
     <Axis
@@ -27,8 +27,8 @@ const Y_AXIS_SCALE_PROP_TYPES = {
 YAxis.propTypes = {
   ...Axis.propTypes,
 
-  /* OVERRIDE - where to position ticks relative to axis line */
-  position: PropTypes.oneOf(['left', 'right']),
+  /* OVERRIDE - orientation of ticks relative to axis line */
+  orientation: PropTypes.oneOf(['left', 'right']),
 
   /* scales are provided by axis-chart, only y scale is used by YAxis */
   scale: oneOfProp(Y_AXIS_SCALE_PROP_TYPES),
@@ -45,5 +45,5 @@ YAxis.propTypes = {
 };
 
 YAxis.defaultProps = {
-  position: 'left',
+  orientation: 'left',
 };

@@ -20,13 +20,13 @@ const DEFAULT_TRANSLATE = {
 };
 
 /* these propTypes are shared by <Axis />, <XAxis />, and <YAxis /> */
-export const calcTranslate = (position, dimensions) => {
-  if (position === 'bottom') {
+export const calcTranslate = (orientation, dimensions) => {
+  if (orientation === 'bottom') {
     return {
       x: 0,
       y: dimensions.height,
     };
-  } else if (position === 'right') {
+  } else if (orientation === 'right') {
     return {
       x: dimensions.width,
       y: 0,
@@ -47,7 +47,7 @@ export default function Axis(props) {
     .attr('transform', `translate(${props.translate.x}, ${props.translate.y})`);
 
   // axis generator straight outta d3-axis
-  const axisGenerator = AXIS_TYPES[props.position](props.scale);
+  const axisGenerator = AXIS_TYPES[props.orientation](props.scale);
 
   // if we have configuration for the axis, apply it
   if (props.ticks) axisGenerator.ticks(props.ticks);
@@ -88,8 +88,8 @@ export function oneOfProp(propTypes) {
 }
 
 Axis.propTypes = {
-  /* where to position ticks relative to axis line */
-  position: PropTypes.oneOf(Object.keys(AXIS_TYPES)),
+  /* orientation of ticks relative to axis line */
+  orientation: PropTypes.oneOf(Object.keys(AXIS_TYPES)).isRequired,
 
   /* style object to apply to element */
   style: PropTypes.object,
@@ -115,6 +115,5 @@ Axis.propTypes = {
 };
 
 Axis.defaultProps = {
-  position: 'bottom',
   translate: DEFAULT_TRANSLATE,
 };
