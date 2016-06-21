@@ -51,6 +51,7 @@ export default function Axis(props) {
 
   // if we have configuration for the axis, apply it
   if (props.ticks) axisGenerator.ticks(props.ticks);
+  if (props.tickArguments) axisGenerator.tickArguments(props.tickArguments);
   if (props.tickFormat) axisGenerator.tickFormat(props.tickFormat);
   if (props.tickSize) axisGenerator.tickSize(props.tickSize);
   if (props.tickSizeInner) axisGenerator.tickSizeInner(props.tickSizeInner);
@@ -99,25 +100,14 @@ Axis.propTypes = {
     y: PropTypes.number,
   }),
 
-  /* number of ticks to use */
+  /* see d3-axis docs */
   ticks: PropTypes.number,
-
-  /* see d3-axis docs */
+  tickArguments: PropTypes.array,
   tickFormat: PropTypes.func,
-
-  /* see d3-axis docs */
   tickSize: PropTypes.number,
-
-  /* see d3-axis docs */
   tickSizeInner: PropTypes.number,
-
-  /* see d3-axis docs */
   tickSizeOuter: PropTypes.number,
-
-  /* see d3-axis docs */
   tickPadding: PropTypes.number,
-
-  /* see d3-axis docs */
   tickValues: PropTypes.array,
 
   /* appropriate scale for axis */
