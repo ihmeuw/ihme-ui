@@ -283,7 +283,10 @@ Choropleth.propTypes = {
 
     // optional function to filter mesh grid, passed adjacent geometries
     // refer to https://github.com/mbostock/topojson/wiki/API-Reference#mesh
-    filterFn: PropTypes.func
+    filterFn: PropTypes.func,
+
+    // whether or not to render layer
+    visible: PropTypes.bool,
   })).isRequired,
 
   /* full topojson */
