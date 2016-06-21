@@ -4,14 +4,14 @@ import { omit } from 'lodash';
 import Axis, { calcTranslate } from './axis';
 
 export default function YAxis(props) {
-  const childProps = omit(props, ['scales', 'translate', 'dimensions']);
+  const axisProps = omit(props, ['scales', 'translate', 'dimensions']);
   const translation = props.translate || calcTranslate(props.position, props.dimensions);
 
   return (
     <Axis
       scale={props.scale || props.scales.y}
       translate={translation}
-      {...childProps}
+      {...axisProps}
     />
   );
 }
