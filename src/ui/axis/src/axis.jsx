@@ -43,7 +43,7 @@ export default function Axis(props) {
   // context for D3 side-effects
   const axisG = ReactFauxDom.createElement('g');
   const gSelection = select(axisG)
-    .attr('class', classNames(style.common))
+    .attr('class', classNames(style.common, props.className))
     .attr('transform', `translate(${props.translate.x}, ${props.translate.y})`);
 
   // axis generator straight outta d3-axis
@@ -74,7 +74,11 @@ Axis.propTypes = {
   /* orientation of ticks relative to axis line */
   orientation: PropTypes.oneOf(Object.keys(AXIS_TYPES)).isRequired,
 
-  /* style object to apply to element */
+  /* class name and style to apply to the axis */
+  className: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object,
+  ]),
   style: PropTypes.object,
 
   /* push axis in x or y directions */
