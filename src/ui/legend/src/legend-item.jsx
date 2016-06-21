@@ -9,6 +9,13 @@ const propTypes = {
   /* legend item to render */
   item: PropTypes.object.isRequired,
 
+  /* classname(s) to apply to li */
+  itemClassName: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.string,
+    PropTypes.object
+  ]),
+
   /* inline-styles to be applied to individual legend item <li> */
   itemStyles: PropTypes.object,
 
@@ -79,6 +86,7 @@ export default function LegendItem(props) {
   /* eslint-disable max-len */
   const {
     item,
+    itemClassName,
     itemStyles,
     onClear,
     onClick,
@@ -92,7 +100,7 @@ export default function LegendItem(props) {
   return (
     <li
       style={itemStyles}
-      className={styles.li}
+      className={classNames(styles.li, itemClassName)}
     >
       {renderClear ? (
         <svg

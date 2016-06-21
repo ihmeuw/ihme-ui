@@ -17,6 +17,13 @@ const propTypes = {
    */
   ItemComponent: PropTypes.func,
 
+  /* classname(s) to apply to li */
+  itemClassName: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.string,
+    PropTypes.object
+  ]),
+
   /* inline styles to be applied to individual legend item <li> */
   itemStyles: PropTypes.object,
 
@@ -121,6 +128,7 @@ export default class Legend extends React.Component {
   renderItemList() {
     const { items, ItemComponent, labelKey } = this.props;
     const itemProps = pick(this.props, [
+      'itemClassName',
       'itemStyles',
       'labelKey',
       'LabelComponent',
