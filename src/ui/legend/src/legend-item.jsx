@@ -92,7 +92,7 @@ export default function LegendItem(props) {
   return (
     <li
       style={itemStyles}
-      className={styles.wrapper}
+      className={styles.li}
     >
       {renderClear ? (
         <svg
@@ -105,7 +105,7 @@ export default function LegendItem(props) {
         </svg>
       ) : null}
       <div
-        className={classNames(styles.wrapper, {
+        className={classNames(styles['label-symbol-wrapper'], {
           [styles.clickable]: typeof onClick === 'function',
         })}
         onClick={onClick ? eventHandleWrapper(onClick, item) : null}

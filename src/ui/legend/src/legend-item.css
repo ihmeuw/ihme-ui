@@ -6,13 +6,23 @@
     justify-content: flex-start;
 }
 
+.li {
+    composes: wrapper;
+    width: 100%;
+}
+
+.label-symbol-wrapper {
+    composes: wrapper;
+    flex: 1 1 auto;
+}
+
 .clickable {
     cursor: pointer;
 }
 
 .svg {
     margin-right: 0.25em;
-    flex: 0 1 16px;
+    flex: 0 0 16px;
 }
 
 .label {
