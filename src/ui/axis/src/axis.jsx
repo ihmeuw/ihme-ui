@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { axisBottom, axisLeft, axisRight, axisTop } from 'd3-axis';
 import { select } from 'd3-selection';
 
-import { default as defaultStyle } from './axis.css';
+import style from './axis.css';
 
 export const AXIS_TYPES = {
   top: axisTop,
@@ -42,7 +42,7 @@ export default function Axis(props) {
   // context for D3 side-effects
   const axisG = ReactFauxDom.createElement('g');
   const gSelection = select(axisG)
-    .attr('class', classNames(defaultStyle.common))
+    .attr('class', classNames(style.common))
     .attr('transform', `translate(${props.translate.x}, ${props.translate.y})`);
 
   // axis generator straight outta d3-axis
