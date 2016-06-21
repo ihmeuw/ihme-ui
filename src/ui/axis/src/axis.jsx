@@ -20,15 +20,15 @@ const DEFAULT_TRANSLATE = {
 };
 
 /* these propTypes are shared by <Axis />, <XAxis />, and <YAxis /> */
-export const calcTranslate = (orientation, dimensions) => {
+export const calcTranslate = (orientation, width = 0, height = 0) => {
   if (orientation === 'bottom') {
     return {
       x: 0,
-      y: dimensions.height,
+      y: height,
     };
   } else if (orientation === 'right') {
     return {
-      x: dimensions.width,
+      x: width,
       y: 0,
     };
   }

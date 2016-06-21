@@ -5,13 +5,13 @@ import { oneOfProp } from '../../../utils';
 import Axis, { calcTranslate, AXIS_SCALE_PROP_TYPES } from './axis';
 
 export default function YAxis(props) {
-  const axisProps = omit(props, ['scales', 'translate', 'dimensions']);
-  const translation = props.translate || calcTranslate(props.orientation, props.dimensions);
+  const axisProps = omit(props, ['scales', 'translate', 'width', 'height']);
+  const translate = props.translate || calcTranslate(props.orientation, props.width, props.height);
 
   return (
     <Axis
       scale={props.scale || props.scales.y}
-      translate={translation}
+      translate={translate}
       {...axisProps}
     />
   );
@@ -39,10 +39,8 @@ YAxis.propTypes = {
    dimensions are provided by axis-chart
    used for calculating translate, required if translate is not specified
   */
-  dimensions: PropTypes.shape({
-    width: PropTypes.number,
-    height: PropTypes.number,
-  }),
+  width: PropTypes.number,
+  height: PropTypes.number,
 };
 
 YAxis.defaultProps = {
