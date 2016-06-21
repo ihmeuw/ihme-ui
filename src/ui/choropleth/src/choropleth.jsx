@@ -26,7 +26,7 @@ export default class Choropleth extends React.Component {
    * @return {Object} keys are keyField (e.g., locationId), values are datum objects
    */
   static processData(data, keyField) {
-    return { processedData: keyBy(data, keyField) };
+    return keyBy(data, keyField);
   }
 
   constructor(props) {
@@ -47,7 +47,7 @@ export default class Choropleth extends React.Component {
       translate,
       pathGenerator: this.createPathGenerator(scale, translate),
       cache: { ...extractedGeoJSON, },
-      ...Choropleth.processData(props.data, props.keyField)
+      processedData: Choropleth.processData(props.data, props.keyField)
     };
 
     this.zoom = d3.behavior.zoom();
@@ -125,7 +125,7 @@ export default class Choropleth extends React.Component {
 
     // if the data has changed, transform it to be consumable by <Layer />
     if (nextProps.data !== this.props.data) {
-      Object.assign(state, ...Choropleth.processData(nextProps.data, nextProps.keyField));
+      state.processedData = Choropleth.processData(nextProps.data, nextProps.keyField);
     }
 
     // if new state has any own and enumerable properties, update internal state
