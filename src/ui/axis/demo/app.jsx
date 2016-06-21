@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import d3Scale from 'd3-scale';
 
-import Axis from '../';
+import { XAxis, YAxis } from '../';
 
 class App extends React.Component {
  render() {
@@ -16,12 +16,12 @@ class App extends React.Component {
    return (
     <svg width="800px" height="600px">
       <g transform={`translate(${margins.left}, ${margins.top})`}>
-        <Axis
+        <XAxis
           scale={d3Scale.scaleLinear().range([0, 800 - (margins.right + margins.left)])}
           translate={{ x: 0, y: 600 - (margins.bottom + margins.top) }}
           position="bottom"
         />
-        <Axis
+        <YAxis
           scale={
             d3Scale.scaleLinear()
             .domain([200, 500])
