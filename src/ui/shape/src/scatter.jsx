@@ -79,8 +79,8 @@ export default function Scatter(props) {
   } = props;
 
   // test to make sure both scales are present.
-  if (!scales.x) scales.x = d3Scale.scaleLinear();
-  if (!scales.y) scales.y = d3Scale.scaleLinear();
+  const xScale = scales.x ? scales.x : d3Scale.scaleLinear();
+  const yScale = scales.y ? scales.y : d3Scale.scaleLinear();
 
   const childProps = omit(props, [
     'data',
@@ -94,16 +94,18 @@ export default function Scatter(props) {
     <g>
       {
         map(data, (plotDatum, i) => {
+          const xValue = plotDatum[dataAccessors.x];
+          const yValue = plotDatum[dataAccessors.y];
           return (
             <Symbol
-              key={`${plotDatum[dataAccessors.x]}:${plotDatum[dataAccessors.y]}:${i}`}
+              key={`${xValue}:${yValue}:${i}`}
               data={plotDatum}
               type={symbolType}
               position={{
-                x: plotDatum[dataAccessors.x] ? scales.x(plotDatum[dataAccessors.x]) : 0,
-                y: plotDatum[dataAccessors.y] ? scales.y(plotDatum[dataAccessors.y]) : 0
+                x: xValue ? xScale(xValue) : 0,
+                y: yValue ? yScale(yValue) : 0
               }}
-              color={colorScale ? colorScale(plotDatum[dataAccessors.x]) : color}
+              color={colorScale ? colorScale(xValue) : color}
               {...childProps}
             />
           );
