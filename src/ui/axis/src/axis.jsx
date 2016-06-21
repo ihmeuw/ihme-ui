@@ -1,8 +1,9 @@
-import { PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import ReactFauxDom from 'react-faux-dom';
 import classNames from 'classnames';
 import { axisBottom, axisLeft, axisRight, axisTop } from 'd3-axis';
 import { select } from 'd3-selection';
+import { mean } from 'lodash';
 import { oneOfProp } from '../../../utils';
 
 import style from './axis.css';
@@ -35,12 +36,53 @@ export const calcTranslate = (orientation, width = 0, height = 0) => {
   return DEFAULT_TRANSLATE;
 };
 
+function calcLabelPosition({ orientation, translate, padding }, center) {
+  switch (orientation) {
+    case 'top':
+      return {
+        x: translate.x,
+        y: translate.y - padding.top,
+        dX: center,
+        dY: '1em',
+      };
+    case 'bottom':
+      return {
+        x: translate.x,
+        y: translate.y + padding.bottom,
+        dX: center,
+        dY: '-0.2em',
+      };
+    case 'left':
+      return {
+        x: translate.y,
+        y: translate.x - padding.left,
+        dX: -center,
+        dY: '1em',
+        rotate: 270,
+      };
+    case 'right':
+      return {
+        x: translate.y,
+        y: -(translate.x + padding.right),
+        dX: center,
+        dY: '1em',
+        rotate: 90,
+      };
+    default:
+      return {
+        x: translate.x,
+        y: translate.y,
+        dX: 0,
+        dY: 0,
+      };
+  }
+}
+
 /**
  * Expose basic public API of d3-axis
  */
 export default function Axis(props) {
-  // create faux DOM element to use as
-  // context for D3 side-effects
+  // create faux DOM element to use as context for D3 side-effects
   const axisG = ReactFauxDom.createElement('g');
   const gSelection = select(axisG)
     .attr('class', classNames(style.common, props.className))
@@ -63,7 +105,27 @@ export default function Axis(props) {
 
   axisG.setAttribute('style', props.style);
 
-  return axisG.toReact();
+  const center = mean(props.scale.range());
+
+  const labelPosition = props.label && calcLabelPosition(props, center);
+
+  return (
+    <g>
+      {axisG.toReact()}
+      {props.label && <text
+        className={props.labelClassName}
+        style={props.labelStyle}
+        x={labelPosition.x}
+        y={labelPosition.y}
+        dx={labelPosition.dX}
+        dy={labelPosition.dY}
+        transform={`rotate(${labelPosition.rotate || 0})`}
+        textAnchor="middle"
+      >
+        {props.label}
+      </text>}
+    </g>
+  );
 }
 
 export const AXIS_SCALE_PROP_TYPES = {
@@ -71,6 +133,20 @@ export const AXIS_SCALE_PROP_TYPES = {
 };
 
 Axis.propTypes = {
+  label: PropTypes.any,
+  labelClassName: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object,
+  ]),
+  labelStyle: PropTypes.object,
+
+  padding: PropTypes.shape({
+    top: PropTypes.number,
+    bottom: PropTypes.number,
+    left: PropTypes.number,
+    right: PropTypes.number,
+  }),
+
   /* orientation of ticks relative to axis line */
   orientation: PropTypes.oneOf(Object.keys(AXIS_TYPES)).isRequired,
 
