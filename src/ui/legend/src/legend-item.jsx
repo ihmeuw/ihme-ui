@@ -17,7 +17,13 @@ const propTypes = {
   ]),
 
   /* inline-styles to be applied to individual legend item <li> */
-  itemStyles: PropTypes.object,
+  itemStyles: PropTypes.oneOfType([
+    // if passed an object, will be applied directly inline to the li
+    PropTypes.object,
+
+    // if passed a function, will be called with the current item
+    PropTypes.func,
+  ]),
 
   /* custom component to render for each label, passed current item */
   LabelComponent: PropTypes.func,
@@ -97,9 +103,11 @@ export default function LegendItem(props) {
   const color = propResolver(item, symbolColorKey);
   const type = propResolver(item, symbolTypeKey);
 
+  const inlineStyles = typeof itemStyles === 'function' ? itemStyles(item) : itemStyles;
+
   return (
     <li
-      style={itemStyles}
+      style={inlineStyles}
       className={classNames(styles.li, itemClassName)}
     >
       {renderClear ? (

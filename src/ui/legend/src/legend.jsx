@@ -24,8 +24,14 @@ const propTypes = {
     PropTypes.object
   ]),
 
-  /* inline styles to be applied to individual legend item <li> */
-  itemStyles: PropTypes.object,
+  /* inline-styles to be applied to individual legend item <li> */
+  itemStyles: PropTypes.oneOfType([
+    // if passed an object, will be applied directly inline to the li
+    PropTypes.object,
+
+    // if passed a function, will be called with the current item
+    PropTypes.func,
+  ]),
 
   /* custom component to render for each label, passed current item;
      must be passable to React.createElement
