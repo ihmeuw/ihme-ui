@@ -3,6 +3,7 @@ import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 import d3Scale from 'd3-scale';
+import { format } from 'd3-format';
 
 import Axis, { XAxis, YAxis } from '../';
 
@@ -40,12 +41,20 @@ describe('<Axis />', () => {
         scale={dummyScale.range([0, 800])}
         orientation="bottom"
         ticks={6}
+        tickArguments={[6, '.2f']}
+        tickPadding={6}
+        tickSize={9}
+        tickSizeInner={9}
+        tickSizeOuter={12}
+        tickFormat={format('.2f')}
         tickValues={[1, 2, 3, 4, 5, 6]}
       />
     );
     expect(wrapper.find('.tick')).to.have.length(6);
-    expect(wrapper.find('.tick').first().find('text')).to.have.text('1.0');
-    expect(wrapper.find('.tick').last().find('text')).to.have.text('6.0');
+    expect(wrapper.find('.tick').first().find('line')).to.have.attr('y2', '9');
+    expect(wrapper.find('.tick').first().find('text')).to.have.attr('y', '15');
+    expect(wrapper.find('.tick').first().find('text')).to.have.text('1.00');
+    expect(wrapper.find('.tick').last().find('text')).to.have.text('6.00');
   });
 
   it('applies style to the g element', () => {
@@ -84,7 +93,16 @@ describe('<XAxis />', () => {
       />
     );
     const expected = <Axis orientation="bottom" scale={dummyScale} translate={{ x: 0, y: 0 }} />;
+    expect(wrapper).to.contain(expected);
+  });
 
+  it('passes the x scale to <Axis />', () => {
+    const wrapper = shallow(
+      <XAxis
+        scales={{ x: dummyScale }}
+      />
+    );
+    const expected = <Axis orientation="bottom" scale={dummyScale} translate={{ x: 0, y: 0 }} />;
     expect(wrapper).to.contain(expected);
   });
 });
@@ -97,7 +115,17 @@ describe('<YAxis />', () => {
       />
     );
     const expected = <Axis orientation="left" scale={dummyScale} translate={{ x: 0, y: 0 }} />;
-
     expect(wrapper).to.contain(expected);
   });
+
+  it('passes the y scale to <Axis />', () => {
+    const wrapper = shallow(
+      <YAxis
+        scales={{ y: dummyScale }}
+      />
+    );
+    const expected = <Axis orientation="left" scale={dummyScale} translate={{ x: 0, y: 0 }} />;
+    expect(wrapper).to.contain(expected);
+  });
+
 });
