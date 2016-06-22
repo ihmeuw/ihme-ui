@@ -4,13 +4,13 @@ import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 import d3Scale from 'd3-scale';
 
-import Axis from '../';
+import Axis, { XAxis, YAxis } from '../';
 
 chai.use(chaiEnzyme());
 
-describe('<Axis />', () => {
-  const dummyScale = d3Scale.scaleLinear();
+const dummyScale = d3Scale.scaleLinear();
 
+describe('<Axis />', () => {
   it('renders a g that wraps axis', () => {
     const wrapper = shallow(
       <Axis
@@ -73,5 +73,31 @@ describe('<Axis />', () => {
       />
     );
     chai.expect(wrapper.children().find('text').last()).to.have.text('Label');
+  });
+});
+
+describe('<XAxis />', () => {
+  it('contains an <Axis />', () => {
+    const wrapper = shallow(
+      <XAxis
+        scale={dummyScale}
+      />
+    );
+    const expected = <Axis orientation="bottom" scale={dummyScale} translate={{ x: 0, y: 0 }} />;
+
+    expect(wrapper).to.contain(expected);
+  });
+});
+
+describe('<YAxis />', () => {
+  it('contains an <Axis />', () => {
+    const wrapper = shallow(
+      <YAxis
+        scale={dummyScale}
+      />
+    );
+    const expected = <Axis orientation="left" scale={dummyScale} translate={{ x: 0, y: 0 }} />;
+
+    expect(wrapper).to.contain(expected);
   });
 });
