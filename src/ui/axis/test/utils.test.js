@@ -2,7 +2,7 @@ import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import forEach from 'lodash/forEach';
 
-import { calcLabelPosition } from '../src/utils';
+import { calcLabelPosition, calcTranslate } from '../src/utils';
 
 chai.use(chaiEnzyme());
 
@@ -32,5 +32,24 @@ describe('calcLabelPosition', () => {
     const orientation = undefined;
     expect(calcLabelPosition({ ...props, orientation }, center))
       .to.deep.equal(expectedResults[orientation]);
+  });
+});
+
+describe('calcTranslate', () => {
+  const width = 50;
+  const height = 50;
+
+  const expectedResults = {
+    top: { x: 0, y: 0 },
+    bottom: { x: 0, y: 50 },
+    left: { x: 0, y: 0 },
+    right: { x: 50, y: 0 },
+  };
+
+  forEach(['top', 'bottom', 'left', 'right'], (orientation) => {
+    it(`calculates translate for \`${orientation}\` orientation`, () => {
+      expect(calcTranslate(orientation, width, height))
+        .to.deep.equal(expectedResults[orientation]);
+    });
   });
 });
