@@ -58,4 +58,20 @@ describe('<Axis />', () => {
     );
     expect(wrapper.children().first()).to.have.attr('style', 'stroke:red;');
   });
+
+  it('renders a label when specified', () => {
+    const props = {
+      translate: { x: 0, y: 0 },
+      padding: { top: 0, bottom: 0, left: 0, right: 0 },
+    };
+    const wrapper = shallow(
+      <Axis
+        scale={dummyScale}
+        orientation="bottom"
+        label="Label"
+        {...props}
+      />
+    );
+    chai.expect(wrapper.children().find('text').last()).to.have.text('Label');
+  });
 });
