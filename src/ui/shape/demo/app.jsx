@@ -274,6 +274,41 @@ class App extends React.Component {
               />
             </AxisChart>
         </section>
+        <section>
+          <h3>One dimensional dataset: with colors</h3>
+          <pre><code>
+    <Scatter
+      color={d3Scale.scaleCategory10()}
+      data={[datum1, datum2, ...]}
+      dataAccessors={{ x: valueField }}
+      onClick={function(args) {...}}
+      onMouseLeave={function(args) {...}}
+      onMouseMove={function(args) {...}}
+      onMouseOver={function(args) {...}}
+      symbolType={'circle'}
+    />
+          </code></pre>
+            <AxisChart
+              height={50}
+              width={500}
+              xDomain={valueFieldDomain}
+              xScaleType="linear"
+              yDomain={[0, 1]}
+              yScaleType="linear"
+            >
+              <XAxis />
+              <Scatter
+                colorScale={colorScale}
+                data={data.filter((datum) => { return datum.location === 'India'; })}
+                dataAccessors={{ x: valueField }}
+                onClick={clickHandler('click')}
+                onMouseLeave={onMouseLeave('leave')}
+                onMouseMove={onMouseMove('move')}
+                onMouseOver={onMouseOver('over')}
+                symbolType={'circle'}
+              />
+            </AxisChart>
+        </section>
       </div>
     );
   }
