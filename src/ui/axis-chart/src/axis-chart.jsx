@@ -38,10 +38,7 @@ const propTypes = {
     left: PropTypes.number
   }),
 
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ])
+  children: PropTypes.node,
 };
 
 const defaultProps = {
@@ -100,8 +97,7 @@ export default class AxisChart extends React.Component {
         <g transform={`translate(${margins.left}, ${margins.top})`}>
           {
             React.Children.map(this.props.children, (child) => {
-              if (child === undefined || child === null) return child;
-              return React.cloneElement(child, { scales, dimensions });
+              return child && React.cloneElement(child, { scales, dimensions });
             })
           }
         </g>
