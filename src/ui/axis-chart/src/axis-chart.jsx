@@ -60,6 +60,17 @@ const defaultProps = {
   xScaleType: 'ordinal'
 };
 
+export function getScale(type) {
+  return SCALE_TYPES[type]() || SCALE_TYPES.linear();
+}
+
+export function calcDimensions(width, height, margins) {
+  return {
+    width: width - (margins.left + margins.right),
+    height: height - (margins.top + margins.bottom)
+  };
+}
+
 export default class AxisChart extends React.Component {
   componentWillMount() {
     this.componentWillReceiveProps(this.props);
@@ -75,27 +86,15 @@ export default class AxisChart extends React.Component {
       yDomain,
       yScaleType
     } = props;
-    const dimensions = this.calcDimensions(width, height, margins);
+    const dimensions = calcDimensions(width, height, margins);
 
     this.setState({
       dimensions,
       scales: {
-        x: this.getScale(xScaleType).domain(xDomain).range([0, dimensions.width]),
-        y: this.getScale(yScaleType).domain(yDomain).range([dimensions.height, 0])
+        x: getScale(xScaleType).domain(xDomain).range([0, dimensions.width]),
+        y: getScale(yScaleType).domain(yDomain).range([dimensions.height, 0])
       }
     });
-  }
-
-  // TODO maybe refactor following methods out of class
-  getScale(type) {
-    return SCALE_TYPES[type]() || SCALE_TYPES.linear();
-  }
-
-  calcDimensions(width, height, margins) {
-    return {
-      width: width - (margins.left + margins.right),
-      height: height - (margins.top + margins.bottom)
-    };
   }
 
   render() {
