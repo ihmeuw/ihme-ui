@@ -28,11 +28,13 @@ export default function Symbol(props) {
   const {
     color,
     data,
+    itemKey,
     onClick,
     onMouseLeave,
     onMouseMove,
     onMouseOver,
     position: { x, y },
+    selected,
     size,
     strokeWidth,
     type
@@ -44,11 +46,11 @@ export default function Symbol(props) {
     <path
       d={pathGenerator()}
       fill={color}
-      onClick={onClick(data)}
-      onMouseLeave={onMouseLeave(data)}
-      onMouseMove={onMouseMove(data)}
-      onMouseOver={onMouseOver(data)}
-      stroke={color}
+      onClick={onClick(data, itemKey)}
+      onMouseLeave={onMouseLeave(data, itemKey)}
+      onMouseMove={onMouseMove(data, itemKey)}
+      onMouseOver={onMouseOver(data, itemKey)}
+      stroke={selected ? '#000' : color}
       strokeWidth={`${strokeWidth}px`}
       transform={`translate(${x}, ${y})`}
     />
@@ -61,6 +63,8 @@ Symbol.propTypes = {
 
   /* Datum for the click and hover handlers. */
   data: PropTypes.object,
+
+  itemKey: PropTypes.string.isRequired,
 
   /* partially applied fn that takes in datum and returns fn */
   onClick: PropTypes.func,
@@ -78,6 +82,8 @@ Symbol.propTypes = {
     x: PropTypes.number,
     y: PropTypes.number
   }),
+
+  selected: PropTypes.bool,
 
   /* area in square pixels */
   size: PropTypes.number,
@@ -98,6 +104,7 @@ Symbol.defaultProps = {
     x: 0,
     y: 0
   },
+  selected: false,
   size: 64,
   type: 'circle',
   strokeWidth: 1

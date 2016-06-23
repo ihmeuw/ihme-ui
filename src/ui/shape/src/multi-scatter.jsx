@@ -7,19 +7,20 @@ import Scatter from './scatter';
 export default function MultiScatter(props) {
   const {
     colorScale,
-    symbolScale,
-    keyField,
-    dataField,
     data,
+    dataField,
+    keyField,
+    selectedItemKeys,
+    symbolScale,
   } = props;
 
   const childProps = omit(props, [
+    'colorScale',
     'data',
-    'keyField',
     'dataField',
+    'keyField',
     'symbolField',
     'symbolScale',
-    'colorScale',
   ]);
 
   return (
@@ -33,9 +34,10 @@ export default function MultiScatter(props) {
 
           return (
             <Scatter
-              key={`scatter:${key}`}
-              data={values}
               color={color}
+              data={values}
+              key={`scatter:${key}`}
+              selectedItemKeys={selectedItemKeys}
               symbolType={symbolType}
               {...childProps}
             />
@@ -97,6 +99,8 @@ MultiScatter.propTypes = {
     y: PropTypes.func
   }).isRequired,
 
+  selectedItemKeys: PropTypes.arrayOf(PropTypes.string),
+
   /*
   size of symbols.
   */
@@ -120,6 +124,7 @@ MultiScatter.defaultProps = {
   onMouseLeave: noop,
   onMouseMove: noop,
   onMouseOver: noop,
+  selectedItemKeys: [],
   symbolField: 'type',
   symbolScale: () => { return 'circle'; }
 };

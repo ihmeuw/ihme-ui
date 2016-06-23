@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-import { map, noop, omit } from 'lodash';
+import { includes, map, noop, omit } from 'lodash';
 import d3Scale from 'd3-scale';
 
 import Symbol from './symbol';
@@ -12,6 +12,7 @@ export default function Scatter(props) {
     data,
     dataAccessors,
     scales,
+    selectedItemKeys,
     symbolType
   } = props;
 
@@ -33,15 +34,18 @@ export default function Scatter(props) {
         map(data, (plotDatum, i) => {
           const xValue = plotDatum[dataAccessors.x];
           const yValue = plotDatum[dataAccessors.y];
+          const key = `${xValue}:${yValue}:${i}`;
           return (
             <Symbol
               color={colorScale ? colorScale(xValue) : color}
               data={plotDatum}
-              key={`${xValue}:${yValue}:${i}`}
+              itemKey={key}
+              key={key}
               position={{
                 x: xValue ? xScale(xValue) : 0,
                 y: yValue ? yScale(yValue) : 0
               }}
+              selected={includes(selectedItemKeys, key)}
               type={symbolType}
               {...childProps}
             />
@@ -98,6 +102,8 @@ Scatter.propTypes = {
     y: PropTypes.func
   }),
 
+  selectedItemKeys: PropTypes.arrayOf(PropTypes.string),
+
   /*
   size of symbols
   */
@@ -119,5 +125,6 @@ Scatter.defaultProps = {
     x: d3Scale.scaleLinear(),
     y: d3Scale.scaleLinear()
   },
+  selectedItemKeys: [],
   symbolType: 'circle'
 };

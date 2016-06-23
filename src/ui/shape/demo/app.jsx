@@ -55,7 +55,7 @@ const keyFieldDomain = map(uniqBy(data, keyField), (obj) => { return (obj[keyFie
 // keyField: year_id
 
 const clickHandler = (text) => {
-  return (datum) => {
+  return (datum, itemKey) => {
     return () => {
       alert(`${text}::${datum[keyField]},${datum[valueField]}`);
     };
@@ -63,7 +63,7 @@ const clickHandler = (text) => {
 };
 
 const onMouseLeave = (text) => {
-  return (datum) => {
+  return (datum, itemKey) => {
     return () => {
       console.log(`${text}::${datum[keyField]},${datum[valueField]}`);
     };
@@ -71,7 +71,7 @@ const onMouseLeave = (text) => {
 };
 
 const onMouseMove = (text) => {
-  return (datum) => {
+  return (datum, itemKey) => {
     return () => {
       console.log(`${text}::${datum[keyField]},${datum[valueField]}`);
     };
@@ -79,7 +79,7 @@ const onMouseMove = (text) => {
 };
 
 const onMouseOver = (text) => {
-  return (datum) => {
+  return (datum, itemKey) => {
     return () => {
       console.log(`${text}::${datum[keyField]},${datum[valueField]}`);
     };
