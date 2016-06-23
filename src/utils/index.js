@@ -31,6 +31,8 @@ export {
 } from './objects';
 
 export {
+  getScale,
+  getScaleTypes,
   rangeToDomain,
   domainToRange,
 } from './scale';

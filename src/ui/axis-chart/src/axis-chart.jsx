@@ -1,12 +1,8 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import d3Scale from 'd3-scale';
-import camelCase from 'lodash/camelCase';
-import transform from 'lodash/transform';
+import { getScale, getScaleTypes } from '../../../utils';
 
-const SCALE_TYPES = transform(Object.keys(d3Scale), (acc, key) => {
-  if (key.startsWith('scale')) acc.push(key.toLowerCase().replace('scale', ''));
-});
+const SCALE_TYPES = getScaleTypes();
 
 const propTypes = {
   /* extra class names to appended to the element */
@@ -58,10 +54,6 @@ const defaultProps = {
   },
   xScaleType: 'linear'
 };
-
-export function getScale(type) {
-  return (d3Scale[camelCase(`scale ${type}`)] || d3Scale.scaleLinear);
-}
 
 export function calcDimensions(width, height, margins) {
   return {
