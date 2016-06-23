@@ -62,7 +62,23 @@ const clickHandler = (text) => {
   };
 };
 
-const hoverHandler = (text) => {
+const onMouseLeave = (text) => {
+  return (datum) => {
+    return () => {
+      console.log(`${text}::${datum[keyField]},${datum[valueField]}`);
+    };
+  };
+};
+
+const onMouseMove = (text) => {
+  return (datum) => {
+    return () => {
+      console.log(`${text}::${datum[keyField]},${datum[valueField]}`);
+    };
+  };
+};
+
+const onMouseOver = (text) => {
   return (datum) => {
     return () => {
       console.log(`${text}::${datum[keyField]},${datum[valueField]}`);
@@ -88,6 +104,7 @@ class App extends React.Component {
           <h3>Multiple datasets</h3>
           <pre><code>
     <MultiScatter
+      colorScale={d3Scale.scaleCategory10()}
       data={[
         [datum1, datum2, ...],
         [...],
@@ -97,32 +114,34 @@ class App extends React.Component {
         x: keyField,
         y: valueField
       }}
-      keyField={'location'}
       dataField={'values'}
-      symbolField={'location'}
-      symbolScale={d3Scale.scaleOrdinal()
-          .domain([...])
-          .range([...])}
-      colorScale={d3Scale.scaleCategory10()}
+      keyField={'location'}
+      onClick={function(args) {...}}
+      onMouseLeave={function(args) {...}}
+      onMouseMove={function(args) {...}}
+      onMouseOver={function(args) {...}}
       scales={{
         x: d3Scale.scaleLinear(),
         y: d3Scale.scaleLinear()
       }}
-      clickHandler={function(args) {...}}
-      hoverHandler={function(args) {...}}
+      symbolField={'location'}
+      symbolScale={d3Scale.scaleOrdinal()
+          .domain([...])
+          .range([...])}
     />
           </code></pre>
             <AxisChart
+              height={300}
+              width={500}
               xDomain={keyFieldDomain}
               xScaleType="point"
               yDomain={valueFieldDomain}
               yScaleType="linear"
-              width={500}
-              height={300}
             >
               <XAxis />
               <YAxis />
               <MultiScatter
+                colorScale={colorScale}
                 data={locationData}
                 dataAccessors={{
                   x: keyField,    // year_id
@@ -130,15 +149,16 @@ class App extends React.Component {
                 }}
                 keyField={'location'}
                 dataField={'values'}
-                symbolField={'location'}
-                symbolScale={symbolScale}
+                onClick={clickHandler('click')}
+                onMouseLeave={onMouseLeave('leave')}
+                onMouseMove={onMouseMove('move')}
+                onMouseOver={onMouseOver('over')}
                 scales={{
                   x: d3Scale.scaleLinear(),
                   y: d3Scale.scaleLinear()
                 }}
-                colorScale={colorScale}
-                clickHandler={clickHandler('click')}
-                hoverHandler={hoverHandler('hover')}
+                symbolField={'location'}
+                symbolScale={symbolScale}
               />
             </AxisChart>
         </section>
@@ -146,37 +166,41 @@ class App extends React.Component {
           <h3>One Dataset</h3>
           <pre><code>
     <Scatter
+      color={'steelblue'}
       data={[datum1, datum2, ...]}
       dataAccessors={{
         x: keyField,
         y: valueField
       }}
+      onClick={function(args) {...}}
+      onMouseLeave={function(args) {...}}
+      onMouseMove={function(args) {...}}
+      onMouseOver={function(args) {...}}
       symbolType={'circle'}
-      color={'steelblue'}
-      clickHandler={function(args) {...}}
-      hoverHandler={function(args) {...}}
     />
           </code></pre>
             <AxisChart
+              height={300}
+              width={500}
               xDomain={keyFieldDomain}
               xScaleType="point"
               yDomain={valueFieldDomain}
               yScaleType="linear"
-              width={500}
-              height={300}
             >
               <XAxis />
               <YAxis />
               <Scatter
+                color={'steelblue'}
                 data={data.filter((datum) => { return datum.location === 'India'; })}
                 dataAccessors={{
                   x: keyField,    // year_id
                   y: valueField   // population
                 }}
+                onClick={clickHandler('click')}
+                onMouseLeave={onMouseLeave('leave')}
+                onMouseMove={onMouseMove('move')}
+                onMouseOver={onMouseOver('over')}
                 symbolType={'circle'}
-                color={'steelblue'}
-                clickHandler={clickHandler('click')}
-                hoverHandler={hoverHandler('hover')}
               />
             </AxisChart>
         </section>
@@ -184,30 +208,34 @@ class App extends React.Component {
           <h3>One dimensional dataset: horizontal</h3>
           <pre><code>
     <Scatter
+      color={'tomato'}
       data={[datum1, datum2, ...]}
       dataAccessors={{ x: valueField }}
+      onClick={function(args) {...}}
+      onMouseLeave={function(args) {...}}
+      onMouseMove={function(args) {...}}
+      onMouseOver={function(args) {...}}
       symbolType={'circle'}
-      color={'tomato'}
-      clickHandler={function(args) {...}}
-      hoverHandler={function(args) {...}}
     />
           </code></pre>
             <AxisChart
+              height={50}
+              width={500}
               xDomain={valueFieldDomain}
               xScaleType="linear"
               yDomain={[0, 1]}
               yScaleType="linear"
-              width={500}
-              height={50}
             >
               <XAxis />
               <Scatter
+                color={'tomato'}
                 data={data.filter((datum) => { return datum.location === 'India'; })}
                 dataAccessors={{ x: valueField }}
+                onClick={clickHandler('click')}
+                onMouseLeave={onMouseLeave('leave')}
+                onMouseMove={onMouseMove('move')}
+                onMouseOver={onMouseOver('over')}
                 symbolType={'circle'}
-                color={'tomato'}
-                clickHandler={clickHandler('click')}
-                hoverHandler={hoverHandler('hover')}
               />
             </AxisChart>
         </section>
@@ -215,30 +243,34 @@ class App extends React.Component {
           <h3>One dimensional dataset: vertical</h3>
           <pre><code>
     <Scatter
+      color={'cornflowerblue'}
       data={[datum1, datum2, ...]}
       dataAccessors={{ y: valueField }}
       symbolType={'circle'}
-      color={'cornflowerblue'}
-      clickHandler={function(args) {...}}
-      hoverHandler={function(args) {...}}
+      onClick={function(args) {...}}
+      onMouseLeave={function(args) {...}}
+      onMouseMove={function(args) {...}}
+      onMouseOver={function(args) {...}}
     />
           </code></pre>
             <AxisChart
-              yDomain={valueFieldDomain}
-              xScaleType="linear"
-              xDomain={[0, 1]}
-              yScaleType="linear"
               width={100}
               height={500}
+              xDomain={[0, 1]}
+              xScaleType="linear"
+              yDomain={valueFieldDomain}
+              yScaleType="linear"
             >
               <YAxis />
               <Scatter
+                color={'cornflowerblue'}
                 data={data.filter((datum) => { return datum.location === 'India'; })}
                 dataAccessors={{ y: valueField }}
+                onClick={clickHandler('click')}
+                onMouseLeave={onMouseLeave('leave')}
+                onMouseMove={onMouseMove('move')}
+                onMouseOver={onMouseOver('over')}
                 symbolType={'circle'}
-                color={'cornflowerblue'}
-                clickHandler={clickHandler('click')}
-                hoverHandler={hoverHandler('hover')}
               />
             </AxisChart>
         </section>

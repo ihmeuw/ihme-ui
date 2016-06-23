@@ -5,102 +5,102 @@ import { noop } from 'lodash';
 
 const SYMBOL_TYPES = {
   circle: d3Shape.symbolCircle,
-  square: d3Shape.symbolSquare,
-  triangle: d3Shape.symbolTriangle,
   cross: d3Shape.symbolCross,
   diamond: d3Shape.symbolDiamond,
-  star: d3Shape.symbolStar,
-  wye: d3Shape.symbolWye,
   line: {
     draw(context, size) {
       const width = Math.sqrt(size);
       const height = 1.5;
       return context.rect(-width / 2, -height / 2, width, height);
     }
-  }
-};
-
-const propTypes = {
-  /* Datum for the click and hover handlers. */
-  data: PropTypes.object,
-
-  /* will match a SYMBOL_TYPE  */
-  type: PropTypes.oneOf(Object.keys(SYMBOL_TYPES)),
-
-  /* area in square pixels */
-  size: PropTypes.number,
-
-  position: PropTypes.shape({
-    x: PropTypes.number,
-    y: PropTypes.number
-  }),
-
-  color: PropTypes.string,
-
-  strokeWidth: PropTypes.number,
-
-  /* partially applied fn that takes in datum and returns fn */
-  clickHandler: PropTypes.func,
-
-  /* partially applied fn that takes in datum and returns fn */
-  hoverHandler: PropTypes.func
-};
-
-const defaultProps = {
-  type: 'circle',
-  size: 64,
-  position: {
-    x: 0,
-    y: 0
   },
-  color: 'steelblue',
-  strokeWidth: 1,
-  clickHandler: noop,
-  hoverHandler: noop
-};
-
-/**
- * @param {String} type -> key of SYMBOL_TYPES
- */
-const getSymbolType = (type) => {
-  return SYMBOL_TYPES[type] || SYMBOL_TYPES[defaultProps.type];
+  square: d3Shape.symbolSquare,
+  star: d3Shape.symbolStar,
+  triangle: d3Shape.symbolTriangle,
+  wye: d3Shape.symbolWye
 };
 
 /*
 * <Symbol /> is a wrapper
 * Public API should expose basic public API of d3Shape.symbol()
 **/
-const Symbol = (props) => {
+export default function Symbol(props) {
   const {
-    data,
-    type,
-    size,
-    position: { x, y },
     color,
+    data,
+    onClick,
+    onMouseLeave,
+    onMouseMove,
+    onMouseOver,
+    position: { x, y },
+    size,
     strokeWidth,
-    clickHandler,
-    hoverHandler
+    type
   } = props;
 
-  const symbol = getSymbolType(type);
-  const pathGenerator = d3Shape.symbol().type(symbol).size(size);
+  const pathGenerator = d3Shape.symbol().type(SYMBOL_TYPES[type]).size(size);
 
   return (
     <path
       d={pathGenerator()}
-      transform={`translate(${x}, ${y})`}
-      stroke={color}
       fill={color}
+      onClick={onClick(data)}
+      onMouseLeave={onMouseLeave(data)}
+      onMouseMove={onMouseMove(data)}
+      onMouseOver={onMouseOver(data)}
+      stroke={color}
       strokeWidth={`${strokeWidth}px`}
-      onClick={clickHandler(data)}
-      onMouseOver={hoverHandler(data)}
+      transform={`translate(${x}, ${y})`}
     />
   );
+}
+
+Symbol.propTypes = {
+
+  color: PropTypes.string,
+
+  /* Datum for the click and hover handlers. */
+  data: PropTypes.object,
+
+  /* partially applied fn that takes in datum and returns fn */
+  onClick: PropTypes.func,
+
+  /* partially applied fn that takes in datum and returns fn */
+  onMouseLeave: PropTypes.func,
+
+  /* partially applied fn that takes in datum and returns fn */
+  onMouseMove: PropTypes.func,
+
+  /* partially applied fn that takes in datum and returns fn */
+  onMouseOver: PropTypes.func,
+
+  position: PropTypes.shape({
+    x: PropTypes.number,
+    y: PropTypes.number
+  }),
+
+  /* area in square pixels */
+  size: PropTypes.number,
+
+  strokeWidth: PropTypes.number,
+
+  /* will match a SYMBOL_TYPE  */
+  type: PropTypes.oneOf(Object.keys(SYMBOL_TYPES)),
 };
 
-Symbol.propTypes = propTypes;
+Symbol.defaultProps = {
+  color: 'steelblue',
+  onClick: noop,
+  onMouseLeave: noop,
+  onMouseMove: noop,
+  onMouseOver: noop,
+  position: {
+    x: 0,
+    y: 0
+  },
+  size: 64,
+  type: 'circle',
+  strokeWidth: 1
+};
 
-Symbol.defaultProps = defaultProps;
-
-export default Symbol;
 export { SYMBOL_TYPES };
