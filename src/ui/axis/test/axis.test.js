@@ -127,5 +127,4 @@ describe('<YAxis />', () => {
     const expected = <Axis orientation="left" scale={dummyScale} translate={{ x: 0, y: 0 }} />;
     expect(wrapper).to.contain(expected);
   });
-
 });

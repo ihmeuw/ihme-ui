@@ -1,16 +1,13 @@
 import React from 'react';
-
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
-
 import { maxBy, minBy, map, uniqBy } from 'lodash';
 
 import { dataGenerator } from '../../../test-utils';
 import AxisChart from '../';
 
 chai.use(chaiEnzyme());
-
 
 describe('<AxisChart />', () => {
   const keyField = 'year_id';
@@ -19,7 +16,7 @@ describe('<AxisChart />', () => {
   const data = dataGenerator({
     primaryKeys: [{ name: keyField, values: [keyField] }],
     valueKeys: [{ name: valueField, range: [100, 200], uncertainty: true }],
-    length: 10
+    length: 10,
   });
 
   const lineData = [{ location: 'USA', values: data }, { location: 'Canada', values: data }];
@@ -40,9 +37,9 @@ describe('<AxisChart />', () => {
         height={600}
       >
         {
-          map(lineData, (dataset) => {
+          map(lineData, (dataSet) => {
             return (
-              <p key={dataset.location} />
+              <p key={dataSet.location} />
             );
           })
         }

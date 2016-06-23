@@ -7,7 +7,7 @@ const SCALE_TYPES = getScaleTypes();
 export function calcChartDimensions(width, height, padding) {
   return {
     width: width - (padding.left + padding.right),
-    height: height - (padding.top + padding.bottom)
+    height: height - (padding.top + padding.bottom),
   };
 }
 
@@ -23,8 +23,8 @@ export default class AxisChart extends React.Component {
       dimensions,
       scales: {
         x: getScale(props.xScaleType)().domain(props.xDomain).range([0, dimensions.width]),
-        y: getScale(props.yScaleType)().domain(props.yDomain).range([dimensions.height, 0])
-      }
+        y: getScale(props.yScaleType)().domain(props.yDomain).range([dimensions.height, 0]),
+      },
     });
   }
 
@@ -80,7 +80,7 @@ AxisChart.propTypes = {
     top: PropTypes.number,
     bottom: PropTypes.number,
     right: PropTypes.number,
-    left: PropTypes.number
+    left: PropTypes.number,
   }),
 
   children: PropTypes.node,
@@ -91,7 +91,7 @@ AxisChart.defaultProps = {
     top: 20,
     right: 20,
     bottom: 30,
-    left: 50
+    left: 50,
   },
-  xScaleType: 'linear'
+  xScaleType: 'linear',
 };
