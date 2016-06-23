@@ -77,7 +77,7 @@ Chart with customizable width, height, scales, and margins.
 Property | Required | Type(s) | Description
         --- | :---: | :---: | ---
 `children` | no | object | React element or elements<br /><br />one of type: arrayOf(PropTypes.node), node
-`extraClasses` | no | string, object | extra class names to appended to the element
+`className` | no | string, object | class names to appended to the element
 `height` | no | number | pixel height of line chart
 `margins`| no | number | margins to subtract from width and height (default: top:20 right:20 bottom:30 left:50)
 `width` | no | number | pixel width of line chart

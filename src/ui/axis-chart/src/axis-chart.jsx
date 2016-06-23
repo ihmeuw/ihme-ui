@@ -36,7 +36,7 @@ export default class AxisChart extends React.Component {
       <svg
         width={`${dimensions.width + margins.left + margins.right}px`}
         height={`${dimensions.height + margins.bottom + margins.top}px`}
-        className={classNames(this.props.extraClasses)}
+        className={classNames(this.props.className)}
       >
         <g transform={`translate(${margins.left}, ${margins.top})`}>
           {
@@ -51,11 +51,10 @@ export default class AxisChart extends React.Component {
 }
 
 AxisChart.propTypes = {
-  /* extra class names to appended to the element */
-  extraClasses: PropTypes.oneOfType([
-    PropTypes.array,
+  /* class names to appended to the element */
+  className: PropTypes.oneOfType([
     PropTypes.string,
-    PropTypes.object
+    PropTypes.object,
   ]),
 
   /* [min, max] for xScale (i.e., the domain of the data) */
@@ -88,7 +87,6 @@ AxisChart.propTypes = {
 };
 
 AxisChart.defaultProps = {
-  extraClasses: [],
   margins: {
     top: 20,
     right: 20,

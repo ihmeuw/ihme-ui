@@ -72,7 +72,7 @@ class App extends React.Component {
               xScaleType="point"
               yDomain={yDomain}
               yScaleType="linear"
-              extraClasses={['foo', 'bar']}
+              className={['foo', 'bar']}
             >
               <XAxis style={axisStyle} />
               <YAxis style={axisStyle} />
