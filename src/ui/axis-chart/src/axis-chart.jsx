@@ -1,13 +1,12 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import d3Scale from 'd3-scale';
+import camelCase from 'lodash/camelCase';
+import transform from 'lodash/transform';
 
-const SCALE_TYPES = {
-  band: d3Scale.scaleBand,
-  linear: d3Scale.scaleLinear,
-  ordinal: d3Scale.scaleOrdinal,
-  point: d3Scale.scalePoint
-};
+const SCALE_TYPES = transform(Object.keys(d3Scale), (acc, key) => {
+  if (key.startsWith('scale')) acc.push(key.toLowerCase().replace('scale', ''));
+});
 
 const propTypes = {
   /* extra class names to appended to the element */
@@ -21,13 +20,13 @@ const propTypes = {
   xDomain: PropTypes.array,
 
   /* type of scale */
-  xScaleType: PropTypes.oneOf(Object.keys(SCALE_TYPES)),
+  xScaleType: PropTypes.oneOf(SCALE_TYPES),
 
   /* [min, max] yScale (i.e., the range of the data) */
   yDomain: PropTypes.array,
 
   /* type of scale */
-  yScaleType: PropTypes.oneOf(Object.keys(SCALE_TYPES)),
+  yScaleType: PropTypes.oneOf(SCALE_TYPES),
 
   /* px width of line chart */
   width: PropTypes.number,
@@ -57,11 +56,11 @@ const defaultProps = {
     bottom: 30,
     left: 50
   },
-  xScaleType: 'ordinal'
+  xScaleType: 'linear'
 };
 
 export function getScale(type) {
-  return SCALE_TYPES[type]() || SCALE_TYPES.linear();
+  return (d3Scale[camelCase(`scale ${type}`)] || d3Scale.scaleLinear);
 }
 
 export function calcDimensions(width, height, margins) {
@@ -70,7 +69,6 @@ export function calcDimensions(width, height, margins) {
     height: height - (margins.top + margins.bottom)
   };
 }
-
 export default class AxisChart extends React.Component {
   componentWillMount() {
     this.componentWillReceiveProps(this.props);
@@ -91,8 +89,8 @@ export default class AxisChart extends React.Component {
     this.setState({
       dimensions,
       scales: {
-        x: getScale(xScaleType).domain(xDomain).range([0, dimensions.width]),
-        y: getScale(yScaleType).domain(yDomain).range([dimensions.height, 0])
+        x: getScale(xScaleType)().domain(xDomain).range([0, dimensions.width]),
+        y: getScale(yScaleType)().domain(yDomain).range([dimensions.height, 0])
       }
     });
   }
