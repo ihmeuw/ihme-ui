@@ -11,43 +11,28 @@ export function calcChartDimensions(width, height, padding) {
   };
 }
 
-export default class AxisChart extends React.Component {
-  componentWillMount() {
-    this.componentWillReceiveProps(this.props);
-  }
+export default function AxisChart(props) {
+  const chartDimensions = calcChartDimensions(props.width, props.height, props.padding);
+  const scales = {
+    x: getScale(props.xScaleType)().domain(props.xDomain).range([0, chartDimensions.width]),
+    y: getScale(props.yScaleType)().domain(props.yDomain).range([chartDimensions.height, 0]),
+  };
 
-  componentWillReceiveProps(props) {
-    const dimensions = calcChartDimensions(props.width, props.height, props.padding);
-
-    this.setState({
-      dimensions,
-      scales: {
-        x: getScale(props.xScaleType)().domain(props.xDomain).range([0, dimensions.width]),
-        y: getScale(props.yScaleType)().domain(props.yDomain).range([dimensions.height, 0]),
-      },
-    });
-  }
-
-  render() {
-    const { padding } = this.props;
-    const { dimensions, scales } = this.state;
-
-    return (
-      <svg
-        width={`${dimensions.width + padding.left + padding.right}px`}
-        height={`${dimensions.height + padding.bottom + padding.top}px`}
-        className={classNames(this.props.className)}
-      >
-        <g transform={`translate(${padding.left}, ${padding.top})`}>
-          {
-            React.Children.map(this.props.children, (child) => {
-              return child && React.cloneElement(child, { scales, dimensions });
-            })
-          }
-        </g>
-      </svg>
-    );
-  }
+  return (
+    <svg
+      width={`${chartDimensions.width + props.padding.left + props.padding.right}px`}
+      height={`${chartDimensions.height + props.padding.bottom + props.padding.top}px`}
+      className={classNames(props.className)}
+    >
+      <g transform={`translate(${props.padding.left}, ${props.padding.top})`}>
+         {
+           React.Children.map(props.children, (child) => {
+             return child && React.cloneElement(child, { scales, ...chartDimensions });
+           })
+         }
+      </g>
+    </svg>
+  );
 }
 
 AxisChart.propTypes = {
@@ -90,5 +75,4 @@ AxisChart.defaultProps = {
     bottom: 30,
     left: 50,
   },
-  xScaleType: 'linear',
 };
