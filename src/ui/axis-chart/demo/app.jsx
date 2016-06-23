@@ -65,9 +65,9 @@ const dims = {
 
 const padding = {
   top: 20,
-  bottom: 30,
-  left: 70,
-  right: 70
+  bottom: 40,
+  left: 55,
+  right: 20,
 };
 
 const axisStyle = {
@@ -88,8 +88,8 @@ class App extends React.Component {
         yScaleType="linear"
         className={['foo', 'bar']}
       >
-        <XAxis style={axisStyle} />
-        <YAxis style={axisStyle} />
+        <XAxis style={axisStyle} label="Year" />
+        <YAxis style={axisStyle} label="Probability" />
         <MultiLine
           data={lineData}
           keyField={'location'}

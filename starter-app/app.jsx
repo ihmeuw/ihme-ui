@@ -74,8 +74,8 @@ class App extends React.Component {
               yScaleType="linear"
               className={['foo', 'bar']}
             >
-              <XAxis style={axisStyle} />
-              <YAxis style={axisStyle} />
+              <XAxis style={axisStyle} label="Probability" />
+              <YAxis style={axisStyle} label="Year" />
               <MultiLine
                 data={lineData}
                 keyField={'location'}

@@ -27,7 +27,11 @@ export default function AxisChart(props) {
       <g transform={`translate(${props.padding.left}, ${props.padding.top})`}>
          {
            React.Children.map(props.children, (child) => {
-             return child && React.cloneElement(child, { scales, ...chartDimensions });
+             return child && React.cloneElement(child, {
+               scales,
+               padding: props.padding,
+               ...chartDimensions,
+             });
            })
          }
       </g>
