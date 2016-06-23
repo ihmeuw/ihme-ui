@@ -1,9 +1,6 @@
 import React, { PropTypes } from 'react';
-
-import d3Scale from 'd3-scale';
-
 import classNames from 'classnames';
-
+import d3Scale from 'd3-scale';
 
 const SCALE_TYPES = {
   band: d3Scale.scaleBand,
@@ -11,7 +8,6 @@ const SCALE_TYPES = {
   ordinal: d3Scale.scaleOrdinal,
   point: d3Scale.scalePoint
 };
-
 
 const propTypes = {
   /* extra class names to appended to the element */
@@ -53,7 +49,6 @@ const propTypes = {
   ])
 };
 
-
 const defaultProps = {
   extraClasses: [],
   margins: {
@@ -64,7 +59,6 @@ const defaultProps = {
   },
   xScaleType: 'ordinal'
 };
-
 
 export default class AxisChart extends React.Component {
   componentWillMount() {
@@ -114,7 +108,7 @@ export default class AxisChart extends React.Component {
         height={`${dimensions.height + margins.bottom + margins.top}px`}
         className={classNames(this.props.extraClasses)}
       >
-        <g transform={`translate(${margins.left}, ${margins.top})`} >
+        <g transform={`translate(${margins.left}, ${margins.top})`}>
           {
             React.Children.map(this.props.children, (child) => {
               if (child === undefined || child === null) return child;
