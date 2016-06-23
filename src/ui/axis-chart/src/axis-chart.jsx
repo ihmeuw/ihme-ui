@@ -4,10 +4,10 @@ import { getScale, getScaleTypes } from '../../../utils';
 
 const SCALE_TYPES = getScaleTypes();
 
-export function calcDimensions(width, height, margins) {
+export function calcChartDimensions(width, height, padding) {
   return {
-    width: width - (margins.left + margins.right),
-    height: height - (margins.top + margins.bottom)
+    width: width - (padding.left + padding.right),
+    height: height - (padding.top + padding.bottom)
   };
 }
 
@@ -17,7 +17,7 @@ export default class AxisChart extends React.Component {
   }
 
   componentWillReceiveProps(props) {
-    const dimensions = calcDimensions(props.width, props.height, props.margins);
+    const dimensions = calcChartDimensions(props.width, props.height, props.padding);
 
     this.setState({
       dimensions,
@@ -29,16 +29,16 @@ export default class AxisChart extends React.Component {
   }
 
   render() {
-    const { margins } = this.props;
+    const { padding } = this.props;
     const { dimensions, scales } = this.state;
 
     return (
       <svg
-        width={`${dimensions.width + margins.left + margins.right}px`}
-        height={`${dimensions.height + margins.bottom + margins.top}px`}
+        width={`${dimensions.width + padding.left + padding.right}px`}
+        height={`${dimensions.height + padding.bottom + padding.top}px`}
         className={classNames(this.props.className)}
       >
-        <g transform={`translate(${margins.left}, ${margins.top})`}>
+        <g transform={`translate(${padding.left}, ${padding.top})`}>
           {
             React.Children.map(this.props.children, (child) => {
               return child && React.cloneElement(child, { scales, dimensions });
@@ -75,8 +75,8 @@ AxisChart.propTypes = {
   /* px height of line chart */
   height: PropTypes.number,
 
-  /* margins to subtract from width and height */
-  margins: PropTypes.shape({
+  /* padding around the chart contents, space for Axis and Label */
+  padding: PropTypes.shape({
     top: PropTypes.number,
     bottom: PropTypes.number,
     right: PropTypes.number,
@@ -87,7 +87,7 @@ AxisChart.propTypes = {
 };
 
 AxisChart.defaultProps = {
-  margins: {
+  padding: {
     top: 20,
     right: 20,
     bottom: 30,

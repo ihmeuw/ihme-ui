@@ -63,7 +63,7 @@ const dims = {
   width: 800
 };
 
-const margins = {
+const padding = {
   top: 20,
   bottom: 30,
   left: 70,
@@ -81,7 +81,7 @@ class App extends React.Component {
       <AxisChart
         width={dims.width}
         height={dims.height}
-        margins={margins}
+        padding={padding}
         xDomain={xDomain}
         xScaleType="point"
         yDomain={yDomain}

@@ -40,7 +40,7 @@ const yDomain = [minBy(data, lowerBoundField)[lowerBoundField], maxBy(data, uppe
 const xDomain = map(uniqBy(data, keyField), (obj) => { return (obj[keyField]); });
 const colorScale = d3Scale.scaleOrdinal().domain(['USA', 'Canada']).range(['red', 'blue']);
 
-const margins = {
+const padding = {
   top: 20,
   bottom: 30,
   left: 70,
@@ -67,7 +67,7 @@ class App extends React.Component {
         <div style={{ display: 'flex', flex: '1 0 auto' }}>
           <ResponsiveContainer>
             <AxisChart
-              margins={margins}
+              padding={padding}
               xDomain={xDomain}
               xScaleType="point"
               yDomain={yDomain}
