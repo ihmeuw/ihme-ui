@@ -58,28 +58,20 @@ export function calcDimensions(width, height, margins) {
     height: height - (margins.top + margins.bottom)
   };
 }
+
 export default class AxisChart extends React.Component {
   componentWillMount() {
     this.componentWillReceiveProps(this.props);
   }
 
   componentWillReceiveProps(props) {
-    const {
-      width,
-      height,
-      margins,
-      xDomain,
-      xScaleType,
-      yDomain,
-      yScaleType
-    } = props;
-    const dimensions = calcDimensions(width, height, margins);
+    const dimensions = calcDimensions(props.width, props.height, props.margins);
 
     this.setState({
       dimensions,
       scales: {
-        x: getScale(xScaleType)().domain(xDomain).range([0, dimensions.width]),
-        y: getScale(yScaleType)().domain(yDomain).range([dimensions.height, 0])
+        x: getScale(props.xScaleType)().domain(props.xDomain).range([0, dimensions.width]),
+        y: getScale(props.yScaleType)().domain(props.yDomain).range([dimensions.height, 0])
       }
     });
   }
