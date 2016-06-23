@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { scaleLinear } from 'd3-scale';
 import { map, omit } from 'lodash';
 
 import Line from './line';
@@ -53,7 +54,8 @@ const propTypes = {
 const defaultProps = {
   showUncertainty: false,
   showLine: true,
-  colorScale: () => { return 'steelblue'; }
+  colorScale: () => { return 'steelblue'; },
+  scales: { x: scaleLinear(), y: scaleLinear() },
 };
 
 const MultiLine = (props) => {

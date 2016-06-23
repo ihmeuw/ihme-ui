@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { scaleLinear } from 'd3-scale';
 import { omit } from 'lodash';
 import { oneOfProp } from '../../../utils';
 
@@ -46,4 +47,5 @@ YAxis.propTypes = {
 
 YAxis.defaultProps = {
   orientation: 'left',
+  scales: { y: scaleLinear() },
 };
