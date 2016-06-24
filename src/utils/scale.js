@@ -1,15 +1,20 @@
 import d3Scale from 'd3-scale';
-import transform from 'lodash/transform';
-import camelCase from 'lodash/camelCase';
+
+const SCALES = {
+  ...Object.keys(d3Scale).reduce((acc, key) => {
+    if (key.match(/scale[A-Z]/)) {
+      return { ...acc, [key.toLowerCase().replace('scale', '')]: d3Scale[key] };
+    }
+    return acc;
+  }, {}),
+};
 
 /**
  * Get a list of shortened d3 scale names.
  * @returns {Array} list of shortened scale names.
  */
 export function getScaleTypes() {
-  return transform(Object.keys(d3Scale), (acc, key) => {
-    if (key.startsWith('scale')) acc.push(key.toLowerCase().replace('scale', ''));
-  });
+  return Object.keys(SCALES);
 }
 
 /**
@@ -18,7 +23,7 @@ export function getScaleTypes() {
  * @returns {scale|linear} specified scale type. Defaults to `linear`.
  */
 export function getScale(type) {
-  return (d3Scale[camelCase(`scale ${type}`)] || d3Scale.scaleLinear);
+  return SCALES[type] || SCALES.linear;
 }
 
 /**

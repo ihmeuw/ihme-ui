@@ -16,9 +16,11 @@ describe('getScaleTypes()', () => {
 
 describe('getScale()', () => {
   it('returns specified type of scale', () => {
-    const scale = getScale('ordinal');
+    expect(getScale('ordinal')).to.be.equal(d3Scale.scaleOrdinal);
+  });
 
-    expect(scale).to.be.equal(d3Scale.scaleOrdinal);
+  it('provides a default of `linear`', () => {
+    expect(getScale()).to.be.equal(d3Scale.scaleLinear);
   });
 });
 
