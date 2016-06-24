@@ -30,4 +30,13 @@ describe('<Symbol />', () => {
       .that.is.a('string')
       .that.equals(d3Shape.symbol().type(d3Shape.symbolCircle)());
   });
+
+  it('has #000 stroke when selected', () => {
+    const wrapper = shallow(
+      <Symbol
+        selected={1}
+      />
+    );
+    expect(wrapper.props().stroke).to.equal('#000');
+  });
 });

@@ -12,7 +12,7 @@ export default function Scatter(props) {
     data,
     dataAccessors,
     scales,
-    selectedItemKeys,
+    selection,
     symbolType
   } = props;
 
@@ -37,15 +37,14 @@ export default function Scatter(props) {
           const key = `${xValue}:${yValue}:${i}`;
           return (
             <Symbol
+              key={key}
               color={colorScale ? colorScale(xValue) : color}
               data={plotDatum}
-              itemKey={key}
-              key={key}
               position={{
                 x: xValue ? xScale(xValue) : 0,
                 y: yValue ? yScale(yValue) : 0
               }}
-              selected={includes(selectedItemKeys, key)}
+              selected={includes(selection, plotDatum)}
               type={symbolType}
               {...childProps}
             />
@@ -102,7 +101,7 @@ Scatter.propTypes = {
     y: PropTypes.func
   }),
 
-  selectedItemKeys: PropTypes.arrayOf(PropTypes.string),
+  selection: PropTypes.array,
 
   /*
   size of symbols

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-import { map, noop, omit } from 'lodash';
+import { castArray, map, noop, omit } from 'lodash';
 
 import Scatter from './scatter';
 
@@ -10,7 +10,7 @@ export default function MultiScatter(props) {
     data,
     dataField,
     keyField,
-    selectedItemKeys,
+    selection,
     symbolScale,
   } = props;
 
@@ -37,7 +37,7 @@ export default function MultiScatter(props) {
               color={color}
               data={values}
               key={`scatter:${key}`}
-              selectedItemKeys={selectedItemKeys}
+              selection={castArray(selection)}
               symbolType={symbolType}
               {...childProps}
             />
@@ -99,7 +99,10 @@ MultiScatter.propTypes = {
     y: PropTypes.func
   }).isRequired,
 
-  selectedItemKeys: PropTypes.arrayOf(PropTypes.string),
+  selection: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.array,
+  ]),
 
   /*
   size of symbols.

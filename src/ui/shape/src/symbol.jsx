@@ -1,7 +1,9 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 import d3Shape from 'd3-shape';
-
 import { noop } from 'lodash';
+
+import { eventHandleWrapper } from '../../../utils/events';
 
 const SYMBOL_TYPES = {
   circle: d3Shape.symbolCircle,
@@ -24,37 +26,60 @@ const SYMBOL_TYPES = {
 * <Symbol /> is a wrapper
 * Public API should expose basic public API of d3Shape.symbol()
 **/
-export default function Symbol(props) {
-  const {
-    color,
-    data,
-    itemKey,
-    onClick,
-    onMouseLeave,
-    onMouseMove,
-    onMouseOver,
-    position: { x, y },
-    selected,
-    size,
-    strokeWidth,
-    type
-  } = props;
+export default class Symbol extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      path: this.createPath(props.type, props.size),
+    };
+  }
 
-  const pathGenerator = d3Shape.symbol().type(SYMBOL_TYPES[type]).size(size);
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.type !== this.props.type ||
+        nextProps.size !== this.props.size) {
+      this.setState({
+        path: this.createPath(nextProps.type, nextProps.size),
+      });
+    }
+  }
 
-  return (
-    <path
-      d={pathGenerator()}
-      fill={color}
-      onClick={onClick(data, itemKey)}
-      onMouseLeave={onMouseLeave(data, itemKey)}
-      onMouseMove={onMouseMove(data, itemKey)}
-      onMouseOver={onMouseOver(data, itemKey)}
-      stroke={selected ? '#000' : color}
-      strokeWidth={`${strokeWidth}px`}
-      transform={`translate(${x}, ${y})`}
-    />
-  );
+  createPath(type, size) {
+    const symbolType = SYMBOL_TYPES[type] || SYMBOL_TYPES.circle;
+    return d3Shape.symbol().type(symbolType).size(size)();
+  }
+
+  render() {
+    const {
+      color,
+      data,
+      onClick,
+      onMouseLeave,
+      onMouseMove,
+      onMouseOver,
+      position: { x, y },
+      selected,
+      strokeWidth,
+    } = this.props;
+    const { path } = this.state;
+
+    return (
+      <path
+        d={path}
+        className={classNames( className, {
+          [focusedClassName]: focused,
+          [selectedClassName]: selected,
+        })}
+        fill={color}
+        onClick={eventHandleWrapper(onClick, data, this)}
+        onMouseLeave={eventHandleWrapper(onMouseLeave, data, this)}
+        onMouseMove={eventHandleWrapper(onMouseMove, data, this)}
+        onMouseOver={eventHandleWrapper(onMouseOver, data, this)}
+        stroke={selected ? '#000' : color}
+        strokeWidth={`${strokeWidth}px`}
+        transform={`translate(${x}, ${y})`}
+      />
+    );
+  }
 }
 
 Symbol.propTypes = {
@@ -64,7 +89,7 @@ Symbol.propTypes = {
   /* Datum for the click and hover handlers. */
   data: PropTypes.object,
 
-  itemKey: PropTypes.string.isRequired,
+  itemKey: PropTypes.string,
 
   /* partially applied fn that takes in datum and returns fn */
   onClick: PropTypes.func,

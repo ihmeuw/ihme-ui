@@ -3,7 +3,7 @@ import { render } from 'react-dom';
 
 import d3Scale from 'd3-scale';
 
-import { maxBy, minBy, map, slice, uniqBy, without } from 'lodash';
+import { bindAll, maxBy, minBy, map, slice, uniqBy, without, xor } from 'lodash';
 
 import { dataGenerator } from '../../../test-utils';
 import AxisChart from '../../axis-chart';
@@ -64,47 +64,35 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedItems: []
+      selectedItems: [],
     }
+
+    bindAll(this, [
+      'onClick',
+      'onMouseLeave',
+      'onMouseMove',
+      'onMouseOver',
+    ]);
   }
 
-  clickHandler(text) {
-    return (datum, itemKey) => {
-      return () => {
-        alert(`${text}::${datum[keyField]},${datum[valueField]}`);
-      };
-    };
+  onClick(event, datum) {
+    alert(`${datum[keyField]},${datum[valueField]}`);
   };
 
-  onMouseLeave(text) {
-    return (datum, itemKey) => {
-      return () => {
-        const newState = slice(this.state.selectedItems, 0);
-        const index = newState.indexOf(itemKey);
-        newState.splice(index, 1);
-        this.setState({selectedItems: newState})
-        console.log(`${text}::${datum[keyField]},${datum[valueField]}`);
-      };
-    };
+  onMouseLeave(event, datum) {
+    this.setState({
+      selectedItems: xor(this.state.selectedItems, datum),
+    });
   };
 
-  onMouseMove(text) {
-    return (datum, itemKey) => {
-      return () => {
-        console.log(`${text}::${datum[keyField]},${datum[valueField]}`);
-      };
-    };
+  onMouseMove(event, datum) {
+    console.log(`${datum[keyField]},${datum[valueField]}`);
   };
 
-  onMouseOver(text) {
-    return (datum, itemKey) => {
-      return () => {
-        const newState = slice(this.state.selectedItems, 0);
-        newState.push(itemKey);
-        this.setState({selectedItems: newState})
-        console.log(`${text}::${datum[keyField]},${datum[valueField]}`);
-      };
-    };
+  onMouseOver(event, datum) {
+    this.setState({
+      selectedItems: xor(this.state.selectedItems, datum),
+    });
   };
 
 
@@ -160,10 +148,10 @@ class App extends React.Component {
                 }}
                 keyField={'location'}
                 dataField={'values'}
-                onClick={this.clickHandler('click')}
-                onMouseLeave={this.onMouseLeave('leave')}
-                onMouseMove={this.onMouseMove('move')}
-                onMouseOver={this.onMouseOver('over')}
+                onClick={this.clickHandler}
+                onMouseLeave={this.onMouseLeave}
+                onMouseMove={this.onMouseMove}
+                onMouseOver={this.onMouseOver}
                 scales={{
                   x: d3Scale.scaleLinear(),
                   y: d3Scale.scaleLinear()
