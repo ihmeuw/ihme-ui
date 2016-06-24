@@ -6,6 +6,7 @@ import { bindAll, identity, map, zipObject } from 'lodash';
 import Track from './track';
 import Fill from './fill';
 import Handle from './handle';
+import { getFloatPrecision, valueWithPrecision } from './util';
 import style from './style.css';
 
 /**
@@ -13,32 +14,13 @@ import style from './style.css';
  * @param value
  * @returns {Object}
  */
-function getValues(value) {
+function getMinMaxValues(value) {
   if (typeof value === 'number') {
     return { min: value };
   } else if (Array.isArray(value)) {
     return zipObject(['min', 'max'], value);
   }
   return value;
-}
-
-/**
- * Determine the floating point precision of a number.
- * @param value
- * @returns {number}
- */
-function getFloatPrecision(value) {
-  return value > 0 && value < 1 ? (1 - Math.ceil(Math.log(value) / Math.log(10))) : 0;
-}
-
-/**
- * Return a number to a specified precision as a workaround for floating point funkiness.
- * @param value
- * @param precision
- * @returns {number}
- */
-function valueWithPrecision(value, precision) {
-  return +value.toFixed(precision);
 }
 
 /**
@@ -60,7 +42,7 @@ export default class Slider extends React.Component {
 
     this.state = {
       render: false,
-      values: getValues(props.value),
+      values: getMinMaxValues(props.value),
       scale: d3Scale.scaleLinear()
         .clamp(true)
         .domain([props.minValue, props.maxValue]),
@@ -92,7 +74,7 @@ export default class Slider extends React.Component {
       this.receiveTrackWidth(newProps);
     }
 
-    this.setState({ values: getValues(newProps.value) });
+    this.setState({ values: getMinMaxValues(newProps.value) });
   }
 
   componentDidUpdate(prevProps) {
