@@ -6,7 +6,7 @@ export function getSnapTargetFunc(snapTarget, snapGridArgs = {}) {
   } else if (typeof snapTarget === 'object') {
     return interact.createSnapGrid({
       ...snapGridArgs,
-      ...snapTarget
+      ...snapTarget,
     });
   }
   return null;

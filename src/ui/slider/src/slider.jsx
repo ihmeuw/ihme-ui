@@ -6,81 +6,7 @@ import { bindAll, identity, map, zipObject } from 'lodash';
 import Track from './track';
 import Fill from './fill';
 import Handle from './handle';
-
 import style from './style.css';
-
-const propTypes = {
-  /* height and width of Slider component. */
-  height: PropTypes.number,
-  width: PropTypes.number,
-
-  /* extents of slider values. */
-  minValue: PropTypes.number.isRequired,
-  maxValue: PropTypes.number.isRequired,
-
-  /* step between slider values. */
-  step: PropTypes.number,
-
-  /* inline styles applied to outermost wrappper */
-  wrapperStyles: PropTypes.object,
-
-  /* any additional classes to add to outermost wrapper */
-  wrapperClassName: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.object,
-    PropTypes.array
-  ]),
-
-  /*
-   * Initial selected value.
-   * If number, a single slider handle will be rendered.
-   * If object with keys 'min' and 'max', two slider handles will be rendered.
-   */
-  value: PropTypes.oneOfType([
-    PropTypes.number,
-    PropTypes.array,
-    PropTypes.shape({
-      min: PropTypes.number,
-      max: PropTypes.number
-    })
-  ]).isRequired,
-
-  /*
-   * function applied to the selected value prior to rendering.
-   * Params:
-   *   value - selected value
-   *
-   * Returns:
-   *   'string'
-   *
-   * Default:
-   *   _.identity
-   */
-  labelFunc: PropTypes.func,
-
-  /* include fill in the track to indicate value. */
-  fill: PropTypes.bool,
-
-  /* style for the fill color. */
-  fillColor: PropTypes.string,
-
-  /*
-   * callback function when value is changed.
-   * Params:
-   *   value - object with keys ['min'] and 'max'
-   *   key - key of most recent value change.
-   */
-  onChange: PropTypes.func.isRequired
-};
-
-const defaultProps = {
-  height: 24,
-  width: 200,
-  step: 1,
-  labelFunc: identity,
-  fill: false,
-  fillColor: '#ccc'
-};
 
 /**
  * Evaluate value and return a compatible object with keys 'min' and 'max'.
@@ -138,7 +64,7 @@ export default class Slider extends React.Component {
       scale: d3Scale.scaleLinear()
         .clamp(true)
         .domain([props.minValue, props.maxValue]),
-      snapTarget: {}
+      snapTarget: {},
     };
 
     this.handleCount = Object.keys(this.state.values).length;
@@ -149,7 +75,7 @@ export default class Slider extends React.Component {
       'onTrackClick',
       'renderHandle',
       'renderFill',
-      'trackRef'
+      'trackRef',
     ]);
   }
 
@@ -238,7 +164,7 @@ export default class Slider extends React.Component {
     this.setState({
       render: true,
       scale: this.state.scale.range([0, this._track.width]),
-      snapTarget: { x: this._track.width / ((props.maxValue - props.minValue) / props.step) }
+      snapTarget: { x: this._track.width / ((props.maxValue - props.minValue) / props.step) },
     });
   }
 
@@ -293,7 +219,7 @@ export default class Slider extends React.Component {
     const styles = {
       height: `${height}px`,
       width: `${width}px`,
-      ...wrapperStyles
+      ...wrapperStyles,
     };
 
     return (
@@ -314,6 +240,75 @@ export default class Slider extends React.Component {
   }
 }
 
-Slider.propTypes = propTypes;
+Slider.propTypes = {
+  /* height and width of Slider component. */
+  height: PropTypes.number,
+  width: PropTypes.number,
 
-Slider.defaultProps = defaultProps;
+  /* extents of slider values. */
+  minValue: PropTypes.number.isRequired,
+  maxValue: PropTypes.number.isRequired,
+
+  /* step between slider values. */
+  step: PropTypes.number,
+
+  /* inline styles applied to outermost wrappper */
+  wrapperStyles: PropTypes.object,
+
+  /* any additional classes to add to outermost wrapper */
+  wrapperClassName: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object,
+    PropTypes.array,
+  ]),
+
+  /*
+   * Initial selected value.
+   * If number, a single slider handle will be rendered.
+   * If object with keys 'min' and 'max', two slider handles will be rendered.
+   */
+  value: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.array,
+    PropTypes.shape({
+      min: PropTypes.number,
+      max: PropTypes.number,
+    }),
+  ]).isRequired,
+
+  /*
+   * function applied to the selected value prior to rendering.
+   * Params:
+   *   value - selected value
+   *
+   * Returns:
+   *   'string'
+   *
+   * Default:
+   *   _.identity
+   */
+  labelFunc: PropTypes.func,
+
+  /* include fill in the track to indicate value. */
+  fill: PropTypes.bool,
+
+  /* style for the fill color. */
+  fillColor: PropTypes.string,
+
+  /*
+   * callback function when value is changed.
+   * Params:
+   *   value - object with keys ['min'] and 'max'
+   *   key - key of most recent value change.
+   */
+  onChange: PropTypes.func.isRequired,
+};
+
+Slider.defaultProps = {
+  height: 24,
+  width: 200,
+  step: 1,
+  labelFunc: identity,
+  fill: false,
+  fillColor: '#ccc',
+};

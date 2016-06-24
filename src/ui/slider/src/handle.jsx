@@ -4,32 +4,7 @@ import interact from 'interact.js';
 import { identity, noop } from 'lodash';
 
 import { getDimension, getSnapTargetFunc } from './util';
-
 import style from './style.css';
-
-const propTypes = {
-  direction: PropTypes.oneOf(['left', 'right', 'middle']),
-  position: PropTypes.number.isRequired,
-  label: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number
-  ]).isRequired,
-  labelFunc: PropTypes.func,
-  name: PropTypes.string.isRequired,
-  onMove: PropTypes.func.isRequired,
-  onKeyDown: PropTypes.func,
-  snapTarget: PropTypes.oneOfType([
-    PropTypes.func,
-    PropTypes.object
-  ]).isRequired,
-  className: PropTypes.string
-};
-
-const defaultProps = {
-  direction: 'middle',
-  labelFunc: identity,
-  onKeyDown: noop
-};
 
 function getOffset(direction, width) {
   if (direction === 'left') {
@@ -72,9 +47,9 @@ export default class Handle extends React.Component {
         snap: {
           targets: [getSnapTargetFunc(snapTarget, {
             range: Infinity,
-            offset: { x: offset }
-          })]
-        }
+            offset: { x: offset },
+          })],
+        },
       })
       .styleCursor(false)
       .on('dragmove', this.props.onMove(this.props.name, -offset))
@@ -100,6 +75,26 @@ export default class Handle extends React.Component {
   }
 }
 
-Handle.propTypes = propTypes;
+Handle.propTypes = {
+  direction: PropTypes.oneOf(['left', 'right', 'middle']),
+  position: PropTypes.number.isRequired,
+  label: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]).isRequired,
+  labelFunc: PropTypes.func,
+  name: PropTypes.string.isRequired,
+  onMove: PropTypes.func.isRequired,
+  onKeyDown: PropTypes.func,
+  snapTarget: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.object,
+  ]).isRequired,
+  className: PropTypes.string,
+};
 
-Handle.defaultProps = defaultProps;
+Handle.defaultProps = {
+  direction: 'middle',
+  labelFunc: identity,
+  onKeyDown: noop,
+};

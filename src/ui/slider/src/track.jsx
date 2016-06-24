@@ -3,17 +3,7 @@ import interact from 'interact.js';
 import { isEmpty } from 'lodash';
 
 import { getSnapTargetFunc } from './util';
-
 import style from './style.css';
-
-const propTypes = {
-  children: PropTypes.node,
-  onClick: PropTypes.func.isRequired,
-  snapTarget: PropTypes.oneOfType([
-    PropTypes.func,
-    PropTypes.object
-  ]).isRequired
-};
 
 export default class Track extends React.Component {
   constructor(props) {
@@ -48,7 +38,7 @@ export default class Track extends React.Component {
       .on('tap', (event) => {
         const newEvent = {
           ...event,
-          snap: snapTargetFunc(event.layerX)
+          snap: snapTargetFunc(event.layerX),
         };
         this.props.onClick(newEvent);
       });
@@ -68,4 +58,11 @@ export default class Track extends React.Component {
   }
 }
 
-Track.propTypes = propTypes;
+Track.propTypes = {
+  children: PropTypes.node,
+  onClick: PropTypes.func.isRequired,
+  snapTarget: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.object,
+  ]).isRequired,
+};

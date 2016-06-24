@@ -2,30 +2,7 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 
 import { getDimension } from './util';
-
 import style from './style.css';
-
-const propTypes = {
-  direction: PropTypes.oneOf(['left', 'right']),
-  height: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number
-  ]),
-  width: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number
-  ]),
-  fillStyle: PropTypes.object
-};
-
-const defaultProps = {
-  direction: 'left',
-  height: '100%',
-  width: 200,
-  fillStyle: {
-    backgroundColor: '#ccc'
-  }
-};
 
 function getWidth(props) {
   const width = getDimension(props.width);
@@ -42,13 +19,31 @@ export default function Fill(props) {
       style={{
         height: getDimension(props.height),
         width: getWidth(props),
-        ...props.fillStyle
+        ...props.fillStyle,
       }}
     >
     </div>
   );
 }
 
-Fill.propTypes = propTypes;
+Fill.propTypes = {
+  direction: PropTypes.oneOf(['left', 'right']),
+  height: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
+  width: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
+  fillStyle: PropTypes.object,
+};
 
-Fill.defaultProps = defaultProps;
+Fill.defaultProps = {
+  direction: 'left',
+  height: '100%',
+  width: 200,
+  fillStyle: {
+    backgroundColor: '#ccc',
+  },
+};
