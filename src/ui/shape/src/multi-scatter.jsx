@@ -9,6 +9,7 @@ export default function MultiScatter(props) {
     colorScale,
     data,
     dataField,
+    focus,
     keyField,
     selection,
     symbolScale,
@@ -38,6 +39,7 @@ export default function MultiScatter(props) {
               data={values}
               key={`scatter:${key}`}
               selection={castArray(selection)}
+              focus={focus}
               symbolType={symbolType}
               {...childProps}
             />
@@ -103,6 +105,8 @@ MultiScatter.propTypes = {
     PropTypes.object,
     PropTypes.array,
   ]),
+
+  focus: PropTypes.object,
 
   /*
   size of symbols.

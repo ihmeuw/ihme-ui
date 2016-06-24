@@ -50,22 +50,37 @@ export default class Symbol extends React.Component {
 
   render() {
     const {
+      className,
       color,
       data,
+      focused,
+      focusedClassName,
       onClick,
       onMouseLeave,
       onMouseMove,
       onMouseOver,
       position: { x, y },
       selected,
+      selectedClassName,
       strokeWidth,
     } = this.props;
     const { path } = this.state;
 
+    function getStroke() {
+      console.log('getStroke');
+      if (selected) {
+        return '#000';
+      }
+      if (focus) {
+        return '#666';
+      }
+      return color;
+    }
+
     return (
       <path
         d={path}
-        className={classNames( className, {
+        className={classNames(className, {
           [focusedClassName]: focused,
           [selectedClassName]: selected,
         })}
@@ -74,7 +89,7 @@ export default class Symbol extends React.Component {
         onMouseLeave={eventHandleWrapper(onMouseLeave, data, this)}
         onMouseMove={eventHandleWrapper(onMouseMove, data, this)}
         onMouseOver={eventHandleWrapper(onMouseOver, data, this)}
-        stroke={selected ? '#000' : color}
+        stroke={getStroke}
         strokeWidth={`${strokeWidth}px`}
         transform={`translate(${x}, ${y})`}
       />
@@ -84,10 +99,16 @@ export default class Symbol extends React.Component {
 
 Symbol.propTypes = {
 
+  className: PropTypes.string,
+
   color: PropTypes.string,
 
   /* Datum for the click and hover handlers. */
   data: PropTypes.object,
+
+  focused: PropTypes.string,
+
+  focusedClassName: PropTypes.string,
 
   itemKey: PropTypes.string,
 
@@ -109,6 +130,8 @@ Symbol.propTypes = {
   }),
 
   selected: PropTypes.bool,
+
+  selectedClassName: PropTypes.string,
 
   /* area in square pixels */
   size: PropTypes.number,

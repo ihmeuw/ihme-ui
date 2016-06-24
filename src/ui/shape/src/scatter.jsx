@@ -11,6 +11,7 @@ export default function Scatter(props) {
     colorScale,
     data,
     dataAccessors,
+    focus,
     scales,
     selection,
     symbolType
@@ -40,6 +41,7 @@ export default function Scatter(props) {
               key={key}
               color={colorScale ? colorScale(xValue) : color}
               data={plotDatum}
+              focus={focus === plotDatum}
               position={{
                 x: xValue ? xScale(xValue) : 0,
                 y: yValue ? yScale(yValue) : 0
@@ -84,6 +86,8 @@ Scatter.propTypes = {
     x: PropTypes.string,
     y: PropTypes.string
   }).isRequired,
+
+  focus: PropTypes.object,
 
   onClick: PropTypes.func,
 

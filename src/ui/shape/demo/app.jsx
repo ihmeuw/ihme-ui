@@ -76,22 +76,27 @@ class App extends React.Component {
   }
 
   onClick(event, datum) {
-    alert(`${datum[keyField]},${datum[valueField]}`);
+    console.log(`click::${datum[keyField]},${datum[valueField]}`);
+    this.setState({
+      selectedItems: xor(this.state.selectedItems, [datum]),
+    });
   };
 
   onMouseLeave(event, datum) {
+    console.log(`leave::${datum[keyField]},${datum[valueField]}`);
     this.setState({
-      selectedItems: xor(this.state.selectedItems, datum),
+      focus: datum,
     });
   };
 
   onMouseMove(event, datum) {
-    console.log(`${datum[keyField]},${datum[valueField]}`);
+    console.log(`move::${datum[keyField]},${datum[valueField]}`);
   };
 
   onMouseOver(event, datum) {
+    console.log(`over::${datum[keyField]},${datum[valueField]}`);
     this.setState({
-      selectedItems: xor(this.state.selectedItems, datum),
+      focus: focus,
     });
   };
 
@@ -148,7 +153,7 @@ class App extends React.Component {
                 }}
                 keyField={'location'}
                 dataField={'values'}
-                onClick={this.clickHandler}
+                onClick={this.onClick}
                 onMouseLeave={this.onMouseLeave}
                 onMouseMove={this.onMouseMove}
                 onMouseOver={this.onMouseOver}
@@ -156,7 +161,7 @@ class App extends React.Component {
                   x: d3Scale.scaleLinear(),
                   y: d3Scale.scaleLinear()
                 }}
-                selectedItemKeys={this.state.selectedItems}
+                selection={this.state.selectedItems}
                 symbolField={'location'}
                 symbolScale={symbolScale}
               />
@@ -196,11 +201,11 @@ class App extends React.Component {
                   x: keyField,    // year_id
                   y: valueField   // population
                 }}
-                onClick={this.clickHandler('click')}
-                onMouseLeave={this.onMouseLeave('leave')}
-                onMouseMove={this.onMouseMove('move')}
-                onMouseOver={this.onMouseOver('over')}
-                selectedItemKeys={this.state.selectedItems}
+                onClick={this.onClick}
+                onMouseLeave={this.onMouseLeave}
+                onMouseMove={this.onMouseMove}
+                onMouseOver={this.onMouseOver}
+                selection={this.state.selectedItems}
                 symbolType={'circle'}
               />
             </AxisChart>
@@ -232,11 +237,11 @@ class App extends React.Component {
                 color={'tomato'}
                 data={data.filter((datum) => { return datum.location === 'India'; })}
                 dataAccessors={{ x: valueField }}
-                onClick={this.clickHandler('click')}
-                onMouseLeave={this.onMouseLeave('leave')}
-                onMouseMove={this.onMouseMove('move')}
-                onMouseOver={this.onMouseOver('over')}
-                selectedItemKeys={this.state.selectedItems}
+                onClick={this.onClick}
+                onMouseLeave={this.onMouseLeave}
+                onMouseMove={this.onMouseMove}
+                onMouseOver={this.onMouseOver}
+                selection={this.state.selectedItems}
                 symbolType={'circle'}
               />
             </AxisChart>
@@ -268,11 +273,11 @@ class App extends React.Component {
                 color={'cornflowerblue'}
                 data={data.filter((datum) => { return datum.location === 'India'; })}
                 dataAccessors={{ y: valueField }}
-                onClick={this.clickHandler('click')}
-                onMouseLeave={this.onMouseLeave('leave')}
-                onMouseMove={this.onMouseMove('move')}
-                onMouseOver={this.onMouseOver('over')}
-                selectedItemKeys={this.state.selectedItems}
+                onClick={this.onClick}
+                onMouseLeave={this.onMouseLeave}
+                onMouseMove={this.onMouseMove}
+                onMouseOver={this.onMouseOver}
+                selection={this.state.selectedItems}
                 symbolType={'circle'}
               />
             </AxisChart>
@@ -304,11 +309,11 @@ class App extends React.Component {
                 colorScale={colorScale}
                 data={data.filter((datum) => { return datum.location === 'India'; })}
                 dataAccessors={{ x: valueField }}
-                onClick={this.clickHandler('click')}
-                onMouseLeave={this.onMouseLeave('leave')}
-                onMouseMove={this.onMouseMove('move')}
-                onMouseOver={this.onMouseOver('over')}
-                selectedItemKeys={this.state.selectedItems}
+                onClick={this.onClick}
+                onMouseLeave={this.onMouseLeave}
+                onMouseMove={this.onMouseMove}
+                onMouseOver={this.onMouseOver}
+                selection={this.state.selectedItems}
                 symbolType={'circle'}
               />
             </AxisChart>
