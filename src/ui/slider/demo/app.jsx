@@ -22,18 +22,18 @@ class App extends React.Component {
       maxValue: 2025,
       rangeSliderValues: {
         min: 2001,
-        max: 2005
+        max: 2005,
       },
       singleValue: 2015,
       listValue: 0,
-      fillColor: this.items[0]
+      fillColor: this.items[0],
     };
 
     this.randomGenerator = (range) => {
       return Math.floor(d3Random.randomUniform(...range)());
     };
 
-    this.nextExtent = [this.randomGenerator([1900, 2016]), this.randomGenerator([1900, 2016])] ;
+    this.nextExtent = [this.randomGenerator([1900, 2016]), this.randomGenerator([1900, 2016])];
     this.nextWidth = this.randomGenerator([150, 300]);
 
     this.onChange = this.onChange.bind(this);
@@ -42,6 +42,22 @@ class App extends React.Component {
     this.setNewWidth = this.setNewWidth.bind(this);
     this.onListValueChange = this.onListValueChange.bind(this);
     this.listLabelFunc = this.listLabelFunc.bind(this);
+  }
+
+
+  onChange(value, key) {
+    console.log(key, value);
+    this.setState({ rangeSliderValues: value });
+  }
+
+  onSingleValueChange(value) {
+    console.log(value);
+    this.setState({ singleValue: value });
+  }
+
+  onListValueChange(value) {
+    console.log(this.items[value]);
+    this.setState({ listValue: value, fillColor: this.items[value] });
   }
 
   setNewMinMax() {
@@ -62,36 +78,21 @@ class App extends React.Component {
       step: newStep,
       rangeSliderValues: {
         min: valueSetter(this.state.rangeSliderValues.min),
-        max: valueSetter(this.state.rangeSliderValues.max)
+        max: valueSetter(this.state.rangeSliderValues.max),
       },
-      singleValue: valueSetter(this.state.singleValue)
+      singleValue: valueSetter(this.state.singleValue),
     });
 
-    this.nextExtent = [this.randomGenerator([1900, 2016]), this.randomGenerator([1900, 2016])] ;
+    this.nextExtent = [this.randomGenerator([1900, 2016]), this.randomGenerator([1900, 2016])];
   }
 
   setNewWidth() {
     const newWidth = getValueOrPlaceholder(document.getElementById('newWidth'));
 
     this.setState({
-      width: newWidth
+      width: newWidth,
     });
     this.nextWidth = this.randomGenerator([150, 300]);
-  }
-
-  onChange(value, key) {
-    console.log(key, value);
-    this.setState({ rangeSliderValues: value });
-  }
-
-  onSingleValueChange(value) {
-    console.log(value);
-    this.setState({ singleValue: value });
-  }
-
-  onListValueChange(value) {
-    console.log(this.items[value]);
-    this.setState({ listValue: value, fillColor: this.items[value] });
   }
 
   listLabelFunc(value) {
@@ -111,11 +112,11 @@ class App extends React.Component {
             />
           </div>
           <div>
-            <input id="newMinExtent" type="text" placeholder={ `${Math.min(...this.nextExtent)}` }/>
-            <br/>
-            <input id="newMaxExtent" type="text" placeholder={ `${Math.max(...this.nextExtent)}` }/>
-            <br/>
-            <input id="newStep" type="text" placeholder="1"/>
+            <input id="newMinExtent" type="text" placeholder={`${Math.min(...this.nextExtent)}`} />
+            <br />
+            <input id="newMaxExtent" type="text" placeholder={`${Math.max(...this.nextExtent)}`} />
+            <br />
+            <input id="newStep" type="text" placeholder="1" />
           </div>
           <div>
             <Button
@@ -125,87 +126,87 @@ class App extends React.Component {
             />
           </div>
           <div>
-            <input id="newWidth" type="text" placeholder={ `${this.nextWidth}` }/>
+            <input id="newWidth" type="text" placeholder={`${this.nextWidth}`} />
           </div>
         </aside>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <section>
             <h3>Range slider</h3>
-            <pre><code>
+{/* <pre><code>
     <Slider
-      width={ 200 }
-      height={ 24 }
-      minValue={ 2001 }
-      maxValue={ 2025 }
-      onChange={ function(value, key) {...} }
+      width={200}
+      height={24}
+      minValue={2001}
+      maxValue={2025}
+      onChange={function (value, key) {...}}
       value={{
-        min: 2001, (initially)
-        max: 2005 (initially)
+        min: 2001, //(initially)
+        max: 2005, //(initially)
       }}
       fill
     />
-            </code></pre>
+</code></pre> */}
             <Slider
-              width={ this.state.width }
-              height={ 24 }
-              minValue={ this.state.minValue }
-              maxValue={ this.state.maxValue }
-              onChange={ this.onChange }
-              value={ this.state.rangeSliderValues }
-              step={ this.state.step }
+              width={this.state.width}
+              height={24}
+              minValue={this.state.minValue}
+              maxValue={this.state.maxValue}
+              onChange={this.onChange}
+              value={this.state.rangeSliderValues}
+              step={this.state.step}
               fill
             />
           </section>
           <section>
             <h3>Single-value slider</h3>
-            <pre><code>
+{/* <pre><code>
     <Slider
-      width={ 200 }
-      height={ 24 }
-      minValue={ 2001 }
-      maxValue={ 2025 }
-      onChange={ function(value, key) {...} }
-      value={ 2015 (initially) }
+      width={200}
+      height={24}
+      minValue={2001}
+      maxValue={2025}
+      onChange={function (value, key) {...}}
+      value={2015} // (initially)
       fill
     />
-            </code></pre>
+</code></pre> */}
             <Slider
-              width={ this.state.width }
-              height={ 24 }
-              minValue={ this.state.minValue }
-              maxValue={ this.state.maxValue }
-              onChange={ this.onSingleValueChange }
-              value={ this.state.singleValue }
-              step={ this.state.step }
+              width={this.state.width}
+              height={24}
+              minValue={this.state.minValue}
+              maxValue={this.state.maxValue}
+              onChange={this.onSingleValueChange}
+              value={this.state.singleValue}
+              step={this.state.step}
               fill
             />
           </section>
           <section>
             <h3>Slider with list</h3>
-                        <pre><code>
+{/* <pre><code>
     items = ['red', 'orange', 'yellow', ...];
     <Slider
-      width={ 200 }
-      height={ 24 }
-      minValue={ 0 }
-      maxValue={ items.length - 1 }
-      onChange={ function(value, key) {...} }
-      value={ this.state.value }
-      labelFunc={ function(value) {...} }
+      width={200}
+      height={24}
+      minValue={0}
+      maxValue={items.length - 1}
+      onChange={function (value, key) {...}}
+      value={this.state.value}
+      labelFunc={function (value) {...}}
       fill
-      fillColor={ this.state.fillColor }
+      fillColor={this.state.fillColor}
     />
-            </code></pre>
+</code></pre> */}
             <Slider
-              width={this.state.width }
-              height={ 24 }
-              minValue={ 0 }
-              maxValue={ this.items.length - 1 }
-              onChange={ this.onListValueChange }
-              value={ this.state.listValue }
-              labelFunc={ this.listLabelFunc }
+              width={this.state.width}
+              height={24}
+              minValue={0}
+              maxValue={this.items.length - 1}
+              onChange={this.onListValueChange}
+              value={this.state.listValue}
+              labelFunc={this.listLabelFunc}
               fill
-              fillColor={ this.state.fillColor }
+              fillColor={this.state.fillColor}
             />
           </section>
         </div>
