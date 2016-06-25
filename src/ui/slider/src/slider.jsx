@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import d3Scale from 'd3-scale';
 import { bindAll, identity, map, reduce, zipObject } from 'lodash';
-import { CommonPropTypes, PureComponent } from '../../../utils';
+import { CommonPropTypes, PureComponent, ensureWithinRange } from '../../../utils';
 
 import Track from './track';
 import Fill from './fill';
@@ -91,8 +91,15 @@ export default class Slider extends PureComponent {
 
   onHandleMove(key, offset) {
     return (event) => {
-      const value = valueWithPrecision(this.state.scale.invert(event.pageX + offset),
-                                       this.precision);
+      if (!event.dx) return;
+
+      const { pageX, dx } = event;
+      const { scale, values } = this.state;
+
+      const nextPos = scale(values[key]) + dx;
+      if (!(ensureWithinRange(pageX, [nextPos - (offset * 2), nextPos]) === pageX)) return;
+
+      const value = valueWithPrecision(scale.invert(nextPos), this.precision);
 
       this.updateValueFromEvent(value, key);
     };
