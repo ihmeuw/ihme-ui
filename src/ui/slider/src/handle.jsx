@@ -76,21 +76,28 @@ export default class Handle extends PureComponent {
 }
 
 Handle.propTypes = {
+  className: CommonPropTypes.className,
+  style: PropTypes.object,
+  snapTarget: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.object,
+  ]).isRequired,
   direction: PropTypes.oneOf(['left', 'right', 'middle']),
   position: PropTypes.number.isRequired,
+
+  /* label and labelFunc control what is displayed on the handle */
   label: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,
   ]).isRequired,
   labelFunc: PropTypes.func,
+
+  /* value key name */
   name: PropTypes.string.isRequired,
+
+  /* events */
   onMove: PropTypes.func.isRequired,
   onKeyDown: PropTypes.func,
-  snapTarget: PropTypes.oneOfType([
-    PropTypes.func,
-    PropTypes.object,
-  ]).isRequired,
-  className: CommonPropTypes.className,
 };
 
 Handle.defaultProps = {
