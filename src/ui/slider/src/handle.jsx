@@ -29,7 +29,6 @@ export default class Handle extends PureComponent {
 
   componentWillReceiveProps(newProps) {
     if (this.props.snapTarget !== newProps.snapTarget) {
-      if (this._interactable) this._interactable.unset();
       this.bindInteract(newProps.snapTarget);
     }
   }
@@ -39,8 +38,8 @@ export default class Handle extends PureComponent {
   }
 
   bindInteract(snapTarget) {
+    if (this._interactable) this._interactable.unset();
     const offset = getOffset(this.props.direction, this._handle.getBoundingClientRect().width);
-
     this._interactable = interact(this._handle)
       .origin('parent')
       .draggable({

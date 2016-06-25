@@ -15,7 +15,6 @@ export default class Track extends PureComponent {
 
   componentWillReceiveProps(newProps) {
     if (this.props.snapTarget !== newProps.snapTarget) {
-      if (this._interactable) this._interactable.unset();
       this.bindInteract(newProps.snapTarget);
     }
   }
@@ -31,8 +30,8 @@ export default class Track extends PureComponent {
   bindInteract(snapTarget) {
     if (isEmpty(snapTarget)) return;
 
+    if (this._interactable) this._interactable.unset();
     const snapTargetFunc = getSnapTargetFunc(snapTarget);
-
     this._interactable = interact(this._track)
       .origin('self')
       .styleCursor(false)
