@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import classNames from 'classnames';
 import d3Scale from 'd3-scale';
-import { bindAll, identity, map, zipObject } from 'lodash';
+import { bindAll, identity, map, reduce, zipObject } from 'lodash';
 
 import Track from './track';
 import Fill from './fill';
@@ -52,6 +53,7 @@ export default class Slider extends React.Component {
 
     this.handleCount = Object.keys(this.state.values).length;
 
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
     bindAll(this, [
       'onHandleMove',
       'onHandleKeyDown',
@@ -77,13 +79,10 @@ export default class Slider extends React.Component {
       this.receiveTrackWidth(newProps);
     }
 
-    ['fillStyle'].reduce((acc, prop) => {
-      return newProps[prop] !== this.props[prop] ? { ...acc, [prop]: newProps[prop] } : acc;
-    }, state);
-
     this.setState({
-      values: getMinMaxValues(newProps.value),
-      ...state,
+      ...reduce(Slider.propUpdates, (acc, value, key) => {
+        return value(acc, this.props[key], newProps[key]);
+      }, state),
     });
   }
 
@@ -303,4 +302,13 @@ Slider.defaultProps = {
   labelFunc: identity,
   fill: false,
   fillColor: '#ccc',
+};
+
+Slider.propUpdates = {
+  fillColor: (state, prevProp, nextProp) => {
+    return prevProp !== nextProp ? { ...state, fillStyle: { backgroundColor: nextProp } } : state;
+  },
+  value: (state, prevProp, nextProp) => {
+    return prevProp !== nextProp ? { ...state, values: getMinMaxValues(nextProp) } : state;
+  },
 };
