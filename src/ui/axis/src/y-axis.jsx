@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
 import { omit } from 'lodash';
+import { oneOfProp } from '../../../utils';
 
-import Axis, { calcTranslate, oneOfProp, AXIS_SCALE_PROP_TYPES } from './axis';
+import Axis, { calcTranslate, AXIS_SCALE_PROP_TYPES } from './axis';
 
 export default function YAxis(props) {
   const axisProps = omit(props, ['scales', 'translate', 'dimensions']);
