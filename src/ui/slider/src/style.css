@@ -38,7 +38,7 @@
   vertical-align: middle;
   white-space: nowrap;
   color: #27ae60;
-  transition: all 0.3s ease-out;
+  /*transition: all 0.3s ease-out;*/
   background-color: transparent;
   border: solid #27ae60;
   border-width: 0 1px;
@@ -86,7 +86,7 @@
 
 .fill {
   position: absolute;
-  transition: width 0.3s ease-out;
+  /*transition: width 0.3s ease-out;*/
 }
 
 .fill.left {
