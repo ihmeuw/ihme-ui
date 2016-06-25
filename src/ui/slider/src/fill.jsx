@@ -1,29 +1,33 @@
 import React, { PropTypes } from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import classNames from 'classnames';
 
 import { getDimension } from './util';
 import style from './style.css';
 
-function getWidth(props) {
-  const width = getDimension(props.width);
-  if (props.direction === 'right') {
-    return `calc(100% - ${width})`;
+export default class Fill extends React.Component {
+  static getWidth(width, direction) {
+    return direction === 'right' ? `calc(100% - ${getDimension(width)})` : getDimension(width);
   }
-  return width;
-}
 
-export default function Fill(props) {
-  return (
-    <div
-      className={classNames(style.fill, style[props.direction])}
-      style={{
-        height: getDimension(props.height),
-        width: getWidth(props),
-        ...props.fillStyle,
-      }}
-    >
-    </div>
-  );
+  constructor(props) {
+    super(props);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+  }
+
+  render() {
+    return (
+      <div
+        className={classNames(style.fill, style[this.props.direction])}
+        style={{
+          width: Fill.getWidth(this.props.width, this.props.direction),
+          height: getDimension(this.props.height),
+          ...this.props.fillStyle,
+        }}
+      >
+      </div>
+    );
+  }
 }
 
 Fill.propTypes = {

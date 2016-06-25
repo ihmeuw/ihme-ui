@@ -47,6 +47,7 @@ export default class Slider extends React.Component {
         .clamp(true)
         .domain([props.minValue, props.maxValue]),
       snapTarget: {},
+      fillStyle: { backgroundColor: this.props.fillColor },
     };
 
     this.handleCount = Object.keys(this.state.values).length;
@@ -66,6 +67,8 @@ export default class Slider extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
+    const state = {};
+
     // If the extents or width changes, the scale and snapTarget must be recalculated.
     if ((this.props.minValue !== newProps.minValue) ||
         (this.props.maxValue !== newProps.maxValue) ||
@@ -74,7 +77,14 @@ export default class Slider extends React.Component {
       this.receiveTrackWidth(newProps);
     }
 
-    this.setState({ values: getMinMaxValues(newProps.value) });
+    ['fillStyle'].reduce((acc, prop) => {
+      return newProps[prop] !== this.props[prop] ? { ...acc, [prop]: newProps[prop] } : acc;
+    }, state);
+
+    this.setState({
+      values: getMinMaxValues(newProps.value),
+      ...state,
+    });
   }
 
   componentDidUpdate(prevProps) {
@@ -178,7 +188,7 @@ export default class Slider extends React.Component {
   }
 
   renderFill() {
-    const { values, scale } = this.state;
+    const { values, scale, fillStyle } = this.state;
 
     return map(values, (value, key) => {
       const direction = key === 'min' ? 'left' : 'right';
@@ -188,7 +198,7 @@ export default class Slider extends React.Component {
           key={key}
           direction={direction}
           width={scale(value)}
-          fillStyle={{ backgroundColor: this.props.fillColor }}
+          fillStyle={fillStyle}
         />
       );
     });
@@ -223,9 +233,9 @@ export default class Slider extends React.Component {
 }
 
 Slider.propTypes = {
-  /* height and width of Slider component. */
-  height: PropTypes.number,
+  /* width and height of Slider component. */
   width: PropTypes.number,
+  height: PropTypes.number,
 
   /* extents of slider values. */
   minValue: PropTypes.number.isRequired,
