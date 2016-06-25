@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
 import classNames from 'classnames';
 import d3Scale from 'd3-scale';
 import { bindAll, identity, map, reduce, zipObject } from 'lodash';
+import { PureComponent } from '../../../utils';
 
 import Track from './track';
 import Fill from './fill';
@@ -37,7 +37,7 @@ function valueByHandleCount(value, handleCount) {
   return value;
 }
 
-export default class Slider extends React.Component {
+export default class Slider extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -53,7 +53,6 @@ export default class Slider extends React.Component {
 
     this.handleCount = Object.keys(this.state.values).length;
 
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
     bindAll(this, [
       'onHandleMove',
       'onHandleKeyDown',

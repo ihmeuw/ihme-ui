@@ -1,18 +1,13 @@
 import React, { PropTypes } from 'react';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
 import classNames from 'classnames';
+import { PureComponent } from '../../../utils';
 
 import { getDimension } from './util';
 import style from './style.css';
 
-export default class Fill extends React.Component {
+export default class Fill extends PureComponent {
   static getWidth(width, direction) {
     return direction === 'right' ? `calc(100% - ${getDimension(width)})` : getDimension(width);
-  }
-
-  constructor(props) {
-    super(props);
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   render() {

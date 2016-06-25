@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import interact from 'interact.js';
 import { identity, noop } from 'lodash';
+import { PureComponent } from '../../../utils';
 
 import { getDimension, getSnapTargetFunc } from './util';
 import style from './style.css';
@@ -15,7 +16,7 @@ function getOffset(direction, width) {
   return 0;
 }
 
-export default class Handle extends React.Component {
+export default class Handle extends PureComponent {
   constructor(props) {
     super(props);
 
