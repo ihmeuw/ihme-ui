@@ -39,3 +39,7 @@ export {
 export {
   getStringWidth
 } from './strings';
+
+export {
+  oneOfProp,
+} from './props';
