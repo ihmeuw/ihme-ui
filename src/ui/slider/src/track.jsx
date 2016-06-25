@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import interact from 'interact.js';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 
 import { getSnapTargetFunc } from './util';
 import style from './style.css';
@@ -8,7 +9,7 @@ import style from './style.css';
 export default class Track extends React.Component {
   constructor(props) {
     super(props);
-
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
     this.trackRef = this.trackRef.bind(this);
   }
 
