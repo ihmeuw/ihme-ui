@@ -57,8 +57,6 @@ export default class Slider extends PureComponent {
       'onHandleMove',
       'onHandleKeyDown',
       'onTrackClick',
-      'renderHandle',
-      'renderFill',
       'trackRef',
     ]);
   }
@@ -162,49 +160,42 @@ export default class Slider extends PureComponent {
     this._track = ref;
   }
 
-  renderHandle() {
-    const { values } = this.state;
+  renderControls() {
+    if (!this.state.render) return null;
+
+    const { values, scale, snapTarget, fillStyle } = this.state;
+    const { fill, labelFunc } = this.props;
 
     return map(values, (value, key) => {
       const direction = key === 'min' ? 'left' : 'right';
-
-      return (
+      const position = scale(value);
+      return [(
         <Handle
-          key={key}
-          name={key}
-          direction={direction}
-          position={this.state.scale(value)}
+          key={`handle:${key}`}
+          className={classNames({ [style.connected]: values.min === values.max })}
           onMove={this.onHandleMove}
           onKeyDown={this.onHandleKeyDown}
-          label={value}
-          labelFunc={this.props.labelFunc}
-          snapTarget={this.state.snapTarget}
-          className={classNames({ [style.connected]: values.min === values.max })}
-        />
-      );
-    });
-  }
-
-  renderFill() {
-    const { values, scale, fillStyle } = this.state;
-
-    return map(values, (value, key) => {
-      const direction = key === 'min' ? 'left' : 'right';
-
-      return (
-        <Fill
-          key={key}
+          name={key}
           direction={direction}
-          width={scale(value)}
-          fillStyle={fillStyle}
+          position={position}
+          label={value}
+          labelFunc={labelFunc}
+          snapTarget={snapTarget}
         />
-      );
+      ), (
+        fill && <Fill
+          key={`fill:${key}`}
+          fillStyle={fillStyle}
+          direction={direction}
+          width={position}
+        />
+      )];
     });
   }
 
   render() {
     const { height, width, wrapperStyles, wrapperClassName } = this.props;
-    const { render } = this.state;
+    const { snapTarget } = this.state;
 
     const styles = {
       height: `${height}px`,
@@ -218,12 +209,11 @@ export default class Slider extends PureComponent {
         style={styles}
       >
         <Track
-          onClick={this.onTrackClick}
-          snapTarget={this.state.snapTarget}
           ref={this.trackRef}
+          onClick={this.onTrackClick}
+          snapTarget={snapTarget}
         >
-          {render && this.props.fill && this.renderFill()}
-          {render && this.renderHandle()}
+          {this.renderControls()}
         </Track>
       </div>
     );
