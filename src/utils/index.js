@@ -42,5 +42,6 @@ export {
 } from './strings';
 
 export {
+  CommonPropTypes,
   oneOfProp,
 } from './props';

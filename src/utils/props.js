@@ -1,4 +1,13 @@
+import { PropTypes } from 'react';
 import intersection from 'lodash/intersection';
+
+export const CommonPropTypes = {
+  className: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.array,
+    PropTypes.object,
+  ])
+};
 
 export function oneOfProp(propTypes) {
   return (props, propName, componentName, location, propFullName) => {
