@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { getScale, getScaleTypes } from '../../../utils';
+import { CommonPropTypes, getScale, getScaleTypes } from '../../../utils';
 
 const SCALE_TYPES = getScaleTypes();
 
@@ -52,10 +52,7 @@ export default class AxisChart extends React.Component {
 
 AxisChart.propTypes = {
   /* class names to appended to the element */
-  className: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.object,
-  ]),
+  className: CommonPropTypes.className,
 
   /* [min, max] for xScale (i.e., the domain of the data) */
   xDomain: PropTypes.array,

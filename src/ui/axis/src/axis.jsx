@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { axisBottom, axisLeft, axisRight, axisTop } from 'd3-axis';
 import { select } from 'd3-selection';
 import { mean } from 'lodash';
-import { oneOfProp } from '../../../utils';
+import { CommonPropTypes, oneOfProp } from '../../../utils';
 import { calcLabelPosition } from './utils';
 
 import style from './axis.css';
@@ -77,10 +77,7 @@ export const AXIS_SCALE_PROP_TYPES = {
 
 Axis.propTypes = {
   label: PropTypes.any,
-  labelClassName: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.object,
-  ]),
+  labelClassName: CommonPropTypes.className,
   labelStyle: PropTypes.object,
 
   padding: PropTypes.shape({
@@ -94,10 +91,7 @@ Axis.propTypes = {
   orientation: PropTypes.oneOf(Object.keys(AXIS_TYPES)).isRequired,
 
   /* class name and style to apply to the axis */
-  className: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.object,
-  ]),
+  className: CommonPropTypes.className,
   style: PropTypes.object,
 
   /* push axis in x or y directions */
