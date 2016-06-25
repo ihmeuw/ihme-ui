@@ -107,7 +107,6 @@ class App extends React.Component {
           <div>
             <Button
               text="Set new min/max"
-              theme="light"
               clickHandler={this.setNewMinMax}
             />
           </div>
@@ -121,7 +120,6 @@ class App extends React.Component {
           <div>
             <Button
               text="Set new width"
-              theme="light"
               clickHandler={this.setNewWidth}
             />
           </div>
