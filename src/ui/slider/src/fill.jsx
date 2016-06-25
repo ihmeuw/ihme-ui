@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { PureComponent } from '../../../utils';
+import { CommonPropTypes, PureComponent } from '../../../utils';
 
 import { getDimension } from './util';
 import style from './style.css';
@@ -13,7 +13,7 @@ export default class Fill extends PureComponent {
   render() {
     return (
       <div
-        className={classNames(style.fill, style[this.props.direction])}
+        className={classNames(style.fill, style[this.props.direction], this.props.className)}
         style={{
           width: Fill.getWidth(this.props.width, this.props.direction),
           height: getDimension(this.props.height),
@@ -36,6 +36,7 @@ Fill.propTypes = {
     PropTypes.number,
   ]),
   fillStyle: PropTypes.object,
+  className: CommonPropTypes.className,
 };
 
 Fill.defaultProps = {

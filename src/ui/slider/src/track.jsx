@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 import interact from 'interact.js';
 import isEmpty from 'lodash/isEmpty';
-import { PureComponent } from '../../../utils';
+import { CommonPropTypes, PureComponent } from '../../../utils';
 
 import { getSnapTargetFunc } from './util';
 import style from './style.css';
@@ -50,7 +51,7 @@ export default class Track extends PureComponent {
 
   render() {
     return (
-      <div className={style.track}>
+      <div className={classNames(style.track, this.props.className)} style={this.props.style}>
         <div ref={this.trackRef} className={style['track-click-target']}></div>
         {this.props.children}
       </div>
@@ -59,6 +60,8 @@ export default class Track extends PureComponent {
 }
 
 Track.propTypes = {
+  className: CommonPropTypes.className,
+  style: PropTypes.object,
   children: PropTypes.node,
   onClick: PropTypes.func.isRequired,
   snapTarget: PropTypes.oneOfType([

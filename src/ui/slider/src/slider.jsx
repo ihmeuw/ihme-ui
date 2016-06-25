@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import d3Scale from 'd3-scale';
 import { bindAll, identity, map, reduce, zipObject } from 'lodash';
-import { PureComponent } from '../../../utils';
+import { CommonPropTypes, PureComponent } from '../../../utils';
 
 import Track from './track';
 import Fill from './fill';
@@ -236,11 +236,7 @@ Slider.propTypes = {
   wrapperStyles: PropTypes.object,
 
   /* any additional classes to add to outermost wrapper */
-  wrapperClassName: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.object,
-    PropTypes.array,
-  ]),
+  wrapperClassName: CommonPropTypes.className,
 
   /*
    * Initial selected value.

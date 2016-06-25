@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import interact from 'interact.js';
 import { identity, noop } from 'lodash';
-import { PureComponent } from '../../../utils';
+import { CommonPropTypes, PureComponent } from '../../../utils';
 
 import { getDimension, getSnapTargetFunc } from './util';
 import style from './style.css';
@@ -91,7 +91,7 @@ Handle.propTypes = {
     PropTypes.func,
     PropTypes.object,
   ]).isRequired,
-  className: PropTypes.string,
+  className: CommonPropTypes.className,
 };
 
 Handle.defaultProps = {
