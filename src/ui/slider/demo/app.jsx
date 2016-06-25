@@ -5,6 +5,7 @@ import { percentOfRange, numFromPercent } from '../../../utils/';
 
 import Slider from '../';
 import Button from '../../button';
+import { getFloatPrecision, valueWithPrecision } from '../src/util';
 
 function getValueOrPlaceholder(el) {
   return +(el.value || el.placeholder);
@@ -68,8 +69,9 @@ class App extends React.Component {
     const newExtent = [minExtent, maxExtent].sort((a, b) => { return a - b; });
     const oldExtent = [this.state.minValue, this.state.maxValue];
 
-    const valueSetter = (value) => {
-      return Math.floor(numFromPercent(percentOfRange(value, oldExtent), newExtent));
+    const valueSetter = (value, step) => {
+      return valueWithPrecision(numFromPercent(percentOfRange(value, oldExtent), newExtent),
+                                getFloatPrecision(step));
     };
 
     this.setState({
@@ -77,10 +79,10 @@ class App extends React.Component {
       maxValue: Math.max(...newExtent),
       step: newStep,
       rangeSliderValues: {
-        min: valueSetter(this.state.rangeSliderValues.min),
-        max: valueSetter(this.state.rangeSliderValues.max),
+        min: valueSetter(this.state.rangeSliderValues.min, newStep),
+        max: valueSetter(this.state.rangeSliderValues.max, newStep),
       },
-      singleValue: valueSetter(this.state.singleValue),
+      singleValue: valueSetter(this.state.singleValue, newStep),
     });
 
     this.nextExtent = [this.randomGenerator([1900, 2016]), this.randomGenerator([1900, 2016])];
