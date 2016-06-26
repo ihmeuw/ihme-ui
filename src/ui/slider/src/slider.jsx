@@ -201,7 +201,7 @@ export default class Slider extends PureComponent {
   }
 
   render() {
-    const { height, width, wrapperStyles, wrapperClassName } = this.props;
+    const { height, width, wrapperStyles, wrapperClassName, ticks } = this.props;
     const { snapTarget } = this.state;
 
     const styles = {
@@ -219,6 +219,7 @@ export default class Slider extends PureComponent {
           ref={this.trackRef}
           onClick={this.onTrackClick}
           snapTarget={snapTarget}
+          ticks={ticks}
         >
           {this.renderControls()}
         </Track>
@@ -277,6 +278,9 @@ Slider.propTypes = {
 
   /* style for the fill color. */
   fillColor: PropTypes.string,
+
+  /* show ticks in track */
+  ticks: PropTypes.bool,
 
   /*
    * callback function when value is changed.
