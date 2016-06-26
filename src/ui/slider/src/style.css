@@ -27,7 +27,7 @@
   z-index: 1;
 }
 
-.track-tick {
+.track-ticks {
   z-index: 1;
   pointer-events: none;
   opacity: 0.1;

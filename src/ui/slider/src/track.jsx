@@ -2,9 +2,9 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import interact from 'interact.js';
 import isEmpty from 'lodash/isEmpty';
-import map from 'lodash/map';
 import { CommonPropTypes, PureComponent } from '../../../utils';
 
+import Ticks from './ticks';
 import { getSnapTargetFunc } from './util';
 import style from './style.css';
 
@@ -61,30 +61,18 @@ export default class Track extends PureComponent {
     this._track = ref;
   }
 
-  renderTicks() {
-    if (!this.state.ticks) return null;
-
-    return (
-      <svg className={style['track-tick']} width="100%" height="100%">
-        {
-          map(this.state.ticks, (x) => {
-            return (
-              <g key={x}>
-                <line x1={x} x2={x} y1="0%" y2="100%" stroke="black" />
-              </g>
-            );
-          })
-        }
-      </svg>
-    );
-  }
-
   render() {
     return (
       <div className={classNames(style.track, this.props.className)} style={this.props.style}>
         <div ref={this.trackRef} className={style['track-click-target']}></div>
         {this.props.children}
-        {this.renderTicks()}
+        {this.state.ticks && (
+          <Ticks
+            className={this.props.ticksClassName || style['track-ticks']}
+            style={this.props.ticksStyle}
+            x={this.state.ticks}
+          />
+        )}
       </div>
     );
   }
@@ -99,5 +87,9 @@ Track.propTypes = {
     PropTypes.func,
     PropTypes.object,
   ]).isRequired,
+
+  /* show ticks */
   ticks: PropTypes.bool,
+  ticksClassName: CommonPropTypes.className,
+  ticksStyle: PropTypes.object,
 };
