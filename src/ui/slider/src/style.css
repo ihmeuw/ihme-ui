@@ -27,6 +27,12 @@
   z-index: 1;
 }
 
+.track-tick {
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.1;
+}
+
 .flag {
   position: absolute;
   bottom: calc(100% + 3px);
