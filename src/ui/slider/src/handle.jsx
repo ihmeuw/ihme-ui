@@ -28,7 +28,8 @@ export default class Handle extends PureComponent {
   }
 
   componentWillReceiveProps(newProps) {
-    if (this.props.snapTarget !== newProps.snapTarget) {
+    if (this.props.snapTarget !== newProps.snapTarget ||
+        this.props.height !== newProps.height) {
       this.bindInteract(newProps.snapTarget);
     }
   }

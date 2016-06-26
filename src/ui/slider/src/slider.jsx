@@ -7,6 +7,7 @@ import { CommonPropTypes, PureComponent, ensureWithinRange } from '../../../util
 import Track from './track';
 import Fill from './fill';
 import Handle from './handle';
+import ResponsiveContainer from '../../responsive-container';
 import { getFloatPrecision, valueWithPrecision } from './util';
 import style from './style.css';
 
@@ -199,18 +200,21 @@ export default class Slider extends PureComponent {
           const direction = key === 'min' ? 'left' : 'right';
           const position = scale(value);
           return (
-            <Handle
+            <ResponsiveContainer
               key={`handle:${key}`}
-              className={classNames({ [style.connected]: values.min === values.max })}
-              onMove={this.onHandleMove}
-              onKeyDown={this.onHandleKeyDown}
-              name={key}
-              direction={direction}
-              position={position}
-              label={value}
-              labelFunc={labelFunc}
-              snapTarget={snapTarget}
-            />
+            >
+              <Handle
+                className={classNames({ [style.connected]: values.min === values.max })}
+                onMove={this.onHandleMove}
+                onKeyDown={this.onHandleKeyDown}
+                name={key}
+                direction={direction}
+                position={position}
+                label={value}
+                labelFunc={labelFunc}
+                snapTarget={snapTarget}
+              />
+            </ResponsiveContainer>
           );
         })}
       </div>
@@ -218,10 +222,11 @@ export default class Slider extends PureComponent {
   }
 
   render() {
-    const { width, wrapperStyles, wrapperClassName, ticks } = this.props;
+    const { fontSize, width, wrapperStyles, wrapperClassName, ticks } = this.props;
     const { snapTarget } = this.state;
 
     const styles = {
+      fontSize: `${fontSize}`,
       width: `${width}px`,
       ...wrapperStyles,
     };
@@ -246,6 +251,8 @@ export default class Slider extends PureComponent {
 }
 
 Slider.propTypes = {
+  fontSize: PropTypes.string,
+
   /* width and height of Slider component. */
   width: PropTypes.number,
 
