@@ -1,6 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import d3Random from 'd3-random';
+import bindAll from 'lodash/bindAll';
 import { percentOfRange, numFromPercent } from '../../../utils/';
 
 import Slider from '../';
@@ -8,7 +9,7 @@ import Button from '../../button';
 import { getFloatPrecision, valueWithPrecision } from '../src/util';
 
 function getValueOrPlaceholder(el) {
-  return +(el.value || el.placeholder);
+  return el.value || el.placeholder;
 }
 
 class App extends React.Component {
@@ -18,6 +19,7 @@ class App extends React.Component {
     this.items = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'];
 
     this.state = {
+      fontSize: '9pt',
       width: 200,
       minValue: 2001,
       maxValue: 2025,
@@ -36,13 +38,17 @@ class App extends React.Component {
 
     this.nextExtent = [this.randomGenerator([1900, 2016]), this.randomGenerator([1900, 2016])];
     this.nextWidth = this.randomGenerator([150, 300]);
+    this.nextFontSize = `${this.randomGenerator([6, 24])}pt`;
 
-    this.onChange = this.onChange.bind(this);
-    this.onSingleValueChange = this.onSingleValueChange.bind(this);
-    this.setNewMinMax = this.setNewMinMax.bind(this);
-    this.setNewWidth = this.setNewWidth.bind(this);
-    this.onListValueChange = this.onListValueChange.bind(this);
-    this.listLabelFunc = this.listLabelFunc.bind(this);
+    bindAll(this, [
+      'onChange',
+      'onSingleValueChange',
+      'onListValueChange',
+      'setNewMinMax',
+      'setNewWidth',
+      'setNewFontSize',
+      'listLabelFunc',
+    ]);
   }
 
 
@@ -62,9 +68,9 @@ class App extends React.Component {
   }
 
   setNewMinMax() {
-    const minExtent = getValueOrPlaceholder(document.getElementById('newMinExtent'));
-    const maxExtent = getValueOrPlaceholder(document.getElementById('newMaxExtent'));
-    const newStep = getValueOrPlaceholder(document.getElementById('newStep'));
+    const minExtent = +getValueOrPlaceholder(document.getElementById('newMinExtent'));
+    const maxExtent = +getValueOrPlaceholder(document.getElementById('newMaxExtent'));
+    const newStep = +getValueOrPlaceholder(document.getElementById('newStep'));
 
     const newExtent = [minExtent, maxExtent].sort((a, b) => { return a - b; });
     const oldExtent = [this.state.minValue, this.state.maxValue];
@@ -89,12 +95,21 @@ class App extends React.Component {
   }
 
   setNewWidth() {
-    const newWidth = getValueOrPlaceholder(document.getElementById('newWidth'));
+    const newWidth = +getValueOrPlaceholder(document.getElementById('newWidth'));
 
     this.setState({
       width: newWidth,
     });
     this.nextWidth = this.randomGenerator([150, 300]);
+  }
+
+  setNewFontSize() {
+    const newFontSize = getValueOrPlaceholder(document.getElementById('newFontSize'));
+
+    this.setState({
+      fontSize: newFontSize,
+    });
+    this.nextFontSize = `${this.randomGenerator([6, 24])}pt`;
   }
 
   listLabelFunc(value) {
@@ -128,6 +143,15 @@ class App extends React.Component {
           <div>
             <input id="newWidth" type="text" placeholder={`${this.nextWidth}`} />
           </div>
+          <div>
+            <Button
+              text="Set new font size"
+              clickHandler={this.setNewFontSize}
+            />
+          </div>
+          <div>
+            <input id="newFontSize" type="text" placeholder={`${this.nextFontSize}`} />
+          </div>
         </aside>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <section>
@@ -148,7 +172,7 @@ class App extends React.Component {
     />
 </code></pre> */}
             <Slider
-              wrapperStyles={{ fontSize: '9pt' }}
+              fontSize={this.state.fontSize}
               width={this.state.width}
               height={24}
               minValue={this.state.minValue}
@@ -174,6 +198,7 @@ class App extends React.Component {
     />
 </code></pre> */}
             <Slider
+              fontSize={this.state.fontSize}
               width={this.state.width}
               height={24}
               minValue={this.state.minValue}
@@ -201,6 +226,7 @@ class App extends React.Component {
     />
 </code></pre> */}
             <Slider
+              fontSize={this.state.fontSize}
               width={this.state.width}
               height={24}
               minValue={0}
