@@ -144,6 +144,7 @@ class App extends React.Component {
         max: 2005, //(initially)
       }}
       fill
+      ticks
     />
 </code></pre> */}
             <Slider
@@ -155,6 +156,7 @@ class App extends React.Component {
               value={this.state.rangeSliderValues}
               step={this.state.step}
               fill
+              ticks
             />
           </section>
           <section>
