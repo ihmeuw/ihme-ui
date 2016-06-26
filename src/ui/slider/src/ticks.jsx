@@ -8,6 +8,8 @@ export default class Ticks extends PureComponent {
       <svg
         className={this.props.className}
         style={this.props.style}
+        width="100%"
+        height="100%"
       >
         {
           map(this.props.x, (x) => {

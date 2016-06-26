@@ -64,7 +64,6 @@ export default class Track extends PureComponent {
   render() {
     return (
       <div className={classNames(style.track, this.props.className)} style={this.props.style}>
-        <div ref={this.trackRef} className={style['track-click-target']}></div>
         {this.props.children}
         {this.state.ticks && (
           <Ticks
@@ -73,6 +72,7 @@ export default class Track extends PureComponent {
             x={this.state.ticks}
           />
         )}
+        <div ref={this.trackRef} className={style['track-click-target']}></div>
       </div>
     );
   }

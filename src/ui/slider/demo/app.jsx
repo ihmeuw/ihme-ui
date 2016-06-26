@@ -148,6 +148,7 @@ class App extends React.Component {
     />
 </code></pre> */}
             <Slider
+              wrapperStyles={{ fontSize: '9pt' }}
               width={this.state.width}
               height={24}
               minValue={this.state.minValue}
