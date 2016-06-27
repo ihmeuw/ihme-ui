@@ -8,15 +8,14 @@ const padding = {
   top: 40,
   right: 50,
   left: 50,
-  bottom: 40
+  bottom: 40,
 };
 
 const width = 950;
 const height = 500;
 
-class App extends React.Component {
- render() {
-   return (
+function App() {
+  return (
     <svg width={`${width}px`} height={`${height}px`}>
       <g transform={`translate(${padding.left}, ${padding.top})`}>
         <XAxis
@@ -37,7 +36,7 @@ class App extends React.Component {
           padding={padding}
         />
         <YAxis
-          scale={ d3Scale.scaleLinear().range([height - (padding.bottom + padding.top), 0]) }
+          scale={d3Scale.scaleLinear().range([height - (padding.bottom + padding.top), 0])}
           width={width - (padding.right + padding.left)}
           height={height - (padding.bottom + padding.top)}
           orientation="left"
@@ -45,7 +44,7 @@ class App extends React.Component {
           padding={padding}
         />
         <YAxis
-          scale={ d3Scale.scaleLinear().domain([0, 100]).range([height - (padding.bottom + padding.top), 0]) }
+          scale={d3Scale.scaleLinear().domain([0, 100]).range([height - (padding.bottom + padding.top), 0])}
           width={width - (padding.right + padding.left)}
           height={height - (padding.bottom + padding.top)}
           orientation="right"
@@ -54,8 +53,7 @@ class App extends React.Component {
         />
       </g>
     </svg>
-   );
- }
+  );
 }
 
 render(<App />, document.getElementById('app'));
