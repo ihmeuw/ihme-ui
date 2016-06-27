@@ -159,7 +159,6 @@ class App extends React.Component {
 {/* <pre><code>
     <Slider
       width={200}
-      height={24}
       minValue={2001}
       maxValue={2025}
       onChange={function (value, key) {...}}
@@ -189,7 +188,6 @@ class App extends React.Component {
 {/* <pre><code>
     <Slider
       width={200}
-      height={24}
       minValue={2001}
       maxValue={2025}
       onChange={function (value, key) {...}}
@@ -200,7 +198,6 @@ class App extends React.Component {
             <Slider
               fontSize={this.state.fontSize}
               width={this.state.width}
-              height={24}
               minValue={this.state.minValue}
               maxValue={this.state.maxValue}
               onChange={this.onSingleValueChange}
@@ -215,7 +212,6 @@ class App extends React.Component {
     items = ['red', 'orange', 'yellow', ...];
     <Slider
       width={200}
-      height={24}
       minValue={0}
       maxValue={items.length - 1}
       onChange={function (value, key) {...}}
@@ -228,7 +224,6 @@ class App extends React.Component {
             <Slider
               fontSize={this.state.fontSize}
               width={this.state.width}
-              height={24}
               minValue={0}
               maxValue={this.items.length - 1}
               onChange={this.onListValueChange}
