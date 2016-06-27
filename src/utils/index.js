@@ -44,4 +44,5 @@ export {
 export {
   CommonPropTypes,
   oneOfProp,
+  propsChanged,
 } from './props';

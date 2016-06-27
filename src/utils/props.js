@@ -1,5 +1,7 @@
 import { PropTypes } from 'react';
+import includes from 'lodash/includes';
 import intersection from 'lodash/intersection';
+import reduce from 'lodash/reduce';
 
 export const CommonPropTypes = {
   className: PropTypes.oneOfType([
@@ -24,4 +26,10 @@ export function oneOfProp(propTypes) {
     }
     return error && new Error(error);
   };
+}
+
+export function propsChanged(prevProps, nextProps, propsToCompare, propsToOmit) {
+  return !reduce(propsToCompare || Object.keys(nextProps), (acc, prop) => {
+    return acc && (includes(propsToOmit, prop) || prevProps[prop] === nextProps[prop]);
+  }, true);
 }
