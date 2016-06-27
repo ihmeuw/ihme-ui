@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import classNames from 'classnames';
-import { CommonPropTypes, getScale, getScaleTypes } from '../../../utils';
+import { CommonPropTypes, getScale, getScaleTypes, propsChanged } from '../../../utils';
 
 const SCALE_TYPES = getScaleTypes();
 
@@ -14,17 +15,51 @@ export function calcChartDimensions(width, height, padding) {
 export default class AxisChart extends React.Component {
   constructor(props) {
     super(props);
-
     const chartDimensions = calcChartDimensions(props.width, props.height, props.padding);
-    const scales = {
-      x: getScale(props.xScaleType)().domain(props.xDomain).range([0, chartDimensions.width]),
-      y: getScale(props.yScaleType)().domain(props.yDomain).range([chartDimensions.height, 0]),
-    };
-
     this.state = {
       chartDimensions,
-      scales,
+      scales: {
+        x: getScale(props.xScaleType)().domain(props.xDomain).range([0, chartDimensions.width]),
+        y: getScale(props.yScaleType)().domain(props.yDomain).range([chartDimensions.height, 0]),
+      },
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const state = {};
+
+    if (propsChanged(this.props, nextProps, ['width', 'height', 'padding'])) {
+      state.chartDimensions = calcChartDimensions(nextProps.width,
+                                                  nextProps.height,
+                                                  nextProps.padding);
+    }
+
+    /* eslint-disable no-cond-assign */
+    let xChanged;
+    let yChanged;
+    if ((xChanged = (state.chartDimensions ||
+                     propsChanged(this.props, nextProps, ['xScaleType', 'xDomain']))) ||
+        (yChanged = (state.chartDimensions ||
+                     propsChanged(this.props, nextProps, ['yScaleType', 'yDomain'])))) {
+      const chartDimensions = state.chartDimensions || this.state.chartDimensions;
+      state.scales = {
+        x: xChanged ?
+          getScale(nextProps.xScaleType)().domain(nextProps.xDomain)
+            .range([0, chartDimensions.width]) :
+          this.state.scales.x,
+        y: yChanged ?
+          getScale(nextProps.yScaleType)().domain(nextProps.yDomain)
+            .range([chartDimensions.height, 0]) :
+          this.state.scales.y,
+      };
+    }
+    /* eslint-enable no-cond-assign */
+
+    this.setState(state);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return PureRenderMixin.shouldComponentUpdate(this, nextProps, nextState);
   }
 
   render() {
