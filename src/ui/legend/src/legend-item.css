@@ -22,7 +22,7 @@
 
 .svg {
     margin-right: 0.25em;
-    flex: 0 0 16px;
+    flex: 0 0 auto;
 }
 
 .label {
