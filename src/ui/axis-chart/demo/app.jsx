@@ -96,6 +96,29 @@ class App extends React.Component {
             clickHandler={this.onClick}
           />
         </div>
+{/* <pre><code>
+   <AxisChart
+     width={800}
+     height={600}
+     padding={{ top: 20, bottom: 40, left: 55, right: 20 }}
+     xDomain={xDomain}
+     xScaleType="point"
+     yDomain={yDomain}
+     yScaleType="linear"
+   >
+     <XAxis label="Year" />
+     <YAxis label="Probability" />
+     <MultiLine
+       data={lineData}
+       keyField={'location'}
+       dataField={'values'}
+       colorScale={colorScale}
+       showUncertainty
+       dataAccessors={dataAccessors}
+     />
+   </AxisChart>
+
+</code></pre> */}
         <AxisChart
           width={this.state.width || dims.width}
           height={dims.height}
