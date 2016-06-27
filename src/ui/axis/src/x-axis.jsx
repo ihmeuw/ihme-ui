@@ -1,22 +1,30 @@
-import React, { PropTypes } from 'react';
+import { PropTypes } from 'react';
 import { scaleLinear } from 'd3-scale';
-import { omit } from 'lodash';
-import { oneOfProp } from '../../../utils';
+import { oneOfProp, propsChanged } from '../../../utils';
 
 import Axis, { AXIS_SCALE_PROP_TYPES } from './axis';
-import { calcTranslate } from './utils';
 
-export default function XAxis(props) {
-  const axisProps = omit(props, ['scales', 'translate', 'width', 'height']);
-  const translate = props.translate || calcTranslate(props.orientation, props.width, props.height);
+export default class XAxis extends Axis {
+  constructor(props) {
+    super(props);
+    this.state = {
+      ...this.state,
+      scale: props.scale || props.scales.x,
+    };
+  }
 
-  return (
-    <Axis
-      scale={props.scale || props.scales.x}
-      translate={translate}
-      {...axisProps}
-    />
-  );
+  componentWillReceiveProps(nextProps) {
+    super.componentWillReceiveProps(nextProps);
+
+    this.setState({
+      scale: nextProps.scale || nextProps.scales.x,
+    });
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return propsChanged(this.props, nextProps, undefined, ['scale', 'scales']) ||
+           propsChanged(this.state, nextState);
+  }
 }
 
 const X_AXIS_SCALE_PROP_TYPES = {
@@ -36,13 +44,6 @@ XAxis.propTypes = {
   /* scales are provided by axis-chart, only x scale is used by XAxis */
   scale: oneOfProp(X_AXIS_SCALE_PROP_TYPES),
   scales: oneOfProp(X_AXIS_SCALE_PROP_TYPES),
-
-  /*
-   dimensions are provided by axis-chart
-   used for calculating translate, required if translate is not specified
-  */
-  width: PropTypes.number,
-  height: PropTypes.number,
 };
 
 XAxis.defaultProps = {

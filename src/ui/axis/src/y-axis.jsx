@@ -1,22 +1,30 @@
-import React, { PropTypes } from 'react';
+import { PropTypes } from 'react';
 import { scaleLinear } from 'd3-scale';
-import { omit } from 'lodash';
-import { oneOfProp } from '../../../utils';
+import { oneOfProp, propsChanged } from '../../../utils';
 
 import Axis, { AXIS_SCALE_PROP_TYPES } from './axis';
-import { calcTranslate } from './utils';
 
-export default function YAxis(props) {
-  const axisProps = omit(props, ['scales', 'translate', 'width', 'height']);
-  const translate = props.translate || calcTranslate(props.orientation, props.width, props.height);
+export default class YAxis extends Axis {
+  constructor(props) {
+    super(props);
+    this.state = {
+      ...this.state,
+      scale: props.scale || props.scales.y,
+    };
+  }
 
-  return (
-    <Axis
-      scale={props.scale || props.scales.y}
-      translate={translate}
-      {...axisProps}
-    />
-  );
+  componentWillReceiveProps(nextProps) {
+    super.componentWillReceiveProps(nextProps);
+
+    this.setState({
+      scale: nextProps.scale || nextProps.scales.y,
+    });
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return propsChanged(this.props, nextProps, undefined, ['scale', 'scales']) ||
+           propsChanged(this.state, nextState);
+  }
 }
 
 const Y_AXIS_SCALE_PROP_TYPES = {
@@ -36,13 +44,6 @@ YAxis.propTypes = {
   /* scales are provided by axis-chart, only y scale is used by YAxis */
   scale: oneOfProp(Y_AXIS_SCALE_PROP_TYPES),
   scales: oneOfProp(Y_AXIS_SCALE_PROP_TYPES),
-
-  /*
-   dimensions are provided by axis-chart
-   used for calculating translate, required if translate is not specified
-  */
-  width: PropTypes.number,
-  height: PropTypes.number,
 };
 
 YAxis.defaultProps = {

@@ -17,7 +17,7 @@ export function calcTranslate(orientation, width = 0, height = 0) {
   };
 }
 
-export function calcLabelPosition({ orientation, translate, padding }, center) {
+export function calcLabelPosition(orientation, translate, padding, center) {
   switch (orientation) {
     case 'top':
       return {

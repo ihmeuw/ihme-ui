@@ -1,13 +1,14 @@
 import React, { PropTypes } from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import ReactFauxDom from 'react-faux-dom';
 import classNames from 'classnames';
 import { axisBottom, axisLeft, axisRight, axisTop } from 'd3-axis';
 import { scaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
-import { mean } from 'lodash';
-import { CommonPropTypes, oneOfProp } from '../../../utils';
-import { calcLabelPosition } from './utils';
+import mean from 'lodash/mean';
+import { CommonPropTypes, oneOfProp, propsChanged } from '../../../utils';
 
+import { calcLabelPosition, calcTranslate } from './utils';
 import style from './axis.css';
 
 export const AXIS_TYPES = {
@@ -25,51 +26,78 @@ const DEFAULT_TRANSLATE = {
 /**
  * Expose basic public API of d3-axis
  */
-export default function Axis(props) {
-  // create faux DOM element to use as context for D3 side-effects
-  const axisG = ReactFauxDom.createElement('g');
-  const gSelection = select(axisG)
-    .attr('class', classNames(style.common, props.className))
-    .attr('transform', `translate(${props.translate.x}, ${props.translate.y})`);
+export default class Axis extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      scale: props.scale,
+      translate: props.translate || calcTranslate(props.orientation, props.width, props.height),
+    };
+  }
 
-  // axis generator straight outta d3-axis
-  const axisGenerator = AXIS_TYPES[props.orientation](props.scale);
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      scale: nextProps.scale,
+      translate: nextProps.translate ||
+                 propsChanged(this.props, nextProps, ['orientation', 'width', 'height']) ?
+                   calcTranslate(nextProps.orientation, nextProps.width, nextProps.height) :
+                   this.state.translate,
+    });
+  }
 
-  // if we have configuration for the axis, apply it
-  if (props.ticks) axisGenerator.ticks(props.ticks);
-  if (props.tickArguments) axisGenerator.tickArguments(props.tickArguments);
-  if (props.tickFormat) axisGenerator.tickFormat(props.tickFormat);
-  if (props.tickSize) axisGenerator.tickSize(props.tickSize);
-  if (props.tickSizeInner) axisGenerator.tickSizeInner(props.tickSizeInner);
-  if (props.tickSizeOuter) axisGenerator.tickSizeOuter(props.tickSizeOuter);
-  if (props.tickPadding) axisGenerator.tickPadding(props.tickPadding);
-  if (props.tickValues) axisGenerator.tickValues(props.tickValues);
+  shouldComponentUpdate(nextProps, nextState) {
+    return PureRenderMixin.shouldComponentUpdate(this, nextProps, nextState);
+  }
 
-  axisGenerator(gSelection);
+  render() {
+    const { props, state } = this;
 
-  axisG.setAttribute('style', props.style);
+    // create faux DOM element to use as context for D3 side-effects
+    const axisG = ReactFauxDom.createElement('g');
+    const gSelection = select(axisG)
+      .attr('class', classNames(style.common, props.className))
+      .attr('transform', `translate(${state.translate.x}, ${state.translate.y})`);
 
-  const center = mean(props.scale.range());
+    // axis generator straight outta d3-axis
+    const axisGenerator = AXIS_TYPES[props.orientation](state.scale);
 
-  const labelPosition = props.label && calcLabelPosition(props, center);
+    // if we have configuration for the axis, apply it
+    if (props.ticks) axisGenerator.ticks(props.ticks);
+    if (props.tickArguments) axisGenerator.tickArguments(props.tickArguments);
+    if (props.tickFormat) axisGenerator.tickFormat(props.tickFormat);
+    if (props.tickSize) axisGenerator.tickSize(props.tickSize);
+    if (props.tickSizeInner) axisGenerator.tickSizeInner(props.tickSizeInner);
+    if (props.tickSizeOuter) axisGenerator.tickSizeOuter(props.tickSizeOuter);
+    if (props.tickPadding) axisGenerator.tickPadding(props.tickPadding);
+    if (props.tickValues) axisGenerator.tickValues(props.tickValues);
 
-  return (
-    <g>
-      {axisG.toReact()}
-      {props.label && <text
-        className={props.labelClassName}
-        style={props.labelStyle}
-        x={labelPosition.x}
-        y={labelPosition.y}
-        dx={labelPosition.dX}
-        dy={labelPosition.dY}
-        transform={`rotate(${labelPosition.rotate || 0})`}
-        textAnchor="middle"
-      >
-        {props.label}
-      </text>}
-    </g>
-  );
+    axisGenerator(gSelection);
+
+    axisG.setAttribute('style', props.style);
+
+    const center = mean(state.scale.range());
+
+    const labelPosition = props.label &&
+      calcLabelPosition(props.orientation, state.translate, props.padding, center);
+
+    return (
+      <g>
+        {axisG.toReact()}
+        {props.label && <text
+          className={props.labelClassName}
+          style={props.labelStyle}
+          x={labelPosition.x}
+          y={labelPosition.y}
+          dx={labelPosition.dX}
+          dy={labelPosition.dY}
+          transform={`rotate(${labelPosition.rotate || 0})`}
+          textAnchor="middle"
+        >
+          {props.label}
+        </text>}
+      </g>
+    );
+  }
 }
 
 export const AXIS_SCALE_PROP_TYPES = {
@@ -100,6 +128,13 @@ Axis.propTypes = {
     x: PropTypes.number,
     y: PropTypes.number,
   }),
+
+  /*
+   dimensions are provided by axis-chart
+   used for calculating translate, required if translate is not specified
+  */
+  width: PropTypes.number,
+  height: PropTypes.number,
 
   /* see d3-axis docs */
   ticks: PropTypes.number,
