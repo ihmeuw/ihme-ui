@@ -1,7 +1,7 @@
 import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import d3Scale from 'd3-scale';
 import { format } from 'd3-format';
 
@@ -87,44 +87,41 @@ describe('<Axis />', () => {
 
 describe('<XAxis />', () => {
   it('contains an <Axis />', () => {
-    const wrapper = shallow(
+    const wrapper = mount(
       <XAxis
         scale={dummyScale}
       />
     );
-    const expected = <Axis orientation="bottom" scale={dummyScale} translate={{ x: 0, y: 0 }} />;
-    expect(wrapper).to.contain(expected);
+    console.log(wrapper);
+    expect(wrapper).to.have.prop('orientation', 'bottom');
   });
 
   it('passes the x scale to <Axis />', () => {
-    const wrapper = shallow(
+    const wrapper = mount(
       <XAxis
         scales={{ x: dummyScale }}
       />
     );
-    const expected = <Axis orientation="bottom" scale={dummyScale} translate={{ x: 0, y: 0 }} />;
-    expect(wrapper).to.contain(expected);
+    expect(wrapper).to.have.state('scale', dummyScale);
   });
 });
 
 describe('<YAxis />', () => {
   it('contains an <Axis />', () => {
-    const wrapper = shallow(
+    const wrapper = mount(
       <YAxis
         scale={dummyScale}
       />
     );
-    const expected = <Axis orientation="left" scale={dummyScale} translate={{ x: 0, y: 0 }} />;
-    expect(wrapper).to.contain(expected);
+    expect(wrapper).to.have.prop('orientation', 'left');
   });
 
   it('passes the y scale to <Axis />', () => {
-    const wrapper = shallow(
+    const wrapper = mount(
       <YAxis
         scales={{ y: dummyScale }}
       />
     );
-    const expected = <Axis orientation="left" scale={dummyScale} translate={{ x: 0, y: 0 }} />;
-    expect(wrapper).to.contain(expected);
+    expect(wrapper).to.have.state('scale', dummyScale);
   });
 });

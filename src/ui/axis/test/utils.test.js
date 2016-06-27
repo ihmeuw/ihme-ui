@@ -23,14 +23,14 @@ describe('calcLabelPosition', () => {
 
   forEach(['top', 'bottom', 'left', 'right'], (orientation) => {
     it(`calculates label position for \`${orientation}\` orientation`, () => {
-      expect(calcLabelPosition({ ...props, orientation }, center))
+      expect(calcLabelPosition(orientation, props.translate, props.padding, center))
         .to.deep.equal(expectedResults[orientation]);
     });
   });
 
   it('returns the current translate for unsupported orientation', () => {
     const orientation = undefined;
-    expect(calcLabelPosition({ ...props, orientation }, center))
+    expect(calcLabelPosition(orientation, props.translate, props.padding, center))
       .to.deep.equal(expectedResults[orientation]);
   });
 });
