@@ -29,7 +29,9 @@ class App extends React.Component {
       },
       singleValue: 2015,
       listValue: 0,
-      fillColor: this.items[0],
+      fillStyle: {
+        backgroundColor: this.items[0],
+      },
     };
 
     this.randomGenerator = (range) => {
@@ -64,7 +66,12 @@ class App extends React.Component {
 
   onListValueChange(value) {
     console.log(this.items[value]);
-    this.setState({ listValue: value, fillColor: this.items[value] });
+    this.setState({
+      listValue: value,
+      fillStyle: {
+        backgroundColor: this.items[value],
+      },
+    });
   }
 
   setNewMinMax() {
@@ -218,7 +225,7 @@ class App extends React.Component {
       value={this.state.value}
       labelFunc={function (value) {...}}
       fill
-      fillColor={this.state.fillColor}
+      fillStyle={this.state.fillStyle}
     />
 </code></pre> */}
             <Slider
@@ -230,7 +237,7 @@ class App extends React.Component {
               value={this.state.listValue}
               labelFunc={this.listLabelFunc}
               fill
-              fillColor={this.state.fillColor}
+              fillStyle={this.state.style}
             />
           </section>
         </div>
