@@ -16,7 +16,7 @@ const valueField = 'population';
 
 const data = dataGenerator({
   primaryKeys: [
-    { name: 'location', values: ['Brazil', 'Russia', 'India', 'China'] }
+    { name: 'location', values: ['Brazil', 'Russia', 'India', 'China', 'Mexico', 'Indonesia', 'Nigeria', 'Vietnam'] }
   ],
   valueKeys: [
     { name: valueField, range: [100, 900], uncertainty: true }
@@ -32,7 +32,11 @@ const locationData = [
   { location: 'Brazil', values: data.filter((datum) => { return datum.location === 'Brazil'; }) },
   { location: 'Russia', values: data.filter((datum) => { return datum.location === 'Russia'; }) },
   { location: 'India', values: data.filter((datum) => { return datum.location === 'India'; }) },
-  { location: 'China', values: data.filter((datum) => { return datum.location === 'China'; }) }
+  { location: 'China', values: data.filter((datum) => { return datum.location === 'China'; }) },
+  { location: 'Mexico', values: data.filter((datum) => { return datum.location === 'Mexico'; }) },
+  { location: 'Indonesia', values: data.filter((datum) => { return datum.location === 'Indonesia'; }) },
+  { location: 'Nigeria', values: data.filter((datum) => { return datum.location === 'Nigeria'; }) },
+  { location: 'Vietnam', values: data.filter((datum) => { return datum.location === 'Vietnam'; }) }
 ];
   // [
   //   {location: 'Brazil', values: [
@@ -55,8 +59,8 @@ const keyFieldDomain = map(uniqBy(data, keyField), (obj) => { return (obj[keyFie
 // keyField: year_id
 
 const symbolScale = d3Scale.scaleOrdinal()
-    .domain(['Brazil', 'Russia', 'India', 'China'])
-    .range(['circle', 'square', 'triangle', 'cross']);
+    .domain(['Brazil', 'Russia', 'India', 'China', 'Mexico', 'Indonesia', 'Nigeria', 'Vietnam'])
+    .range(['circle', 'cross', 'diamond', 'line', 'square', 'star', 'triangle', 'wye']);
 
 const colorScale = d3Scale.scaleCategory10();
 
@@ -108,7 +112,7 @@ class App extends React.Component {
           <h3>Multiple datasets</h3>
           <pre><code>
     <MultiScatter
-      colorScale={d3Scale.scaleCategory10()}
+      colorScale={scale}
       data={[
         [datum1, datum2, ...],
         [...],
