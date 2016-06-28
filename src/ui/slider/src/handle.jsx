@@ -4,7 +4,7 @@ import interact from 'interact.js';
 import { identity, noop } from 'lodash';
 import { CommonPropTypes, PureComponent } from '../../../utils';
 
-import { getDimension, getSnapTargetFunc } from './util';
+import { getDimension, getSnapTargetFunc, stateFromPropUpdates, updateFunc } from './util';
 import style from './style.css';
 
 function getOffset(direction, width) {
@@ -19,6 +19,7 @@ function getOffset(direction, width) {
 export default class Handle extends PureComponent {
   constructor(props) {
     super(props);
+    this.state = stateFromPropUpdates(Handle.propUpdates, {}, props, {});
 
     this.handleRef = this.handleRef.bind(this);
   }
@@ -32,6 +33,8 @@ export default class Handle extends PureComponent {
         this.props.height !== newProps.height) {
       this.bindInteract(newProps.snapTarget);
     }
+
+    this.setState(stateFromPropUpdates(Handle.propUpdates, this.props, newProps, {}));
   }
 
   componentWillUnmount() {
@@ -66,7 +69,7 @@ export default class Handle extends PureComponent {
       <button
         type="button"
         className={classNames(this.props.className, style.flag, style[this.props.direction])}
-        style={{ left: getDimension(this.props.position) }}
+        style={this.state.style}
         ref={this.handleRef}
         onKeyDown={this.props.onKeyDown(this.props.name)}
       >
@@ -105,4 +108,10 @@ Handle.defaultProps = {
   direction: 'middle',
   labelFunc: identity,
   onKeyDown: noop,
+};
+
+Handle.propUpdates = {
+  position: updateFunc((nextProp, _, nextProps) => {
+    return { style: { ...nextProps.style, left: getDimension(nextProp) } };
+  }),
 };
