@@ -1,12 +1,15 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 import map from 'lodash/map';
 import { CommonPropTypes, PureComponent } from '../../../utils';
+
+import style from './style.css';
 
 export default class Ticks extends PureComponent {
   render() {
     return (
       <svg
-        className={this.props.className}
+        className={classNames(style['track-ticks'], this.props.className)}
         style={this.props.style}
         width="100%"
         height="100%"

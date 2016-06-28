@@ -67,8 +67,10 @@ export default class Track extends PureComponent {
         {this.props.children}
         {this.state.ticks && (
           <Ticks
-            className={this.props.ticksClassName || style['track-ticks']}
+            className={this.props.ticksClassName}
             style={this.props.ticksStyle}
+            tickClassName={this.props.tickClassName}
+            tickStyle={this.props.tickStyle}
             x={this.state.ticks}
           />
         )}
@@ -92,4 +94,6 @@ Track.propTypes = {
   ticks: PropTypes.bool,
   ticksClassName: CommonPropTypes.className,
   ticksStyle: PropTypes.object,
+  tickClassName: CommonPropTypes.className,
+  tickStyle: PropTypes.object,
 };
