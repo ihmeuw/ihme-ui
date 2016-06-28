@@ -200,6 +200,13 @@ class App extends React.Component {
       onChange={function (value, key) {...}}
       value={2015} // (initially)
       fill
+      fillStyle={{
+        backgroundColor: '#ccc',
+        transition: 'width 0.3s ease-out',
+      }}
+      handleStyle={{
+        transition: 'all 0.3s ease-out',
+      }}
     />
 </code></pre> */}
             <Slider
@@ -211,6 +218,13 @@ class App extends React.Component {
               value={this.state.singleValue}
               step={this.state.step}
               fill
+              fillStyle={{
+                backgroundColor: '#ccc',
+                transition: 'width 0.3s ease-out',
+              }}
+              handleStyle={{
+                transition: 'all 0.3s ease-out',
+              }}
             />
           </section>
           <section>
