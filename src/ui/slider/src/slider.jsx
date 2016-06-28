@@ -223,13 +223,13 @@ export default class Slider extends PureComponent {
   }
 
   render() {
-    const { fontSize, width, wrapperStyles, wrapperClassName, ticks } = this.props;
+    const { fontSize, width, wrapperStyle, wrapperClassName, ticks } = this.props;
     const { snapTarget } = this.state;
 
     const styles = {
       fontSize: `${fontSize}`,
       width: `${width}px`,
-      ...wrapperStyles,
+      ...wrapperStyle,
     };
 
     return (
@@ -266,11 +266,9 @@ Slider.propTypes = {
   /* step between slider values. */
   step: PropTypes.number,
 
-  /* inline styles applied to outermost wrappper */
-  wrapperStyles: PropTypes.object,
-
-  /* any additional classes to add to outermost wrapper */
+  /* class name styles applied to outermost wrapper */
   wrapperClassName: CommonPropTypes.className,
+  wrapperStyle: PropTypes.object,
 
   /*
    * Initial selected value.
