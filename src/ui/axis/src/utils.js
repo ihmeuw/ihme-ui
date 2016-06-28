@@ -1,4 +1,15 @@
-/* these propTypes are shared by <Axis />, <XAxis />, and <YAxis /> */
+/**
+ * Axis utils
+ * @module
+ */
+
+/**
+ * Calculate translate based on axis orientation.
+ * @param {string} orientation - Orientation of the axis. One of ['top', 'bottom', 'left', 'right']
+ * @param {number} width - Width of axis container.
+ * @param {number} height - Height of axis container.
+ * @returns {{x: number, y: number}}
+ */
 export function calcTranslate(orientation, width = 0, height = 0) {
   if (orientation === 'bottom') {
     return {
@@ -17,6 +28,14 @@ export function calcTranslate(orientation, width = 0, height = 0) {
   };
 }
 
+/**
+ * Calculate label position and rotation based on orientation.
+ * @param {string} orientation - Orientation of the axis. One of ['top', 'bottom', 'left', 'right']
+ * @param {{x: number, y: number}} translate - Supplied translate for the axis.
+ * @param {{top: number, bottom: number, left: number, right: number}} padding - Supplied padding for the axis.
+ * @param {number} center - Calculated center of the axis.
+ * @returns {{x: number, y: number, dX: number, dY: number, rotate: number }} Position and rotation of label. Shape: { x, y, dx, dy, rotate }
+ */
 export function calcLabelPosition(orientation, translate, padding, center) {
   switch (orientation) {
     case 'top':
