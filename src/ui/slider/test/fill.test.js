@@ -28,7 +28,7 @@ describe('<Fill />', () => {
         direction={'right'}
         width={100}
         height={4}
-        fillStyle={{ backgroundColor: 'blue' }}
+        style={{ backgroundColor: 'blue' }}
       />
     );
     expect(wrapper).to.have.style('width', 'calc(100% - 100px)');
