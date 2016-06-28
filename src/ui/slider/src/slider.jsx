@@ -1,14 +1,14 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import d3Scale from 'd3-scale';
-import { bindAll, identity, map, reduce, zipObject } from 'lodash';
+import { bindAll, identity, map, zipObject } from 'lodash';
 import { CommonPropTypes, PureComponent, ensureWithinRange } from '../../../utils';
 
 import Track from './track';
 import Fill from './fill';
 import Handle from './handle';
 import ResponsiveContainer from '../../responsive-container';
-import { getFloatPrecision, valueWithPrecision } from './util';
+import { getFloatPrecision, valueWithPrecision, stateFromPropUpdates, updateFunc } from './util';
 import style from './style.css';
 
 /**
@@ -76,11 +76,7 @@ export default class Slider extends PureComponent {
       this.receiveTrackWidth(newProps);
     }
 
-    this.setState({
-      ...reduce(Slider.propUpdates, (acc, value, key) => {
-        return value(acc, this.props[key], newProps[key]);
-      }, state),
-    });
+    this.setState(stateFromPropUpdates(Slider.propUpdates, this.props, newProps, state));
   }
 
   componentDidUpdate(prevProps) {
@@ -323,7 +319,7 @@ Slider.defaultProps = {
 };
 
 Slider.propUpdates = {
-  value: (state, prevProp, nextProp) => {
-    return prevProp !== nextProp ? { ...state, values: getMinMaxValues(nextProp) } : state;
-  },
+  value: updateFunc((nextProp) => {
+    return { values: getMinMaxValues(nextProp) };
+  }),
 };
