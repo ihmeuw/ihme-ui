@@ -1,4 +1,5 @@
 import interact from 'interact.js';
+import reduce from 'lodash/reduce';
 
 /**
  * Determine the floating point precision of a number.
@@ -36,4 +37,18 @@ export function getDimension(value) {
     return value;
   }
   return `${value}px`;
+}
+
+export function stateFromPropUpdates(propUpdates, prevProps, nextProps, state) {
+  return reduce(propUpdates, (acc, value, key) => {
+    return value(acc, key, prevProps, nextProps);
+  }, state);
+}
+
+export function updateFunc(func) {
+  return (acc, key, prevProps = {}, nextProps) => {
+    return prevProps[key] !== nextProps[key] ?
+      { ...acc, ...func(nextProps[key], key, nextProps) } :
+      acc;
+  };
 }
