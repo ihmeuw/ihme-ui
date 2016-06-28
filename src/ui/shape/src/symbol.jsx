@@ -43,6 +43,16 @@ export default class Symbol extends React.Component {
     }
   }
 
+  shouldComponentUpdate(nextProps) {
+    const focused = this.props.focused !== nextProps.focused;
+    const selected = this.props.selected !== nextProps.selected;
+    const x = this.props.position.x !== nextProps.position.x;
+    const y = this.props.position.y !== nextProps.position.y;
+    const type = this.props.type !== nextProps.type;
+    const color = this.props.color !== nextProps.color;
+    return focused || selected || x || y || type || color;
+  }
+
   createPath(type, size) {
     const symbolType = SYMBOL_TYPES[type] || SYMBOL_TYPES.circle;
     return d3Shape.symbol().type(symbolType).size(size)();
@@ -55,6 +65,7 @@ export default class Symbol extends React.Component {
       data,
       focused,
       focusedClassName,
+      focusedStyle,
       onClick,
       onMouseLeave,
       onMouseMove,
@@ -62,20 +73,19 @@ export default class Symbol extends React.Component {
       position: { x, y },
       selected,
       selectedClassName,
-      strokeWidth,
+      selectedStyle,
+      style
     } = this.props;
     const { path } = this.state;
 
-    function getStroke() {
-      console.log('getStroke');
-      console.log(focused);
+    function getStyle() {
       if (selected) {
-        return '#000';
+        return { ...selectedStyle };
       }
       if (focused) {
-        return '#999';
+        return { ...focusedStyle };
       }
-      return color;
+      return { ...style };
     }
 
     return (
@@ -90,8 +100,7 @@ export default class Symbol extends React.Component {
         onMouseLeave={eventHandleWrapper(onMouseLeave, data, this)}
         onMouseMove={eventHandleWrapper(onMouseMove, data, this)}
         onMouseOver={eventHandleWrapper(onMouseOver, data, this)}
-        stroke={getStroke()}
-        strokeWidth={`${strokeWidth}px`}
+        style={getStyle()}
         transform={`translate(${x}, ${y})`}
       />
     );
@@ -107,9 +116,11 @@ Symbol.propTypes = {
   /* Datum for the click and hover handlers. */
   data: PropTypes.object,
 
-  focused: PropTypes.string,
+  focused: PropTypes.bool,
 
   focusedClassName: PropTypes.string,
+
+  focusedStyle: PropTypes.object,
 
   itemKey: PropTypes.string,
 
@@ -134,10 +145,14 @@ Symbol.propTypes = {
 
   selectedClassName: PropTypes.string,
 
+  selectedStyle: PropTypes.object,
+
   /* area in square pixels */
   size: PropTypes.number,
 
   strokeWidth: PropTypes.number,
+
+  style: PropTypes.object,
 
   /* will match a SYMBOL_TYPE  */
   type: PropTypes.oneOf(Object.keys(SYMBOL_TYPES)),
@@ -145,6 +160,12 @@ Symbol.propTypes = {
 
 Symbol.defaultProps = {
   color: 'steelblue',
+  focused: false,
+  focusedClassName: 'focused',
+  focusedStyle: {
+    stroke: '#777',
+    strokeWidth: 1
+  },
   onClick: noop,
   onMouseLeave: noop,
   onMouseMove: noop,
@@ -154,9 +175,15 @@ Symbol.defaultProps = {
     y: 0
   },
   selected: false,
+  selectedClassName: 'selected',
+  selectedStyle: {
+    stroke: '#000',
+    strokeWidth: 1
+  },
   size: 64,
   type: 'circle',
-  strokeWidth: 1
+  strokeWidth: 1,
+  style: {}
 };
 
 export { SYMBOL_TYPES };
