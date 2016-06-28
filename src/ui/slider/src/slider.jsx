@@ -188,7 +188,7 @@ export default class Slider extends PureComponent {
     if (!this.state.render) return null;
 
     const { values, scale, snapTarget } = this.state;
-    const { labelFunc } = this.props;
+    const { labelFunc, handleClassName, handleStyle } = this.props;
 
     return (
       <div className={style['handle-track']}>
@@ -201,7 +201,9 @@ export default class Slider extends PureComponent {
               key={`handle:${key}`}
             >
               <Handle
-                className={classNames({ [style.connected]: values.min === values.max })}
+                className={classNames(handleClassName,
+                                      { [style.connected]: values.min === values.max })}
+                style={handleStyle}
                 onMove={this.onHandleMove}
                 onKeyDown={this.onHandleKeyDown}
                 name={key}
@@ -219,10 +221,10 @@ export default class Slider extends PureComponent {
   }
 
   render() {
-    const { fontSize, width, wrapperStyle, wrapperClassName, ticks } = this.props;
+    const { fontSize, width, wrapperClassName, wrapperStyle, ticks } = this.props;
     const { snapTarget } = this.state;
 
-    const styles = {
+    const wrapperStyles = {
       fontSize: `${fontSize}`,
       width: `${width}px`,
       ...wrapperStyle,
@@ -231,16 +233,20 @@ export default class Slider extends PureComponent {
     return (
       <div
         className={classNames(style.slider, wrapperClassName)}
-        style={styles}
+        style={wrapperStyles}
       >
         {this.renderHandles()}
         <Track
           ref={this.trackRef}
+          className={this.props.trackClassName}
+          style={this.props.trackStyle}
           onClick={this.onTrackClick}
           snapTarget={snapTarget}
           ticks={ticks}
           ticksClassName={this.props.ticksClassName}
           ticksStyle={this.props.ticksStyle}
+          tickClassName={this.props.tickClassName}
+          tickStyle={this.props.tickStyle}
         >
           {this.renderFill()}
         </Track>
@@ -293,6 +299,12 @@ Slider.propTypes = {
    */
   labelFunc: PropTypes.func,
 
+  handleClassName: CommonPropTypes.className,
+  handleStyle: PropTypes.object,
+
+  trackClassName: CommonPropTypes.className,
+  trackStyle: PropTypes.object,
+
   /* include fill in the track to indicate value. */
   fill: PropTypes.bool,
   fillClassName: CommonPropTypes.className,
@@ -302,6 +314,9 @@ Slider.propTypes = {
   ticks: PropTypes.bool,
   ticksClassName: CommonPropTypes.className,
   ticksStyle: PropTypes.object,
+  /* class name and style for each tick */
+  tickClassName: CommonPropTypes.className,
+  tickStyle: PropTypes.object,
 
   /*
    * callback function when value is changed.
