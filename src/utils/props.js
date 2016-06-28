@@ -21,7 +21,7 @@ export function oneOfProp(propTypes) {
       }
     } else {
       /* eslint-disable max-len */
-      error = `Exactly one of prop [\`${Object.keys(propTypes).join('`,`')}\`] must be specified in \`${componentName}\`.`;
+      error = `Exactly one of prop [\`${Object.keys(propTypes).join('`,`')}\`] must be specified in \`${componentName}\`. Found: [${validProps.length ? `\`${validProps.join('`,`')}\`` : ''}].`;
       /* eslint-enable max-len */
     }
     return error && new Error(error);
