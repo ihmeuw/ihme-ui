@@ -1,4 +1,5 @@
 **/*.config.js
+**/bundle.js
 src/**/demo*
 **/coverage/*
 src/test-utils/assets/usaTopoJSON.js
