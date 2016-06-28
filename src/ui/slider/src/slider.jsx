@@ -49,7 +49,6 @@ export default class Slider extends PureComponent {
         .clamp(true)
         .domain([props.minValue, props.maxValue]),
       snapTarget: {},
-      fillStyle: { backgroundColor: this.props.fillColor },
     };
 
     this.handleCount = Object.keys(this.state.values).length;
@@ -171,7 +170,8 @@ export default class Slider extends PureComponent {
   renderFill() {
     if (!this.state.render || !this.props.fill) return null;
 
-    const { values, scale, fillStyle } = this.state;
+    const { values, scale } = this.state;
+    const { fillStyle, fillClassName } = this.props;
 
     return map(values, (value, key) => {
       const direction = key === 'min' ? 'left' : 'right';
@@ -179,7 +179,8 @@ export default class Slider extends PureComponent {
       return (
         <Fill
           key={`fill:${key}`}
-          fillStyle={fillStyle}
+          className={fillClassName}
+          style={fillStyle}
           direction={direction}
           width={position}
         />
@@ -298,9 +299,8 @@ Slider.propTypes = {
 
   /* include fill in the track to indicate value. */
   fill: PropTypes.bool,
-
-  /* style for the fill color. */
-  fillColor: PropTypes.string,
+  fillClassName: CommonPropTypes.className,
+  fillStyle: PropTypes.object,
 
   /* show ticks in track */
   ticks: PropTypes.bool,
@@ -318,14 +318,9 @@ Slider.defaultProps = {
   width: 200,
   step: 1,
   labelFunc: identity,
-  fill: false,
-  fillColor: '#ccc',
 };
 
 Slider.propUpdates = {
-  fillColor: (state, prevProp, nextProp) => {
-    return prevProp !== nextProp ? { ...state, fillStyle: { backgroundColor: nextProp } } : state;
-  },
   value: (state, prevProp, nextProp) => {
     return prevProp !== nextProp ? { ...state, values: getMinMaxValues(nextProp) } : state;
   },

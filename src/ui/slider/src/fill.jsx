@@ -17,7 +17,7 @@ export default class Fill extends PureComponent {
         style={{
           width: Fill.getWidth(this.props.width, this.props.direction),
           height: getDimension(this.props.height),
-          ...this.props.fillStyle,
+          ...this.props.style,
         }}
       >
       </div>
@@ -35,7 +35,7 @@ Fill.propTypes = {
     PropTypes.string,
     PropTypes.number,
   ]),
-  fillStyle: PropTypes.object,
+  style: PropTypes.object,
   className: CommonPropTypes.className,
 };
 
@@ -43,7 +43,7 @@ Fill.defaultProps = {
   direction: 'left',
   height: '100%',
   width: 200,
-  fillStyle: {
+  style: {
     backgroundColor: '#ccc',
   },
 };
