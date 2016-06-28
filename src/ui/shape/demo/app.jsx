@@ -76,27 +76,27 @@ class App extends React.Component {
   }
 
   onClick(event, datum) {
-    console.log(`click::${datum[keyField]},${datum[valueField]}`);
+    console.log(`${event.type}::${datum[keyField]},${datum[valueField]}`);
     this.setState({
       selectedItems: xor(this.state.selectedItems, [datum]),
     });
   };
 
   onMouseLeave(event, datum) {
-    console.log(`leave::${datum[keyField]},${datum[valueField]}`);
+    console.log(`${event.type}::${datum[keyField]},${datum[valueField]}`);
     this.setState({
-      focus: datum,
+      focus: {},
     });
   };
 
   onMouseMove(event, datum) {
-    console.log(`move::${datum[keyField]},${datum[valueField]}`);
+    console.log(`${event.type}::${datum[keyField]},${datum[valueField]}`);
   };
 
   onMouseOver(event, datum) {
-    console.log(`over::${datum[keyField]},${datum[valueField]}`);
+    console.log(`${event.type}::${datum[keyField]},${datum[valueField]}`);
     this.setState({
-      focus: focus,
+      focus: datum,
     });
   };
 
@@ -151,8 +151,9 @@ class App extends React.Component {
                   x: keyField,    // year_id
                   y: valueField   // population
                 }}
-                keyField={'location'}
                 dataField={'values'}
+                focus={this.state.focus}
+                keyField={'location'}
                 onClick={this.onClick}
                 onMouseLeave={this.onMouseLeave}
                 onMouseMove={this.onMouseMove}
@@ -201,6 +202,7 @@ class App extends React.Component {
                   x: keyField,    // year_id
                   y: valueField   // population
                 }}
+                focus={this.state.focus}
                 onClick={this.onClick}
                 onMouseLeave={this.onMouseLeave}
                 onMouseMove={this.onMouseMove}
@@ -237,6 +239,7 @@ class App extends React.Component {
                 color={'tomato'}
                 data={data.filter((datum) => { return datum.location === 'India'; })}
                 dataAccessors={{ x: valueField }}
+                focus={this.state.focus}
                 onClick={this.onClick}
                 onMouseLeave={this.onMouseLeave}
                 onMouseMove={this.onMouseMove}
@@ -273,6 +276,7 @@ class App extends React.Component {
                 color={'cornflowerblue'}
                 data={data.filter((datum) => { return datum.location === 'India'; })}
                 dataAccessors={{ y: valueField }}
+                focus={this.state.focus}
                 onClick={this.onClick}
                 onMouseLeave={this.onMouseLeave}
                 onMouseMove={this.onMouseMove}
@@ -309,6 +313,7 @@ class App extends React.Component {
                 colorScale={colorScale}
                 data={data.filter((datum) => { return datum.location === 'India'; })}
                 dataAccessors={{ x: valueField }}
+                focus={this.state.focus}
                 onClick={this.onClick}
                 onMouseLeave={this.onMouseLeave}
                 onMouseMove={this.onMouseMove}

@@ -41,7 +41,7 @@ export default function Scatter(props) {
               key={key}
               color={colorScale ? colorScale(xValue) : color}
               data={plotDatum}
-              focus={focus === plotDatum}
+              focused={focus === plotDatum}
               position={{
                 x: xValue ? xScale(xValue) : 0,
                 y: yValue ? yScale(yValue) : 0

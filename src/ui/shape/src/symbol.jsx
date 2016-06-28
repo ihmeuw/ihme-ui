@@ -68,11 +68,12 @@ export default class Symbol extends React.Component {
 
     function getStroke() {
       console.log('getStroke');
+      console.log(focused);
       if (selected) {
         return '#000';
       }
-      if (focus) {
-        return '#666';
+      if (focused) {
+        return '#999';
       }
       return color;
     }
@@ -89,7 +90,7 @@ export default class Symbol extends React.Component {
         onMouseLeave={eventHandleWrapper(onMouseLeave, data, this)}
         onMouseMove={eventHandleWrapper(onMouseMove, data, this)}
         onMouseOver={eventHandleWrapper(onMouseOver, data, this)}
-        stroke={getStroke}
+        stroke={getStroke()}
         strokeWidth={`${strokeWidth}px`}
         transform={`translate(${x}, ${y})`}
       />
