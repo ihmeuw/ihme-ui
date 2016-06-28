@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-
 import { includes, map, noop, omit } from 'lodash';
 import d3Scale from 'd3-scale';
 
@@ -25,7 +24,9 @@ export default function Scatter(props) {
     'color',
     'data',
     'dataAccessors',
+    'focus',
     'scales',
+    'selection',
     'symbolType'
   ]);
 
@@ -128,6 +129,5 @@ Scatter.defaultProps = {
     x: d3Scale.scaleLinear(),
     y: d3Scale.scaleLinear()
   },
-  selectedItemKeys: [],
   symbolType: 'circle'
 };

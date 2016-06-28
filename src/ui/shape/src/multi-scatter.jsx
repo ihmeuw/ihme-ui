@@ -131,7 +131,6 @@ MultiScatter.defaultProps = {
   onMouseLeave: noop,
   onMouseMove: noop,
   onMouseOver: noop,
-  selectedItemKeys: [],
   symbolField: 'type',
   symbolScale: () => { return 'circle'; }
 };
