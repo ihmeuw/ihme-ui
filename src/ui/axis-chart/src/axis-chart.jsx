@@ -34,13 +34,11 @@ export default class AxisChart extends React.Component {
                                                   nextProps.padding);
     }
 
-    /* eslint-disable no-cond-assign */
-    let xChanged;
-    let yChanged;
-    if ((xChanged = (state.chartDimensions ||
-                     propsChanged(this.props, nextProps, ['xScaleType', 'xDomain']))) ||
-        (yChanged = (state.chartDimensions ||
-                     propsChanged(this.props, nextProps, ['yScaleType', 'yDomain'])))) {
+    const xChanged = state.chartDimensions ||
+                     propsChanged(this.props, nextProps, ['xScaleType', 'xDomain']);
+    const yChanged = state.chartDimensions ||
+                     propsChanged(this.props, nextProps, ['yScaleType', 'yDomain']);
+    if (xChanged || yChanged) {
       const chartDimensions = state.chartDimensions || this.state.chartDimensions;
       state.scales = {
         x: xChanged ?
@@ -53,7 +51,6 @@ export default class AxisChart extends React.Component {
           this.state.scales.y,
       };
     }
-    /* eslint-enable no-cond-assign */
 
     this.setState(state);
   }
