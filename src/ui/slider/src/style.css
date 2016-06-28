@@ -59,7 +59,6 @@
   border: solid #27ae60;
   border-width: 0 1px;
   cursor: ew-resize;
-  transition: all 0.3s ease-out;
 }
 
 .flag.left {
@@ -103,7 +102,6 @@
 
 .fill {
   position: absolute;
-  transition: width 0.3s ease-out;
 }
 
 .fill.left {
