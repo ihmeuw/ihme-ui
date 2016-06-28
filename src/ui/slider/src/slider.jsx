@@ -243,6 +243,8 @@ export default class Slider extends PureComponent {
           onClick={this.onTrackClick}
           snapTarget={snapTarget}
           ticks={ticks}
+          ticksClassName={this.props.ticksClassName}
+          ticksStyle={this.props.ticksStyle}
         >
           {this.renderFill()}
         </Track>
@@ -304,6 +306,8 @@ Slider.propTypes = {
 
   /* show ticks in track */
   ticks: PropTypes.bool,
+  ticksClassName: CommonPropTypes.className,
+  ticksStyle: PropTypes.object,
 
   /*
    * callback function when value is changed.
