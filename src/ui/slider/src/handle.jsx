@@ -68,7 +68,7 @@ export default class Handle extends PureComponent {
     return (
       <button
         type="button"
-        className={classNames(this.props.className, style.flag, style[this.props.direction])}
+        className={classNames(style.flag, style[this.props.direction], this.props.className)}
         style={this.state.style}
         ref={this.handleRef}
         onKeyDown={this.props.onKeyDown(this.props.name)}
