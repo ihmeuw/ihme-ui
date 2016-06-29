@@ -43,6 +43,7 @@ export {
 
 export {
   CommonPropTypes,
+  atLeastOneOfProp,
   oneOfProp,
   propsChanged,
 } from './props';
