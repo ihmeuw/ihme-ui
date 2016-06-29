@@ -15,21 +15,25 @@ export default class Track extends PureComponent {
     this.trackRef = this.trackRef.bind(this);
   }
 
-  componentWillReceiveProps(newProps) {
+  componentWillReceiveProps(nextProps) {
+    this.setState(this.handlePropUpdates(this.props, nextProps));
+  }
+
+  handlePropUpdates(prevProps, nextProps) {
     const state = {};
 
-    if (this.props.snapTarget !== newProps.snapTarget) {
-      this.bindInteract(newProps.snapTarget);
+    if (prevProps.snapTarget !== nextProps.snapTarget) {
+      this.bindInteract(nextProps.snapTarget);
 
-      if (newProps.ticks) {
+      if (nextProps.ticks) {
         state.ticks = [];
-        for (let x = newProps.snapTarget.x; x < this.width; x += newProps.snapTarget.x) {
+        for (let x = nextProps.snapTarget.x; x < this.width; x += nextProps.snapTarget.x) {
           state.ticks.push(x);
         }
       }
     }
 
-    this.setState(state);
+    return state;
   }
 
   componentWillUnmount() {
