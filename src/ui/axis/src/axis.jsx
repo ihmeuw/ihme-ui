@@ -1,129 +1,168 @@
+import React, { PropTypes } from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import ReactFauxDom from 'react-faux-dom';
-import { PropTypes } from 'react';
-import d3Axis from 'd3-axis';
-import d3Selection from 'd3-selection';
-import { assign } from 'lodash';
 import classNames from 'classnames';
+import { axisBottom, axisLeft, axisRight, axisTop } from 'd3-axis';
+import { scaleLinear } from 'd3-scale';
+import { select } from 'd3-selection';
+import mean from 'lodash/mean';
+import { CommonPropTypes, atLeastOneOfProp, propsChanged } from '../../../utils';
 
-import { default as defaultStyle } from './axis.css';
+import { calcLabelPosition, calcTranslate } from './utils';
+import style from './axis.css';
 
-const AXIS_TYPES = {
-  top: d3Axis.axisTop,
-  right: d3Axis.axisRight,
-  bottom: d3Axis.axisBottom,
-  left: d3Axis.axisLeft
-};
-
-/* these propTypes are shared by <Axis />, <XAxis />, and <YAxis /> */
-const sharedPropTypes = {
-  /* where to position ticks relative to axis line */
-  position: PropTypes.oneOf(Object.keys(AXIS_TYPES)),
-
-  /* style object to apply to element */
-  style: PropTypes.object,
-
-  /* push axis in x or y directions */
-  translate: PropTypes.shape({
-    x: PropTypes.number,
-    y: PropTypes.number
-  }),
-
-  /* number of ticks to use */
-  ticks: PropTypes.number,
-
-  /* see d3-axis docs */
-  tickFormat: PropTypes.func,
-
-  /* see d3-axis docs */
-  tickSize: PropTypes.number,
-
-  /* see d3-axis docs */
-  tickSizeInner: PropTypes.number,
-
-  /* see d3-axis docs */
-  tickSizeOuter: PropTypes.number,
-
-  /* see d3-axis docs */
-  tickPadding: PropTypes.number,
-
-  /* see d3-axis docs */
-  tickValues: PropTypes.array
-};
-
-const propTypes = assign({}, sharedPropTypes, {
-  /* appropriate scale for axis */
-  scale: PropTypes.func.isRequired
-});
-
-const defaultProps = {
-  position: 'bottom',
-  translate: {
-    x: 0,
-    y: 0
-  }
-};
-
-const calcTranslate = (position, dimensions) => {
-  if (position === 'bottom') {
-    return {
-      x: 0,
-      y: dimensions.height
-    };
-  } else if (position === 'right') {
-    return {
-      x: dimensions.width,
-      y: 0
-    };
-  }
-  return defaultProps.translate;
+export const AXIS_TYPES = {
+  top: axisTop,
+  right: axisRight,
+  bottom: axisBottom,
+  left: axisLeft,
 };
 
 /**
  * Expose basic public API of d3-axis
  */
-const Axis = (props) => {
-  const {
-    position,
-    translate,
-    scale,
-    style,
-    ticks,
-    tickFormat,
-    tickSize,
-    tickSizeInner,
-    tickSizeOuter,
-    tickPadding,
-    tickValues
-  } = props;
+export default class Axis extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      scale: props.scale,
+      translate: props.translate || calcTranslate(props.orientation, props.width, props.height),
+    };
+  }
 
-  // create faux DOM element to use as
-  // context for D3 side-effects
-  const axisG = ReactFauxDom.createElement('g');
-  const gSelection = d3Selection.select(axisG)
-    .attr('class', classNames(defaultStyle.common))
-    .attr('transform', `translate(${translate.x}, ${translate.y})`);
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      scale: nextProps.scale,
+      translate: nextProps.translate ||
+                 propsChanged(this.props, nextProps, ['orientation', 'width', 'height']) ?
+                   calcTranslate(nextProps.orientation, nextProps.width, nextProps.height) :
+                   this.state.translate,
+    });
+  }
 
-  // axis generator straight outta d3-axis
-  const axisGenerator = AXIS_TYPES[position](scale);
+  shouldComponentUpdate(nextProps, nextState) {
+    return PureRenderMixin.shouldComponentUpdate(this, nextProps, nextState);
+  }
 
-  // if we have configuration for the axis, apply it
-  if (ticks) axisGenerator.ticks(ticks);
-  if (tickFormat) axisGenerator.tickFormat(tickFormat);
-  if (tickSize) axisGenerator.tickSize(tickSize);
-  if (tickSizeInner) axisGenerator.tickSizeInner(tickSizeInner);
-  if (tickSizeOuter) axisGenerator.tickSizeOuter(tickSizeOuter);
-  if (tickPadding) axisGenerator.tickPadding(tickPadding);
-  if (tickValues) axisGenerator.tickValues(tickValues);
+  render() {
+    const { props, state } = this;
 
-  axisGenerator(gSelection);
+    // create faux DOM element to use as context for D3 side-effects
+    const axisG = ReactFauxDom.createElement('g');
+    const gSelection = select(axisG)
+      .attr('class', classNames(style.common, props.className))
+      .attr('transform', `translate(${state.translate.x}, ${state.translate.y})`);
 
-  axisG.setAttribute('style', style);
+    // axis generator straight outta d3-axis
+    const axisGenerator = AXIS_TYPES[props.orientation](state.scale);
 
-  return axisG.toReact();
+    // if we have configuration for the axis, apply it
+    if (props.ticks) axisGenerator.ticks(props.ticks);
+    if (props.tickArguments) axisGenerator.tickArguments(props.tickArguments);
+    if (props.tickFormat) axisGenerator.tickFormat(props.tickFormat);
+    if (props.tickSize) axisGenerator.tickSize(props.tickSize);
+    if (props.tickSizeInner) axisGenerator.tickSizeInner(props.tickSizeInner);
+    if (props.tickSizeOuter) axisGenerator.tickSizeOuter(props.tickSizeOuter);
+    if (props.tickPadding) axisGenerator.tickPadding(props.tickPadding);
+    if (props.tickValues) axisGenerator.tickValues(props.tickValues);
+
+    axisGenerator(gSelection);
+
+    axisG.setAttribute('style', props.style);
+
+    const center = mean(state.scale.range());
+
+    const labelPosition = props.label &&
+      calcLabelPosition(props.orientation, state.translate, props.padding, center);
+
+    return (
+      <g>
+        {axisG.toReact()}
+        {props.label && <text
+          className={props.labelClassName}
+          style={props.labelStyle}
+          x={labelPosition.x}
+          y={labelPosition.y}
+          dx={labelPosition.dX}
+          dy={labelPosition.dY}
+          transform={`rotate(${labelPosition.rotate || 0})`}
+          textAnchor="middle"
+        >
+          {props.label}
+        </text>}
+      </g>
+    );
+  }
+}
+
+export const AXIS_SCALE_PROP_TYPES = {
+  scale: PropTypes.func.isRequired,
 };
 
-Axis.propTypes = propTypes;
-Axis.defaultProps = defaultProps;
+export const WIDTH_PROP_TYPES = {
+  translate: PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+  }).isRequired,
+  width: PropTypes.number.isRequired,
+};
 
-export default Axis;
-export { AXIS_TYPES, sharedPropTypes, calcTranslate };
+export const HEIGHT_PROP_TYPES = {
+  translate: PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+  }).isRequired,
+  height: PropTypes.number.isRequired,
+};
+
+Axis.propTypes = {
+  label: PropTypes.any,
+  labelClassName: CommonPropTypes.className,
+  labelStyle: PropTypes.object,
+
+  padding: PropTypes.shape({
+    top: PropTypes.number,
+    bottom: PropTypes.number,
+    left: PropTypes.number,
+    right: PropTypes.number,
+  }),
+
+  /* orientation of ticks relative to axis line */
+  orientation: PropTypes.oneOf(Object.keys(AXIS_TYPES)).isRequired,
+
+  /* class name and style to apply to the axis */
+  className: CommonPropTypes.className,
+  style: PropTypes.object,
+
+  /* push axis in x or y directions */
+  translate: PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+  }),
+
+  /*
+   dimensions are provided by axis-chart
+   used for calculating translate, required if translate is not specified
+  */
+  width: atLeastOneOfProp(WIDTH_PROP_TYPES),
+  height: atLeastOneOfProp(HEIGHT_PROP_TYPES),
+
+  /* see d3-axis docs */
+  ticks: PropTypes.number,
+  tickArguments: PropTypes.array,
+  tickFormat: PropTypes.func,
+  tickSize: PropTypes.number,
+  tickSizeInner: PropTypes.number,
+  tickSizeOuter: PropTypes.number,
+  tickPadding: PropTypes.number,
+  tickValues: PropTypes.array,
+
+  /* appropriate scale for axis */
+  scale: atLeastOneOfProp(AXIS_SCALE_PROP_TYPES),
+};
+
+Axis.defaultProps = {
+  scale: scaleLinear(),
+  width: 0,
+  height: 0,
+};

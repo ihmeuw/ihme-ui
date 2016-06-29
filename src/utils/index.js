@@ -1,5 +1,5 @@
 export {
-  hasCrappyValues
+  hasCrappyValues,
 } from './array';
 
 export {
@@ -8,11 +8,11 @@ export {
   domainFromPercent,
   generateColorDomain,
   isWithinRange,
-  ensureWithinRange
+  ensureWithinRange,
 } from './domain';
 
 export {
-  eventHandleWrapper
+  eventHandleWrapper,
 } from './events';
 
 export {
@@ -23,7 +23,6 @@ export {
   concatAndComputeGeoJSONBounds,
   concatGeoJSON,
   extractGeoJSON,
-  simplifyTopoJSON
 } from './geo';
 
 export {
@@ -32,10 +31,19 @@ export {
 } from './objects';
 
 export {
+  getScale,
+  getScaleTypes,
   rangeToDomain,
-  domainToRange
+  domainToRange,
 } from './scale';
 
 export {
-  getStringWidth
+  getStringWidth,
 } from './strings';
+
+export {
+  CommonPropTypes,
+  atLeastOneOfProp,
+  exactlyOneOfProp,
+  propsChanged,
+} from './props';

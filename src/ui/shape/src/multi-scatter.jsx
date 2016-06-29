@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-
+import { scaleLinear } from 'd3-scale';
 import { map, omit, noop } from 'lodash';
 
 import Scatter from './scatter';
@@ -73,7 +73,8 @@ const defaultProps = {
   dataField: 'values',
   symbolField: 'type',
   colorScale: () => { return 'steelblue'; },
-  symbolScale: () => { return 'circle'; }
+  symbolScale: () => { return 'circle'; },
+  scales: { x: scaleLinear(), y: scaleLinear() },
 };
 
 export default function MultiScatter(props) {
