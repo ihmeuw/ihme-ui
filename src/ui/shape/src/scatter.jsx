@@ -43,11 +43,9 @@ export default function Scatter(props) {
               color={colorScale ? colorScale(xValue) : color}
               data={plotDatum}
               focused={focus === plotDatum}
-              position={{
-                x: xValue ? xScale(xValue) : 0,
-                y: yValue ? yScale(yValue) : 0
-              }}
               selected={includes(selection, plotDatum)}
+              translateX={xValue ? xScale(xValue) : 0}
+              translateY={yValue ? yScale(yValue) : 0}
               type={symbolType}
               {...childProps}
             />

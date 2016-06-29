@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import d3Shape from 'd3-shape';
-import { noop } from 'lodash';
+import { includes, noop, reduce } from 'lodash';
 
 import { eventHandleWrapper } from '../../../utils/events';
 
@@ -35,8 +35,10 @@ export default class Symbol extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.type !== this.props.type ||
-        nextProps.size !== this.props.size) {
+    if (
+      nextProps.type !== this.props.type ||
+      nextProps.size !== this.props.size
+    ) {
       this.setState({
         path: this.createPath(nextProps.type, nextProps.size),
       });
@@ -44,13 +46,27 @@ export default class Symbol extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    const focused = this.props.focused !== nextProps.focused;
-    const selected = this.props.selected !== nextProps.selected;
-    const x = this.props.position.x !== nextProps.position.x;
-    const y = this.props.position.y !== nextProps.position.y;
-    const type = this.props.type !== nextProps.type;
-    const color = this.props.color !== nextProps.color;
-    return focused || selected || x || y || type || color;
+    return this.propsChanged(this.props, nextProps, [
+      'selected', 'focused', 'translateX', 'translateY', 'className'
+    ]);
+  }
+
+  getStyle() {
+    const { focused, focusedStyle, selected, selectedStyle, style } = this.props;
+    if (selected) {
+      return typeof selectedStyle === 'function' ? selectedStyle() : { ...selectedStyle };
+    }
+    if (focused) {
+      return typeof focusedStyle === 'function' ? focusedStyle() : { ...focusedStyle };
+    }
+    return typeof style === 'function' ? style() : { ...style };
+  }
+
+  // Look in utils prop.js when it gets added to IHME-UI
+  propsChanged(prevProps, nextProps, propsToCompare, propsToOmit) {
+    return !reduce(propsToCompare || Object.keys(nextProps), (acc, prop) => {
+      return acc && (includes(propsToOmit, prop) || prevProps[prop] === nextProps[prop]);
+    }, true);
   }
 
   createPath(type, size) {
@@ -65,28 +81,16 @@ export default class Symbol extends React.Component {
       data,
       focused,
       focusedClassName,
-      focusedStyle,
       onClick,
       onMouseLeave,
       onMouseMove,
       onMouseOver,
-      position: { x, y },
       selected,
       selectedClassName,
-      selectedStyle,
-      style
+      translateX,
+      translateY
     } = this.props;
     const { path } = this.state;
-
-    function getStyle() {
-      if (selected) {
-        return { ...selectedStyle };
-      }
-      if (focused) {
-        return { ...focusedStyle };
-      }
-      return { ...style };
-    }
 
     return (
       <path
@@ -100,8 +104,8 @@ export default class Symbol extends React.Component {
         onMouseLeave={eventHandleWrapper(onMouseLeave, data, this)}
         onMouseMove={eventHandleWrapper(onMouseMove, data, this)}
         onMouseOver={eventHandleWrapper(onMouseOver, data, this)}
-        style={getStyle()}
-        transform={`translate(${x}, ${y})`}
+        style={this.getStyle()}
+        transform={`translate(${translateX}, ${translateY})`}
       />
     );
   }
@@ -120,7 +124,10 @@ Symbol.propTypes = {
 
   focusedClassName: PropTypes.string,
 
-  focusedStyle: PropTypes.object,
+  focusedStyle: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.func
+  ]),
 
   itemKey: PropTypes.string,
 
@@ -136,23 +143,26 @@ Symbol.propTypes = {
   /* partially applied fn that takes in datum and returns fn */
   onMouseOver: PropTypes.func,
 
-  position: PropTypes.shape({
-    x: PropTypes.number,
-    y: PropTypes.number
-  }),
-
   selected: PropTypes.bool,
 
   selectedClassName: PropTypes.string,
 
-  selectedStyle: PropTypes.object,
+  selectedStyle: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.func
+  ]),
 
   /* area in square pixels */
   size: PropTypes.number,
 
-  strokeWidth: PropTypes.number,
+  style: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.func
+  ]),
 
-  style: PropTypes.object,
+  translateX: PropTypes.number,
+
+  translateY: PropTypes.number,
 
   /* will match a SYMBOL_TYPE  */
   type: PropTypes.oneOf(Object.keys(SYMBOL_TYPES)),
@@ -170,10 +180,6 @@ Symbol.defaultProps = {
   onMouseLeave: noop,
   onMouseMove: noop,
   onMouseOver: noop,
-  position: {
-    x: 0,
-    y: 0
-  },
   selected: false,
   selectedClassName: 'selected',
   selectedStyle: {
@@ -181,8 +187,9 @@ Symbol.defaultProps = {
     strokeWidth: 1
   },
   size: 64,
+  translateX: 0,
+  translateY: 0,
   type: 'circle',
-  strokeWidth: 1,
   style: {}
 };
 
