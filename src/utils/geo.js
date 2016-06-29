@@ -28,7 +28,7 @@ export function extractGeoJSON(topology, layers) {
             [layer.name]: topojson.mesh(topology,
                                         topology.objects[layer.object],
                                         layer.filterFn || defaultMeshFilter),
-          }
+          },
         };
       case 'feature': // FALL THROUGH
       default:
@@ -37,7 +37,7 @@ export function extractGeoJSON(topology, layers) {
           feature: {
             ...acc.feature,
             [layer.name]: topojson.feature(topology, topology.objects[layer.object]),
-          }
+          },
         };
     }
   }, {});
@@ -125,7 +125,7 @@ export function calcTranslate(width, height, scale, bounds, center) {
   // mike bostock math
   return [
     (width - (scale * geometryX)) / 2,
-    (height - (scale * geometryY)) / 2
+    (height - (scale * geometryY)) / 2,
   ];
 }
 
@@ -139,6 +139,6 @@ export function concatAndComputeGeoJSONBounds(geoJSON) {
   // returns [[left, top], [right, bottom]]
   return computeBounds({
     type: 'FeatureCollection',
-    features: concatGeoJSON(geoJSON)
+    features: concatGeoJSON(geoJSON),
   });
 }

@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-expressions */
 import { expect } from 'chai';
 import {
-  hasCrappyValues
+  hasCrappyValues,
 } from '../index';
 
 describe('array helpers', () => {
@@ -12,7 +12,7 @@ describe('array helpers', () => {
       { arr: [], expectation: true },
       { arr: [3, NaN], expectation: true },
       { arr: [1, 2], expectation: false },
-      { arr: [0, 1], expectation: false }
+      { arr: [0, 1], expectation: false },
     ];
 
     spec.forEach((testCase) => {

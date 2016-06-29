@@ -12,7 +12,7 @@ const SHAPES = {
       const width = Math.sqrt(size);
       const height = width * (1.5 / 8);  // 1.5px for every 8px wide
       return context.rect(-width / 2, -height / 2, width, height);
-    }
+    },
   },
 };
 
