@@ -6,7 +6,7 @@ import { axisBottom, axisLeft, axisRight, axisTop } from 'd3-axis';
 import { scaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
 import mean from 'lodash/mean';
-import { CommonPropTypes, oneOfProp, propsChanged } from '../../../utils';
+import { CommonPropTypes, atLeastOneOfProp, propsChanged } from '../../../utils';
 
 import { calcLabelPosition, calcTranslate } from './utils';
 import style from './axis.css';
@@ -16,11 +16,6 @@ export const AXIS_TYPES = {
   right: axisRight,
   bottom: axisBottom,
   left: axisLeft,
-};
-
-const DEFAULT_TRANSLATE = {
-  x: 0,
-  y: 0,
 };
 
 /**
@@ -104,6 +99,22 @@ export const AXIS_SCALE_PROP_TYPES = {
   scale: PropTypes.func.isRequired,
 };
 
+export const WIDTH_PROP_TYPES = {
+  translate: PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+  }).isRequired,
+  width: PropTypes.number.isRequired,
+};
+
+export const HEIGHT_PROP_TYPES = {
+  translate: PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+  }).isRequired,
+  height: PropTypes.number.isRequired,
+};
+
 Axis.propTypes = {
   label: PropTypes.any,
   labelClassName: CommonPropTypes.className,
@@ -125,16 +136,16 @@ Axis.propTypes = {
 
   /* push axis in x or y directions */
   translate: PropTypes.shape({
-    x: PropTypes.number,
-    y: PropTypes.number,
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
   }),
 
   /*
    dimensions are provided by axis-chart
    used for calculating translate, required if translate is not specified
   */
-  width: PropTypes.number,
-  height: PropTypes.number,
+  width: atLeastOneOfProp(WIDTH_PROP_TYPES),
+  height: atLeastOneOfProp(HEIGHT_PROP_TYPES),
 
   /* see d3-axis docs */
   ticks: PropTypes.number,
@@ -147,10 +158,11 @@ Axis.propTypes = {
   tickValues: PropTypes.array,
 
   /* appropriate scale for axis */
-  scale: oneOfProp(AXIS_SCALE_PROP_TYPES),
+  scale: atLeastOneOfProp(AXIS_SCALE_PROP_TYPES),
 };
 
 Axis.defaultProps = {
   scale: scaleLinear(),
-  translate: DEFAULT_TRANSLATE,
+  width: 0,
+  height: 0,
 };

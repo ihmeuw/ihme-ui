@@ -1,6 +1,6 @@
 import { PropTypes } from 'react';
 import { scaleLinear } from 'd3-scale';
-import { oneOfProp, propsChanged } from '../../../utils';
+import { atLeastOneOfProp, propsChanged } from '../../../utils';
 
 import Axis, { AXIS_SCALE_PROP_TYPES } from './axis';
 
@@ -42,11 +42,13 @@ XAxis.propTypes = {
   orientation: PropTypes.oneOf(['top', 'bottom']),
 
   /* scales are provided by axis-chart, only x scale is used by XAxis */
-  scale: oneOfProp(X_AXIS_SCALE_PROP_TYPES),
-  scales: oneOfProp(X_AXIS_SCALE_PROP_TYPES),
+  scale: atLeastOneOfProp(X_AXIS_SCALE_PROP_TYPES),
+  scales: atLeastOneOfProp(X_AXIS_SCALE_PROP_TYPES),
 };
 
 XAxis.defaultProps = {
   orientation: 'bottom',
   scales: { x: scaleLinear() },
+  width: 0,
+  height: 0,
 };
