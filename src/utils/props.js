@@ -1,6 +1,8 @@
 import { PropTypes } from 'react';
+import identity from 'lodash/identity';
 import includes from 'lodash/includes';
 import intersection from 'lodash/intersection';
+import noop from 'lodash/noop';
 import reduce from 'lodash/reduce';
 
 export const CommonPropTypes = {
@@ -8,7 +10,21 @@ export const CommonPropTypes = {
     PropTypes.string,
     PropTypes.array,
     PropTypes.object,
-  ])
+  ]),
+  style: PropTypes.object,
+  width: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
+  height: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
+};
+
+export const CommonDefaultProps = {
+  noop,
+  identity,
 };
 
 export function exactlyOneOfProp(propTypes) {
