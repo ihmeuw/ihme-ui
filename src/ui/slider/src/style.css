@@ -1,6 +1,12 @@
 .slider {
-  position: relative;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.handle-track {
+  position: relative;
+  display: flex;
 }
 
 .rounded {
@@ -10,34 +16,45 @@
 .track {
   composes: rounded;
   box-sizing: border-box;
-  position: absolute;
+  position: relative;
   width: 100%;
-  height: 5px;
+  height: 0.4em;
+  min-height: 3px;
+  max-height: 6px;
   border: 1px solid;
-  top: 20px;
   color: #ccc;
-  display: inline-flex;
 }
 
 .track-click-target {
   position: absolute;
-  height: 100%;
   width: 100%;
+  top: -2px;
+  bottom: -2px;
   z-index: 1;
 }
 
-.flag {
+.track-ticks {
   position: absolute;
-  bottom: calc(100% + 3px);
+  pointer-events: none;
+  width: 100%;
+  z-index: 1;
+  opacity: 0.1;
+}
+
+.flag-base {
+  margin: 2px 0;
+  height: 1.5em;
+}
+
+.flag {
+  composes: flag-base;
+  position: absolute;
   min-width: 20px;
   width: auto;
-  height: 1.5em;
-  font-size: 8pt;
   text-align: center;
   vertical-align: middle;
   white-space: nowrap;
   color: #27ae60;
-  transition: all 0.3s ease-out;
   background-color: transparent;
   border: solid #27ae60;
   border-width: 0 1px;
@@ -71,21 +88,20 @@
 
 .flag:focus {
   outline: none;
-  border-radius: 5px;
+  border-radius: 0.5em;
   border-color: #27ae60;
 }
 
 .flag.left.connected:focus {
-  border-radius: 5px 0 0 5px;
+  border-radius: 0.5em 0 0 0.5em;
 }
 
 .flag.right.connected:focus {
-  border-radius: 0 5px 5px 0;
+  border-radius: 0 0.5em 0.5em 0;
 }
 
 .fill {
   position: absolute;
-  transition: width 0.3s ease-out;
 }
 
 .fill.left {

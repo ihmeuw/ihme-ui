@@ -2,117 +2,28 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import d3Scale from 'd3-scale';
 import { bindAll, identity, map, zipObject } from 'lodash';
+import { CommonPropTypes, PureComponent, ensureWithinRange } from '../../../utils';
+import { stateFromPropUpdates, updateFunc } from '../../../utils/props';
 
 import Track from './track';
 import Fill from './fill';
 import Handle from './handle';
-
+import ResponsiveContainer from '../../responsive-container';
+import { getFloatPrecision, valueWithPrecision } from './util';
 import style from './style.css';
-
-const propTypes = {
-  /* height and width of Slider component. */
-  height: PropTypes.number,
-  width: PropTypes.number,
-
-  /* extents of slider values. */
-  minValue: PropTypes.number.isRequired,
-  maxValue: PropTypes.number.isRequired,
-
-  /* step between slider values. */
-  step: PropTypes.number,
-
-  /* inline styles applied to outermost wrappper */
-  wrapperStyles: PropTypes.object,
-
-  /* any additional classes to add to outermost wrapper */
-  wrapperClassName: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.object,
-    PropTypes.array
-  ]),
-
-  /*
-   * Initial selected value.
-   * If number, a single slider handle will be rendered.
-   * If object with keys 'min' and 'max', two slider handles will be rendered.
-   */
-  value: PropTypes.oneOfType([
-    PropTypes.number,
-    PropTypes.array,
-    PropTypes.shape({
-      min: PropTypes.number,
-      max: PropTypes.number
-    })
-  ]).isRequired,
-
-  /*
-   * function applied to the selected value prior to rendering.
-   * Params:
-   *   value - selected value
-   *
-   * Returns:
-   *   'string'
-   *
-   * Default:
-   *   _.identity
-   */
-  labelFunc: PropTypes.func,
-
-  /* include fill in the track to indicate value. */
-  fill: PropTypes.bool,
-
-  /* style for the fill color. */
-  fillColor: PropTypes.string,
-
-  /*
-   * callback function when value is changed.
-   * Params:
-   *   value - object with keys ['min'] and 'max'
-   *   key - key of most recent value change.
-   */
-  onChange: PropTypes.func.isRequired
-};
-
-const defaultProps = {
-  height: 24,
-  width: 200,
-  step: 1,
-  labelFunc: identity,
-  fill: false,
-  fillColor: '#ccc'
-};
 
 /**
  * Evaluate value and return a compatible object with keys 'min' and 'max'.
  * @param value
  * @returns {Object}
  */
-function getValues(value) {
+function getMinMaxValues(value) {
   if (typeof value === 'number') {
     return { min: value };
   } else if (Array.isArray(value)) {
     return zipObject(['min', 'max'], value);
   }
   return value;
-}
-
-/**
- * Determine the floating point precision of a number.
- * @param value
- * @returns {number}
- */
-function getFloatPrecision(value) {
-  return value > 0 && value < 1 ? (1 - Math.ceil(Math.log(value) / Math.log(10))) : 0;
-}
-
-/**
- * Return a number to a specified precision as a workaround for floating point funkiness.
- * @param value
- * @param precision
- * @returns {number}
- */
-function valueWithPrecision(value, precision) {
-  return +value.toFixed(precision);
 }
 
 /**
@@ -128,17 +39,17 @@ function valueByHandleCount(value, handleCount) {
   return value;
 }
 
-export default class Slider extends React.Component {
+export default class Slider extends PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
       render: false,
-      values: getValues(props.value),
+      values: getMinMaxValues(props.value),
       scale: d3Scale.scaleLinear()
         .clamp(true)
         .domain([props.minValue, props.maxValue]),
-      snapTarget: {}
+      snapTarget: {},
     };
 
     this.handleCount = Object.keys(this.state.values).length;
@@ -147,9 +58,7 @@ export default class Slider extends React.Component {
       'onHandleMove',
       'onHandleKeyDown',
       'onTrackClick',
-      'renderHandle',
-      'renderFill',
-      'trackRef'
+      'trackRef',
     ]);
   }
 
@@ -158,6 +67,8 @@ export default class Slider extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
+    const state = {};
+
     // If the extents or width changes, the scale and snapTarget must be recalculated.
     if ((this.props.minValue !== newProps.minValue) ||
         (this.props.maxValue !== newProps.maxValue) ||
@@ -166,7 +77,7 @@ export default class Slider extends React.Component {
       this.receiveTrackWidth(newProps);
     }
 
-    this.setState({ values: getValues(newProps.value) });
+    this.setState(stateFromPropUpdates(Slider.propUpdates, this.props, newProps, state));
   }
 
   componentDidUpdate(prevProps) {
@@ -177,8 +88,15 @@ export default class Slider extends React.Component {
 
   onHandleMove(key, offset) {
     return (event) => {
-      const value = valueWithPrecision(this.state.scale.invert(event.pageX + offset),
-                                       this.precision);
+      if (!event.dx) return;
+
+      const { pageX, dx } = event;
+      const { scale, values } = this.state;
+
+      const nextPos = scale(values[key]) + dx;
+      if (!(ensureWithinRange(pageX, [nextPos - (offset * 2), nextPos]) === pageX)) return;
+
+      const value = valueWithPrecision(scale.invert(nextPos), this.precision);
 
       this.updateValueFromEvent(value, key);
     };
@@ -238,7 +156,7 @@ export default class Slider extends React.Component {
     this.setState({
       render: true,
       scale: this.state.scale.range([0, this._track.width]),
-      snapTarget: { x: this._track.width / ((props.maxValue - props.minValue) / props.step) }
+      snapTarget: { x: this._track.width / ((props.maxValue - props.minValue) / props.step) },
     });
   }
 
@@ -246,74 +164,178 @@ export default class Slider extends React.Component {
     this._track = ref;
   }
 
-  renderHandle() {
-    const { values } = this.state;
+  renderFill() {
+    if (!this.state.render || !this.props.fill) return null;
+
+    const { values, scale } = this.state;
+    const { fillStyle, fillClassName } = this.props;
 
     return map(values, (value, key) => {
       const direction = key === 'min' ? 'left' : 'right';
-
+      const position = scale(value);
       return (
-        <Handle
-          key={key}
-          name={key}
+        <Fill
+          key={`fill:${key}`}
+          className={fillClassName}
+          style={fillStyle}
           direction={direction}
-          position={this.state.scale(value)}
-          onMove={this.onHandleMove}
-          onKeyDown={this.onHandleKeyDown}
-          label={value}
-          labelFunc={this.props.labelFunc}
-          snapTarget={this.state.snapTarget}
-          className={classNames({ [style.connected]: values.min === values.max })}
+          width={position}
         />
       );
     });
   }
 
-  renderFill() {
-    const { values, scale } = this.state;
+  renderHandles() {
+    if (!this.state.render) return null;
 
-    return map(values, (value, key) => {
-      const direction = key === 'min' ? 'left' : 'right';
+    const { values, scale, snapTarget } = this.state;
+    const { labelFunc, handleClassName, handleStyle } = this.props;
 
-      return (
-        <Fill
-          key={key}
-          direction={direction}
-          width={scale(value)}
-          fillStyle={{ backgroundColor: this.props.fillColor }}
-        />
-      );
-    });
+    return (
+      <div className={style['handle-track']}>
+        <div className={style['flag-base']}></div>
+        {map(values, (value, key) => {
+          const direction = key === 'min' ? 'left' : 'right';
+          const position = scale(value);
+          return (
+            <ResponsiveContainer
+              key={`handle:${key}`}
+            >
+              <Handle
+                className={classNames(handleClassName,
+                                      { [style.connected]: values.min === values.max })}
+                style={handleStyle}
+                onMove={this.onHandleMove}
+                onKeyDown={this.onHandleKeyDown}
+                name={key}
+                direction={direction}
+                position={position}
+                label={value}
+                labelFunc={labelFunc}
+                snapTarget={snapTarget}
+              />
+            </ResponsiveContainer>
+          );
+        })}
+      </div>
+    );
   }
 
   render() {
-    const { height, width, wrapperStyles, wrapperClassName } = this.props;
-    const { render } = this.state;
+    const { fontSize, width, wrapperClassName, wrapperStyle, ticks } = this.props;
+    const { snapTarget } = this.state;
 
-    const styles = {
-      height: `${height}px`,
+    const wrapperStyles = {
+      fontSize: `${fontSize}`,
       width: `${width}px`,
-      ...wrapperStyles
+      ...wrapperStyle,
     };
 
     return (
       <div
         className={classNames(style.slider, wrapperClassName)}
-        style={styles}
+        style={wrapperStyles}
       >
+        {this.renderHandles()}
         <Track
-          onClick={this.onTrackClick}
-          snapTarget={this.state.snapTarget}
           ref={this.trackRef}
+          className={this.props.trackClassName}
+          style={this.props.trackStyle}
+          onClick={this.onTrackClick}
+          snapTarget={snapTarget}
+          ticks={ticks}
+          ticksClassName={this.props.ticksClassName}
+          ticksStyle={this.props.ticksStyle}
+          tickClassName={this.props.tickClassName}
+          tickStyle={this.props.tickStyle}
         >
-          {render && this.props.fill && this.renderFill()}
-          {render && this.renderHandle()}
+          {this.renderFill()}
         </Track>
       </div>
     );
   }
 }
 
-Slider.propTypes = propTypes;
+Slider.propTypes = {
+  fontSize: PropTypes.string,
 
-Slider.defaultProps = defaultProps;
+  /* width and height of Slider component. */
+  width: PropTypes.number,
+
+  /* extents of slider values. */
+  minValue: PropTypes.number.isRequired,
+  maxValue: PropTypes.number.isRequired,
+
+  /* step between slider values. */
+  step: PropTypes.number,
+
+  /* class name styles applied to outermost wrapper */
+  wrapperClassName: CommonPropTypes.className,
+  wrapperStyle: PropTypes.object,
+
+  /*
+   * Initial selected value.
+   * If number, a single slider handle will be rendered.
+   * If object with keys 'min' and 'max', two slider handles will be rendered.
+   */
+  value: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.array,
+    PropTypes.shape({
+      min: PropTypes.number,
+      max: PropTypes.number,
+    }),
+  ]).isRequired,
+
+  /*
+   * function applied to the selected value prior to rendering.
+   * Params:
+   *   value - selected value
+   *
+   * Returns:
+   *   'string'
+   *
+   * Default:
+   *   _.identity
+   */
+  labelFunc: PropTypes.func,
+
+  handleClassName: CommonPropTypes.className,
+  handleStyle: PropTypes.object,
+
+  trackClassName: CommonPropTypes.className,
+  trackStyle: PropTypes.object,
+
+  /* include fill in the track to indicate value. */
+  fill: PropTypes.bool,
+  fillClassName: CommonPropTypes.className,
+  fillStyle: PropTypes.object,
+
+  /* show ticks in track */
+  ticks: PropTypes.bool,
+  ticksClassName: CommonPropTypes.className,
+  ticksStyle: PropTypes.object,
+  /* class name and style for each tick */
+  tickClassName: CommonPropTypes.className,
+  tickStyle: PropTypes.object,
+
+  /*
+   * callback function when value is changed.
+   * Params:
+   *   value - object with keys ['min'] and 'max'
+   *   key - key of most recent value change.
+   */
+  onChange: PropTypes.func.isRequired,
+};
+
+Slider.defaultProps = {
+  width: 200,
+  step: 1,
+  labelFunc: identity,
+};
+
+Slider.propUpdates = {
+  value: updateFunc((nextProp) => {
+    return { values: getMinMaxValues(nextProp) };
+  }),
+};

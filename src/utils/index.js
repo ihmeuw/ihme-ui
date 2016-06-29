@@ -31,6 +31,10 @@ export {
 } from './objects';
 
 export {
+  PureComponent,
+} from './react';
+
+export {
   getScale,
   getScaleTypes,
   rangeToDomain,
@@ -43,7 +47,10 @@ export {
 
 export {
   CommonPropTypes,
+  CommonDefaultProps,
   atLeastOneOfProp,
   exactlyOneOfProp,
   propsChanged,
+  stateFromPropUpdates,
+  updateFunc,
 } from './props';
