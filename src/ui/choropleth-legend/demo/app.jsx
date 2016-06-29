@@ -109,7 +109,7 @@ class App extends React.Component {
     const { data, domain, rangeExtent, colorScale, x1, x2 } = this.state;
     return (
       <div id="demo-container">
-        <pre><code>
+{/* <pre><code>
     <ChoroplethLegend
       margins={{
         top: 50,
@@ -131,7 +131,8 @@ class App extends React.Component {
       zoom={1}
       unit="Deaths per 100,000"
     />
-        </code></pre>
+
+</code></pre> */}
         <ChoroplethLegend
           margins={{
             top: 50,
