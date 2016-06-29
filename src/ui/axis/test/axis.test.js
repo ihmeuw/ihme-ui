@@ -12,14 +12,13 @@ chai.use(chaiEnzyme());
 const dummyScale = d3Scale.scaleLinear();
 
 describe('<Axis />', () => {
-  it('renders a g that wraps axis', () => {
+  it('renders a <g> that wraps axis', () => {
     const wrapper = shallow(
       <Axis
         scale={dummyScale}
         orientation="bottom"
       />);
-    expect(wrapper)
-      .to.have.tagName('g');
+    expect(wrapper).to.have.tagName('g');
   });
 
   it('renders ticks', () => {
@@ -83,6 +82,46 @@ describe('<Axis />', () => {
     );
     chai.expect(wrapper.children().find('text').last()).to.have.text('Label');
   });
+
+  it('calculates translate from width and height', () => {
+    const wrapper = mount(
+      <Axis
+        scale={dummyScale}
+        orientation="bottom"
+        width={100}
+        height={100}
+      />
+    );
+
+    expect(wrapper.state('translate')).to.be.deep.equal({ x: 0, y: 100 });
+  });
+
+  describe('updates state based on new props', () => {
+    it('applies new scale', () => {
+      const wrapper = mount(
+        <Axis
+          scale={dummyScale}
+          orientation="bottom"
+        />
+      );
+
+      const newScale = d3Scale.scaleLinear();
+      wrapper.setProps({ scale: newScale });
+      expect(wrapper.state('scale')).to.be.equal(newScale);
+    });
+
+    it('calculates new translate from width and height', () => {
+      const wrapper = mount(
+        <Axis
+          scale={dummyScale}
+          orientation="bottom"
+        />
+      );
+
+      wrapper.setProps({ width: 100, height: 100 });
+      expect(wrapper.state('translate')).to.be.deep.equal({ x: 0, y: 100 });
+    });
+  });
 });
 
 describe('<XAxis />', () => {
@@ -92,7 +131,6 @@ describe('<XAxis />', () => {
         scale={dummyScale}
       />
     );
-    console.log(wrapper);
     expect(wrapper).to.have.prop('orientation', 'bottom');
   });
 
@@ -103,6 +141,17 @@ describe('<XAxis />', () => {
       />
     );
     expect(wrapper).to.have.state('scale', dummyScale);
+  });
+
+  it('updates state scale based on new props', () => {
+    const wrapper = mount(
+      <XAxis
+        scales={{ x: dummyScale }}
+      />
+    );
+    const newScale = d3Scale.scaleLinear();
+    wrapper.setProps({ scales: { x: newScale } });
+    expect(wrapper.state('scale')).to.be.equal(newScale);
   });
 });
 
@@ -123,5 +172,16 @@ describe('<YAxis />', () => {
       />
     );
     expect(wrapper).to.have.state('scale', dummyScale);
+  });
+
+  it('updates state scale based on new props', () => {
+    const wrapper = mount(
+      <YAxis
+        scales={{ y: dummyScale }}
+      />
+    );
+    const newScale = d3Scale.scaleLinear();
+    wrapper.setProps({ scales: { y: newScale } });
+    expect(wrapper.state('scale')).to.be.equal(newScale);
   });
 });
