@@ -44,6 +44,6 @@ export {
 export {
   CommonPropTypes,
   atLeastOneOfProp,
-  oneOfProp,
+  exactlyOneOfProp,
   propsChanged,
 } from './props';

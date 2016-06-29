@@ -11,7 +11,7 @@ export const CommonPropTypes = {
   ])
 };
 
-export function oneOfProp(propTypes) {
+export function exactlyOneOfProp(propTypes) {
   return (props, propName, componentName, location, propFullName) => {
     let error = null;
     const validProps = intersection(Object.keys(props), Object.keys(propTypes));
