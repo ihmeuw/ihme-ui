@@ -31,6 +31,10 @@ export {
 } from './objects';
 
 export {
+  PureComponent,
+} from './react';
+
+export {
   getScale,
   getScaleTypes,
   rangeToDomain,
