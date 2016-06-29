@@ -67,12 +67,38 @@ export function propsChanged(prevProps, nextProps, propsToCompare, propsToOmit) 
   }, true);
 }
 
+/**
+ * Helper function to build a state object from updated props.
+ *
+ * The `propUpdates` object will define the prop name and the comparison action. The comparison
+ * action is a callback with signature (accumulator, propName, prevProps, nextProps), that
+ * evaluates the prop changes, and determines what to add to the state. The return value will be
+ * the new accumulated state. It is important to return the accumulator even if no relevant prop
+ * changes are found.
+ *
+ * @param {{ propName: comparisonActionCallback }} propUpdates - prop name and comparison action function.
+ * @param {Object} prevProps
+ * @param {Object} nextProps
+ * @param {Object} state
+ * @returns {Object} accumulated state.
+ */
 export function stateFromPropUpdates(propUpdates, prevProps, nextProps, state) {
   return reduce(propUpdates, (acc, value, key) => {
     return value(acc, key, prevProps, nextProps);
   }, state);
 }
 
+/**
+ * Helper function to plug into `stateFromPropUpdates` to provide simplified comparison and update
+ * functionality.
+ *
+ * The `func` callback will be called if the immediate prop has changed. Its signature is
+ * (nextProp, propName, nextProps), and it determines what to add to the state. The return value
+ * will be the new accumulated state.
+ *
+ * @param {updateFuncCallback} func
+ * @returns {comparisonActionCallback} comparison action callback.
+ */
 export function updateFunc(func) {
   return (acc, key, prevProps = {}, nextProps) => {
     return prevProps[key] !== nextProps[key] ?
@@ -80,3 +106,19 @@ export function updateFunc(func) {
       acc;
   };
 }
+
+/**
+ * @callback comparisonActionCallback
+ * @param {Object} state accumulator
+ * @param {string} propName
+ * @param {Object} prevProps
+ * @param {Object} nextProps
+ */
+
+/**
+ * @callback updateFuncCallback
+ * @param {any} nextProp
+ * @param {string} propName
+ * @param {Object} nextProps
+ * @returns {Object} accumulated state.
+ */
