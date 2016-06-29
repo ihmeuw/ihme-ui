@@ -47,7 +47,10 @@ export {
 
 export {
   CommonPropTypes,
+  CommonDefaultProps,
   atLeastOneOfProp,
   exactlyOneOfProp,
   propsChanged,
+  stateFromPropUpdates,
+  updateFunc,
 } from './props';

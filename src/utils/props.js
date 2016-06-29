@@ -66,3 +66,17 @@ export function propsChanged(prevProps, nextProps, propsToCompare, propsToOmit) 
     return acc && (includes(propsToOmit, prop) || prevProps[prop] === nextProps[prop]);
   }, true);
 }
+
+export function stateFromPropUpdates(propUpdates, prevProps, nextProps, state) {
+  return reduce(propUpdates, (acc, value, key) => {
+    return value(acc, key, prevProps, nextProps);
+  }, state);
+}
+
+export function updateFunc(func) {
+  return (acc, key, prevProps = {}, nextProps) => {
+    return prevProps[key] !== nextProps[key] ?
+      { ...acc, ...func(nextProps[key], key, nextProps) } :
+      acc;
+  };
+}
