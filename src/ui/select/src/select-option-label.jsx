@@ -8,7 +8,7 @@ const flatOptionPropTypes = {
   option: PropTypes.object.isRequired,
 
   // key on option that holds its label
-  labelKey: PropTypes.string.isRequired
+  labelKey: PropTypes.string.isRequired,
 };
 
 export function FlatOptionLabel(props) {
@@ -25,11 +25,11 @@ const hierarchicalOptionPropTypes = {
   // in hierarchy it belongs
   option: PropTypes.shape({
     level: PropTypes.number.isRequired,
-    bold: PropTypes.bool
+    bold: PropTypes.bool,
   }),
 
   // key on option that holds its label
-  labelKey: PropTypes.string
+  labelKey: PropTypes.string,
 };
 
 export function HierarchicalOptionLabel(props) {
@@ -37,7 +37,7 @@ export function HierarchicalOptionLabel(props) {
     <span
       style={{
         marginLeft: `${(props.option.level || 0) * 5}px`,
-        fontWeight: props.option.bold ? 'bold' : 'normal'
+        fontWeight: props.option.bold ? 'bold' : 'normal',
       }}
     >
       {props.option[props.labelKey] || ''}

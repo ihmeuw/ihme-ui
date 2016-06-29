@@ -12,9 +12,9 @@ describe('<SelectOptionLabel', () => {
     it('returns the label for an option', () => {
       const props = {
         option: {
-          name: 'Seattle'
+          name: 'Seattle',
         },
-        labelKey: 'name'
+        labelKey: 'name',
       };
       const wrapper = shallow(<FlatOptionLabel {...props} />);
 
@@ -24,8 +24,8 @@ describe('<SelectOptionLabel', () => {
     it('returns an empty string if option[labelKey] is undefined', () => {
       const props = {
         option: {
-          name: 'Seattle'
-        }
+          name: 'Seattle',
+        },
       };
       const wrapper = shallow(<FlatOptionLabel {...props} />);
 

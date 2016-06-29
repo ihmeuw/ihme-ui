@@ -12,9 +12,9 @@ const randomizer = d3Random.randomUniform(0, 4);
 const hierarchicalCities = cities.map((city) => {
   const level = Math.floor(randomizer());
   return {
-    level: level,
+    level,
     bold: !level || null,
-    ...city
+    ...city,
   };
 });
 
@@ -24,24 +24,24 @@ class App extends React.Component {
 
     this.state = {
       multiSelectValues: [],
-      singleSelectValue: null
+      singleSelectValue: null,
     };
 
     bindAll(this, [
       'onMultiSelectChange',
-      'onSingleSelectChange'
+      'onSingleSelectChange',
     ]);
   }
 
   onMultiSelectChange(selections) {
     this.setState({
-      multiSelectValues: selections
+      multiSelectValues: selections,
     });
   }
 
   onSingleSelectChange(selection) {
     this.setState({
-      singleSelectValue: selection
+      singleSelectValue: selection,
     });
   }
 

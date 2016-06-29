@@ -1,7 +1,7 @@
 import { PropTypes } from 'react';
 
 const propTypes = {
-  placeholder: PropTypes.string.isRequired
+  placeholder: PropTypes.string.isRequired,
 };
 
 export default function multiValueRenderer(props) {

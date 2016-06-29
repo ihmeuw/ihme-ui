@@ -13,12 +13,12 @@ describe('<SelectOption />', () => {
     focusOption() {},
     selectValue() {},
     labelKey: 'name',
-    valueArray: []
+    valueArray: [],
   };
 
   it('applies focused classname when option has focus', () => {
     const option = {
-      name: 'Seattle'
+      name: 'Seattle',
     };
     const props = Object.assign({}, baseProps, { focusedOption: option, option });
     const wrapper = shallow(<SelectOption {...props} />);
@@ -27,7 +27,7 @@ describe('<SelectOption />', () => {
 
   it('does not apply focused classname when option does not have focus', () => {
     const option = {
-      name: 'Seattle'
+      name: 'Seattle',
     };
     const props = Object.assign({}, baseProps, { option });
     const wrapper = shallow(<SelectOption {...props} />);
@@ -39,7 +39,7 @@ describe('<SelectOption />', () => {
 
     it('renders a checked input box when a given option is selected', () => {
       const option = {
-        name: 'Seattle'
+        name: 'Seattle',
       };
       const props = Object.assign({}, multiBaseProps, { valueArray: [option], option });
       const wrapper = shallow(<SelectOption {...props} />);
@@ -48,7 +48,7 @@ describe('<SelectOption />', () => {
 
     it('renders an unchecked input box when a given option is unselected', () => {
       const option = {
-        name: 'Seattle'
+        name: 'Seattle',
       };
       const props = Object.assign({}, multiBaseProps, { option });
       const wrapper = shallow(<SelectOption {...props} />);
