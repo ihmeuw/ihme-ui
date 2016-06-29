@@ -15,6 +15,10 @@ export default class Track extends PureComponent {
     this.trackRef = this.trackRef.bind(this);
   }
 
+  componentDidMount() {
+    this.bindInteract(this.props.snapTarget);
+  }
+
   componentWillReceiveProps(nextProps) {
     this.setState(this.handlePropUpdates(this.props, nextProps));
   }
