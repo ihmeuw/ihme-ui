@@ -251,7 +251,7 @@ class App extends React.Component {
               value={this.state.listValue}
               labelFunc={this.listLabelFunc}
               fill
-              fillStyle={this.state.style}
+              fillStyle={this.state.fillStyle}
             />
           </section>
         </div>
