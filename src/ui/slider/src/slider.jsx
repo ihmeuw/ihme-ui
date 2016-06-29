@@ -3,12 +3,13 @@ import classNames from 'classnames';
 import d3Scale from 'd3-scale';
 import { bindAll, identity, map, zipObject } from 'lodash';
 import { CommonPropTypes, PureComponent, ensureWithinRange } from '../../../utils';
+import { stateFromPropUpdates, updateFunc } from '../../../utils/props';
 
 import Track from './track';
 import Fill from './fill';
 import Handle from './handle';
 import ResponsiveContainer from '../../responsive-container';
-import { getFloatPrecision, valueWithPrecision, stateFromPropUpdates, updateFunc } from './util';
+import { getFloatPrecision, valueWithPrecision } from './util';
 import style from './style.css';
 
 /**

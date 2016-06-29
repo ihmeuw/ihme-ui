@@ -3,8 +3,9 @@ import classNames from 'classnames';
 import interact from 'interact.js';
 import { identity, noop } from 'lodash';
 import { CommonPropTypes, PureComponent } from '../../../utils';
+import { stateFromPropUpdates, updateFunc } from '../../../utils/props';
 
-import { getDimension, getSnapTargetFunc, stateFromPropUpdates, updateFunc } from './util';
+import { getDimension, getSnapTargetFunc } from './util';
 import style from './style.css';
 
 function getOffset(direction, width) {
