@@ -91,7 +91,7 @@
     "ihme-react-select": "git+https://github.com/ihmeuw/ihme-react-select.git",
     "interact.js": "^1.2.6",
     "lodash": "^4.5.0",
-    "react": "^15.0.1",
+    "react": "^15.1.0",
     "react-addons-pure-render-mixin": "^15.1.0",
     "react-addons-shallow-compare": "^15.1.0",
     "react-dom": "^15.1.0",
