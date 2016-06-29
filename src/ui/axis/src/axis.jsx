@@ -34,9 +34,9 @@ export default class Axis extends React.Component {
     this.setState({
       scale: nextProps.scale,
       translate: nextProps.translate ||
-                 propsChanged(this.props, nextProps, ['orientation', 'width', 'height']) ?
-                   calcTranslate(nextProps.orientation, nextProps.width, nextProps.height) :
-                   this.state.translate,
+                   (propsChanged(this.props, nextProps, ['orientation', 'width', 'height']) ?
+                     calcTranslate(nextProps.orientation, nextProps.width, nextProps.height) :
+                     this.state.translate),
     });
   }
 

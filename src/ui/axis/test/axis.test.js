@@ -121,6 +121,19 @@ describe('<Axis />', () => {
       wrapper.setProps({ width: 100, height: 100 });
       expect(wrapper.state('translate')).to.be.deep.equal({ x: 0, y: 100 });
     });
+
+    it('uses translate when given as a prop', () => {
+      const wrapper = mount(
+        <Axis
+          scales={{ y: dummyScale }}
+          orientation="bottom"
+          translate={{ x: 20, y: 20 }}
+        />
+      );
+      expect(wrapper.state('translate')).to.be.deep.equal({ x: 20, y: 20 });
+      wrapper.setProps({ translate: { x: 40, y: 40 } });
+      expect(wrapper.state('translate')).to.be.deep.equal({ x: 40, y: 40 });
+    });
   });
 });
 
