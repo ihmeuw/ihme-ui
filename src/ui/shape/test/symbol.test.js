@@ -37,6 +37,6 @@ describe('<Symbol />', () => {
         selected={1}
       />
     );
-    expect(wrapper.props().stroke).to.equal('#000');
+    expect(wrapper.props().style.stroke).to.equal('#000');
   });
 });
