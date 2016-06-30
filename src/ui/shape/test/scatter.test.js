@@ -72,7 +72,7 @@ describe('<Scatter />', () => {
         expect(symbol).to.have.prop(prop);
       };
 
-      ['data', 'type', 'position', 'color'].forEach(assertion);
+      ['data', 'type', 'translateX', 'translateY', 'color'].forEach(assertion);
     });
   });
 });
