@@ -51,4 +51,8 @@ YAxis.defaultProps = {
   scales: { y: scaleLinear() },
   width: 0,
   height: 0,
+  padding: {
+    left: 50,
+    right: 50,
+  },
 };

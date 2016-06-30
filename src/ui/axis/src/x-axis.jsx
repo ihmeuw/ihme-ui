@@ -51,4 +51,8 @@ XAxis.defaultProps = {
   scales: { x: scaleLinear() },
   width: 0,
   height: 0,
+  padding: {
+    top: 40,
+    bottom: 40,
+  },
 };

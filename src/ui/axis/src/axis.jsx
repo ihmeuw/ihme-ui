@@ -165,4 +165,10 @@ Axis.defaultProps = {
   scale: scaleLinear(),
   width: 0,
   height: 0,
+  padding: {
+    top: 40,
+    bottom: 40,
+    left: 50,
+    right: 50,
+  },
 };
