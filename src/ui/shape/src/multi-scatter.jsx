@@ -38,9 +38,9 @@ export default function MultiScatter(props) {
             <Scatter
               color={color}
               data={values}
+              focus={focus}
               key={`scatter:${key}`}
               selection={castArray(selection)}
-              focus={focus}
               symbolType={symbolType}
               {...childProps}
             />
@@ -81,6 +81,8 @@ MultiScatter.propTypes = {
   */
   dataField: PropTypes.string,
 
+  focus: PropTypes.object,
+
   /*
     unique key that identifies the dataset to be plotted within the array of datasets.
   */
@@ -106,8 +108,6 @@ MultiScatter.propTypes = {
     PropTypes.object,
     PropTypes.array,
   ]),
-
-  focus: PropTypes.object,
 
   /*
   size of symbols.
