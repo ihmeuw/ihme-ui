@@ -247,15 +247,6 @@ export default class Choropleth extends React.Component {
         className={classNames(style.common, this.props.className)}
         style={{ ...this.props.style, width: `${width}px`, height: `${height}px` }}
       >
-        {this.props.controls && <Controls
-          className={this.props.controlsClassName}
-          style={this.props.controlsStyle}
-          buttonClassName={this.props.controlsButtonClassName}
-          buttonStyle={this.props.controlsButtonStyle}
-          onZoomIn={this.zoomTo(this.zoom.scale() * this.props.zoomStep)}
-          onZoomOut={this.zoomTo(this.zoom.scale() / this.props.zoomStep)}
-          onZoomReset={this.zoomReset}
-        />}
         <svg
           ref={this.saveSvgRef}
           width={`${width}px`}
@@ -265,6 +256,15 @@ export default class Choropleth extends React.Component {
         >
           {this.renderLayers()}
         </svg>
+        {this.props.controls && <Controls
+          className={this.props.controlsClassName}
+          style={this.props.controlsStyle}
+          buttonClassName={this.props.controlsButtonClassName}
+          buttonStyle={this.props.controlsButtonStyle}
+          onZoomIn={this.zoomTo(this.zoom.scale() * this.props.zoomStep)}
+          onZoomOut={this.zoomTo(this.zoom.scale() / this.props.zoomStep)}
+          onZoomReset={this.zoomReset}
+        />}
       </div>
     );
   }
