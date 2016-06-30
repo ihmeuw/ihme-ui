@@ -1,9 +1,10 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import d3Shape from 'd3-shape';
-import { includes, noop, reduce } from 'lodash';
+import { noop } from 'lodash';
 
 import { eventHandleWrapper } from '../../../utils/events';
+import { propsChanged } from '../../../utils/props';
 
 const SYMBOL_TYPES = {
   circle: d3Shape.symbolCircle,
@@ -46,7 +47,7 @@ export default class Symbol extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return this.propsChanged(this.props, nextProps, [
+    return propsChanged(this.props, nextProps, [
       'selected', 'focused', 'translateX', 'translateY', 'className'
     ]);
   }
@@ -60,13 +61,6 @@ export default class Symbol extends React.Component {
       return typeof focusedStyle === 'function' ? focusedStyle() : { ...focusedStyle };
     }
     return typeof style === 'function' ? style() : { ...style };
-  }
-
-  // Look in utils prop.js when it gets added to IHME-UI
-  propsChanged(prevProps, nextProps, propsToCompare, propsToOmit) {
-    return !reduce(propsToCompare || Object.keys(nextProps), (acc, prop) => {
-      return acc && (includes(propsToOmit, prop) || prevProps[prop] === nextProps[prop]);
-    }, true);
   }
 
   createPath(type, size) {

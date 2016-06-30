@@ -133,7 +133,6 @@ MultiScatter.defaultProps = {
   onMouseMove: noop,
   onMouseOver: noop,
   symbolField: 'type',
-  colorScale: () => { return 'steelblue'; },
   symbolScale: () => { return 'circle'; },
   scales: { x: scaleLinear(), y: scaleLinear() },
 };
