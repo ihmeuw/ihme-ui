@@ -44,7 +44,9 @@ describe('<Scatter />', () => {
       component = (
         <Scatter
           data={data}
+          focus={data[2]}
           scales={{ x: xScale, y: yScale }}
+          selection={[data[1], data[3]]}
           symbolType={'circle'}
           color={'red'}
           dataAccessors={dataAccessors}
@@ -73,6 +75,16 @@ describe('<Scatter />', () => {
       };
 
       ['data', 'type', 'translateX', 'translateY', 'color'].forEach(assertion);
+    });
+
+    it('selects a symbol', () => {
+      const wrapper = shallow(component);
+      expect(wrapper.find({ selected: true })).to.have.length(2);
+    });
+
+    it('focuses a symbol', () => {
+      const wrapper = shallow(component);
+      expect(wrapper.find({ focused: true })).to.have.length(1);
     });
   });
 });
