@@ -14,7 +14,7 @@ const menuPropTypes = {
   multi: PropTypes.bool,
   hierarchical: PropTypes.bool,
   optionRenderer: PropTypes.func,
-  width: PropTypes.number
+  width: PropTypes.number,
 };
 
 export default function Menu(props) {
@@ -29,7 +29,7 @@ export default function Menu(props) {
     optionRenderer,
     selectValue,
     valueArray,
-    width
+    width,
   } = props;
   const maxHeight = 200;
   const optionHeight = 23;

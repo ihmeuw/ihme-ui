@@ -2,6 +2,7 @@
 
 var path = require('path');
 var autoprefixer = require('autoprefixer');
+var WebpackNotifierPlugin = require('webpack-notifier');
 
 module.exports = {
   devtool: 'source-map',
@@ -11,6 +12,9 @@ module.exports = {
     path: __dirname,
     filename: 'bundle.js'
   },
+  plugins: [
+    new WebpackNotifierPlugin({alwaysNotify: true})
+  ],
   module: {
     loaders: [
       {
@@ -28,6 +32,5 @@ module.exports = {
   resolve: {
     extensions: ['', '.js', '.jsx']
   },
-  stats: false,
   progress: true
 };

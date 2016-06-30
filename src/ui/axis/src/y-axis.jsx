@@ -1,47 +1,58 @@
-import React, { PropTypes } from 'react';
-import { assign, omit } from 'lodash';
+import { PropTypes } from 'react';
+import { scaleLinear } from 'd3-scale';
+import { atLeastOneOfProp, propsChanged } from '../../../utils';
 
-import Axis, { sharedPropTypes, calcTranslate } from './axis';
+import Axis, { AXIS_SCALE_PROP_TYPES } from './axis';
 
-const propTypes = assign({}, sharedPropTypes, {
-  /* OVERRIDE - where to position ticks relative to axis line */
-  position: PropTypes.oneOf(['left', 'right']),
+export default class YAxis extends Axis {
+  constructor(props) {
+    super(props);
+    this.state = {
+      ...this.state,
+      scale: props.scale || props.scales.y,
+    };
+  }
 
-  /* scales are provided by axis-chart, only y scale is used by YAxis */
+  componentWillReceiveProps(nextProps) {
+    super.componentWillReceiveProps(nextProps);
+
+    this.setState({
+      scale: nextProps.scale || nextProps.scales.y,
+    });
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return propsChanged(this.props, nextProps, undefined, ['scale', 'scales']) ||
+           propsChanged(this.state, nextState);
+  }
+}
+
+const Y_AXIS_SCALE_PROP_TYPES = {
+  ...AXIS_SCALE_PROP_TYPES,
   scales: PropTypes.shape({
     x: PropTypes.func,
-    y: PropTypes.func.isRequired
-  }),
-
-  /*
-   dimensions are provided by axis-chart
-   used for calculating translate, required if translate is not specified
-   */
-  dimensions: PropTypes.shape({
-    width: PropTypes.number,
-    height: PropTypes.number
-  })
-});
-
-const defaultProps = {
-  position: 'left'
+    y: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
-const YAxis = (props) => {
-  const { scales, dimensions, position, translate } = props;
-  const childProps = omit(props, ['scales', 'translate', 'dimensions']);
-  const translation = translate || calcTranslate(position, dimensions);
+YAxis.propTypes = {
+  ...Axis.propTypes,
 
-  return (
-    <Axis
-      scale={scales.y}
-      translate={translation}
-      {...childProps}
-    />
-  );
+  /* OVERRIDE - orientation of ticks relative to axis line */
+  orientation: PropTypes.oneOf(['left', 'right']),
+
+  /* scales are provided by axis-chart, only y scale is used by YAxis */
+  scale: atLeastOneOfProp(Y_AXIS_SCALE_PROP_TYPES),
+  scales: atLeastOneOfProp(Y_AXIS_SCALE_PROP_TYPES),
 };
 
-YAxis.propTypes = propTypes;
-YAxis.defaultProps = defaultProps;
-
-export default YAxis;
+YAxis.defaultProps = {
+  orientation: 'left',
+  scales: { y: scaleLinear() },
+  width: 0,
+  height: 0,
+  padding: {
+    left: 50,
+    right: 50,
+  },
+};

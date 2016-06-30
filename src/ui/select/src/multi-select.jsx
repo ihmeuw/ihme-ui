@@ -14,19 +14,19 @@ const multiSelectPropTypes = {
   width: PropTypes.number,
 
   /* width added to widest label (in px) */
-  widthPad: PropTypes.number
+  widthPad: PropTypes.number,
 };
 
 const defaultProps = {
   placeholder: 'Add/remove',
-  widthPad: 60
+  widthPad: 60,
 };
 
 export default class MultiSelect extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      menuWidth: getWidestLabel(props.options, props.labelKey, props.hierarchical) + props.widthPad
+      menuWidth: getWidestLabel(props.options, props.labelKey, props.hierarchical) + props.widthPad,
     };
   }
 
@@ -39,7 +39,7 @@ export default class MultiSelect extends React.Component {
           newProps.options,
           newProps.labelKey,
           newProps.hierarchical
-        ) + newProps.widthPad
+        ) + newProps.widthPad,
       });
     }
   }

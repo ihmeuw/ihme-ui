@@ -12,9 +12,9 @@ const randomizer = d3Random.randomUniform(0, 4);
 const hierarchicalCities = cities.map((city) => {
   const level = Math.floor(randomizer());
   return {
-    level: level,
+    level,
     bold: !level || null,
-    ...city
+    ...city,
   };
 });
 
@@ -24,24 +24,24 @@ class App extends React.Component {
 
     this.state = {
       multiSelectValues: [],
-      singleSelectValue: null
+      singleSelectValue: null,
     };
 
     bindAll(this, [
       'onMultiSelectChange',
-      'onSingleSelectChange'
+      'onSingleSelectChange',
     ]);
   }
 
   onMultiSelectChange(selections) {
     this.setState({
-      multiSelectValues: selections
+      multiSelectValues: selections,
     });
   }
 
   onSingleSelectChange(selection) {
     this.setState({
-      singleSelectValue: selection
+      singleSelectValue: selection,
     });
   }
 
@@ -52,7 +52,7 @@ class App extends React.Component {
       <div className={style.container}>
         <section>
           <h3>Multi-select</h3>
-          <pre><code>
+{/* <pre><code>
      <MultiSelect
        labelKey="name"
        valueKey="name"
@@ -60,7 +60,8 @@ class App extends React.Component {
        options={ [{name: 'Albany'}, ...] }
        value={[]}
      />
-          </code></pre>
+
+</code></pre> */}
           <MultiSelect
             labelKey="name"
             valueKey="name"
@@ -71,7 +72,7 @@ class App extends React.Component {
         </section>
         <section>
           <h3>Hierarchical multi-select</h3>
-          <pre><code>
+{/* <pre><code>
      <MultiSelect
        hierarchical
        labelKey="name"
@@ -80,7 +81,8 @@ class App extends React.Component {
        options={ [{ name: 'Albany', level: 1, bold: true }, ...] }
        value={[]}
      />
-          </code></pre>
+
+</code></pre> */}
           <MultiSelect
             hierarchical
             labelKey="name"
@@ -92,7 +94,7 @@ class App extends React.Component {
         </section>
         <section>
           <h3>Single-select</h3>
-          <pre><code>
+{/* <pre><code>
      <SingleSelect
        labelKey="name"
        valueKey="name"
@@ -100,18 +102,19 @@ class App extends React.Component {
        options={ [{name: 'Albany'}, ...] }
        value={null}
      />
-          </code></pre>
-            <SingleSelect
-              labelKey="name"
-              valueKey="name"
-              onChange={this.onSingleSelectChange}
-              options={cities}
-              value={singleSelectValue}
-            />
+
+</code></pre> */}
+          <SingleSelect
+            labelKey="name"
+            valueKey="name"
+            onChange={this.onSingleSelectChange}
+            options={cities}
+            value={singleSelectValue}
+          />
         </section>
         <section>
           <h3>Hierarchical single-select</h3>
-          <pre><code>
+{/* <pre><code>
      <SingleSelect
        hierarchical
        labelKey="name"
@@ -120,19 +123,20 @@ class App extends React.Component {
        options={ [{ name: 'Albany', level: 1, bold: true }, ...] }
        value={null}
      />
-          </code></pre>
-            <SingleSelect
-              hierarchical
-              labelKey="name"
-              valueKey="name"
-              onChange={this.onSingleSelectChange}
-              options={hierarchicalCities}
-              value={singleSelectValue}
-            />
+
+</code></pre> */}
+          <SingleSelect
+            hierarchical
+            labelKey="name"
+            valueKey="name"
+            onChange={this.onSingleSelectChange}
+            options={hierarchicalCities}
+            value={singleSelectValue}
+          />
         </section>
       </div>
     );
   }
-};
+}
 
 render(<App />, document.getElementById('app'));

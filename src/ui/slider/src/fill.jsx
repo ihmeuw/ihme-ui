@@ -1,54 +1,49 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import { CommonPropTypes, PureComponent } from '../../../utils';
 
 import { getDimension } from './util';
-
 import style from './style.css';
 
-const propTypes = {
+export default class Fill extends PureComponent {
+  static getWidth(width, direction) {
+    return direction === 'right' ? `calc(100% - ${getDimension(width)})` : getDimension(width);
+  }
+
+  render() {
+    return (
+      <div
+        className={classNames(style.fill, style[this.props.direction], this.props.className)}
+        style={{
+          width: Fill.getWidth(this.props.width, this.props.direction),
+          height: getDimension(this.props.height),
+          ...this.props.style,
+        }}
+      >
+      </div>
+    );
+  }
+}
+
+Fill.propTypes = {
   direction: PropTypes.oneOf(['left', 'right']),
   height: PropTypes.oneOfType([
     PropTypes.string,
-    PropTypes.number
+    PropTypes.number,
   ]),
   width: PropTypes.oneOfType([
     PropTypes.string,
-    PropTypes.number
+    PropTypes.number,
   ]),
-  fillStyle: PropTypes.object
+  style: PropTypes.object,
+  className: CommonPropTypes.className,
 };
 
-const defaultProps = {
+Fill.defaultProps = {
   direction: 'left',
   height: '100%',
   width: 200,
-  fillStyle: {
-    backgroundColor: '#ccc'
-  }
+  style: {
+    backgroundColor: '#ccc',
+  },
 };
-
-function getWidth(props) {
-  const width = getDimension(props.width);
-  if (props.direction === 'right') {
-    return `calc(100% - ${width})`;
-  }
-  return width;
-}
-
-export default function Fill(props) {
-  return (
-    <div
-      className={classNames(style.fill, style[props.direction])}
-      style={{
-        height: getDimension(props.height),
-        width: getWidth(props),
-        ...props.fillStyle
-      }}
-    >
-    </div>
-  );
-}
-
-Fill.propTypes = propTypes;
-
-Fill.defaultProps = defaultProps;

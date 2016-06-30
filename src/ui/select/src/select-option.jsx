@@ -19,7 +19,7 @@ function Input({ selected }) {
 }
 
 Input.propTypes = {
-  selected: PropTypes.bool
+  selected: PropTypes.bool,
 };
 
 /**
@@ -60,7 +60,7 @@ export default function SelectOption(props) {
       className={classNames(
         styles.option, {
           [styles.focused]: isFocused,
-          [styles.selected]: isSelected
+          [styles.selected]: isSelected,
         }
       )}
       onClick={onClick}

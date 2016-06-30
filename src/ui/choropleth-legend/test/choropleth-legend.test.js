@@ -43,7 +43,7 @@ describe('<ChoroplethLegend />', () => {
 
   it('composes a density plot, linear gradient, slider, axis and label', () => {
     const wrapper = shallow(legend);
-    ['Scatter', 'LinearGradient', 'Slider', 'XAxis', 'SvgText'].forEach(component => {
+    ['Scatter', 'LinearGradient', 'Slider', 'XAxis'].forEach(component => {
       expect(wrapper.find(component)).to.be.present();
     });
   });

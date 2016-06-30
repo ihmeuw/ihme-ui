@@ -6,7 +6,7 @@ import { propResolver, quickMerge } from '../';
 describe('object utilities', () => {
   describe('propResolver', () => {
     const obj = {
-      foo: 'bar'
+      foo: 'bar',
     };
 
     it('calls a function with the given object', () => {

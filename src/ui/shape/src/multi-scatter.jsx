@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 
 import { castArray, map, noop, omit } from 'lodash';
+import { scaleLinear } from 'd3-scale';
 
 import Scatter from './scatter';
 
@@ -132,5 +133,7 @@ MultiScatter.defaultProps = {
   onMouseMove: noop,
   onMouseOver: noop,
   symbolField: 'type',
-  symbolScale: () => { return 'circle'; }
+  colorScale: () => { return 'steelblue'; },
+  symbolScale: () => { return 'circle'; },
+  scales: { x: scaleLinear(), y: scaleLinear() },
 };

@@ -6,7 +6,7 @@ import {
   domainFromPercent,
   generateColorDomain,
   isWithinRange,
-  ensureWithinRange
+  ensureWithinRange,
 } from '../domain';
 
 describe('domain helpers', () => {
@@ -21,7 +21,7 @@ describe('domain helpers', () => {
       { input: 25, output: 1.5, range: [10, 20] },
       { input: 0, output: 0.5, range: [-100, 100] },
       { input: 50, output: 0.75, range: [-100, 100] },
-      { input: -50, output: 0.25, range: [-100, 100] }
+      { input: -50, output: 0.25, range: [-100, 100] },
     ];
 
     specs.forEach((spec) => {
@@ -39,7 +39,7 @@ describe('domain helpers', () => {
       { input: 0.5, output: 15, range: [10, 20] },
       { input: 0.5, output: 0, range: [-20, 20] },
       { input: 0, output: -20, range: [-20, 20] },
-      { input: 1, output: 20, range: [-20, 20] }
+      { input: 1, output: 20, range: [-20, 20] },
     ];
 
     specs.forEach((spec) => {
@@ -55,7 +55,7 @@ describe('domain helpers', () => {
       { oldDomain: [10, 20], newDomain: [25, 40], rangeExtent: [15, 15], expected: [32.5, 32.5] },
       { oldDomain: [10, 20], newDomain: [0, 100], rangeExtent: [13, 17], expected: [30, 70] },
       { oldDomain: [-10, 0], newDomain: [0, 100], rangeExtent: [-7, -3], expected: [30, 70] },
-      { oldDomain: [0, 100], newDomain: [20, 30], rangeExtent: [NaN, 50], expected: [20, 25] }
+      { oldDomain: [0, 100], newDomain: [20, 30], rangeExtent: [NaN, 50], expected: [20, 25] },
     ];
 
     specs.forEach((spec) => {
@@ -89,7 +89,7 @@ describe('domain helpers', () => {
           0.365,
           0.41,
           0.45499999999999996,
-          0.49999999999999994
+          0.49999999999999994,
         ]);
     });
   });
@@ -108,7 +108,7 @@ describe('domain helpers', () => {
       { value: 1994, extent: [1990, 1994], expectation: true },
       { value: 1992, extent: [1990, 1994], expectation: true },
       { value: 1989, extent: [1990, 1994], expectation: false },
-      { value: 1995, extent: [1990, 1994], expectation: false }
+      { value: 1995, extent: [1990, 1994], expectation: false },
     ];
 
     specs.forEach((spec) => {
@@ -124,7 +124,7 @@ describe('domain helpers', () => {
       { value: 1992, extent: [1990, 1994], expectation: 1992 },
       { value: 1989, extent: [1990, 1994], expectation: 1990 },
       { value: 1995, extent: [1990, 1994], expectation: 1994 },
-      { value: 1995, extent: [], expectation: 1995 }
+      { value: 1995, extent: [], expectation: 1995 },
     ];
 
     specs.forEach((spec) => {

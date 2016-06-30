@@ -17,14 +17,14 @@ const singleSelectPropTypes = {
 
 const defaultProps = {
   placeholder: 'Select...',
-  widthPad: 50
+  widthPad: 50,
 };
 
 export default class SingleSelect extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      menuWidth: getWidestLabel(props.options, props.labelKey, props.hierarchical) + props.widthPad
+      menuWidth: getWidestLabel(props.options, props.labelKey, props.hierarchical) + props.widthPad,
     };
   }
 
@@ -37,7 +37,7 @@ export default class SingleSelect extends React.Component {
           newProps.options,
           newProps.labelKey,
           newProps.hierarchical
-        ) + newProps.widthPad
+        ) + newProps.widthPad,
       });
     }
   }

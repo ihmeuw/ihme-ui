@@ -16,8 +16,8 @@ const propTypes = {
   /* the option object for this value */
   value: PropTypes.oneOfType([
     PropTypes.object,
-    PropTypes.array
-  ])
+    PropTypes.array,
+  ]),
 };
 
 export default class Value extends React.Component {
@@ -29,7 +29,7 @@ export default class Value extends React.Component {
       'handleMouseDown',
       'handleTouchEndRemove',
       'handleTouchMove',
-      'handleTouchStart'
+      'handleTouchStart',
     ]);
   }
 

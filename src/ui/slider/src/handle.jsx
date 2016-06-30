@@ -2,34 +2,11 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import interact from 'interact.js';
 import { identity, noop } from 'lodash';
+import { CommonPropTypes, PureComponent } from '../../../utils';
+import { stateFromPropUpdates, updateFunc } from '../../../utils/props';
 
 import { getDimension, getSnapTargetFunc } from './util';
-
 import style from './style.css';
-
-const propTypes = {
-  direction: PropTypes.oneOf(['left', 'right', 'middle']),
-  position: PropTypes.number.isRequired,
-  label: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number
-  ]).isRequired,
-  labelFunc: PropTypes.func,
-  name: PropTypes.string.isRequired,
-  onMove: PropTypes.func.isRequired,
-  onKeyDown: PropTypes.func,
-  snapTarget: PropTypes.oneOfType([
-    PropTypes.func,
-    PropTypes.object
-  ]).isRequired,
-  className: PropTypes.string
-};
-
-const defaultProps = {
-  direction: 'middle',
-  labelFunc: identity,
-  onKeyDown: noop
-};
 
 function getOffset(direction, width) {
   if (direction === 'left') {
@@ -40,9 +17,10 @@ function getOffset(direction, width) {
   return 0;
 }
 
-export default class Handle extends React.Component {
+export default class Handle extends PureComponent {
   constructor(props) {
     super(props);
+    this.state = stateFromPropUpdates(Handle.propUpdates, {}, props, {});
 
     this.handleRef = this.handleRef.bind(this);
   }
@@ -52,10 +30,12 @@ export default class Handle extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
-    if (this.props.snapTarget !== newProps.snapTarget) {
-      if (this._interactable) this._interactable.unset();
+    if (this.props.snapTarget !== newProps.snapTarget ||
+        this.props.height !== newProps.height) {
       this.bindInteract(newProps.snapTarget);
     }
+
+    this.setState(stateFromPropUpdates(Handle.propUpdates, this.props, newProps, {}));
   }
 
   componentWillUnmount() {
@@ -63,8 +43,8 @@ export default class Handle extends React.Component {
   }
 
   bindInteract(snapTarget) {
+    if (this._interactable) this._interactable.unset();
     const offset = getOffset(this.props.direction, this._handle.getBoundingClientRect().width);
-
     this._interactable = interact(this._handle)
       .origin('parent')
       .draggable({
@@ -72,9 +52,9 @@ export default class Handle extends React.Component {
         snap: {
           targets: [getSnapTargetFunc(snapTarget, {
             range: Infinity,
-            offset: { x: offset }
-          })]
-        }
+            offset: { x: offset },
+          })],
+        },
       })
       .styleCursor(false)
       .on('dragmove', this.props.onMove(this.props.name, -offset))
@@ -89,8 +69,8 @@ export default class Handle extends React.Component {
     return (
       <button
         type="button"
-        className={classNames(this.props.className, style.flag, style[this.props.direction])}
-        style={{ left: getDimension(this.props.position) }}
+        className={classNames(style.flag, style[this.props.direction], this.props.className)}
+        style={this.state.style}
         ref={this.handleRef}
         onKeyDown={this.props.onKeyDown(this.props.name)}
       >
@@ -100,6 +80,39 @@ export default class Handle extends React.Component {
   }
 }
 
-Handle.propTypes = propTypes;
+Handle.propTypes = {
+  className: CommonPropTypes.className,
+  style: PropTypes.object,
+  snapTarget: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.object,
+  ]).isRequired,
+  direction: PropTypes.oneOf(['left', 'right', 'middle']),
+  position: PropTypes.number.isRequired,
 
-Handle.defaultProps = defaultProps;
+  /* label and labelFunc control what is displayed on the handle */
+  label: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]).isRequired,
+  labelFunc: PropTypes.func,
+
+  /* value key name */
+  name: PropTypes.string.isRequired,
+
+  /* events */
+  onMove: PropTypes.func.isRequired,
+  onKeyDown: PropTypes.func,
+};
+
+Handle.defaultProps = {
+  direction: 'middle',
+  labelFunc: identity,
+  onKeyDown: noop,
+};
+
+Handle.propUpdates = {
+  position: updateFunc((nextProp, _, nextProps) => {
+    return { style: { ...nextProps.style, left: getDimension(nextProp) } };
+  }),
+};

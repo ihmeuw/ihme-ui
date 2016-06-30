@@ -72,14 +72,14 @@ Property | Required | Type(s) | Description
 
 ### axis-chart
 
-Chart with customizable width, height, scales, and margins.
+Chart with customizable width, height, scales, and padding.
 
 Property | Required | Type(s) | Description
         --- | :---: | :---: | ---
 `children` | no | object | React element or elements<br /><br />one of type: arrayOf(PropTypes.node), node
-`extraClasses` | no | string, object | extra class names to appended to the element
+`className` | no | string, object | class names to appended to the element
 `height` | no | number | pixel height of line chart
-`margins`| no | number | margins to subtract from width and height (default: top:20 right:20 bottom:30 left:50)
+`padding`| no | number | padding around the chart contents (default: top:20 right:20 bottom:30 left:50)
 `width` | no | number | pixel width of line chart
 `xDomain` | no | object | [min, max] for xScale (i.e., the domain of the data)
 `xScaleType`| no | object | type of x scale<br /><br />pne of: band, linear, ordinal, point

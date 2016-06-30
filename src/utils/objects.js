@@ -42,8 +42,8 @@ export function quickMerge(target = {}, ...sources) {
         ...acc2,
         [key]: {
           ...acc2[key],
-          ...obj
-        }
+          ...obj,
+        },
       };
     }, acc));
   }, target);

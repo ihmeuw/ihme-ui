@@ -1,32 +1,43 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 import interact from 'interact.js';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
+import { CommonPropTypes, PureComponent } from '../../../utils';
 
+import Ticks from './ticks';
 import { getSnapTargetFunc } from './util';
-
 import style from './style.css';
 
-const propTypes = {
-  children: PropTypes.node,
-  onClick: PropTypes.func.isRequired,
-  snapTarget: PropTypes.oneOfType([
-    PropTypes.func,
-    PropTypes.object
-  ]).isRequired
-};
-
-export default class Track extends React.Component {
+export default class Track extends PureComponent {
   constructor(props) {
     super(props);
-
+    this.state = {};
     this.trackRef = this.trackRef.bind(this);
   }
 
-  componentWillReceiveProps(newProps) {
-    if (this.props.snapTarget !== newProps.snapTarget) {
-      if (this._interactable) this._interactable.unset();
-      this.bindInteract(newProps.snapTarget);
+  componentDidMount() {
+    this.bindInteract(this.props.snapTarget);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState(this.handlePropUpdates(this.props, nextProps));
+  }
+
+  handlePropUpdates(prevProps, nextProps) {
+    const state = {};
+
+    if (prevProps.snapTarget !== nextProps.snapTarget) {
+      this.bindInteract(nextProps.snapTarget);
+
+      if (nextProps.ticks) {
+        state.ticks = [];
+        for (let x = nextProps.snapTarget.x; x < this.width; x += nextProps.snapTarget.x) {
+          state.ticks.push(x);
+        }
+      }
     }
+
+    return state;
   }
 
   componentWillUnmount() {
@@ -40,15 +51,15 @@ export default class Track extends React.Component {
   bindInteract(snapTarget) {
     if (isEmpty(snapTarget)) return;
 
+    if (this._interactable) this._interactable.unset();
     const snapTargetFunc = getSnapTargetFunc(snapTarget);
-
     this._interactable = interact(this._track)
       .origin('self')
       .styleCursor(false)
       .on('tap', (event) => {
         const newEvent = {
           ...event,
-          snap: snapTargetFunc(event.layerX)
+          snap: snapTargetFunc(event.layerX),
         };
         this.props.onClick(newEvent);
       });
@@ -60,12 +71,37 @@ export default class Track extends React.Component {
 
   render() {
     return (
-      <div className={style.track}>
-        <div ref={this.trackRef} className={style['track-click-target']}></div>
+      <div className={classNames(style.track, this.props.className)} style={this.props.style}>
         {this.props.children}
+        {this.state.ticks && (
+          <Ticks
+            className={this.props.ticksClassName}
+            style={this.props.ticksStyle}
+            tickClassName={this.props.tickClassName}
+            tickStyle={this.props.tickStyle}
+            x={this.state.ticks}
+          />
+        )}
+        <div ref={this.trackRef} className={style['track-click-target']}></div>
       </div>
     );
   }
 }
 
-Track.propTypes = propTypes;
+Track.propTypes = {
+  className: CommonPropTypes.className,
+  style: PropTypes.object,
+  children: PropTypes.node,
+  onClick: PropTypes.func.isRequired,
+  snapTarget: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.object,
+  ]).isRequired,
+
+  /* show ticks */
+  ticks: PropTypes.bool,
+  ticksClassName: CommonPropTypes.className,
+  ticksStyle: PropTypes.object,
+  tickClassName: CommonPropTypes.className,
+  tickStyle: PropTypes.object,
+};

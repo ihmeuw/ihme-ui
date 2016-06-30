@@ -7,7 +7,7 @@ import { eventHandleWrapper } from '../';
 describe('events utilties', () => {
   describe('eventHandleWrapper', () => {
     const mockEvent = {
-      preventDefault() {}
+      preventDefault() {},
     };
 
     it('returns a function', () => {

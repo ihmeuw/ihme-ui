@@ -998,5 +998,5 @@ export default [
   { name: 'Youngstown' },
   { name: 'Yuba City' },
   { name: 'Yucaipa' },
-  { name: 'Yuma' }
+  { name: 'Yuma' },
 ];

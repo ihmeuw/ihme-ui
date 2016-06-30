@@ -3,7 +3,6 @@ import d3Scale from 'd3-scale';
 
 import LinearGradient from './linear-gradient';
 import { Scatter } from '../../shape';
-import SvgText from '../../svg-text';
 import Slider from './slider';
 import { XAxis } from '../../axis';
 
@@ -121,7 +120,8 @@ export default class ChoroplethLegend extends React.Component {
 
     this.state = {
       adjustedWidth,
-      xScale: this.generateLinearScale(props.domain, adjustedWidth)
+      xScale: this.generateLinearScale(props.domain, adjustedWidth),
+      axisTranslate: { x: 0, y: 20 },
     };
   }
 
@@ -161,7 +161,7 @@ export default class ChoroplethLegend extends React.Component {
       zoom,
       unit
     } = this.props;
-    const { adjustedWidth, xScale } = this.state;
+    const { adjustedWidth, axisTranslate, xScale } = this.state;
 
     const sliderHeight = 10 + (5 * zoom);
 
@@ -197,15 +197,12 @@ export default class ChoroplethLegend extends React.Component {
               zoom={zoom}
             />
             <XAxis
-              scales={{ x: xScale }}
-              translate={{ x: 0, y: 20 }}
+              label={unit}
+              orientation="bottom"
+              scale={xScale}
+              translate={axisTranslate}
               tickFormat={tickFormat}
-            />
-            <SvgText
-              value={unit}
-              anchor="middle"
-              x={adjustedWidth / 2}
-              y={65}
+              width={adjustedWidth}
             />
           </g>
         </g>
