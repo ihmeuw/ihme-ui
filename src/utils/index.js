@@ -54,3 +54,7 @@ export {
   stateFromPropUpdates,
   updateFunc,
 } from './props';
+
+export {
+  getBackgroundColor,
+} from './window';
