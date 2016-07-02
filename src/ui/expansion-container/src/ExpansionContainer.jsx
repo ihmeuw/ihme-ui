@@ -62,10 +62,10 @@ export default class ExpansionContainer extends React.Component {
   expand(expandable) {
     if (includes(this.expandables, expandable)) {
       this.setState({ expanded: expandable });
-      expandable.onExpand();
       forEach(without(this.expandables, expandable), (hideable) => {
         hideable.onHide();
       });
+      expandable.onExpand();
     }
   }
 
