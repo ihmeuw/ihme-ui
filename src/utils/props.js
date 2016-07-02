@@ -6,6 +6,7 @@ import noop from 'lodash/noop';
 import reduce from 'lodash/reduce';
 
 export const CommonPropTypes = {
+  children: PropTypes.node,
   className: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.array,
