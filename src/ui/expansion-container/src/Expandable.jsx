@@ -1,14 +1,13 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import bindAll from 'lodash/bindAll';
-import { CommonPropTypes } from '../../../utils';
+import { CommonPropTypes, PureComponent } from '../../../utils';
+import { getBackgroundColor } from '../../../utils/window';
 
 import { containerStore } from './ExpansionContainer';
-// import style from './expansion-container.css';
+import style from './expansion-container.css';
 
-// const TRANSPARENT_BACKGROUND = /rgba(\d+, \d+, \d+, 0)/;
-
-export default class Expandable extends React.Component {
+export default class Expandable extends PureComponent {
   constructor(props) {
     super(props);
     this._expansionContainer = containerStore[props.group];
@@ -16,7 +15,6 @@ export default class Expandable extends React.Component {
     this.state = {
       hidden: false,
       expanded: false,
-      nextStyle: undefined,
     };
 
     bindAll(this, [
@@ -27,7 +25,30 @@ export default class Expandable extends React.Component {
       'hide',
       'restore',
       'containerRef',
+      'setDefaultState',
     ]);
+  }
+
+  setDefaultState() {
+    this.setState(this.defaultState);
+  }
+
+  componentDidMount() {
+    // console.log('oS', window.getComputedStyle(this._container.parentNode));
+    const { display, flexDirection } = window.getComputedStyle(this._container.parentNode);
+
+    this.defaultStyle = {
+      ...this.props.expandableStyle,
+      display,
+      flexDirection,
+      backgroundColor: getBackgroundColor(this._container),
+    };
+    this.defaultState = {
+      hidden: false,
+      expanded: false,
+      expandableStyle: this.defaultStyle,
+    };
+    this.setDefaultState();
   }
 
   componentWillUnmount() {
@@ -45,28 +66,34 @@ export default class Expandable extends React.Component {
       left: left,
       top: top,
     } = this.boundingClientRect;
-    const nextStyle = {
+
+    const expandableStyle = {
+      ...this.defaultStyle,
       transform: `translate(${containerLeft - left}px, ${containerTop - top}px)`,
       width: `${containerWidth}px`,
       height: `${containerHeight}px`,
       zIndex: '1',
-      // transition: 'all 0.3s ease',
     };
+
     this.setState({
+      hidden: false,
       expanded: true,
-      nextStyle,
+      expandableStyle,
     });
   }
 
   onHide() {
-    this.setState({ hidden: true });
+    this.setState({
+      hidden: true,
+      expandableStyle: {
+        ...this.defaultStyle,
+        visibility: 'hidden',
+      },
+    });
   }
 
   onRestore() {
-    this.setState({
-      expanded: false,
-      nextStyle: undefined,
-    });
+    this.setState(this.defaultState);
   }
 
   expand() {
@@ -111,13 +138,8 @@ export default class Expandable extends React.Component {
       >
         <div
           ref={this.containerRef}
-          style={{
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            backgroundColor: 'white',
-            ...this.state.nextStyle,
-          }}
+          className={classNames(style.expandable, this.props.expandableClassName)}
+          style={this.state.expandableStyle}
         >
           {this.props.children}
           {this.renderExpandIcon(this.props.hideIcon)}
@@ -130,6 +152,8 @@ export default class Expandable extends React.Component {
 Expandable.propTypes = {
   className: CommonPropTypes.className,
   style: CommonPropTypes.style,
+  expandableClassName: CommonPropTypes.className,
+  expandableStyle: CommonPropTypes.style,
   children: PropTypes.node,
   group: PropTypes.string,
   hideIcon: PropTypes.bool,

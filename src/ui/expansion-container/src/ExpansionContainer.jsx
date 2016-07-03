@@ -31,11 +31,11 @@ export default class ExpansionContainer extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('ExpansionContainer.cWRP()', nextProps);
+    // console.log('ExpansionContainer.cWRP()', nextProps);
   }
 
   componentWillUnmount() {
-    console.log('ExpansionContainer.cWU()');
+    // console.log('ExpansionContainer.cWU()');
     delete containerStore[this.props.group];
   }
 
