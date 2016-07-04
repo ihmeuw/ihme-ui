@@ -1,24 +1,38 @@
 import React, { PropTypes } from 'react';
 import { render } from 'react-dom';
-import { CommonPropTypes } from '../../../utils';
+import { AutoSizer } from 'react-virtualized';
+import { CommonPropTypes, PureComponent } from '../../../utils';
 
 import Button from '../../button';
 import ExpansionContainer, { Expandable } from '../';
 
-function Chart(props) {
-  console.log('Chart.render()', props);
-  return (
-    <Expandable
-      style={{
-        border: '1px solid green',
-        display: 'flex',
-        flex: '1 0 auto',
-        ...props.style,
-      }}
-    >
-      Chart{props.chartNumber}
-    </Expandable>
-  );
+const expansionContainerStyle = {
+  flex: '1',
+  border: '1px solid black',
+  display: 'flex',
+};
+
+const chartStyle = {
+  border: '1px solid green',
+  display: 'flex',
+  flex: '1',
+};
+
+const chartStyle2 = {
+  border: '1px solid blue',
+  display: 'flex',
+  flex: '1',
+};
+
+class Chart extends PureComponent {
+  render() {
+    const { props } = this;
+    return (
+      <Expandable style={props.style}>
+        Chart{props.chartNumber}
+      </Expandable>
+    );
+  }
 }
 
 Chart.propTypes = {
@@ -43,34 +57,38 @@ class App extends React.Component {
 
   render() {
     return (
-      <div style={{ width: 800, height: 600, display: 'flex', flexDirection: 'column' }}>
-        <h3>Title</h3>
-        <Button clickHandler={this.onClick} text="+" />
-        <ExpansionContainer
-          style={{
-            flex: '1 0 auto',
-            border: '1px solid black',
-            display: 'flex',
+      <div style={{ width: '90%', height: '90%', display: 'flex', flexDirection: 'column' }}>
+        <AutoSizer>
+          {({ width, height }) => {
+            console.log(width, height);
+            if (width && height) {
+              return (
+                <div style={{ width, height, display: 'flex', flexDirection: 'column' }}>
+                  <h3>Title</h3>
+                  <Button clickHandler={this.onClick} text="+" />
+                  <ExpansionContainer
+                    style={expansionContainerStyle}
+                  >
+                    <Chart chartNumber={this.state.clicks} style={chartStyle} />
+                    <div
+                      style={{
+                        border: '1px solid green',
+                        display: 'flex',
+                        flex: '1',
+                        flexDirection: 'column',
+                        backgroundColor: 'lightgreen',
+                      }}
+                    >
+                      <Chart chartNumber={2} style={chartStyle2} />
+                      <Chart chartNumber={3} style={chartStyle2} />
+                    </div>
+                  </ExpansionContainer>
+                </div>
+              );
+            }
+            return null;
           }}
-          backgroundColor="aliceblue"
-        >
-          <Chart chartNumber={this.state.clicks} />
-          <div
-            style={{
-              border: '1px solid green',
-              display: 'flex',
-              flex: '1 0 auto',
-              flexDirection: 'column',
-            }}
-          >
-            <Expandable style={{ border: '1px solid blue', display: 'flex', flex: '1 0 auto' }}>
-              Chart2
-            </Expandable>
-            <Expandable style={{ border: '1px solid blue', display: 'flex', flex: '1 0 auto' }}>
-              Chart3
-            </Expandable>
-          </div>
-        </ExpansionContainer>
+        </AutoSizer>
       </div>
     );
   }
