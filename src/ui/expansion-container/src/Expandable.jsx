@@ -12,6 +12,7 @@ export default class Expandable extends PureComponent {
     super(props);
     this._expansionContainer = containerStore[props.group];
     this._expansionContainer.subscribe(this);
+    this.backgroundColor = undefined;
     this.state = {
       hidden: false,
       expanded: false,
@@ -25,75 +26,39 @@ export default class Expandable extends PureComponent {
       'hide',
       'restore',
       'containerRef',
-      'setDefaultState',
     ]);
   }
 
-  setDefaultState() {
-    this.setState(this.defaultState);
-  }
-
   componentDidMount() {
-    // console.log('oS', window.getComputedStyle(this._container.parentNode));
-    const { display, flexDirection } = window.getComputedStyle(this._container.parentNode);
-
-    this.defaultStyle = {
-      ...this.props.expandableStyle,
-      display,
-      flexDirection,
-      backgroundColor: getBackgroundColor(this._container),
-    };
-    this.defaultState = {
-      hidden: false,
-      expanded: false,
-      expandableStyle: this.defaultStyle,
-    };
-    this.setDefaultState();
+    this.backgroundColor = getBackgroundColor(this._container);
   }
 
   componentWillUnmount() {
     this._expansionContainer.unsubscribe(this);
   }
 
+  componentDidUpdate() {
+    if (this.state.expanded) this._expansionContainer.update();
+  }
+
   onExpand() {
-    const {
-      left: containerLeft,
-      top: containerTop,
-      width: containerWidth,
-      height: containerHeight,
-    } = this._expansionContainer.boundingClientRect;
-    const {
-      left: left,
-      top: top,
-    } = this.boundingClientRect;
-
-    const expandableStyle = {
-      ...this.defaultStyle,
-      transform: `translate(${containerLeft - left}px, ${containerTop - top}px)`,
-      width: `${containerWidth}px`,
-      height: `${containerHeight}px`,
-      zIndex: '1',
-    };
-
     this.setState({
       hidden: false,
       expanded: true,
-      expandableStyle,
     });
   }
 
   onHide() {
     this.setState({
       hidden: true,
-      expandableStyle: {
-        ...this.defaultStyle,
-        visibility: 'hidden',
-      },
     });
   }
 
   onRestore() {
-    this.setState(this.defaultState);
+    this.setState({
+      hidden: false,
+      expanded: false,
+    });
   }
 
   expand() {
@@ -112,6 +77,10 @@ export default class Expandable extends PureComponent {
     return this._container.getBoundingClientRect();
   }
 
+  get parentStyle() {
+    return window.getComputedStyle(this._container.parentNode);
+  }
+
   containerRef(ref) {
     this._container = ref;
   }
@@ -122,7 +91,7 @@ export default class Expandable extends PureComponent {
       <div
         key="expandable"
         style={{ position: 'absolute', top: '0.2em', right: '0.2em' }}
-        onClick={this.state.expanded ? this.restore : this.expand}
+        onClick={this.props.expanded ? this.restore : this.expand}
       >
         *
       </div>
@@ -130,20 +99,14 @@ export default class Expandable extends PureComponent {
   }
 
   render() {
-    // console.log('Expandable.render()', this.state);
     return (
       <div
-        className={classNames(this.props.className)}
-        style={{ position: 'relative', ...this.props.style }}
+        ref={this.containerRef}
+        className={classNames(style.expandable, this.props.className)}
+        style={this.props.style}
       >
-        <div
-          ref={this.containerRef}
-          className={classNames(style.expandable, this.props.expandableClassName)}
-          style={this.state.expandableStyle}
-        >
-          {this.props.children}
-          {this.renderExpandIcon(this.props.hideIcon)}
-        </div>
+        {this.props.children}
+        {this.renderExpandIcon(this.props.hideIcon)}
       </div>
     );
   }
