@@ -40,13 +40,23 @@ describe('<Symbol />', () => {
     expect(wrapper.props().style.stroke).to.equal('#000');
   });
 
-  it('has #777 stroke when focused', () => {
+  it('has #AAF stroke when focused', () => {
     const wrapper = shallow(
       <Symbol
         focused={1}
       />
     );
-    expect(wrapper.props().style.stroke).to.equal('#777');
+    expect(wrapper.props().style.stroke).to.equal('#AAF');
+  });
+
+  it('has #AAF stroke when focused and selected', () => {
+    const wrapper = shallow(
+      <Symbol
+        focused={1}
+        selected={1}
+      />
+    );
+    expect(wrapper.props().style.stroke).to.equal('#AAF');
   });
 
   it('renders when focus or selected changes', () => {

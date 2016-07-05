@@ -36,10 +36,12 @@ export default class Symbol extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (
-      nextProps.type !== this.props.type ||
-      nextProps.size !== this.props.size
-    ) {
+    /**
+     * Use propsChanged here.
+     */
+    if (propsChanged(this.props, nextProps, [
+      'type', 'size'
+    ])) {
       this.setState({
         path: this.createPath(nextProps.type, nextProps.size),
       });
@@ -52,15 +54,30 @@ export default class Symbol extends React.Component {
     ]);
   }
 
-  getStyle() {
+  /**
+   * pass in data for selectedStyle(and other style) for function.
+   * return a new object using Object.assign() instead of return for each if.
+   * Reorder styling, default -> selected -> focused.
+   */
+  getStyle(data) {
     const { focused, focusedStyle, selected, selectedStyle, style } = this.props;
+    const resultStyle = Object.assign(
+      {},
+      (typeof style === 'function' ? style(data) : { ...style })
+    );
     if (selected) {
-      return typeof selectedStyle === 'function' ? selectedStyle() : { ...selectedStyle };
+      Object.assign(
+        resultStyle,
+        (typeof selectedStyle === 'function' ? selectedStyle(data) : { ...selectedStyle })
+      );
     }
     if (focused) {
-      return typeof focusedStyle === 'function' ? focusedStyle() : { ...focusedStyle };
+      Object.assign(
+        resultStyle,
+        (typeof focusedStyle === 'function' ? focusedStyle(data) : { ...focusedStyle })
+      );
     }
-    return typeof style === 'function' ? style() : { ...style };
+    return resultStyle;
   }
 
   createPath(type, size) {
@@ -98,7 +115,7 @@ export default class Symbol extends React.Component {
         onMouseLeave={eventHandleWrapper(onMouseLeave, data, this)}
         onMouseMove={eventHandleWrapper(onMouseMove, data, this)}
         onMouseOver={eventHandleWrapper(onMouseOver, data, this)}
-        style={this.getStyle()}
+        style={this.getStyle(data)}
         transform={`translate(${translateX}, ${translateY})`}
       />
     );
@@ -167,7 +184,7 @@ Symbol.defaultProps = {
   focused: false,
   focusedClassName: 'focused',
   focusedStyle: {
-    stroke: '#777',
+    stroke: '#AAF',
     strokeWidth: 1
   },
   onClick: noop,

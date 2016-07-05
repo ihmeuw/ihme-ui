@@ -86,5 +86,29 @@ describe('<Scatter />', () => {
       const wrapper = shallow(component);
       expect(wrapper.find({ focused: true })).to.have.length(1);
     });
+
+    it('creates a one-dimensional plot if dataAccessor is not defined for y', () => {
+      const wrapper = shallow(
+        <Scatter
+          data={data}
+          dataAccessors={{ x: 'population' }}
+        />
+      );
+      wrapper.find(Symbol).nodes.forEach((d) => {
+        expect(d.props.translateY).to.equal(0);
+      });
+    });
+
+    it('creates a one-dimensional plot if dataAccessor is not defined for x', () => {
+      const wrapper = shallow(
+        <Scatter
+          data={data}
+          dataAccessors={{ y: 'population' }}
+        />
+      );
+      wrapper.find(Symbol).nodes.forEach((d) => {
+        expect(d.props.translateX).to.equal(0);
+      });
+    });
   });
 });

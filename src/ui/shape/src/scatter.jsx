@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { includes, map, noop, omit } from 'lodash';
+import { includes, map, noop, pick } from 'lodash';
 import d3Scale from 'd3-scale';
 
 import Symbol from './symbol';
@@ -20,14 +20,12 @@ export default function Scatter(props) {
   const xScale = scales.x ? scales.x : d3Scale.scaleLinear();
   const yScale = scales.y ? scales.y : d3Scale.scaleLinear();
 
-  const childProps = omit(props, [
-    'color',
-    'data',
-    'dataAccessors',
-    'focus',
-    'scales',
-    'selection',
-    'symbolType'
+  const childProps = pick(props, [
+    'onClick',
+    'onMouseLeave',
+    'onMouseMove',
+    'onMouseOver',
+    'size'
   ]);
 
   return (
@@ -86,6 +84,9 @@ Scatter.propTypes = {
     y: PropTypes.string
   }).isRequired,
 
+  /**
+   * The symbol to be focused upon.
+   */
   focus: PropTypes.object,
 
   onClick: PropTypes.func,
@@ -104,6 +105,9 @@ Scatter.propTypes = {
     y: PropTypes.func
   }),
 
+  /**
+   * A symbol that is selected, or an array of symbols selected.
+   */
   selection: PropTypes.array,
 
   /*

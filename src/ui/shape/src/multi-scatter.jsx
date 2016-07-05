@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-import { castArray, map, noop, omit } from 'lodash';
+import { castArray, map, noop, pick } from 'lodash';
 import { scaleLinear } from 'd3-scale';
 
 import Scatter from './scatter';
@@ -16,13 +16,14 @@ export default function MultiScatter(props) {
     symbolScale,
   } = props;
 
-  const childProps = omit(props, [
-    'colorScale',
-    'data',
-    'dataField',
-    'keyField',
-    'symbolField',
-    'symbolScale',
+  const childProps = pick(props, [
+    'dataAccessors',
+    'onClick',
+    'onMouseLeave',
+    'onMouseMove',
+    'onMouseOver',
+    'scales',
+    'size'
   ]);
 
   return (
@@ -81,6 +82,9 @@ MultiScatter.propTypes = {
   */
   dataField: PropTypes.string,
 
+  /**
+   * The symbol to be focused upon.
+   */
   focus: PropTypes.object,
 
   /*
@@ -104,6 +108,9 @@ MultiScatter.propTypes = {
     y: PropTypes.func
   }).isRequired,
 
+  /**
+   * A symbol that is selected, or an array of symbols selected.
+   */
   selection: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.array,
