@@ -138,13 +138,20 @@ export default class Expandable extends PureComponent {
   renderExpandIcon(hideIcon) {
     if (hideIcon) return null;
     return (
-      <div
-        key="expandable"
-        style={{ position: 'absolute', top: '0.2em', right: '0.2em' }}
-        onClick={this.props.expanded ? this.restore : this.expand}
+      <svg
+        className={this.props.iconClassName}
+        style={this.state.iconStyle}
+        onClick={!!this.state.expanded ? this.restore : this.expand}
+        viewBox="-16 -16 32 32"
+        width="1em" height="1em"
       >
-        *
-      </div>
+        <circle r="15" fill="none" stroke="black" />
+        {!!this.state.expanded ? (
+          <path d="M1,-10.6 L10.6,-1 L1,-1z M-10.6,1 L-1,10.6 L-1,1z" />
+        ) : (
+          <path d="M6.4,3.2 L-3.2,-6.4 L6.4,-6.4z M3.2,6.4 L-6.4,-3.2 L-6.4,6.4z" />
+        )}
+      </svg>
     );
   }
 
