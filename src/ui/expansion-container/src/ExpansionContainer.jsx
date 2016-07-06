@@ -3,10 +3,10 @@ import classNames from 'classnames';
 import bindAll from 'lodash/bindAll';
 import forEach from 'lodash/forEach';
 import includes from 'lodash/includes';
-import pick from 'lodash/pick';
 import pull from 'lodash/pull';
 import without from 'lodash/without';
-import { CommonPropTypes, PureComponent } from '../../../utils';
+import math from 'lodash/math';
+import { CommonPropTypes, PureComponent, applyFuncToProps } from '../../../utils';
 
 import Expandable from './Expandable';
 import style from './expansion-container.css';
@@ -18,8 +18,10 @@ export default class ExpansionContainer extends PureComponent {
     super(props);
     containerStore[props.group] = this;
     this.expandables = [];
-    this.state = {
+    this.defaultState = this.state = {
       expanded: null,
+      expanding: false,
+      expandableTargetStyle: undefined,
       containerStyle: {
         position: 'relative',
         backgroundColor: this.props.backgroundColor,
@@ -35,6 +37,18 @@ export default class ExpansionContainer extends PureComponent {
       'restore',
       'containerRef',
     ]);
+  }
+
+  componentDidUpdate() {
+    if (this.state.expanding) {
+      this.setExpandingState({
+        expanding: false,
+        expandableParentStyle: {
+          ...this.state.expandableParentStyle,
+          left: 0, right: 0, top: 0, bottom: 0,
+        },
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -59,15 +73,29 @@ export default class ExpansionContainer extends PureComponent {
     pull(this.expandables, expandable);
   }
 
+  setExpandingState(state) {
+    this.setState(state);
+  }
+
   expand(expandable) {
     if (includes(this.expandables, expandable)) {
+      const clientRectDiff = applyFuncToProps(this.boundingClientRect,
+        expandable.boundingClientRect, ['left', 'right', 'top', 'bottom'], math.subtract, Math.abs);
+
       this.setState({
         expanded: expandable,
         expandableTargetStyle: {
-          backgroundColor: expandable.backgroundColor,
-          ...pick(expandable.parentStyle,
-                  ['display', 'flexFlow', 'justifyContent', 'alignItems', 'alignContent']),
+          display: 'initial',
         },
+        expandableParentStyle: {
+          ...clientRectDiff,
+          backgroundColor: expandable.backgroundColor,
+        },
+        expandableProps: {
+          ...expandable.props,
+          style: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 },
+        },
+        expanding: true,
       });
 
       forEach(without(this.expandables, expandable), (hideable) => {
@@ -83,10 +111,7 @@ export default class ExpansionContainer extends PureComponent {
   }
 
   restore() {
-    this.setState({
-      expanded: null,
-      expandableTargetStyle: undefined,
-    });
+    this.setState(this.defaultState);
 
     forEach(this.expandables, (restorable) => {
       restorable.onRestore();
@@ -106,7 +131,10 @@ export default class ExpansionContainer extends PureComponent {
       >
         {this.props.children}
         <div className={style['expandable-target']} style={this.state.expandableTargetStyle}>
-          {this.state.expanded && <Expandable {...this.state.expanded.props} expanded />}
+          {this.state.expanded && (
+            <div className={style['expandable-parent']} style={this.state.expandableParentStyle}>
+              <Expandable {...this.state.expandableProps} expanded />
+            </div>)}
         </div>
       </div>
     );

@@ -13,9 +13,10 @@ export default class Expandable extends PureComponent {
     this._expansionContainer = containerStore[props.group];
     this._expansionContainer.subscribe(this);
     this.backgroundColor = undefined;
-    this.state = {
+    this.state = this.defaultState = {
       hidden: false,
       expanded: false,
+      style: this.props.style,
     };
 
     bindAll(this, [
@@ -55,10 +56,7 @@ export default class Expandable extends PureComponent {
   }
 
   onRestore() {
-    this.setState({
-      hidden: false,
-      expanded: false,
-    });
+    this.setState(this.defaultState);
   }
 
   expand() {
@@ -105,8 +103,8 @@ export default class Expandable extends PureComponent {
         className={classNames(style.expandable, this.props.className)}
         style={this.props.style}
       >
-        {this.props.children}
-        {this.renderExpandIcon(this.props.hideIcon)}
+        {!this.state.expanded && this.props.children}
+        {!this.state.expanded && this.renderExpandIcon(this.props.hideIcon)}
       </div>
     );
   }
