@@ -53,6 +53,7 @@ export {
   propsChanged,
   stateFromPropUpdates,
   updateFunc,
+  applyFuncToProps,
 } from './props';
 
 export {

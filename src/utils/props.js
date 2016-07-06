@@ -109,6 +109,39 @@ export function updateFunc(func) {
 }
 
 /**
+ * Apply a series of function to the properties of two objects.
+ * @param prevProps
+ * @param nextProps
+ * @param propNames
+ * @param {firstFuncCallback} firstFunc
+ * @param {restFuncsCallback} restFuncs
+ * @returns {Object}
+ */
+export function applyFuncToProps(prevProps, nextProps, propNames, firstFunc, ...restFuncs) {
+  return reduce(propNames || Object.keys(nextProps), (acc, prop) => {
+    return {
+      ...acc,
+      [prop]: reduce(restFuncs, (funcAcc, func) => {
+        return func(funcAcc);
+      }, (firstFunc || identity)(prevProps[prop], nextProps[prop])),
+    };
+  }, {});
+}
+
+/**
+ * @callback firstFuncCallback
+ * @param {*} prevProp
+ * @param {*} nextProp
+ * @returns {*} result
+ */
+
+/**
+ * @callback restFuncsCallback
+ * @param {*} acc
+ * @returns {*} result
+ */
+
+/**
  * @callback comparisonActionCallback
  * @param {Object} state accumulator
  * @param {string} propName
