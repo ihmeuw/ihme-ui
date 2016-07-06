@@ -147,6 +147,7 @@ export function applyFuncToProps(prevProps, nextProps, propNames, firstFunc, ...
  * @param {string} propName
  * @param {Object} prevProps
  * @param {Object} nextProps
+ * @returns {Object} state property
  */
 
 /**
@@ -154,5 +155,5 @@ export function applyFuncToProps(prevProps, nextProps, propNames, firstFunc, ...
  * @param {any} nextProp
  * @param {string} propName
  * @param {Object} nextProps
- * @returns {Object} accumulated state.
+ * @returns {Object} accumulated state
  */
