@@ -1,37 +1,65 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import bindAll from 'lodash/bindAll';
+import pick from 'lodash/pick';
 import { CommonPropTypes, PureComponent } from '../../../utils';
 import { getBackgroundColor } from '../../../utils/window';
 
 import { containerStore } from './ExpansionContainer';
 import style from './expansion-container.css';
 
+const LAYOUT_SELECTORS = ['display', 'flexFlow', 'justifyContent', 'alignItems', 'alignContent'];
+
 export default class Expandable extends PureComponent {
   constructor(props) {
     super(props);
     this._expansionContainer = containerStore[props.group];
     this._expansionContainer.subscribe(this);
-    this.backgroundColor = undefined;
-    this.state = this.defaultState = {
+    this.state = {
       hidden: false,
       expanded: false,
-      style: this.props.style,
+      expanding: false,
+      outerStyle: this.props.style,
+      iconStyle: {
+        position: 'absolute',
+        top: '0.2em',
+        right: '0.2em',
+        ...this.props.iconStyle,
+      },
     };
 
     bindAll(this, [
       'onExpand',
       'onHide',
       'onRestore',
+      'onResize',
       'expand',
       'hide',
       'restore',
       'containerRef',
+      'setState',
     ]);
   }
 
   componentDidMount() {
     this.backgroundColor = getBackgroundColor(this._container);
+    this.outerStyle = {
+      ...this.props.style,
+      display: 'initial',
+      flexFlow: 'initial',
+      justifyContent: 'initial',
+      alignItems: 'initial',
+      alignContent: 'initial',
+    };
+    this.innerStyle = {
+      ...pick(this.containerStyle, LAYOUT_SELECTORS),
+    };
+    this.defaultState = {
+      ...this.state,
+      outerStyle: this.outerStyle,
+      innerStyle: this.innerStyle,
+    };
+    setTimeout(this.setState, 0, this.defaultState);
   }
 
   componentWillUnmount() {
@@ -39,13 +67,23 @@ export default class Expandable extends PureComponent {
   }
 
   componentDidUpdate() {
-    if (this.state.expanded) this._expansionContainer.update();
+    if (this.state.expanding) setTimeout(this.setState, 0, { expanding: false });
   }
 
   onExpand() {
+    const { left, top, width, height } = this.boundingClientRect;
+
     this.setState({
       hidden: false,
       expanded: true,
+      expanding: true,
+      innerStyle: {
+        ...this.state.innerStyle,
+        position: 'fixed',
+        left, top, width, height,
+        zIndex: '1',
+        backgroundColor: this.backgroundColor,
+      },
     });
   }
 
@@ -57,6 +95,16 @@ export default class Expandable extends PureComponent {
 
   onRestore() {
     this.setState(this.defaultState);
+  }
+
+  onResize({ left, top, width, height }) {
+    setTimeout(this.setState, 0, {
+      innerStyle: {
+        ...this.state.innerStyle,
+        transition: this.state.expanding ? 'all 1s ease' : 'initial',
+        left, top, width, height,
+      },
+    });
   }
 
   expand() {
@@ -73,6 +121,10 @@ export default class Expandable extends PureComponent {
 
   get boundingClientRect() {
     return this._container.getBoundingClientRect();
+  }
+
+  get containerStyle() {
+    return window.getComputedStyle(this._container);
   }
 
   get parentStyle() {
@@ -101,10 +153,17 @@ export default class Expandable extends PureComponent {
       <div
         ref={this.containerRef}
         className={classNames(style.expandable, this.props.className)}
-        style={this.props.style}
+        style={this.state.outerStyle}
       >
-        {!this.state.expanded && this.props.children}
-        {!this.state.expanded && this.renderExpandIcon(this.props.hideIcon)}
+        {!!this.state.innerStyle && (
+          <div
+            className={style['expandable-parent']}
+            style={this.state.innerStyle}
+          >
+               {this.props.children}
+               {this.renderExpandIcon(this.props.hideIcon)}
+          </div>
+        )}
       </div>
     );
   }
@@ -115,6 +174,8 @@ Expandable.propTypes = {
   style: CommonPropTypes.style,
   expandableClassName: CommonPropTypes.className,
   expandableStyle: CommonPropTypes.style,
+  iconClassName: CommonPropTypes.className,
+  iconStyle: CommonPropTypes.style,
   children: PropTypes.node,
   group: PropTypes.string,
   hideIcon: PropTypes.bool,
