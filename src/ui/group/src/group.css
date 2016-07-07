@@ -24,14 +24,6 @@
   color: #27ae60;
 }
 
-.dark {
-  composes: common;
-}
-
-.light {
-  composes: common;
-}
-
 .group > *:first-child {
   border-bottom-left-radius: 4px;
   border-top-left-radius: 4px;
