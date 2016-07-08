@@ -19,12 +19,12 @@ export default class Expandable extends PureComponent {
       hidden: false,
       expanded: false,
       expanding: false,
-      outerStyle: this.props.style,
+      outerStyle: props.style,
       iconStyle: {
         position: 'absolute',
         top: '0.2em',
         right: '0.2em',
-        ...this.props.iconStyle,
+        ...props.iconStyle,
       },
     };
 

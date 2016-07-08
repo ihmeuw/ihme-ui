@@ -23,7 +23,7 @@ export default class ExpansionContainer extends PureComponent {
       expandableTargetStyle: undefined,
       containerStyle: {
         position: 'relative',
-        ...this.props.style,
+        ...props.style,
       },
     };
 
