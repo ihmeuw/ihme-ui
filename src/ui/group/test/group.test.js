@@ -1,8 +1,8 @@
 import React from 'react';
-
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
+import sinon from 'sinon';
 
 import Group, { Option } from '../';
 
@@ -12,12 +12,31 @@ describe('<Group />', () => {
   it('renders options as buttons', () => {
     const wrapper = shallow(
       <Group>
-        <Option key={1} text="One" selected />
-        <Option key={2} text="Two" />
-        <Option key={3} text="Three" disabled />
+        <Option value={1} text="One" selected />
+        <Option value={2} text="Two" />
+        <Option value={3} text="Three" disabled />
       </Group>
     );
 
     expect(wrapper).to.have.exactly(3).descendants('Option');
+  });
+
+  it('handles clicks', () => {
+    const clickHandler = sinon.spy(({ value }) => {
+      return value;
+    });
+
+    const wrapper = mount(
+      <Group clickHandler={clickHandler}>
+        <Option value={1} text="One" id="clickMe" selected />
+        <Option value={2} text="Two" />
+        <Option value={3} text="Three" disabled />
+      </Group>
+    );
+
+    const button = wrapper.find('#clickMe');
+    button.simulate('click');
+    expect(clickHandler.called).to.be.true;
+    expect(clickHandler.calledWithMatch({ value: 1 })).to.be.true;
   });
 });
