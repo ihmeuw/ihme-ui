@@ -5,13 +5,19 @@ import { CommonPropTypes, PureComponent } from '../../../utils';
 
 import styles from './group.css';
 
-const wrappedClickHandler = memoize((wrappedProps, clickHandler) => {
-  return () => {
-    clickHandler({ value: wrappedProps });
-  };
-});
-
 export default class Group extends PureComponent {
+  static clickHandlerWrapper(wrappedProps, clickHandler) {
+    return () => {
+      clickHandler({ value: wrappedProps });
+    };
+  }
+
+  constructor(props) {
+    super(props);
+
+    this.wrappedClickHandler = memoize(Group.clickHandlerWrapper);
+  }
+
   render() {
     const { children, className, clickHandler, style } = this.props;
 
@@ -21,7 +27,7 @@ export default class Group extends PureComponent {
           React.Children.map(children, (child) => {
             const childProps = {
               className: classNames(styles.common, child.props.className),
-              clickHandler: wrappedClickHandler(child.props.value, clickHandler),
+              clickHandler: this.wrappedClickHandler(child.props.value, clickHandler),
             };
 
             return React.cloneElement(child, childProps);
