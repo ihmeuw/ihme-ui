@@ -8,7 +8,7 @@ import pull from 'lodash/pull';
 import without from 'lodash/without';
 import { CommonPropTypes, PureComponent } from '../../../utils';
 
-import style from './expansion-container.css';
+import styles from './expansion-container.css';
 
 export const containerStore = {};
 
@@ -91,19 +91,28 @@ export default class ExpansionContainer extends PureComponent {
   }
 
   render() {
+    const {
+      children,
+      className,
+    } = this.props;
+    const {
+      containerStyle,
+      expanded,
+    } = this.state;
+
     return (
       <div
         ref={this.containerRef}
-        className={classNames(style['expansion-container'], this.props.className)}
-        style={this.state.containerStyle}
+        className={classNames(styles['expansion-container'], className)}
+        style={containerStyle}
       >
-        {this.props.children}
-        {!!this.state.expanded && (
-          <div className={style['expandable-target']}>
+        {children}
+        {!!expanded && (
+          <div className={styles['expandable-target']}>
             <AutoSizer>
               {({ width, height }) => {
                 if (width && height) {
-                  this.state.expanded.onResize(this.boundingClientRect);
+                  expanded.onResize(this.boundingClientRect);
                 }
               }}
             </AutoSizer>

@@ -6,7 +6,7 @@ import { CommonPropTypes, PureComponent } from '../../../utils';
 import { getBackgroundColor } from '../../../utils/window';
 
 import { containerStore } from './ExpansionContainer';
-import style from './expansion-container.css';
+import styles from './expansion-container.css';
 
 const LAYOUT_SELECTORS = ['display', 'flexFlow', 'justifyContent', 'alignItems', 'alignContent'];
 
@@ -137,16 +137,24 @@ export default class Expandable extends PureComponent {
 
   renderExpandIcon(hideIcon) {
     if (hideIcon) return null;
+    const {
+      iconClassName,
+    } = this.props;
+    const {
+      expanded,
+      iconStyle,
+    } = this.state;
+
     return (
       <svg
-        className={this.props.iconClassName}
-        style={this.state.iconStyle}
-        onClick={!!this.state.expanded ? this.restore : this.expand}
+        className={iconClassName}
+        style={iconStyle}
+        onClick={!!expanded ? this.restore : this.expand}
         viewBox="-16 -16 32 32"
         width="1em" height="1em"
       >
         <circle r="15" fill="none" stroke="black" />
-        {!!this.state.expanded ? (
+        {!!expanded ? (
           <path d="M1,-10.6 L10.6,-1 L1,-1z M-10.6,1 L-1,10.6 L-1,1z" />
         ) : (
           <path d="M6.4,3.2 L-3.2,-6.4 L6.4,-6.4z M3.2,6.4 L-6.4,-3.2 L-6.4,6.4z" />
@@ -156,19 +164,29 @@ export default class Expandable extends PureComponent {
   }
 
   render() {
+    const {
+      children,
+      className,
+      hideIcon,
+    } = this.props;
+    const {
+      innerStyle,
+      outerStyle,
+    } = this.state;
+
     return (
       <div
         ref={this.containerRef}
-        className={classNames(style.expandable, this.props.className)}
-        style={this.state.outerStyle}
+        className={classNames(styles.expandable, className)}
+        style={outerStyle}
       >
-        {!!this.state.innerStyle && (
+        {!!innerStyle && (
           <div
-            className={style['expandable-parent']}
-            style={this.state.innerStyle}
+            className={styles['expandable-parent']}
+            style={innerStyle}
           >
-               {this.props.children}
-               {this.renderExpandIcon(this.props.hideIcon)}
+               {children}
+               {this.renderExpandIcon(hideIcon)}
           </div>
         )}
       </div>
