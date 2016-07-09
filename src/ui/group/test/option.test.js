@@ -15,6 +15,12 @@ describe('<Option />', () => {
     expect(wrapper).to.have.exactly(1).descendants('Button');
   });
 
+  it('renders another type of element', () => {
+    const Component = () => { return <a />; };
+    const wrapper = shallow(<Option type={Component} />);
+    expect(wrapper).to.have.exactly(1).descendants('Component');
+  });
+
   describe('styles', () => {
     it('applies disabled styles, when disabled', () => {
       const wrapper = shallow(
