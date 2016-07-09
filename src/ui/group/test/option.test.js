@@ -64,4 +64,20 @@ describe('<Option />', () => {
       expect(wrapper).to.not.have.className(styles.disabled);
     });
   });
+
+  describe('props', () => {
+    it('passes non-Option props down to whatever element it renders', () => {
+      const wrapper = shallow(
+        <Option foo="bar" />
+      );
+      expect(wrapper.find('Button')).to.have.prop('foo', 'bar');
+    });
+
+    it('does not pass Option props down to whatever element it renders', () => {
+      const wrapper = shallow(
+        <Option selectedStyle={{ display: 'none' }} />
+      );
+      expect(wrapper.find('Button')).to.have.not.have.prop('selectedStyle');
+    });
+  });
 });
