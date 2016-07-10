@@ -1,4 +1,4 @@
-const TRANSPARENT_BACKGROUND = /rgba\(\d+, \d+, \d+, 0\)/i;  // rgba(0, 0, 0, 0)
+const TRANSPARENT_BACKGROUND = /^(rgba\(\d+, \d+, \d+, 0\)|transparent)$/i;  // rgba(0, 0, 0, 0)
 
 export function getBackgroundColor(element) {
   // find DOM node with background color
