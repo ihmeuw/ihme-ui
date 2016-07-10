@@ -57,6 +57,7 @@ export default class ExpansionContainer extends PureComponent {
 
   unsubscribe(expandable) {
     pull(this.expandables, expandable);
+    if (expandable === this.state.expanded) this.restore();
   }
 
   expand(expandable) {
@@ -111,7 +112,7 @@ export default class ExpansionContainer extends PureComponent {
           <div className={styles['expandable-target']}>
             <AutoSizer>
               {({ width, height }) => {
-                if (width && height) {
+                if (width && height && includes(this.expandables, expanded)) {
                   expanded.onResize(this.boundingClientRect);
                 }
               }}
