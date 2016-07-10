@@ -14,7 +14,7 @@
   bottom: 0;
 }
 
-.expandable-parent {
+.expandable-inner {
   position: absolute;
   left: 0;
   right: 0;
@@ -24,7 +24,7 @@
   /*height: 100%;*/
 }
 
-.expandable {
+.expandable-container {
   position: relative;
 }
 

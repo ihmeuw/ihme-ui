@@ -32,6 +32,8 @@ const LAYOUT_SELECTORS = [
   /* 'flexFlow', */ // causes firefox to fail flex layout
   'flexWrap',
   'justifyContent',
+  'border',
+  'margin',
 ];
 
 export default class Expandable extends PureComponent {
@@ -46,7 +48,7 @@ export default class Expandable extends PureComponent {
       restoring: false,
       restored: true,
       transitioning: false,
-      outerStyle: props.style,
+      containerStyle: props.style,
       iconStyle: {
         position: 'absolute',
         top: '0.2em',
@@ -72,22 +74,22 @@ export default class Expandable extends PureComponent {
 
   componentDidMount() {
     this.backgroundColor = getBackgroundColor(this._container);
-    this.outerStyle = {
-      ...this.props.style,
-      display: undefined,
-      flexFlow: undefined,
-      justifyContent: undefined,
-      alignItems: undefined,
-      alignContent: undefined,
-    };
-    this.innerStyle = {
-      ...this.props.expandableStyle,
-      ...pick(this.containerStyle, LAYOUT_SELECTORS),
-    };
     this.defaultState = {
       ...this.state,
-      outerStyle: this.outerStyle,
-      innerStyle: this.innerStyle,
+      containerStyle: {
+        ...this.props.style,
+        display: undefined,
+        flexFlow: undefined,
+        justifyContent: undefined,
+        alignItems: undefined,
+        alignContent: undefined,
+        margin: undefined,
+        border: undefined,
+      },
+      innerStyle: {
+        ...this.props.expandableStyle,
+        ...pick(this.containerStyle, LAYOUT_SELECTORS),
+      },
     };
     setTimeout(this.setState, 0, this.defaultState);
   }
@@ -175,7 +177,7 @@ export default class Expandable extends PureComponent {
 
   calcInnerStyle({ left, top, width, height }) {
     return {
-      ...this.innerStyle,
+      ...this.defaultState.innerStyle,
       backgroundColor: this.backgroundColor,
       left, top, width, height,
       right: undefined,
@@ -254,20 +256,20 @@ export default class Expandable extends PureComponent {
       hideIcon,
     } = this.props;
     const {
+      containerStyle,
       innerStyle,
-      outerStyle,
     } = this.state;
 
     return (
       <div
         ref={this.containerRef}
-        className={classNames(styles.expandable, className)}
-        style={outerStyle}
+        className={classNames(styles['expandable-container'], className)}
+        style={containerStyle}
       >
         {!!innerStyle && (
           <div
             ref={this.innerRef}
-            className={classNames(styles['expandable-parent'], expandableClassName)}
+            className={classNames(styles['expandable-inner'], expandableClassName)}
             style={innerStyle}
           >
                {children}
