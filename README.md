@@ -4,8 +4,6 @@
 
 ihme-ui is a collection of JavaScript and React-based visualization tools and user interface elements developed by the [Institute of Health Metrics and Evaluation](http://healthdata.org). These elements are used in IHME's [visualizations of global health metrics](http://www.healthdata.org/results/data-visualizations).
 
-This document provides installation instructions, an overview of the elements, their APIs, and examples of their use.
-
 * [Installation](#installation)
 * [API Reference](#api)
   * [axis](#axis)
