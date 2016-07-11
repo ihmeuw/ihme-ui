@@ -39,10 +39,10 @@ export default class Group extends PureComponent {
 Group.propTypes = {
   children: PropTypes.node.isRequired,
   className: CommonPropTypes.className,
-  style: CommonPropTypes.style,
 
   /* function with following signature: function(event, selectedOptionValue) */
-  onClick: PropTypes.func,
+  onClick: PropTypes.func.isRequired,
+  style: CommonPropTypes.style,
 };
 
 Group.defaultProps = {
