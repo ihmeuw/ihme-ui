@@ -1,28 +1,12 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import bindAll from 'lodash/bindAll';
-import reduce from 'lodash/reduce';
 import pick from 'lodash/pick';
 import { CommonPropTypes, PureComponent } from '../../../utils';
 import { getBackgroundColor } from '../../../utils/window';
 
 import { containerStore } from './ExpansionContainer';
 import styles from './expansion-container.css';
-
-/* Adapted from Modernizr via stackoverflow */
-const transitionTypes = {
-  transition: 'transitionend',
-  MozTransition: 'transitionend',
-  OTransition: 'oTransitionEnd',
-  WebkitTransition: 'webkitTransitionEnd',
-};
-
-export const transitionEvent = (() => {
-  const el = document.createElement('transitionEventTest');
-  return reduce(transitionTypes, (acc, type, t) => {
-    return acc || (el.style[t] !== undefined ? type : undefined);
-  }, undefined);
-})();
 
 /* Adapted from is.js */
 const userAgent = (navigator && navigator.userAgent || '').toLowerCase();
@@ -82,7 +66,6 @@ export default class Expandable extends PureComponent {
       'restore',
       'containerRef',
       'setState',
-      'innerRef',
     ]);
   }
 
@@ -183,11 +166,15 @@ export default class Expandable extends PureComponent {
 
   onTransitionEnd() {
     if (this.state.transitioning) {
-      this.setState({
-        expanded: !!this.state.expanding,
-        expanding: false,
-        transitioning: false,
-      });
+      if (this.state.expanding) {
+        this.setState({
+          expanded: true,
+          expanding: false,
+          transitioning: false,
+        });
+      } else if (this.state.restoring) {
+        this.setState(this.defaultState);
+      }
     }
   }
 
@@ -233,10 +220,6 @@ export default class Expandable extends PureComponent {
 
   containerRef(ref) {
     this._container = ref;
-  }
-
-  innerRef(ref) {
-    if (ref) ref.addEventListener(transitionEvent, this.onTransitionEnd);
   }
 
   renderExpandIcon(hideIcon) {
@@ -314,9 +297,9 @@ export default class Expandable extends PureComponent {
       >
         {!!contentStyle && (
           <div
-            ref={this.innerRef}
             className={styles['expandable-inner']}
             style={innerStyle}
+            onTransitionEnd={this.onTransitionEnd}
           >
             <div
               className={classNames(styles['expandable-content'], expandableClassName)}
