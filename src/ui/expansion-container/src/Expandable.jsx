@@ -9,6 +9,7 @@ import { getBackgroundColor } from '../../../utils/window';
 import { containerStore } from './ExpansionContainer';
 import styles from './expansion-container.css';
 
+/* Adapted from Modernizr via stackoverflow */
 const transitionTypes = {
   transition: 'transitionend',
   MozTransition: 'transitionend',
@@ -16,7 +17,6 @@ const transitionTypes = {
   WebkitTransition: 'webkitTransitionEnd',
 };
 
-/* From Modernizr */
 export const transitionEvent = (() => {
   const el = document.createElement('transitionEventTest');
   return reduce(transitionTypes, (acc, type, t) => {
@@ -24,16 +24,32 @@ export const transitionEvent = (() => {
   }, undefined);
 })();
 
+/* Adapted from is.js */
+const userAgent = (navigator && navigator.userAgent || '').toLowerCase();
+
+function isFirefox() {
+  const match = userAgent.match(/(?:firefox|fxios)\/(\d+)/);
+  return !!match;
+}
+
 const LAYOUT_STYLES = [
   'alignContent',
   'alignItems',
   'display',
   'flexDirection',
-  /* 'flexFlow', */ // causes firefox to fail flex layout
   'flexWrap',
   'justifyContent',
 ];
 
+/**
+ * <Expandable /> is a *mostly* drop in replacement for a layout <div /> that gives its contents
+ * expanding powers, and must accompany an <ExpansionContainer /> of the same `group` (default
+ * group is 'default'). Flex related layout styles are passed directly to a content <div />, and
+ * additional styles like `border`, `margin`, etc. must be supplied via the `expandableClassName`
+ * and `expandableStyle` props.
+ *
+ * Note: Transitions on the restore event do not execute on FireFox, and thus have been disabled.
+ */
 export default class Expandable extends PureComponent {
   constructor(props) {
     super(props);
@@ -141,7 +157,7 @@ export default class Expandable extends PureComponent {
         hidden: false,
         restored: false,
         restoring: true,
-        transitioning: !!this.props.transition,
+        transitioning: (!isFirefox() && !!this.props.transition),
         innerStyle: {
           ...this.calcInnerStyle(this.boundingClientRect),
           transition: this.props.transition,
@@ -156,11 +172,11 @@ export default class Expandable extends PureComponent {
     const state = {
       innerStyle: {
         ...this.calcInnerStyle(boundingClientRect),
-        transition: !this.state.expanded && this.props.transition,
+        transition: !this.state.expanded && (!isFirefox() && this.props.transition),
       },
-      expanded: this.state.expanded || !this.props.transition,
-      expanding: !this.state.expanded && !!this.props.transition,
-      transitioning: !this.state.expanded && !!this.props.transition,
+      expanded: this.state.expanded || (isFirefox() || !this.props.transition),
+      expanding: !this.state.expanded && (!isFirefox() && !!this.props.transition),
+      transitioning: !this.state.expanded && (!isFirefox() && !!this.props.transition),
     };
     setTimeout(this.setState, 0, state);
   }
