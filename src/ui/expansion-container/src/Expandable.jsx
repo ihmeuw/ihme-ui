@@ -215,6 +215,14 @@ export default class Expandable extends PureComponent {
     this._expansionContainer.restore(this);
   }
 
+  wrappedEvent(fn) {
+    return (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      fn();
+    };
+  }
+
   get boundingClientRect() {
     return this._container.getBoundingClientRect();
   }
@@ -246,7 +254,7 @@ export default class Expandable extends PureComponent {
       <svg
         className={iconClassName}
         style={iconStyle}
-        onClick={!!expanded ? this.restore : this.expand}
+        onClick={this.wrappedEvent(!!expanded ? this.restore : this.expand)}
         viewBox="-16 -16 32 32"
         width="1em" height="1em"
       >
