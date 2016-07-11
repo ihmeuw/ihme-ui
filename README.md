@@ -13,7 +13,7 @@ This document provides installation instructions, an overview of the elements, t
   * [button](#button)
   * [choropleth-legend](#choropleth-legend)
   * [group](#group)
-    * [options](#options)
+    * [option](#option)
   * [html-label](#html-label)
   * [reponse-container](#response-container)
   * [shape](#shape)
@@ -93,11 +93,11 @@ Button with customizable id, name, class name, icon, animation, and click handle
 Property | Required | Type(s) | Description
         --- | :---: | :---: | ---
 `className` | no | string, object | array of classes to add to button<br /><br />one of type: string, object, array
-`clickHandler` | no | object | function to be executed on click
 `disabled` | no | boolean | boolean value to set button as disabled
 `icon` | no | string | path to image to render within button tag
 `id` | no | string | id value for button
 `name` | no | string | name of button
+`onClick` | no | function | function to be executed onClick
 `showSpinner` | no | boolean | boolean value to display spinner
 `text` | no | string | text to render within button tag
 `theme` | no | string | color scheme of component (see button.css)
@@ -133,24 +133,23 @@ Property | Required | Type(s) | Description
         --- | :---: | :---: | ---
 `children` | yes | object |  React element or elements<br /><br />one of type: arrayOf(PropTypes.node), node
 `className` | no | string, object | one of type: string, object, array
-`clickHandler` | no | object | clickHandler function with following signature: function({ value })
-`disabledItems` | no | number, string, object | one of type: arrayOf(number), arrayOf(string), number, string
-`hoverHandler` | no | object |
-`selectedItems` | no | number, string, object | one of type: arrayOf(number), arrayOf(string), number, string
-`theme` | no | string | color scheme of component (one of: 'dark', 'light', 'common')
+`onClick` | yes | function | click handler with following signature: function(event, selectedValue)
+`style` | no | object | inline-styles to be applied to group wrapper
 
-#### options
+#### option
 
-Options for the group element, wrapped by group.
+Options for the group element, wrapped by group. Any additional props will be passed directly to the fundamental element this renders.
 
 Property | Required | Type(s) | Description
-        --- | :---: | :---: - | ---
+        --- | :---: | :---: | ---
 `className` | no | string, object | one of type: string, object, array
-`clickHandler` | no | object |
-`disabled` | no | boolean | boolean value to apply disabled class styling
-`hoverHandler` | no | object |
+`disabled` | no | boolean | whether option is disabled
+`disabledClassName` | no | string, array, object | className to apply when disabled
+`disabledStyle` | no | object | inline-style to apply when disabled
 `icon` | no | string | path to image to render within label tag
-`selected` | no | boolean | boolean value to apply selected class styling
+`selected` | no | boolean | whether option is selected
+`selectedClassName` | no | string, array, object | className to apply when selected
+`selectedStyle` | no | object | inline-style to apply when selected
 `text` | no | string | text to render within label tag
 `type` | no | string, number, object | react element to be wrapped by this option (default: Button)
 
