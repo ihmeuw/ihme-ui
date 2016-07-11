@@ -8,28 +8,35 @@ import ExpansionContainer, { Expandable } from '../';
 
 const expansionContainerStyle = {
   flex: '1',
-  border: '1px solid black',
   display: 'flex',
 };
 
 const chartStyle = {
-  border: '1px solid green',
   display: 'flex',
+  flexDirection: 'column',
   flex: '1',
 };
 
-const chartStyle2 = {
-  border: '1px solid blue',
-  display: 'flex',
-  flex: '1',
+const expandableStyle = {
+  border: '1px solid',
+  margin: '4px',
 };
 
 class Chart extends PureComponent {
   render() {
+    // log={props.chartNumber === 3}
     const { props } = this;
     return (
-      <Expandable style={props.style}>
+      <Expandable style={props.style} expandableStyle={expandableStyle}>
         Chart{props.chartNumber}
+        <div
+          style={{
+            flex: '1',
+            border: 'solid',
+            borderWidth: '0 0 3px 3px',
+            margin: '1em',
+          }}
+        ></div>
       </Expandable>
     );
   }
@@ -57,7 +64,7 @@ class App extends React.Component {
 
   render() {
     return (
-      <div style={{ width: '90%', height: '90%', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ width: '100%', display: 'flex', flexDirection: 'column', flex: '1' }}>
         <AutoSizer>
           {({ width, height }) => {
             console.log(width, height);
@@ -72,15 +79,14 @@ class App extends React.Component {
                     <Chart chartNumber={this.state.clicks} style={chartStyle} />
                     <div
                       style={{
-                        border: '1px solid green',
                         display: 'flex',
                         flex: '1',
                         flexDirection: 'column',
                         backgroundColor: 'lightgreen',
                       }}
                     >
-                      <Chart chartNumber={2} style={chartStyle2} />
-                      <Chart chartNumber={3} style={chartStyle2} />
+                      <Chart chartNumber={2} style={chartStyle} />
+                      <Chart chartNumber={3} style={chartStyle} />
                     </div>
                   </ExpansionContainer>
                 </div>
