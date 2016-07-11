@@ -223,10 +223,6 @@ export default class Expandable extends PureComponent {
     return window.getComputedStyle(this._container);
   }
 
-  get parentStyle() {
-    return window.getComputedStyle(this._container.parentNode);
-  }
-
   containerRef(ref) {
     this._container = ref;
   }
