@@ -14,18 +14,24 @@
   bottom: 0;
 }
 
+.expandable-container {
+  position: relative;
+}
+
 .expandable-inner {
   position: absolute;
   left: 0;
   right: 0;
   top: 0;
   bottom: 0;
-  /*width: 100%;*/
-  /*height: 100%;*/
 }
 
-.expandable-container {
-  position: relative;
+.expandable-content {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
 }
 
 .expanded {

@@ -24,7 +24,7 @@ export const transitionEvent = (() => {
   }, undefined);
 })();
 
-const LAYOUT_SELECTORS = [
+const LAYOUT_STYLES = [
   'alignContent',
   'alignItems',
   'display',
@@ -32,8 +32,6 @@ const LAYOUT_SELECTORS = [
   /* 'flexFlow', */ // causes firefox to fail flex layout
   'flexWrap',
   'justifyContent',
-  'border',
-  'margin',
 ];
 
 export default class Expandable extends PureComponent {
@@ -78,17 +76,19 @@ export default class Expandable extends PureComponent {
       ...this.state,
       containerStyle: {
         ...this.props.style,
-        display: undefined,
-        flexFlow: undefined,
-        justifyContent: undefined,
-        alignItems: undefined,
         alignContent: undefined,
-        margin: undefined,
-        border: undefined,
+        alignItems: undefined,
+        display: undefined,
+        flexDirection: undefined,
+        flexFlow: undefined,
+        flexWrap: undefined,
+        justifyContent: undefined,
       },
       innerStyle: {
+      },
+      contentStyle: {
         ...this.props.expandableStyle,
-        ...pick(this.containerStyle, LAYOUT_SELECTORS),
+        ...pick(this.containerStyle, LAYOUT_STYLES),
       },
     };
     setTimeout(this.setState, 0, this.defaultState);
@@ -257,6 +257,7 @@ export default class Expandable extends PureComponent {
     } = this.props;
     const {
       containerStyle,
+      contentStyle,
       innerStyle,
     } = this.state;
 
@@ -266,14 +267,19 @@ export default class Expandable extends PureComponent {
         className={classNames(styles['expandable-container'], className)}
         style={containerStyle}
       >
-        {!!innerStyle && (
+        {!!contentStyle && (
           <div
             ref={this.innerRef}
-            className={classNames(styles['expandable-inner'], expandableClassName)}
+            className={styles['expandable-inner']}
             style={innerStyle}
           >
-               {children}
-               {this.renderExpandIcon(hideIcon)}
+            <div
+              className={classNames(styles['expandable-content'], expandableClassName)}
+              style={contentStyle}
+            >
+              {children}
+              {this.renderExpandIcon(hideIcon)}
+            </div>
           </div>
         )}
       </div>
@@ -302,5 +308,5 @@ Expandable.defaultProps = {
     top: '0.2em',
     right: '0.2em',
   },
-  // transition: 'all 0.5s ease',
+  transition: 'all 0.5s ease',
 };
