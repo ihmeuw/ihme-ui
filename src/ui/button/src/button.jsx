@@ -6,6 +6,13 @@ import styles from './button.css';
 import Spinner from '../../spinner';
 
 export default class Button extends PureComponent {
+  static calculateStyle(props) {
+    return {
+      ...props.style,
+      ...(props.disabled ? props.disabledStyle : {}),
+    };
+  }
+
   constructor(props) {
     super(props);
 
@@ -16,23 +23,16 @@ export default class Button extends PureComponent {
     this.setState(stateFromPropUpdates(Button.propUpdates, this.props, nextProps, {}));
   }
 
-  static calculateStyle(props) {
-    return {
-      ...props.style,
-      ...(props.disabled ? props.disabledStyle : {}),
-    };
-  }
-
   render() {
     const {
       children,
       className,
-      clickHandler,
       disabled,
       disabledClassName,
       icon,
       id,
       name,
+      onClick,
       showSpinner,
       text,
       theme,
@@ -48,7 +48,7 @@ export default class Button extends PureComponent {
         disabled={disabled}
         id={id}
         name={name}
-        onClick={showSpinner ? null : clickHandler}
+        onClick={showSpinner ? null : onClick}
         type="button"
       >
         {showSpinner && <Spinner inline size="small" />}
@@ -60,32 +60,37 @@ export default class Button extends PureComponent {
 }
 
 Button.propTypes = {
-  /* color scheme of component; see button.css */
-  theme: PropTypes.oneOf(['green']),
+  children: PropTypes.node,
 
   className: CommonPropTypes.className,
-  style: CommonPropTypes.style,
 
   disabled: PropTypes.bool,
+
+  /* className to apply when disabled */
   disabledClassName: CommonPropTypes.className,
+
+  /* inline styles to apply when disabled */
   disabledStyle: CommonPropTypes.style,
 
-  clickHandler: PropTypes.func,
+  /* path to image to render within button tag */
+  icon: PropTypes.string,
 
   id: PropTypes.string,
 
   name: PropTypes.string,
 
+  onClick: PropTypes.func,
+
   /* if true, will contain spinner and not render additional content */
   showSpinner: PropTypes.bool,
 
-  /* path to image to render within button tag */
-  icon: PropTypes.string,
+  style: CommonPropTypes.style,
 
   /* text to render within button tag */
   text: PropTypes.string,
 
-  children: PropTypes.node,
+  /* color scheme of component; see button.css */
+  theme: PropTypes.oneOf(['green']),
 };
 
 Button.defaultProps = {

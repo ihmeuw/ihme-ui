@@ -28,7 +28,7 @@ class App extends React.Component {
           <h3>A clickable button with a new class</h3>
 {/* <pre><code>
   <Button
-    clickHandler={function onClick() { alert('You clicked me!'); }}
+    onClick={function onClick() { alert('You clicked me!'); }}
     className="new-class"
   >
     Click me!
@@ -36,7 +36,7 @@ class App extends React.Component {
 
 </code></pre> */}
           <Button
-            clickHandler={onClick}
+            onClick={onClick}
             className="new-class"
           >
             Click me!
@@ -48,14 +48,14 @@ class App extends React.Component {
   <Button
     theme="green"
     text="Click me!"
-    clickHandler={function onClick() { alert('You clicked me!'); }}
+    onClick={function onClick() { alert('You clicked me!'); }}
   />
 
 </code></pre> */}
           <Button
             theme="green"
             text="Click me!"
-            clickHandler={onClick}
+            onClick={onClick}
           />
         </section>
         <section>
@@ -64,14 +64,14 @@ class App extends React.Component {
   <Button
     disabled
     text="Click me!"
-    clickHandler={function onClick() { alert('You clicked me!'); }}
+    onClick={function onClick() { alert('You clicked me!'); }}
   />
 
 </code></pre> */}
           <Button
             text="Click me!"
             disabled
-            clickHandler={onClick}
+            onClick={onClick}
           />
         </section>
         <section>
@@ -80,7 +80,7 @@ class App extends React.Component {
   <HtmlLabel text="A button">
     <Button
       text="Click me!"
-      clickHandler={function onClick() { alert('You clicked me!'); }}
+      onClick={function onClick() { alert('You clicked me!'); }}
       theme="dark"
     />
   </HtmlLabel>
@@ -91,7 +91,7 @@ class App extends React.Component {
           >
             <Button
               text="Click me!"
-              clickHandler={onClick}
+              onClick={onClick}
             />
           </HtmlLabel>
         </section>
@@ -101,7 +101,7 @@ class App extends React.Component {
   <Button
     text="Delete all files"
     showSpinner={this.state.isLoading}
-    clickHandler={this.showIsLoading}
+    onClick={this.showIsLoading}
   />
 
 </code></pre> */}
@@ -109,7 +109,7 @@ class App extends React.Component {
             <Button
               text="Delete all files"
               showSpinner={this.state.isLoading}
-              clickHandler={this.showIsLoading}
+              onClick={this.showIsLoading}
             />
           </div>
         </section>
@@ -118,14 +118,14 @@ class App extends React.Component {
 {/* <pre><code>
   <Button
     text="Click me!"
-    clickHandler={function onClick() { alert('You clicked me!'); }}
+    onClick={function onClick() { alert('You clicked me!'); }}
     icon="home3.png"
   />
 
 </code></pre> */}
           <Button
             text="Click me!"
-            clickHandler={onClick}
+            onClick={onClick}
             icon="home3.png"
           />
         </section>
@@ -136,7 +136,7 @@ class App extends React.Component {
     text="Click me!"
     icon="home3.png"
     showSpinner={this.state.isLoading}
-    clickHandler={this.showIsLoading}
+    onClick={this.showIsLoading}
   />
 
 </code></pre> */}
@@ -144,7 +144,7 @@ class App extends React.Component {
             text="Click me!"
             icon="home3.png"
             showSpinner={this.state.isLoading}
-            clickHandler={this.showIsLoading}
+            onClick={this.showIsLoading}
           />
         </section>
       </div>
