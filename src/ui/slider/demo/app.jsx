@@ -131,7 +131,7 @@ class App extends React.Component {
           <div>
             <Button
               text="Set new min/max"
-              clickHandler={this.setNewMinMax}
+              onClick={this.setNewMinMax}
             />
           </div>
           <div>
@@ -144,7 +144,7 @@ class App extends React.Component {
           <div>
             <Button
               text="Set new width"
-              clickHandler={this.setNewWidth}
+              onClick={this.setNewWidth}
             />
           </div>
           <div>
@@ -153,7 +153,7 @@ class App extends React.Component {
           <div>
             <Button
               text="Set new font size"
-              clickHandler={this.setNewFontSize}
+              onClick={this.setNewFontSize}
             />
           </div>
           <div>

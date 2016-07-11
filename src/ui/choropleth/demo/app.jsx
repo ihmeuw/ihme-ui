@@ -120,11 +120,11 @@ class App extends React.Component {
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <Button style={{ margin: '0.2em' }}
                   text="Toggle subnational"
-                  clickHandler={this.toggleVisibility({ name: 'subnational' })}
+                  onClick={this.toggleVisibility({ name: 'subnational' })}
           />
           <Button style={{ margin: '0.2em' }}
                   text="Toggle boundaries"
-                  clickHandler={this.toggleVisibility({ type: 'mesh' })}
+                  onClick={this.toggleVisibility({ type: 'mesh' })}
           />
         </div>
       </div>

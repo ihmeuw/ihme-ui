@@ -9,19 +9,19 @@ const Controls = (props) => {
     <div className={classNames(style.common, props.className)} style={props.style}>
       <Button
         className={classNames(style.button, props.buttonClassName)}
-        clickHandler={props.onZoomIn}
+        onClick={props.onZoomIn}
         style={props.buttonStyle}
         text="+"
       />
       <Button
         className={classNames(style.button, props.buttonClassName)}
-        clickHandler={props.onZoomReset}
+        onClick={props.onZoomReset}
         style={props.buttonStyle}
         text="•"
       />
       <Button
         className={classNames(style.button, props.buttonClassName)}
-        clickHandler={props.onZoomOut}
+        onClick={props.onZoomOut}
         style={props.buttonStyle}
         text="-"
       />

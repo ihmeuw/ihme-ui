@@ -1,76 +1,50 @@
 import React, { PropTypes } from 'react';
-
 import classNames from 'classnames';
+import memoize from 'lodash/memoize';
+import { CommonPropTypes, eventHandleWrapper, PureComponent } from '../../../utils';
 
 import styles from './group.css';
 
+export default class Group extends PureComponent {
+  static onClickWrapper(optionValue, onClick) {
+    return eventHandleWrapper(onClick, optionValue);
+  }
 
-const propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ]).isRequired,
+  constructor(props) {
+    super(props);
 
-  className: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.object,
-    PropTypes.array
-  ]),
+    this.wrappedOnClick = memoize(Group.onClickWrapper);
+  }
 
-  /* function with following signature: function({ value }) */
-  clickHandler: PropTypes.func,
+  render() {
+    const { children, className, onClick, style } = this.props;
 
-  disabledItems: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.number),
-    PropTypes.arrayOf(PropTypes.string),
-    PropTypes.number,
-    PropTypes.string
-  ]),
+    return (
+      <div className={classNames(className)} style={style}>
+        {
+          React.Children.map(children, (child) => {
+            const childProps = {
+              className: classNames(styles.common, child.props.className),
+              onClick: this.wrappedOnClick(child.props.value, onClick),
+            };
 
-  hoverHandler: PropTypes.func,
+            return React.cloneElement(child, childProps);
+          })
+        }
+      </div>
+    );
+  }
+}
 
-  selectedItems: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.number),
-    PropTypes.arrayOf(PropTypes.string),
-    PropTypes.number,
-    PropTypes.string
-  ]),
+Group.propTypes = {
+  children: PropTypes.node.isRequired,
+  className: CommonPropTypes.className,
+  style: CommonPropTypes.style,
 
-  theme: PropTypes.oneOf(['dark', 'light', 'common'])
+  /* function with following signature: function(event, selectedOptionValue) */
+  onClick: PropTypes.func,
 };
 
-const defaultProps = {
-  theme: 'common'
+Group.defaultProps = {
+  className: styles.group,
 };
-
-
-const Group = (props) => {
-  const { children, className, theme } = props;
-
-  const wrappedClickHandler = (wrappedProps) => {
-    return () => {
-      props.clickHandler(wrappedProps);
-    };
-  };
-
-  return (
-    <div className={classNames(className, styles.group)}>
-      {
-        React.Children.map(children, (child) => {
-          const childProps = {
-            className: classNames(styles.option, child.props.className, styles[theme], className),
-            clickHandler: wrappedClickHandler({ value: child.props.value })
-          };
-
-          return React.cloneElement(child, childProps);
-        })
-      }
-    </div>
-  );
-};
-
-Group.propTypes = propTypes;
-
-Group.defaultProps = defaultProps;
-
-export default Group;

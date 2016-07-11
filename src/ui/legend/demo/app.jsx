@@ -133,7 +133,7 @@ const items = [
           />
           <Button
             text="Reset"
-            clickHandler={this.reset}
+            onClick={this.reset}
           />
         </section>
       </div>

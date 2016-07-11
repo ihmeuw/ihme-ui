@@ -93,7 +93,7 @@ class App extends React.Component {
         <div>
           <Button
             text="Resize and change scale"
-            clickHandler={this.onClick}
+            onClick={this.onClick}
           />
         </div>
 {/* <pre><code>
