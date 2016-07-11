@@ -1,25 +1,23 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import memoize from 'lodash/memoize';
-import { CommonPropTypes, PureComponent } from '../../../utils';
+import { CommonPropTypes, eventHandleWrapper, PureComponent } from '../../../utils';
 
 import styles from './group.css';
 
 export default class Group extends PureComponent {
-  static clickHandlerWrapper(wrappedProps, clickHandler) {
-    return () => {
-      clickHandler({ value: wrappedProps });
-    };
+  static onClickWrapper(optionValue, onClick) {
+    return eventHandleWrapper(onClick, optionValue);
   }
 
   constructor(props) {
     super(props);
 
-    this.wrappedClickHandler = memoize(Group.clickHandlerWrapper);
+    this.wrappedOnClick = memoize(Group.onClickWrapper);
   }
 
   render() {
-    const { children, className, clickHandler, style } = this.props;
+    const { children, className, onClick, style } = this.props;
 
     return (
       <div className={classNames(className)} style={style}>
@@ -27,7 +25,7 @@ export default class Group extends PureComponent {
           React.Children.map(children, (child) => {
             const childProps = {
               className: classNames(styles.common, child.props.className),
-              clickHandler: this.wrappedClickHandler(child.props.value, clickHandler),
+              onClick: this.wrappedOnClick(child.props.value, onClick),
             };
 
             return React.cloneElement(child, childProps);
@@ -39,15 +37,12 @@ export default class Group extends PureComponent {
 }
 
 Group.propTypes = {
+  children: PropTypes.node.isRequired,
   className: CommonPropTypes.className,
   style: CommonPropTypes.style,
 
-  /* function with following signature: function({ value }) */
-  clickHandler: PropTypes.func,
-
-  hoverHandler: PropTypes.func,
-
-  children: PropTypes.node.isRequired,
+  /* function with following signature: function(event, selectedOptionValue) */
+  onClick: PropTypes.func,
 };
 
 Group.defaultProps = {

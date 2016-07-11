@@ -7,6 +7,14 @@ import Button from '../../button';
 import styles from './group.css';
 
 export default class Option extends PureComponent {
+  static calculateStyle(props) {
+    return {
+      ...props.style,
+      ...(props.selected ? props.selectedStyle : {}),
+      ...(props.disabled ? props.disabledStyle : {}),
+    };
+  }
+
   constructor(props) {
     super(props);
 
@@ -15,14 +23,6 @@ export default class Option extends PureComponent {
 
   componentWillReceiveProps(nextProps) {
     this.setState(stateFromPropUpdates(Option.propUpdates, this.props, nextProps, {}));
-  }
-
-  static calculateStyle(props) {
-    return {
-      ...props.style,
-      ...(props.selected ? props.selectedStyle : {}),
-      ...(props.disabled ? props.disabledStyle : {}),
-    };
   }
 
   render() {
@@ -56,7 +56,6 @@ export default class Option extends PureComponent {
 
 Option.propTypes = {
   className: CommonPropTypes.className,
-  style: CommonPropTypes.style,
 
   /* apply disabled class styling */
   disabled: PropTypes.bool,
@@ -68,14 +67,16 @@ Option.propTypes = {
   selectedClassName: CommonPropTypes.className,
   selectedStyle: CommonPropTypes.style,
 
+  style: CommonPropTypes.style,
+
   /* react element to be wrapped by this option */
   type: PropTypes.any,
 };
 
 Option.defaultProps = {
-  type: Button,
-  selectedClassName: styles.selected,
   disabledClassName: styles.disabled,
+  selectedClassName: styles.selected,
+  type: Button,
 };
 
 Option.propUpdates = {

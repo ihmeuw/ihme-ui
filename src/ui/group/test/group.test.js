@@ -22,12 +22,13 @@ describe('<Group />', () => {
   });
 
   it('handles clicks', () => {
-    const clickHandler = sinon.spy(({ value }) => {
+    const mockEvent = {};
+    const clickHandler = sinon.spy((evt, value) => {
       return value;
     });
 
     const wrapper = mount(
-      <Group clickHandler={clickHandler}>
+      <Group onClick={clickHandler}>
         <Option value={1} text="One" id="clickMe" selected />
         <Option value={2} text="Two" />
         <Option value={3} text="Three" disabled />
@@ -37,6 +38,6 @@ describe('<Group />', () => {
     const button = wrapper.find('#clickMe');
     button.simulate('click');
     expect(clickHandler.called).to.be.true;
-    expect(clickHandler.calledWithMatch({ value: 1 })).to.be.true;
+    expect(clickHandler.calledWithMatch(mockEvent, 1)).to.be.true;
   });
 });

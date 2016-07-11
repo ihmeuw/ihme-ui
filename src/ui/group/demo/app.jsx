@@ -21,7 +21,7 @@ class App extends PureComponent {
     this.isDisabled = this.isDisabled.bind(this);
   }
 
-  setSelection({ value }) {
+  setSelection(_, value) {
     this.setState({ selectedItems: value });
   }
 
@@ -32,7 +32,7 @@ class App extends PureComponent {
   render() {
     return (
       <Group
-        clickHandler={this.setSelection}
+        onClick={this.setSelection}
       >
         {
           data.map((datum, index) => {
