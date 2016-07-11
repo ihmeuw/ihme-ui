@@ -219,7 +219,7 @@ export default class Expandable extends PureComponent {
     return (event) => {
       event.preventDefault();
       event.stopPropagation();
-      fn();
+      if (fn) fn();
     };
   }
 
@@ -247,6 +247,7 @@ export default class Expandable extends PureComponent {
     const {
       expanded,
       iconStyle,
+      restored,
       restoring,
     } = this.state;
 
@@ -254,7 +255,7 @@ export default class Expandable extends PureComponent {
       <svg
         className={iconClassName}
         style={iconStyle}
-        onClick={this.wrappedEvent(!!expanded ? this.restore : this.expand)}
+        onClick={this.wrappedEvent((expanded && this.restore) || (restored && this.expand))}
         viewBox="-16 -16 32 32"
         width="1em" height="1em"
       >
