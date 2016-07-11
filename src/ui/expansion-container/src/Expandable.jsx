@@ -238,8 +238,8 @@ export default class Expandable extends PureComponent {
     } = this.props;
     const {
       expanded,
-      expanding,
       iconStyle,
+      restoring,
     } = this.state;
 
     return (
@@ -250,12 +250,36 @@ export default class Expandable extends PureComponent {
         viewBox="-16 -16 32 32"
         width="1em" height="1em"
       >
-        <circle r="15" fill="none" stroke="black" />
-        {(expanding || expanded) ? (
-          <path d="M1,-10.6 L10.6,-1 L1,-1z M-10.6,1 L-1,10.6 L-1,1z" />
-        ) : (
-          <path d="M6.4,3.2 L-3.2,-6.4 L6.4,-6.4z M3.2,6.4 L-6.4,-3.2 L-6.4,6.4z" />
-        )}
+        <circle
+          r="15"
+          style={{
+            fill: 'rgb(51, 199, 72)',
+            stroke: '1.5px solid rgba(0, 255, 0, 0.5)',
+          }}
+        />
+        <g
+          style={{
+            transition: 'transform 0.5s ease',
+            opacity: '0.75',
+          }}
+        >
+          <path
+            d="M6.4,3.2 L-3.2,-6.4 L6.4,-6.4z"
+            style={{
+              fontSize: 'initial',
+              transform: `${!!(restoring || expanded) ? 'translate(-0.5em, 0.5em)' : 'initial'}`,
+              transition: 'inherit',
+            }}
+          />
+          <path
+            d="M3.2,6.4 L-6.4,-3.2 L-6.4,6.4z"
+            style={{
+              fontSize: 'initial',
+              transform: `${!!(restoring || expanded) ? 'translate(0.5em, -0.5em)' : 'initial'}`,
+              transition: 'inherit',
+            }}
+          />
+        </g>
       </svg>
     );
   }
