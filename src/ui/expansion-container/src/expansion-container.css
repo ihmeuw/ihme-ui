@@ -45,3 +45,12 @@
 .restored {
   position: relative;
 }
+
+.icon {
+  visibility: hidden;
+  pointer-events: all;
+}
+
+.icon:hover {
+  visibility: visible;
+}

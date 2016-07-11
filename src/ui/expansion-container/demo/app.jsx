@@ -5,6 +5,7 @@ import { CommonPropTypes, PureComponent } from '../../../utils';
 
 import Button from '../../button';
 import ExpansionContainer, { Expandable } from '../';
+import styles from '../src/expansion-container.css';
 
 const expansionContainerStyle = {
   flex: '1',
@@ -27,7 +28,11 @@ class Chart extends PureComponent {
     // log={props.chartNumber === 3}
     const { props } = this;
     return (
-      <Expandable style={props.style} expandableStyle={expandableStyle}>
+      <Expandable
+        style={props.style}
+        expandableStyle={expandableStyle}
+        iconClassName={props.iconClassName}
+      >
         Chart{props.chartNumber}
         <div
           style={{
@@ -46,6 +51,7 @@ Chart.propTypes = {
   children: CommonPropTypes.children,
   className: CommonPropTypes.className,
   style: CommonPropTypes.style,
+  iconClassName: CommonPropTypes.className,
   chartNumber: PropTypes.any,
 };
 
@@ -67,7 +73,6 @@ class App extends React.Component {
       <div style={{ width: '100%', display: 'flex', flexDirection: 'column', flex: '1' }}>
         <AutoSizer>
           {({ width, height }) => {
-            console.log(width, height);
             if (width && height) {
               return (
                 <div style={{ width, height, display: 'flex', flexDirection: 'column' }}>
@@ -76,7 +81,11 @@ class App extends React.Component {
                   <ExpansionContainer
                     style={expansionContainerStyle}
                   >
-                    <Chart chartNumber={this.state.clicks} style={chartStyle} />
+                    <Chart
+                      chartNumber={this.state.clicks}
+                      style={chartStyle}
+                      iconClassName={styles.icon}
+                    />
                     <div
                       style={{
                         display: 'flex',
