@@ -81,21 +81,40 @@ class App extends React.Component {
                   <ExpansionContainer
                     style={expansionContainerStyle}
                   >
-                    <Chart
-                      chartNumber={this.state.clicks}
-                      style={chartStyle}
+                    <Expandable
+                      style={{ flex: '3' }}
+                      expandableStyle={{ overflow: 'scroll' }}
                       iconClassName={styles.icon}
-                    />
+                    >
+{/* <pre><code>
+  <ExpansionContainer className="..." style={{ display: 'flex' }}>  // drop in replacement for <div>
+    <Expandable className="..." style={{ flex: '1' }}>              // *mostly* drop in replacement for <div>
+      This content...
+    </Expandable>
+    <div style={{ display: 'flex' flexDirection: 'column', flex: '1' }}>
+      <Expandable className="..." style={{ flex: '1' }}>
+        <h3>Chart 0</h3>
+        <AxisChart ... />
+      </Expandable>
+      <Expandable className="..." style={{ flex: '1' }}>
+        <H3>Chart 1</h3>
+        <AxisChart ... />
+      </Expandable>
+    </div>
+  </ExpansionContainer>
+
+</code></pre> */}
+                    </Expandable>
                     <div
                       style={{
                         display: 'flex',
-                        flex: '1',
+                        flex: '2',
                         flexDirection: 'column',
                         backgroundColor: 'lightgreen',
                       }}
                     >
-                      <Chart chartNumber={2} style={chartStyle} />
-                      <Chart chartNumber={3} style={chartStyle} />
+                      <Chart chartNumber={this.state.clicks} style={chartStyle} />
+                      <Chart chartNumber={1} style={chartStyle} />
                     </div>
                   </ExpansionContainer>
                 </div>
