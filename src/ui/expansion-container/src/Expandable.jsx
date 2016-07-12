@@ -306,8 +306,8 @@ export default class Expandable extends PureComponent {
               style={contentStyle}
             >
               {children}
-              {this.renderExpandIcon(hideIcon)}
             </div>
+            {this.renderExpandIcon(hideIcon)}
           </div>
         )}
       </div>
