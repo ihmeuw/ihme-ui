@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { map, includes } from 'lodash';
+import { keyBy, map } from 'lodash';
 
 import Path from './path';
 
@@ -19,6 +19,10 @@ export default function FeatureLayer(props) {
     onMouseOut
   } = props;
 
+  // optimization: turn array of ids into map keyed by those ids
+  // faster to check if object has property than if array includes some value
+  const selectedLocationsMappedById = keyBy(selectedLocations, (locId) => locId);
+
   return (
     <g>
       {
@@ -37,7 +41,7 @@ export default function FeatureLayer(props) {
               pathGenerator={pathGenerator}
               locationId={key}
               fill={fill}
-              selected={includes(selectedLocations, key)}
+              selected={!!selectedLocationsMappedById[key]}
               onClick={onClick}
               onMouseOver={onMouseOver}
               onMouseMove={onMouseMove}
