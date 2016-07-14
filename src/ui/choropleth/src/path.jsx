@@ -1,12 +1,36 @@
 import React, { PropTypes } from 'react';
-import { noop, bindAll } from 'lodash';
+import { assign, noop, bindAll } from 'lodash';
 
-export default class Path extends React.Component {
+import {
+  CommonPropTypes,
+  propsChanged,
+  PureComponent,
+  stateFromPropUpdates,
+} from '../../../utils';
+
+export default class Path extends PureComponent {
+  static getStyle(feature, fill, selected, style, selectedStyle) {
+    const baseStyle = { fill };
+    const computedStyle = typeof style === 'function' ? style(feature) : style;
+
+    // if feature is not selected, early return to avoid applying selectedStyles
+    if (!selected) return assign({}, baseStyle, computedStyle);
+
+    // otherwise, apply selectedStyle on top of basic style
+    const computedSelectedStyle = typeof selectedStyle === 'function'
+                                  ? selectedStyle(feature)
+                                  : selectedStyle;
+    return assign({}, baseStyle, computedStyle, computedSelectedStyle);
+  }
+
   constructor(props) {
     super(props);
 
+    const { feature, fill, pathGenerator, selected, selectedStyle, style } = props;
+
     this.state = {
-      path: props.pathGenerator(props.feature)
+      path: pathGenerator(feature),
+      style: Path.getStyle(feature, fill, selected, style, selectedStyle),
     };
 
     bindAll(this, [
@@ -17,15 +41,8 @@ export default class Path extends React.Component {
     ]);
   }
 
-  componentWillReceiveProps(newProps) {
-    const featureHasChanged = newProps.feature !== this.props.feature;
-    const projectionHasChanged = newProps.pathGenerator !== this.props.pathGenerator;
-
-    if (projectionHasChanged || featureHasChanged) {
-      this.setState({
-        path: newProps.pathGenerator(newProps.feature)
-      });
-    }
+  componentWillReceiveProps(nextProps) {
+    this.setState(stateFromPropUpdates(Path.propUpdates, this.props, nextProps, {}));
   }
 
   onClick(e) {
@@ -66,14 +83,14 @@ export default class Path extends React.Component {
   }
 
   render() {
-    const { fill, selected, style, selectedStyle, className, selectedClassName } = this.props;
-    const { path } = this.state;
+    const { className, selected, selectedClassName } = this.props;
+    const { path, style } = this.state;
 
     return (
       <path
         d={path}
         className={selected ? selectedClassName : className}
-        style={selected ? { fill, ...selectedStyle } : { fill, ...style }}
+        style={style}
         onClick={this.onClick}
         onMouseDown={this.onMouseDown}
         onMouseMove={this.onMouseMove}
@@ -119,12 +136,12 @@ Path.propTypes = {
   onMouseOut: PropTypes.func,
 
   /* classname and style to apply to unselected path */
-  className: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-  style: PropTypes.object,
+  className: CommonPropTypes.className,
+  style: CommonPropTypes.style,
 
   /* classname and style to apply to selected path */
-  selectedClassName: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-  selectedStyle: PropTypes.object,
+  selectedClassName: CommonPropTypes.className,
+  selectedStyle: CommonPropTypes.style,
 };
 
 Path.defaultProps = {
@@ -142,4 +159,36 @@ Path.defaultProps = {
   onMouseMove() { return noop; },
   onMouseDown() { return noop; },
   onMouseOut() { return noop; },
+};
+
+Path.propUpdates = {
+  // update path if feature or pathGenerator fn have changed
+  path: (accum, propName, prevProps, nextProps) => {
+    if (!propsChanged(prevProps, nextProps, ['feature', 'pathGenerator'])) return accum;
+    return assign(accum, {
+      path: nextProps.pathGenerator(nextProps.feature),
+    });
+  },
+
+  // update style if feature, fill, selected, selectedStyle, or style have changed
+  style: (accum, propName, prevProps, nextProps) => {
+    if (!propsChanged(prevProps, nextProps, [
+      'feature',
+      'fill',
+      'selected',
+      'selectedStyle',
+      'style'
+    ])) {
+      return accum;
+    }
+    return assign(accum, {
+      style: Path.getStyle(
+        nextProps.feature,
+        nextProps.fill,
+        nextProps.selected,
+        nextProps.style,
+        nextProps.selectedStyle
+      ),
+    });
+  }
 };

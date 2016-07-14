@@ -70,18 +70,58 @@ describe('Choropleth <Path />', () => {
     expect(onClick.calledOnce).to.be.false;
   });
 
-  it('sets strokeWidth to 2px when selected, 1px when unselected', () => {
-    const wrapper = shallow(
-      <Path
-        pathGenerator={pathGenerator}
-        feature={feature}
-        locationId={6}
-        selected
-      />
-    );
+  describe('styling', () => {
+    it('sets strokeWidth to 2px when selected (default), 1px when unselected (default)', () => {
+      const wrapper = shallow(
+        <Path
+          pathGenerator={pathGenerator}
+          feature={feature}
+          locationId={6}
+          selected
+        />
+      );
 
-    expect(wrapper).to.have.style('stroke-width', '2px');
-    wrapper.setProps({ selected: false });
-    expect(wrapper).to.have.style('stroke-width', '1px');
+      expect(wrapper).to.have.style('stroke-width', '2px');
+      wrapper.setProps({ selected: false });
+      expect(wrapper).to.have.style('stroke-width', '1px');
+    });
+
+    it('accepts an object for both style and selected style', () => {
+      const wrapper = shallow(
+        <Path
+          pathGenerator={pathGenerator}
+          feature={feature}
+          locationId={6}
+          selectedStyle={{ strokeDasharray: '5, 5' }}
+          style={{ stroke: 'red' }}
+        />
+      );
+
+      expect(wrapper).to.have.style('stroke', 'red');
+      expect(wrapper).to.not.have.style('stroke-dasharray');
+      wrapper.setProps({ selected: true });
+      expect(wrapper).to.have.style('stroke-dasharray', '5, 5');
+    });
+
+    it('accepts a function for both style and selected style', () => {
+      const { id } = feature;
+      const wrapper = shallow(
+        <Path
+          pathGenerator={pathGenerator}
+          feature={feature}
+          locationId={6}
+          selectedStyle={(geoJSONFeature) => {
+            return { strokeWidth: `${geoJSONFeature.id * 2}px` };
+          }}
+          style={(geoJSONFeature) => {
+            return { strokeWidth: `${geoJSONFeature.id}px` };
+          }}
+        />
+      );
+
+      expect(wrapper).to.have.style('stroke-width', `${id}px`);
+      wrapper.setProps({ selected: true });
+      expect(wrapper).to.have.style('stroke-width', `${id * 2}px`);
+    });
   });
 });
