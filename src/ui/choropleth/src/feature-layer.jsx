@@ -33,7 +33,7 @@ export default function FeatureLayer(props) {
           return (
             <Path
               key={key}
-              feature={feature.geometry}
+              feature={feature}
               pathGenerator={pathGenerator}
               locationId={key}
               fill={fill}
