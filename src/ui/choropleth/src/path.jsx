@@ -26,12 +26,7 @@ export default class Path extends PureComponent {
   constructor(props) {
     super(props);
 
-    const { feature, fill, pathGenerator, selected, selectedStyle, style } = props;
-
-    this.state = {
-      path: pathGenerator(feature),
-      style: Path.getStyle(feature, fill, selected, style, selectedStyle),
-    };
+    this.state = stateFromPropUpdates(Path.propUpdates, {}, props, {});
 
     bindAll(this, [
       'onClick',
