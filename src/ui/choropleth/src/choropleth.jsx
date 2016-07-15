@@ -301,13 +301,19 @@ Choropleth.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
 
   /* unique key of datum */
-  keyField: PropTypes.string.isRequired,
+  keyField: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+  ]).isRequired,
 
   /* mapping of datum key field to geoJSON feature key. default: 'id' (from <Feature />) */
   geoJSONKeyField: PropTypes.string,
 
   /* key of datum that holds the value to display */
-  valueField: PropTypes.string.isRequired,
+  valueField: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+  ]).isRequired,
 
   /* fn that accepts keyfield, and returns stroke color for line */
   colorScale: PropTypes.func.isRequired,

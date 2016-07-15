@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { keyBy, map } from 'lodash';
+import { get as getValue, keyBy, map } from 'lodash';
 
 import {
   CommonPropTypes,
@@ -35,12 +35,23 @@ export default function FeatureLayer(props) {
     <g>
       {
         map(features, (feature) => {
-          const key = feature[keyField] || feature.properties[keyField];
+          // if keyField is a function, call it with the current feature
+          // otherwise, try to full it off feature, then feature.properties
+          const key = typeof keyField === 'function'
+                      ? keyField(feature)
+                      : feature[keyField] || feature.properties[keyField];
+
+          // if key didn't resolve to anything, return null
           if (!key) return null;
 
-          const fill = data.hasOwnProperty(key) && data[key].hasOwnProperty(valueField)
-            ? colorScale(data[key][valueField])
-            : '#ccc';
+          // if valueField is a function, call it with the datum associated with
+          // current feature, as well as curent feature
+          const datum = getValue(data, [key]);
+          const value = typeof valueField === 'function'
+                        ? valueField(datum, feature)
+                        : getValue(datum, [valueField]);
+
+          const fill = value ? colorScale(value) : '#ccc';
 
           return (
             <Path
@@ -82,7 +93,10 @@ FeatureLayer.propTypes = {
   features: PropTypes.arrayOf(PropTypes.object).isRequired,
 
   /* mapping of datum key field to geoJSON feature key. default: 'id' */
-  keyField: PropTypes.string,
+  keyField: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func, // if a function, is called with current feature as arg
+  ]),
 
   /* passed to each path; signature: function(event, locationId, Path) {...} */
   onClick: PropTypes.func,
@@ -116,7 +130,10 @@ FeatureLayer.propTypes = {
   selectedLocations: PropTypes.arrayOf(PropTypes.number),
 
   /* key of datum that holds the value to display */
-  valueField: PropTypes.string,
+  valueField: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func, // if a function, is called with current feature as arg
+  ]),
 };
 
 FeatureLayer.defaultProps = {
