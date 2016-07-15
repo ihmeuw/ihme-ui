@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions, max-len */
 import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
