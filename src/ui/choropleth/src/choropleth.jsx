@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import d3 from 'd3';
 import { presimplify } from 'topojson';
-import { bindAll, filter, has, isEqual, keyBy } from 'lodash';
+import { bindAll, filter, has, isEqual, keyBy, memoize } from 'lodash';
 import {
   calcCenterPoint,
   calcScale,
@@ -53,6 +53,7 @@ export default class Choropleth extends React.Component {
     this.zoom = d3.behavior.zoom();
 
     bindAll(this, ['saveSvgRef', 'zoomEvent', 'zoomTo', 'zoomReset']);
+    this.calcMeshLayerStyle = memoize(this.calcMeshLayerStyle);
   }
 
   componentDidMount() {
@@ -132,6 +133,26 @@ export default class Choropleth extends React.Component {
     if (Object.keys(state).length) {
       this.setState(state);
     }
+  }
+
+  /**
+   * Avoid creating and recreating new style object
+   * for mesh layers
+   * @param key {*} Unique key for mesh layer used to memoize results of fun
+   * @param style {Object|Function} Style object/function
+   * @param feature {Object} the feature to be rendered by mesh layer
+   *  if style is a function, it receives feature as its arg
+   * @returns {Object}
+   */
+  calcMeshLayerStyle(key, layerStyle, feature) {
+    const baseStyle = { pointerEvents: 'none' };
+    const computedStyle = typeof layerStyle === 'function'
+      ? layerStyle(feature)
+      : layerStyle;
+    return {
+      ...baseStyle,
+      ...computedStyle,
+    };
   }
 
   /**
@@ -225,12 +246,12 @@ export default class Choropleth extends React.Component {
         case 'mesh':
           return (
             <Path
-              key={key}
-              fill="none"
-              feature={this.state.cache.mesh[layer.name]}
-              pathGenerator={this.state.pathGenerator}
               className={layer.className}
-              style={{ ...layer.style, pointerEvents: 'none' }}
+              key={key}
+              feature={this.state.cache.mesh[layer.name]}
+              fill="none"
+              pathGenerator={this.state.pathGenerator}
+              style={this.calcMeshLayerStyle(key, layer.style, this.state.cache.mesh[layer.name])}
             />
           );
         default:

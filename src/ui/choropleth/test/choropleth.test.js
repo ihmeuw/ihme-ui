@@ -42,6 +42,23 @@ describe('<Choropleth />', () => {
           .that.is.an('object');
       });
     });
+
+    describe('mesh layer style', () => {
+      const feature = { id: 5, properties: { color: 'red' } };
+      const expectedStyle = { pointerEvents: 'none', stroke: 'red' };
+
+      it('accepts an object as layer style', () => {
+        const layerStyle = { stroke: 'red' };
+        const calculatedStyle = Choropleth.prototype.calcMeshLayerStyle(Symbol(), layerStyle, feature);
+        expect(calculatedStyle).to.deep.equal(expectedStyle);
+      });
+
+      it('accepts a function as layer style', () => {
+        const layerStyle = (geoJSONFeature) => ({ stroke: geoJSONFeature.properties.color });
+        const calculatedStyle = Choropleth.prototype.calcMeshLayerStyle(Symbol(), layerStyle, feature);
+        expect(calculatedStyle).to.deep.equal(expectedStyle);
+      });
+    });
   });
 
   describe('component', () => {
