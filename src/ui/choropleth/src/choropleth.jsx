@@ -7,6 +7,7 @@ import {
   calcCenterPoint,
   calcScale,
   calcTranslate,
+  CommonPropTypes,
   concatAndComputeGeoJSONBounds,
   extractGeoJSON,
   quickMerge,
@@ -294,17 +295,36 @@ export default class Choropleth extends React.Component {
 Choropleth.propTypes = {
   /* layers to display */
   layers: PropTypes.arrayOf(PropTypes.shape({
+    className: CommonPropTypes.className,
+
+    // optional function to filter mesh grid, passed adjacent geometries
+    // refer to https://github.com/mbostock/topojson/wiki/API-Reference#mesh
+    filterFn: PropTypes.func,
+
+    // along with layer.type, will be part of the `key` of the layer
+    // therefore, `${layer.type}-${layer.name}` needs to be unique
     name: PropTypes.string.isRequired,
 
     // name corresponding to key within topojson objects collection
     object: PropTypes.string.isRequired,
 
+    // applied to selected paths
+    selectedClassName: CommonPropTypes.className,
+
+    // applied to selected paths
+    selectedStyle: PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.func,
+    ]),
+
+    // applied to paths
+    style: PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.func,
+    ]),
+
     // whether the layer should be a feature collection or mesh grid
     type: PropTypes.oneOf(['feature', 'mesh']).isRequired,
-
-    // optional function to filter mesh grid, passed adjacent geometries
-    // refer to https://github.com/mbostock/topojson/wiki/API-Reference#mesh
-    filterFn: PropTypes.func,
 
     // whether or not to render layer
     visible: PropTypes.bool,
