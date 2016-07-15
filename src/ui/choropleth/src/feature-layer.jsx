@@ -1,81 +1,112 @@
 import React, { PropTypes } from 'react';
-import { get as getValue, keyBy, map } from 'lodash';
+import {
+  assign,
+  get as getValue,
+  indexOf,
+  keyBy,
+  map,
+  sortBy,
+} from 'lodash';
 
 import {
   CommonPropTypes,
+  propsChanged,
+  PureComponent,
+  stateFromPropUpdates,
 } from '../../../utils';
 
 import Path from './path';
 
-export default function FeatureLayer(props) {
-  const {
-    colorScale,
-    data,
-    features,
-    keyField,
-    onClick,
-    onMouseOver,
-    onMouseMove,
-    onMouseDown,
-    onMouseOut,
-    pathGenerator,
-    pathClassName,
-    pathSelectedClassName,
-    pathSelectedStyle,
-    pathStyle,
-    selectedLocations,
-    valueField,
-  } = props;
+export default class FeatureLayer extends PureComponent {
+  /**
+   * Pull unique key of GeoJSON feature off feature object
+   * @param resolver {String|Function}
+   * @param feature {GeoJSON feature}
+   * @returns {*}
+   */
+  static getFeatureKey(resolver, feature) {
+    // if keyField is a function, call it with the current feature
+    // otherwise, try to full it off feature, then feature.properties
+    return typeof resolver === 'function'
+      ? resolver(feature)
+      : feature[resolver] || feature.properties[resolver];
+  }
 
-  // optimization: turn array of ids into map keyed by those ids
-  // faster to check if object has property than if array includes some value
-  const selectedLocationsMappedById = keyBy(selectedLocations, (locId) => locId);
+  constructor(props) {
+    super(props);
 
-  return (
-    <g>
-      {
-        map(features, (feature) => {
-          // if keyField is a function, call it with the current feature
-          // otherwise, try to full it off feature, then feature.properties
-          const key = typeof keyField === 'function'
-                      ? keyField(feature)
-                      : feature[keyField] || feature.properties[keyField];
+    this.state = stateFromPropUpdates(FeatureLayer.propUpdates, {}, props, {});
+  }
 
-          // if key didn't resolve to anything, return null
-          if (!key) return null;
+  componentWillReceiveProps(nextProps) {
+    this.setState(stateFromPropUpdates(FeatureLayer.propUpdates, this.props, nextProps, {}));
+  }
 
-          // if valueField is a function, call it with the datum associated with
-          // current feature, as well as curent feature
-          const datum = getValue(data, [key]);
-          const value = typeof valueField === 'function'
-                        ? valueField(datum, feature)
-                        : getValue(datum, [valueField]);
+  render() {
+    const {
+      colorScale,
+      data,
+      keyField,
+      onClick,
+      onMouseOver,
+      onMouseMove,
+      onMouseDown,
+      onMouseOut,
+      pathGenerator,
+      pathClassName,
+      pathSelectedClassName,
+      pathSelectedStyle,
+      pathStyle,
+      selectedLocations,
+      valueField,
+    } = this.props;
 
-          const fill = value ? colorScale(value) : '#ccc';
+    // optimization: turn array of ids into map keyed by those ids
+    // faster to check if object has property than if array includes some value
+    const selectedLocationsMappedById = keyBy(selectedLocations, (locId) => locId);
 
-          return (
-            <Path
-              className={pathClassName}
-              key={key}
-              feature={feature}
-              fill={fill}
-              locationId={key}
-              onClick={onClick}
-              onMouseOver={onMouseOver}
-              onMouseMove={onMouseMove}
-              onMouseDown={onMouseDown}
-              onMouseOut={onMouseOut}
-              pathGenerator={pathGenerator}
-              selected={!!selectedLocationsMappedById[key]}
-              selectedClassName={pathSelectedClassName}
-              selectedStyle={pathSelectedStyle}
-              style={pathStyle}
-            />
-          );
-        })
-      }
-    </g>
-  );
+    return (
+      <g>
+        {
+          map(this.state.sortedFeatures, (feature) => {
+            const key = FeatureLayer.getFeatureKey(keyField, feature);
+
+            // if key didn't resolve to anything, return null
+            if (!key) return null;
+
+            // if valueField is a function, call it with the datum associated with
+            // current feature, as well as curent feature
+            const datum = getValue(data, [key]);
+            const value = typeof valueField === 'function'
+              ? valueField(datum, feature)
+              : getValue(datum, [valueField]);
+
+            const fill = value ? colorScale(value) : '#ccc';
+
+            return (
+              <Path
+                className={pathClassName}
+                key={key}
+                feature={feature}
+                fill={fill}
+                locationId={key}
+                onClick={onClick}
+                onMouseOver={onMouseOver}
+                onMouseMove={onMouseMove}
+                onMouseDown={onMouseDown}
+                onMouseOut={onMouseOut}
+                pathGenerator={pathGenerator}
+                selected={!!selectedLocationsMappedById[key]}
+                selectedClassName={pathSelectedClassName}
+                selectedStyle={pathSelectedStyle}
+                style={pathStyle}
+              />
+            );
+          })
+        }
+      </g>
+    );
+  }
 }
 
 FeatureLayer.propTypes = {
@@ -140,4 +171,21 @@ FeatureLayer.defaultProps = {
   dataField: 'mean',
   keyField: 'id',
   selectedLocations: []
+};
+
+FeatureLayer.propUpdates = {
+  sortedFeatures: (accum, propName, prevProps, nextProps) => {
+    if (!propsChanged(prevProps, nextProps, ['selectedLocations', 'features'])) return accum;
+    return assign(accum, {
+      // sort features by whether or not they are selected
+      // this is a way of ensuring that selected paths are rendered last
+      // similar to, in a path click handler, doing a this.parentNode.appendChild(this)
+      sortedFeatures: sortBy(nextProps.features, (feature) =>
+        indexOf(
+          nextProps.selectedLocations,
+          FeatureLayer.getFeatureKey(nextProps.keyField, feature)
+        )
+      ),
+    });
+  },
 };
