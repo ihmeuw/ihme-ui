@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 import { assign, noop, bindAll } from 'lodash';
 
 import {
@@ -89,7 +90,9 @@ export default class Path extends PureComponent {
     return (
       <path
         d={path}
-        className={selected ? selectedClassName : className}
+        className={classNames(className, {
+          [selectedClassName]: selected,
+        })}
         style={style}
         onClick={this.onClick}
         onMouseDown={this.onMouseDown}

@@ -127,4 +127,24 @@ describe('Choropleth <Path />', () => {
       expect(wrapper).to.have.style('stroke-width', `${id * 2}px`);
     });
   });
+
+  describe('classes', () => {
+    it('applies className and selectedClassName when selected', () => {
+      const wrapper = shallow(
+        <Path
+          pathGenerator={pathGenerator}
+          feature={feature}
+          locationId={6}
+          className="foo"
+          selectedClassName="bar"
+        />
+      );
+
+      expect(wrapper).to.have.className('foo');
+      expect(wrapper).to.not.have.className('bar');
+      wrapper.setProps({ selected: true });
+      expect(wrapper).to.have.className('foo');
+      expect(wrapper).to.have.className('bar');
+    });
+  });
 });
