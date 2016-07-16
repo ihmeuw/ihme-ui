@@ -106,23 +106,20 @@ export default class Path extends PureComponent {
 }
 
 Path.propTypes = {
+  /* base classname to apply to path */
+  className: CommonPropTypes.className,
+
   /* a GeoJSON feature or geometry object; see https://github.com/d3/d3/wiki/Geo-Paths#_path */
   feature: PropTypes.oneOfType([
     PropTypes.array,
     PropTypes.object
   ]).isRequired,
 
-  /* a function which accepts a `feature` and returns a valid `d` attribute */
-  pathGenerator: PropTypes.func.isRequired,
-
-  /* locationId identifying this geometry */
-  locationId: PropTypes.number,
-
   /* fill of path */
   fill: PropTypes.string,
 
-  /* whether or not this geometry is selected */
-  selected: PropTypes.bool,
+  /* locationId identifying this geometry */
+  locationId: PropTypes.number,
 
   /* signature: function(event, locationId, Path) {...} */
   onClick: PropTypes.func,
@@ -139,30 +136,37 @@ Path.propTypes = {
   /* signature: function(event, locationId, Path) {...} */
   onMouseOut: PropTypes.func,
 
-  /* classname and style to apply to unselected path */
-  className: CommonPropTypes.className,
-  style: CommonPropTypes.style,
+  /* a function which accepts a `feature` and returns a valid `d` attribute */
+  pathGenerator: PropTypes.func.isRequired,
 
-  /* classname and style to apply to selected path */
+  /* whether or not this geometry is selected */
+  selected: PropTypes.bool,
+
+  /* className to apply to path when selected */
   selectedClassName: CommonPropTypes.className,
+
+  /* style to apply to path when selected */
   selectedStyle: CommonPropTypes.style,
+
+  /* base style to apply to path */
+  style: CommonPropTypes.style,
 };
 
 Path.defaultProps = {
+  onClick: noop,
+  onMouseOver: noop,
+  onMouseMove: noop,
+  onMouseDown: noop,
+  onMouseOut: noop,
   selected: false,
-  style: {
-    strokeWidth: '1px',
-    stroke: '#000',
-  },
   selectedStyle: {
     strokeWidth: '2px',
     stroke: '#000',
   },
-  onClick() { return noop; },
-  onMouseOver() { return noop; },
-  onMouseMove() { return noop; },
-  onMouseDown() { return noop; },
-  onMouseOut() { return noop; },
+  style: {
+    strokeWidth: '1px',
+    stroke: '#000',
+  },
 };
 
 Path.propUpdates = {
