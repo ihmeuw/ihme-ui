@@ -32,6 +32,7 @@ export default class Path extends PureComponent {
       'onClick',
       'onMouseDown',
       'onMouseMove',
+      'onMouseOut',
       'onMouseOver'
     ]);
   }
@@ -40,13 +41,14 @@ export default class Path extends PureComponent {
     this.setState(stateFromPropUpdates(Path.propUpdates, this.props, nextProps, {}));
   }
 
+  // e.g., select the location
   onClick(e) {
     e.preventDefault();
 
     // if being dragged, don't fire onClick
     if (this.dragging) return;
 
-    this.props.onClick(e, this.props.locationId);
+    this.props.onClick(e, this.props.locationId, this);
   }
 
   onMouseDown(e) {
@@ -54,27 +56,30 @@ export default class Path extends PureComponent {
 
     // clear mouseMove flag
     this.dragging = false;
-    this.props.onMouseDown(e, this.props.locationId);
+    this.props.onMouseDown(e, this.props.locationId, this);
   }
 
+  // e.g., position tooltip
   onMouseMove(e) {
     e.preventDefault();
 
     // set flag to prevent onClick handler from firing when map is being dragged
     this.dragging = true;
-    this.props.onMouseMove(e, this.props.locationId);
+    this.props.onMouseMove(e, this.props.locationId, this);
   }
 
+  // e.g., destroy tooltip
   onMouseOut(e) {
     e.preventDefault();
 
-    this.props.onMouseOut(e, this.props.locationId);
+    this.props.onMouseOut(e, this.props.locationId, this);
   }
 
+  // e.g., init tooltip
   onMouseOver(e) {
     e.preventDefault();
 
-    this.props.onMouseOver(e, this.props.locationId);
+    this.props.onMouseOver(e, this.props.locationId, this);
   }
 
   render() {
@@ -89,6 +94,7 @@ export default class Path extends PureComponent {
         onClick={this.onClick}
         onMouseDown={this.onMouseDown}
         onMouseMove={this.onMouseMove}
+        onMouseOut={this.onMouseOut}
         onMouseOver={this.onMouseOver}
       >
       </path>
@@ -115,19 +121,19 @@ Path.propTypes = {
   /* whether or not this geometry is selected */
   selected: PropTypes.bool,
 
-  /* signature: function(locationId, event) {...} */
+  /* signature: function(event, locationId, Path) {...} */
   onClick: PropTypes.func,
 
-  /* signature: function(locationId, event) {...} */
+  /* signature: function(event, locationId, Path) {...} */
   onMouseOver: PropTypes.func,
 
-  /* signature: function(locationId, event) {...} */
+  /* signature: function(event, locationId, Path) {...} */
   onMouseMove: PropTypes.func,
 
-  /* signature: function(locationId, event) {...} */
+  /* signature: function(event, locationId, Path) {...} */
   onMouseDown: PropTypes.func,
 
-  /* signature: function(locationId, event) {...} */
+  /* signature: function(event, locationId, Path) {...} */
   onMouseOut: PropTypes.func,
 
   /* classname and style to apply to unselected path */

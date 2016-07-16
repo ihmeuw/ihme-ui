@@ -14,60 +14,63 @@ chai.use(chaiEnzyme());
 describe('Choropleth <Path />', () => {
   const pathGenerator = d3.geo.path();
   const feature = getGeoJSON('states', 'feature').features[0];
-  const onClick = sinon.spy();
+  const eventHandler = sinon.spy();
 
   afterEach(() => {
-    onClick.reset();
+    eventHandler.reset();
   });
 
-  it('returns a path', () => {
-    const wrapper = shallow(
-      <Path
-        pathGenerator={pathGenerator}
-        feature={feature}
-        locationId={6}
-      />
-    );
+  describe('events', () => {
+    it(`calls onClick, mouseDown, mouseMove, mouseOut, and mouseOver 
+    with event, locationId, and the React element`, () => {
+      const wrapper = shallow(
+        <Path
+          pathGenerator={pathGenerator}
+          feature={feature}
+          locationId={6}
+          onClick={eventHandler}
+          onMouseDown={eventHandler}
+          onMouseMove={eventHandler}
+          onMouseOut={eventHandler}
+          onMouseOver={eventHandler}
+        />
+      );
 
-    expect(wrapper).to.have.tagName('path');
-  });
+      const event = {
+        preventDefault() {}
+      };
 
-  it('calls onClick with locationId', () => {
-    const wrapper = shallow(
-      <Path
-        pathGenerator={pathGenerator}
-        feature={feature}
-        locationId={6}
-        onClick={onClick}
-      />
-    );
+      const inst = wrapper.instance();
+      ['click', 'mouseDown', 'mouseMove', 'mouseOut', 'mouseOver'].forEach((evtName) => {
+        eventHandler.reset();
+        wrapper.simulate(evtName, event);
+        expect(eventHandler.calledOnce).to.be.true;
+        expect(eventHandler.calledWith(event, 6, inst)).to.be.true;
+      });
+    });
 
-    const event = {
-      preventDefault() {}
-    };
+    it('does not call eventHandler if being dragged', () => {
+      const wrapper = shallow(
+        <Path
+          pathGenerator={pathGenerator}
+          feature={feature}
+          locationId={6}
+          onClick={eventHandler}
+        />
+      );
 
-    wrapper.simulate('click', event);
-    expect(onClick.calledOnce).to.be.true;
-    expect(onClick.calledWith(event, 6)).to.be.true;
-  });
+      const event = {
+        preventDefault() {}
+      };
 
-  it('does not call onClick if being dragged', () => {
-    const wrapper = shallow(
-      <Path
-        pathGenerator={pathGenerator}
-        feature={feature}
-        locationId={6}
-        onClick={onClick}
-      />
-    );
+      wrapper.simulate('mouseMove', event);
+      wrapper.simulate('click', event);
+      expect(eventHandler.called).to.be.false;
 
-    const event = {
-      preventDefault() {}
-    };
-
-    wrapper.simulate('mouseMove', event);
-    wrapper.simulate('click', event);
-    expect(onClick.calledOnce).to.be.false;
+      wrapper.simulate('mouseDown', event);
+      wrapper.simulate('click', event);
+      expect(eventHandler.called).to.be.true;
+    });
   });
 
   describe('styling', () => {
