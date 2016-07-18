@@ -91,7 +91,7 @@ export default class Path extends PureComponent {
       <path
         d={path}
         className={classNames(className, {
-          [selectedClassName]: selected,
+          [selectedClassName]: selected && selectedClassName,
         })}
         style={style}
         onClick={this.onClick}
