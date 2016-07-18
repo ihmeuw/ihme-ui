@@ -245,5 +245,27 @@ describe('Choropleth <FeatureLayer />', () => {
       wrapper.update();
       expect(initialState).to.equal(wrapper.state('sortedFeatures'));
     });
+
+    it('holds a map of location ids in state', () => {
+      const selectedLocationsList = [features[0].id];
+      const wrapper = shallow(
+        <FeatureLayer
+          features={features}
+          data={data}
+          keyField={keyField}
+          valueField={valueField}
+          pathGenerator={pathGenerator}
+          colorScale={colorScale}
+          selectedLocations={selectedLocationsList}
+        />
+      );
+
+      expect(wrapper.state('selectedLocationsMappedById')).to.be.an('object')
+        .that.has.keys(selectedLocationsList.map(String));
+      const updatedLocationsList = selectedLocationsList.concat([features[1].id]);
+      wrapper.setProps({ selectedLocations: updatedLocationsList });
+      expect(wrapper.state('selectedLocationsMappedById')).to.be.an('object')
+        .that.has.keys(updatedLocationsList.map(String));
+    });
   });
 });

@@ -57,13 +57,10 @@ export default class FeatureLayer extends PureComponent {
       pathSelectedClassName,
       pathSelectedStyle,
       pathStyle,
-      selectedLocations,
       valueField,
     } = this.props;
 
-    // optimization: turn array of ids into map keyed by those ids
-    // faster to check if object has property than if array includes some value
-    const selectedLocationsMappedById = keyBy(selectedLocations, (locId) => locId);
+    const { selectedLocationsMappedById } = this.state;
 
     return (
       <g>
@@ -174,7 +171,15 @@ FeatureLayer.defaultProps = {
 };
 
 FeatureLayer.propUpdates = {
-  sortedFeatures: (accum, propName, prevProps, nextProps) => {
+  selectedLocationsMappedById: (accum, key, prevProps, nextProps) => {
+    if (!propsChanged(prevProps, nextProps, ['selectedLocations'])) return accum;
+    // optimization: turn array of ids into map keyed by those ids
+    // faster to check if object has property than if array includes some value
+    return assign(accum, {
+      selectedLocationsMappedById: keyBy(nextProps.selectedLocations, (locId) => locId),
+    });
+  },
+  sortedFeatures: (accum, key, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, ['selectedLocations', 'features'])) return accum;
     return assign(accum, {
       // sort features by whether or not they are selected
