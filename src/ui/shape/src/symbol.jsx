@@ -1,10 +1,15 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import d3Shape from 'd3-shape';
-import { noop } from 'lodash';
+import { assign, noop } from 'lodash';
 
 import { eventHandleWrapper } from '../../../utils/events';
-import { propsChanged } from '../../../utils/props';
+import {
+  CommonPropTypes,
+  propsChanged,
+  PureComponent,
+  stateFromPropUpdates
+} from '../../../utils';
 
 const SYMBOL_TYPES = {
   circle: d3Shape.symbolCircle,
@@ -27,63 +32,51 @@ const SYMBOL_TYPES = {
 * <Symbol /> is a wrapper
 * Public API should expose basic public API of d3Shape.symbol()
 **/
-export default class Symbol extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      path: this.createPath(props.type, props.size),
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (propsChanged(this.props, nextProps, ['type', 'size'])) {
-      this.setState({
-        path: this.createPath(nextProps.type, nextProps.size),
-      });
-    }
-  }
-
-  shouldComponentUpdate(nextProps) {
-    return propsChanged(this.props, nextProps, [
-      'selected', 'focused', 'translateX', 'translateY', 'className'
-    ]);
+export default class Symbol extends PureComponent {
+  static getPath(type, size) {
+    const symbolType = SYMBOL_TYPES[type] || SYMBOL_TYPES.circle;
+    return d3Shape.symbol().type(symbolType).size(size)();
   }
 
   /**
-   * pass in data for selectedStyle(and other style) for function.
-   * return a new object using Object.assign() instead of return for each if.
-   * Reorder styling, default -> selected -> focused.
+   * @param {Object}
+   * @return {Object} computed style for
    */
-  getStyle(data) {
-    const { focused, focusedStyle, selected, selectedStyle, style } = this.props;
-    const resultStyle = Object.assign(
-      {},
-      (typeof style === 'function' ? style(data) : { ...style })
-    );
+  static getStyle({ color, data, focused, focusedStyle, selected, selectedStyle, style }) {
+    const baseStyle = { color };
+    const computedStyle = typeof style === 'function' ? style(data) : style;
+    let computedSelectedStyle = {};
+    let computedFocusedStyle = {};
+
+    // if symbol is selected, compute selectedStyle
     if (selected) {
-      Object.assign(
-        resultStyle,
-        (typeof selectedStyle === 'function' ? selectedStyle(data) : { ...selectedStyle })
-      );
+      computedSelectedStyle = typeof selectedStyle === 'function'
+        ? selectedStyle(data)
+        : selectedStyle;
     }
+
+    // if symbol is focused, compute focusedStyle
     if (focused) {
-      Object.assign(
-        resultStyle,
-        (typeof focusedStyle === 'function' ? focusedStyle(data) : { ...focusedStyle })
-      );
+      computedFocusedStyle = typeof focusedStyle === 'function'
+        ? focusedStyle(data)
+        : focusedStyle;
     }
-    return resultStyle;
+
+    return assign({}, baseStyle, computedStyle, computedSelectedStyle, computedFocusedStyle);
   }
 
-  createPath(type, size) {
-    const symbolType = SYMBOL_TYPES[type] || SYMBOL_TYPES.circle;
-    return d3Shape.symbol().type(symbolType).size(size)();
+  constructor(props) {
+    super(props);
+    this.state = stateFromPropUpdates(Symbol.propUpdates, {}, props, {});
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState(stateFromPropUpdates(Symbol.propUpdates, this.props, nextProps, {}));
   }
 
   render() {
     const {
       className,
-      color,
       data,
       focused,
       focusedClassName,
@@ -96,21 +89,20 @@ export default class Symbol extends React.Component {
       translateX,
       translateY
     } = this.props;
-    const { path } = this.state;
+    const { path, style } = this.state;
 
     return (
       <path
         d={path}
         className={classNames(className, {
-          [focusedClassName]: focused,
           [selectedClassName]: selected,
+          [focusedClassName]: focused,
         })}
-        fill={color}
         onClick={eventHandleWrapper(onClick, data, this)}
         onMouseLeave={eventHandleWrapper(onMouseLeave, data, this)}
         onMouseMove={eventHandleWrapper(onMouseMove, data, this)}
         onMouseOver={eventHandleWrapper(onMouseOver, data, this)}
-        style={this.getStyle(data)}
+        style={style}
         transform={`translate(${translateX}, ${translateY})`}
       />
     );
@@ -119,6 +111,7 @@ export default class Symbol extends React.Component {
 
 Symbol.propTypes = {
 
+  /* base classname to apply to symbol */
   className: PropTypes.string,
 
   color: PropTypes.string,
@@ -126,51 +119,60 @@ Symbol.propTypes = {
   /* Datum for the click and hover handlers. */
   data: PropTypes.object,
 
+  /* whether symbol has focus */
   focused: PropTypes.bool,
 
+  /* classname to be applied if symbol has focus */
   focusedClassName: PropTypes.string,
 
-  focusedStyle: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.func
-  ]),
+  /*
+    inline-style object or function to be applied if symbol has focus;
+    if a function, is called with datum
+    can override style and selectedStyle
+  */
+  focusedStyle: CommonPropTypes.style,
 
   itemKey: PropTypes.string,
 
-  /* partially applied fn that takes in datum and returns fn */
+  /* signature: function(event, data, Symbol) {...} */
   onClick: PropTypes.func,
 
-  /* partially applied fn that takes in datum and returns fn */
+  /* signature: function(event, data, Symbol) {...} */
   onMouseLeave: PropTypes.func,
 
-  /* partially applied fn that takes in datum and returns fn */
+  /* signature: function(event, data, Symbol) {...} */
   onMouseMove: PropTypes.func,
 
-  /* partially applied fn that takes in datum and returns fn */
+  /* signature: function(event, data, Symbol) {...} */
   onMouseOver: PropTypes.func,
 
+  /* whether symbol is selected */
   selected: PropTypes.bool,
 
+  /* classname to be applied if symbol is selected */
   selectedClassName: PropTypes.string,
 
-  selectedStyle: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.func
-  ]),
+  /*
+   inline-style object or function to be applied if symbol is selected;
+   if a function, is called with datum
+   can override style
+   */
+  selectedStyle: CommonPropTypes.style,
 
   /* area in square pixels */
   size: PropTypes.number,
 
-  style: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.func
-  ]),
+  /*
+   inline-style object or function to be applied as base style;
+   if a function, is called with datum
+   */
+  style: CommonPropTypes.style,
 
   translateX: PropTypes.number,
 
   translateY: PropTypes.number,
 
-  /* will match a SYMBOL_TYPE  */
+  /* a SYMBOL_TYPE  */
   type: PropTypes.oneOf(Object.keys(SYMBOL_TYPES)),
 };
 
@@ -197,6 +199,41 @@ Symbol.defaultProps = {
   translateY: 0,
   type: 'circle',
   style: {}
+};
+
+Symbol.propUpdates = {
+  // update path if symbol type or size have changed
+  path: (accum, propName, prevProps, nextProps) => {
+    if (!propsChanged(prevProps, nextProps, ['type', 'size'])) return accum;
+    return assign(accum, {
+      path: Symbol.getPath(nextProps.type, nextProps.size),
+    });
+  },
+
+  // update style if data, focused, focusedStyle, selected, selectedStyle, or style have changed
+  style: (accum, propName, prevProps, nextProps) => {
+    if (!propsChanged(prevProps, nextProps, [
+      'data',
+      'focused',
+      'focusedStyle',
+      'selected',
+      'selectedStyle',
+      'style',
+    ])) {
+      return accum;
+    }
+    return assign(accum, {
+      style: Symbol.getStyle({
+        color: nextProps.color,
+        data: nextProps.data,
+        focused: nextProps.focused,
+        focusedStyle: nextProps.focusedStyle,
+        selected: nextProps.selected,
+        selectedStyle: nextProps.selectedStyle,
+        style: nextProps.style,
+      }),
+    });
+  },
 };
 
 export { SYMBOL_TYPES };

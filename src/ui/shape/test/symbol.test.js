@@ -2,7 +2,6 @@ import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
-import sinon from 'sinon';
 import d3Shape from 'd3-shape';
 
 import { Symbol } from '../';
@@ -31,44 +30,140 @@ describe('<Symbol />', () => {
       .that.equals(d3Shape.symbol().type(d3Shape.symbolCircle)());
   });
 
-  it('has #000 stroke when selected', () => {
-    const wrapper = shallow(
-      <Symbol
-        selected={1}
-      />
-    );
-    expect(wrapper.props().style.stroke).to.equal('#000');
+  describe('styling', () => {
+    const datum = {
+      mean: 10,
+    };
+
+    const baseStyle = {
+      stroke: 'red',
+      strokeWidth: 10,
+    };
+
+    const selectedStyle = {
+      stroke: 'white',
+      strokeWidth: 20,
+    };
+
+    const focusedStyle = {
+      stroke: 'blue',
+    };
+
+    it('applies style as an object', () => {
+      const wrapper = shallow(
+        <Symbol
+          data={datum}
+          style={baseStyle}
+        />
+      );
+
+      expect(wrapper).to.have.style('stroke', 'red');
+      expect(wrapper).to.have.style('stroke-width', '10');
+    });
+
+    it('applies style as a function', () => {
+      const wrapper = shallow(
+        <Symbol
+          data={datum}
+          style={(d) => {
+            return { stroke: 'red', strokeWidth: d.mean };
+          }}
+        />
+      );
+
+      expect(wrapper).to.have.style('stroke', 'red');
+      expect(wrapper).to.have.style('stroke-width', '10');
+    });
+
+    it('applies selectedStyle as an object', () => {
+      const wrapper = shallow(
+        <Symbol
+          data={datum}
+          style={baseStyle}
+          selected
+          selectedStyle={selectedStyle}
+        />
+      );
+
+      expect(wrapper).to.have.style('stroke', 'white');
+      expect(wrapper).to.have.style('stroke-width', '20');
+    });
+
+    it('applies selectedStyle as a function', () => {
+      const wrapper = shallow(
+        <Symbol
+          data={datum}
+          style={baseStyle}
+          selected
+          selectedStyle={(d) => {
+            return { stroke: 'white', strokeWidth: d.mean * 2 };
+          }}
+        />
+      );
+
+      expect(wrapper).to.have.style('stroke', 'white');
+      expect(wrapper).to.have.style('stroke-width', '20');
+    });
+
+    it('applies focusedStyle as an object', () => {
+      const wrapper = shallow(
+        <Symbol
+          data={datum}
+          focused
+          focusedStyle={focusedStyle}
+          style={baseStyle}
+          selected
+          selectedStyle={selectedStyle}
+        />
+      );
+
+      expect(wrapper).to.have.style('stroke', 'blue');
+      expect(wrapper).to.have.style('stroke-width', '20');
+    });
+
+    it('applies focusedStyle as a function', () => {
+      const wrapper = shallow(
+        <Symbol
+          data={datum}
+          focused
+          focusedStyle={() => {
+            return { stroke: 'blue' };
+          }}
+          style={baseStyle}
+          selected
+          selectedStyle={selectedStyle}
+        />
+      );
+
+      expect(wrapper).to.have.style('stroke', 'blue');
+      expect(wrapper).to.have.style('stroke-width', '20');
+    });
   });
 
-  it('has #AAF stroke when focused', () => {
+  describe('classnames', () => {
     const wrapper = shallow(
       <Symbol
-        focused={1}
+        className="base-classname"
+        focusedClassName="focused-classname"
+        selectedClassName="selected-classname"
       />
     );
-    expect(wrapper.props().style.stroke).to.equal('#AAF');
-  });
 
-  it('has #AAF stroke when focused and selected', () => {
-    const wrapper = shallow(
-      <Symbol
-        focused={1}
-        selected={1}
-      />
-    );
-    expect(wrapper.props().style.stroke).to.equal('#AAF');
-  });
+    it('applies a base classname', () => {
+      expect(wrapper).to.have.className('base-classname');
+    });
 
-  it('renders when focus or selected changes', () => {
-    const spy = sinon.spy(Symbol.prototype, 'render');
-    const wrapper = shallow(<Symbol />);
-    wrapper.setProps({ focused: true });
-    expect(spy.callCount).to.equal(2);
-    wrapper.setProps({ selected: true });
-    expect(spy.callCount).to.equal(3);
-    wrapper.setProps({ focused: false, selected: false });
-    expect(spy.callCount).to.equal(4);
-    wrapper.setProps({ focused: false, selected: false });
-    expect(spy.callCount).to.equal(4);
+    it('applies a selectedClassName if the symbol is selected', () => {
+      wrapper.setProps({ selected: true });
+      expect(wrapper).to.have.className('base-classname');
+      expect(wrapper).to.have.className('selected-classname');
+    });
+
+    it('applies a focusedClassName if the symbol has focus', () => {
+      wrapper.setProps({ focused: true });
+      expect(wrapper).to.have.className('base-classname');
+      expect(wrapper).to.have.className('selected-classname');
+      expect(wrapper).to.have.className('focused-classname');
+    });
   });
 });
