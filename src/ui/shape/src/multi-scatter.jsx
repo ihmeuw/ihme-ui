@@ -32,13 +32,13 @@ export default function MultiScatter(props) {
         map(data, (scatterData) => {
           const key = scatterData[keyField];
           const values = scatterData[dataField];
-          const color = colorScale(scatterData[keyField]);
+          const fill = colorScale(scatterData[keyField]);
           const symbolType = symbolScale(scatterData[keyField]);
 
           return (
             <Scatter
-              color={color}
               data={values}
+              fill={fill}
               focus={focus}
               key={`scatter:${key}`}
               selection={castArray(selection)}

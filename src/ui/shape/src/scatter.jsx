@@ -6,10 +6,10 @@ import Symbol from './symbol';
 
 export default function Scatter(props) {
   const {
-    color,
     colorScale,
     data,
     dataAccessors,
+    fill,
     focus,
     scales,
     selection,
@@ -38,8 +38,8 @@ export default function Scatter(props) {
           return (
             <Symbol
               key={key}
-              color={colorScale ? colorScale(xValue) : color}
               data={plotDatum}
+              fill={colorScale ? colorScale(xValue) : fill}
               focused={focus === plotDatum}
               selected={includes(selection, plotDatum)}
               translateX={xValue ? xScale(xValue) : 0}
@@ -55,11 +55,6 @@ export default function Scatter(props) {
 }
 
 Scatter.propTypes = {
-  /*
-  string for the color of this data group
-  */
-  color: PropTypes.string,
-
   /*
   function for a scale of colors. If present, overrides color
   */
@@ -83,6 +78,11 @@ Scatter.propTypes = {
     x: PropTypes.string,
     y: PropTypes.string
   }).isRequired,
+
+  /*
+   string for the color of this data group
+   */
+  fill: PropTypes.string,
 
   /**
    * The symbol to be focused upon.
@@ -122,7 +122,7 @@ Scatter.propTypes = {
 };
 
 Scatter.defaultProps = {
-  color: 'steelblue',
+  fill: 'steelblue',
   onClick: noop,
   onMouseLeave: noop,
   onMouseMove: noop,

@@ -1,13 +1,9 @@
 import React from 'react';
-
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
-
 import { minBy, maxBy, uniqBy, map } from 'lodash';
-
 import d3Scale from 'd3-scale';
-
 import { dataGenerator } from '../../../test-utils';
 
 import { Scatter, Symbol } from '../';
@@ -47,8 +43,8 @@ describe('<Scatter />', () => {
           focus={data[2]}
           scales={{ x: xScale, y: yScale }}
           selection={[data[1], data[3]]}
-          symbolType={'circle'}
-          color={'red'}
+          symbolType="circle"
+          fill="red"
           dataAccessors={dataAccessors}
         />
       );
@@ -74,7 +70,7 @@ describe('<Scatter />', () => {
         expect(symbol).to.have.prop(prop);
       };
 
-      ['data', 'type', 'translateX', 'translateY', 'color'].forEach(assertion);
+      ['data', 'type', 'translateX', 'translateY', 'fill'].forEach(assertion);
     });
 
     it('selects a symbol', () => {

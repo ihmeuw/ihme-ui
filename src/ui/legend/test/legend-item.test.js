@@ -58,7 +58,7 @@ describe('<LegendItem />', () => {
 
   it('accepts a symbolColorKey that is a string', () => {
     const wrapper = shallow(<LegendItem item={item} symbolColorKey="symbolColor" />);
-    expect(wrapper).to.contain(<Symbol color="red" />);
+    expect(wrapper).to.contain(<Symbol fill="red" />);
   });
 
   it('accepts a symbolColorKey that is a function that is called with the item', () => {
@@ -67,7 +67,7 @@ describe('<LegendItem />', () => {
     });
     const wrapper = shallow(<LegendItem item={item} symbolColorKey={spy} />);
 
-    expect(wrapper).to.contain(<Symbol color="red" />);
+    expect(wrapper).to.contain(<Symbol fill="red" />);
     expect(spy.called).to.be.true;
     expect(spy.calledWith(item)).to.be.true;
   });

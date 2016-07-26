@@ -42,8 +42,8 @@ export default class Symbol extends PureComponent {
    * @param {Object}
    * @return {Object} computed style for
    */
-  static getStyle({ color, data, focused, focusedStyle, selected, selectedStyle, style }) {
-    const baseStyle = { color };
+  static getStyle({ data, fill, focused, focusedStyle, selected, selectedStyle, style }) {
+    const baseStyle = { fill };
     const computedStyle = typeof style === 'function' ? style(data) : style;
     let computedSelectedStyle = {};
     let computedFocusedStyle = {};
@@ -110,14 +110,13 @@ export default class Symbol extends PureComponent {
 }
 
 Symbol.propTypes = {
-
   /* base classname to apply to symbol */
   className: PropTypes.string,
 
-  color: PropTypes.string,
-
   /* Datum for the click and hover handlers. */
   data: PropTypes.object,
+
+  fill: PropTypes.string,
 
   /* whether symbol has focus */
   focused: PropTypes.bool,
@@ -177,7 +176,7 @@ Symbol.propTypes = {
 };
 
 Symbol.defaultProps = {
-  color: 'steelblue',
+  fill: 'steelblue',
   focused: false,
   focusedClassName: 'focused',
   focusedStyle: {
@@ -214,6 +213,7 @@ Symbol.propUpdates = {
   style: (accum, propName, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, [
       'data',
+      'fill',
       'focused',
       'focusedStyle',
       'selected',
@@ -224,8 +224,8 @@ Symbol.propUpdates = {
     }
     return assign(accum, {
       style: Symbol.getStyle({
-        color: nextProps.color,
         data: nextProps.data,
+        fill: nextProps.fill,
         focused: nextProps.focused,
         focusedStyle: nextProps.focusedStyle,
         selected: nextProps.selected,
