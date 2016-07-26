@@ -36,12 +36,7 @@ export default class Symbol extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    /**
-     * Use propsChanged here.
-     */
-    if (propsChanged(this.props, nextProps, [
-      'type', 'size'
-    ])) {
+    if (propsChanged(this.props, nextProps, ['type', 'size'])) {
       this.setState({
         path: this.createPath(nextProps.type, nextProps.size),
       });
