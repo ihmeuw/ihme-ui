@@ -44,7 +44,9 @@ describe('<Scatter />', () => {
       component = (
         <Scatter
           data={data}
+          focus={data[2]}
           scales={{ x: xScale, y: yScale }}
+          selection={[data[1], data[3]]}
           symbolType={'circle'}
           color={'red'}
           dataAccessors={dataAccessors}
@@ -72,7 +74,41 @@ describe('<Scatter />', () => {
         expect(symbol).to.have.prop(prop);
       };
 
-      ['data', 'type', 'position', 'color'].forEach(assertion);
+      ['data', 'type', 'translateX', 'translateY', 'color'].forEach(assertion);
+    });
+
+    it('selects a symbol', () => {
+      const wrapper = shallow(component);
+      expect(wrapper.find({ selected: true })).to.have.length(2);
+    });
+
+    it('focuses a symbol', () => {
+      const wrapper = shallow(component);
+      expect(wrapper.find({ focused: true })).to.have.length(1);
+    });
+
+    it('creates a one-dimensional plot if dataAccessor is not defined for y', () => {
+      const wrapper = shallow(
+        <Scatter
+          data={data}
+          dataAccessors={{ x: 'population' }}
+        />
+      );
+      wrapper.find(Symbol).nodes.forEach((d) => {
+        expect(d.props.translateY).to.equal(0);
+      });
+    });
+
+    it('creates a one-dimensional plot if dataAccessor is not defined for x', () => {
+      const wrapper = shallow(
+        <Scatter
+          data={data}
+          dataAccessors={{ y: 'population' }}
+        />
+      );
+      wrapper.find(Symbol).nodes.forEach((d) => {
+        expect(d.props.translateX).to.equal(0);
+      });
     });
   });
 });

@@ -1,8 +1,8 @@
 import React from 'react';
-
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
+import sinon from 'sinon';
 import d3Shape from 'd3-shape';
 
 import { Symbol } from '../';
@@ -29,5 +29,46 @@ describe('<Symbol />', () => {
       .to.have.attr('d')
       .that.is.a('string')
       .that.equals(d3Shape.symbol().type(d3Shape.symbolCircle)());
+  });
+
+  it('has #000 stroke when selected', () => {
+    const wrapper = shallow(
+      <Symbol
+        selected={1}
+      />
+    );
+    expect(wrapper.props().style.stroke).to.equal('#000');
+  });
+
+  it('has #AAF stroke when focused', () => {
+    const wrapper = shallow(
+      <Symbol
+        focused={1}
+      />
+    );
+    expect(wrapper.props().style.stroke).to.equal('#AAF');
+  });
+
+  it('has #AAF stroke when focused and selected', () => {
+    const wrapper = shallow(
+      <Symbol
+        focused={1}
+        selected={1}
+      />
+    );
+    expect(wrapper.props().style.stroke).to.equal('#AAF');
+  });
+
+  it('renders when focus or selected changes', () => {
+    const spy = sinon.spy(Symbol.prototype, 'render');
+    const wrapper = shallow(<Symbol />);
+    wrapper.setProps({ focused: true });
+    expect(spy.callCount).to.equal(2);
+    wrapper.setProps({ selected: true });
+    expect(spy.callCount).to.equal(3);
+    wrapper.setProps({ focused: false, selected: false });
+    expect(spy.callCount).to.equal(4);
+    wrapper.setProps({ focused: false, selected: false });
+    expect(spy.callCount).to.equal(4);
   });
 });
