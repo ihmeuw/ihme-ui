@@ -22,11 +22,6 @@ const data = dataGenerator({
     { name: valueField, range: [100, 900], uncertainty: true }
   ]
 });
-  // [
-  //   {location: 'Brazil', population: 100, year_id: 2000, ...},
-  //   {location: 'Russia', population: 150, year_id: 2000, ...},
-  //   ...
-  // ]
 
 const locationData = [
   { location: 'Brazil', values: data.filter((datum) => { return datum.location === 'Brazil'; }) },
@@ -38,29 +33,14 @@ const locationData = [
   { location: 'Nigeria', values: data.filter((datum) => { return datum.location === 'Nigeria'; }) },
   { location: 'Vietnam', values: data.filter((datum) => { return datum.location === 'Vietnam'; }) }
 ];
-  // [
-  //   {location: 'Brazil', values: [
-  //     {location: 'Brazil', population: 100, year_id: 2000, ...},
-  //     {location: 'Brazil', population: 120, year_id: 2001, ...},
-  //      ...
-  //   ]},
-  //   {location: 'Russia', values: [
-  //     {location: 'Russia', population: 100, year_id: 2000, ...},
-  //     {location: 'Russia', population: 120, year_id: 2001, ...},
-  //      ...
-  //   ]},
-  //   ...
-  // ]
 
 const valueFieldDomain = [minBy(data, valueField)[valueField], maxBy(data, valueField)[valueField]];
-//valueField: population
 
 const keyFieldDomain = map(uniqBy(data, keyField), (obj) => { return (obj[keyField]); });
-// keyField: year_id
 
 const symbolScale = d3Scale.scaleOrdinal()
-    .domain(['Brazil', 'Russia', 'India', 'China', 'Mexico', 'Indonesia', 'Nigeria', 'Vietnam'])
-    .range(['circle', 'cross', 'diamond', 'line', 'square', 'star', 'triangle', 'wye']);
+  .domain(['Brazil', 'Russia', 'India', 'China', 'Mexico', 'Indonesia', 'Nigeria', 'Vietnam'])
+  .range(['circle', 'cross', 'diamond', 'line', 'square', 'star', 'triangle', 'wye']);
 
 const colorScale = d3Scale.scaleCategory10();
 
@@ -104,40 +84,50 @@ class App extends React.Component {
     });
   };
 
-
   render() {
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <section>
           <h3>Multiple datasets</h3>
-          <pre><code>
-    <MultiScatter
-      colorScale={scale}
-      data={[
-        [datum1, datum2, ...],
-        [...],
-        ...
-      ]}
-      dataAccessors={{
-        x: keyField,
-        y: valueField
-      }}
-      dataField={'values'}
-      keyField={'location'}
-      onClick={function(args) {...}}
-      onMouseLeave={function(args) {...}}
-      onMouseMove={function(args) {...}}
-      onMouseOver={function(args) {...}}
-      scales={{
-        x: d3Scale.scaleLinear(),
-        y: d3Scale.scaleLinear()
-      }}
-      symbolField={'location'}
-      symbolScale={d3Scale.scaleOrdinal()
-          .domain([...])
-          .range([...])}
-    />
-          </code></pre>
+{/* <pre><code>
+ <AxisChart
+   height={300}
+   width={500}
+   xDomain={keyFieldDomain}
+   xScaleType="point"
+   yDomain={valueFieldDomain}
+   yScaleType="linear"
+ >
+   <XAxis />
+   <YAxis />
+   <MultiScatter
+     colorScale={colorScale}
+     data={locationData}
+     dataAccessors={{
+       x: keyField,    // year_id
+       y: valueField   // population
+     }}
+     dataField="values"
+     focus={this.state.focus}
+     focusedStyle={{
+       stroke: '#000',
+       strokeWidth: 2,
+     }}
+     keyField="location"
+     onClick={this.onClick}
+     onMouseLeave={function(event, datum, Symbol) {...}}
+     onMouseMove={function(event, datum, Symbol) {...}}
+     onMouseOver={function(event, datum, Symbol) {...}}
+     selection={this.state.selectedItems}
+     selectedStyle={{
+       stroke: '#000',
+       strokeWidth: 1,
+     }}
+     symbolField="location"
+     symbolScale={symbolScale}
+   />
+ </AxisChart>
+</code></pre> */}
             <AxisChart
               height={300}
               width={500}
@@ -152,43 +142,61 @@ class App extends React.Component {
                 colorScale={colorScale}
                 data={locationData}
                 dataAccessors={{
+                  fill: keyField,
                   x: keyField,    // year_id
                   y: valueField   // population
                 }}
-                dataField={'values'}
+                dataField="values"
                 focus={this.state.focus}
-                keyField={'location'}
+                focusedStyle={{
+                  stroke: '#000',
+                  strokeWidth: 2,
+                }}
+                keyField="location"
                 onClick={this.onClick}
                 onMouseLeave={this.onMouseLeave}
                 onMouseMove={this.onMouseMove}
                 onMouseOver={this.onMouseOver}
-                scales={{
-                  x: d3Scale.scaleLinear(),
-                  y: d3Scale.scaleLinear()
-                }}
                 selection={this.state.selectedItems}
-                symbolField={'location'}
+                selectedStyle={{
+                  stroke: '#000',
+                  strokeWidth: 1,
+                }}
+                symbolField="location"
                 symbolScale={symbolScale}
               />
             </AxisChart>
         </section>
         <section>
           <h3>One Dataset</h3>
-          <pre><code>
-    <Scatter
-      color={'steelblue'}
-      data={[datum1, datum2, ...]}
-      dataAccessors={{
-        x: keyField,
-        y: valueField
-      }}
-      onClick={function(args) {...}}
-      onMouseLeave={function(args) {...}}
-      onMouseMove={function(args) {...}}
-      onMouseOver={function(args) {...}}
-      symbolType={'circle'}
-    />
-          </code></pre>
+{/* <pre><code>
+ <AxisChart
+   height={300}
+   width={500}
+   xDomain={keyFieldDomain}
+   xScaleType="point"
+   yDomain={valueFieldDomain}
+   yScaleType="linear"
+ >
+   <XAxis />
+   <YAxis />
+   <Scatter
+     fill="steelblue"
+     data={[]}
+     dataAccessors={{
+       x: keyField,    // year_id
+       y: valueField   // population
+     }}
+     focus={{}}
+     onClick={function(event, datum, Symbol) {...}}
+     onMouseLeave={function(event, datum, Symbol) {...}}
+     onMouseMove={function(event, datum, Symbol) {...}}
+     onMouseOver={function(event, datum, Symbol) {...}}
+     selection={this.state.selectedItems}
+     symbolType="circle"
+   />
+ </AxisChart>
+</code></pre> */}
             <AxisChart
               height={300}
               width={500}
@@ -200,7 +208,7 @@ class App extends React.Component {
               <XAxis />
               <YAxis />
               <Scatter
-                color={'steelblue'}
+                fill="steelblue"
                 data={data.filter((datum) => { return datum.location === 'India'; })}
                 dataAccessors={{
                   x: keyField,    // year_id
@@ -212,24 +220,34 @@ class App extends React.Component {
                 onMouseMove={this.onMouseMove}
                 onMouseOver={this.onMouseOver}
                 selection={this.state.selectedItems}
-                symbolType={'circle'}
+                symbolType="circle"
               />
             </AxisChart>
         </section>
         <section>
           <h3>One dimensional dataset: horizontal</h3>
-          <pre><code>
-    <Scatter
-      color={'tomato'}
-      data={[datum1, datum2, ...]}
-      dataAccessors={{ x: valueField }}
-      onClick={function(args) {...}}
-      onMouseLeave={function(args) {...}}
-      onMouseMove={function(args) {...}}
-      onMouseOver={function(args) {...}}
-      symbolType={'circle'}
-    />
-          </code></pre>
+{/* <pre><code>
+<AxisChart
+  height={50}
+  width={500}
+  xDomain={valueFieldDomain}
+  xScaleType="linear"
+  yDomain={[0, 1]}
+  yScaleType="linear"
+>
+  <XAxis />
+  <Scatter
+    fill="tomato"
+    data={[]}
+    dataAccessors={{ x: valueField }}
+    onClick={function(event, datum, Symbol) {...}}
+    onMouseLeave={function(event, datum, Symbol) {...}}
+    onMouseMove={function(event, datum, Symbol) {...}}
+    onMouseOver={function(event, datum, Symbol) {...}}
+    symbolType="circle"
+  />
+</AxisChart>
+</code></pre> */}
             <AxisChart
               height={50}
               width={500}
@@ -240,7 +258,7 @@ class App extends React.Component {
             >
               <XAxis />
               <Scatter
-                color={'tomato'}
+                fill="tomato"
                 data={data.filter((datum) => { return datum.location === 'India'; })}
                 dataAccessors={{ x: valueField }}
                 focus={this.state.focus}
@@ -249,24 +267,34 @@ class App extends React.Component {
                 onMouseMove={this.onMouseMove}
                 onMouseOver={this.onMouseOver}
                 selection={this.state.selectedItems}
-                symbolType={'circle'}
+                symbolType="circle"
               />
             </AxisChart>
         </section>
         <section>
           <h3>One dimensional dataset: vertical</h3>
-          <pre><code>
-    <Scatter
-      color={'cornflowerblue'}
-      data={[datum1, datum2, ...]}
-      dataAccessors={{ y: valueField }}
-      symbolType={'circle'}
-      onClick={function(args) {...}}
-      onMouseLeave={function(args) {...}}
-      onMouseMove={function(args) {...}}
-      onMouseOver={function(args) {...}}
-    />
-          </code></pre>
+{/* <pre><code>
+<AxisChart
+  width={100}
+  height={500}
+  xDomain={[0, 1]}
+  xScaleType="linear"
+  yDomain={valueFieldDomain}
+  yScaleType="linear"
+>
+  <YAxis />
+  <Scatter
+    fill={'cornflowerblue'}
+    data={[]}
+    dataAccessors={{ y: valueField }}
+    symbolType={'circle'}
+    onClick={function(event, datum, Symbol) {...}}
+    onMouseLeave={function(event, datum, Symbol) {...}}
+    onMouseMove={function(event, datum, Symbol) {...}}
+    onMouseOver={function(event, datum, Symbol) {...}}
+  />
+</AxisChart>
+</code></pre> */}
             <AxisChart
               width={100}
               height={500}
@@ -277,7 +305,7 @@ class App extends React.Component {
             >
               <YAxis />
               <Scatter
-                color={'cornflowerblue'}
+                fill="cornflowerblue"
                 data={data.filter((datum) => { return datum.location === 'India'; })}
                 dataAccessors={{ y: valueField }}
                 focus={this.state.focus}
@@ -286,24 +314,34 @@ class App extends React.Component {
                 onMouseMove={this.onMouseMove}
                 onMouseOver={this.onMouseOver}
                 selection={this.state.selectedItems}
-                symbolType={'circle'}
+                symbolType="circle"
               />
             </AxisChart>
         </section>
         <section>
-          <h3>One dimensional dataset: with colors</h3>
-          <pre><code>
-    <Scatter
-      color={d3Scale.scaleCategory10()}
-      data={[datum1, datum2, ...]}
-      dataAccessors={{ x: valueField }}
-      onClick={function(args) {...}}
-      onMouseLeave={function(args) {...}}
-      onMouseMove={function(args) {...}}
-      onMouseOver={function(args) {...}}
-      symbolType={'circle'}
-    />
-          </code></pre>
+          <h3>One dimensional dataset with color scale</h3>
+{/* <pre><code>
+<AxisChart
+  height={50}
+  width={500}
+  xDomain={valueFieldDomain}
+  xScaleType="linear"
+  yDomain={[0, 1]}
+  yScaleType="linear"
+>
+  <XAxis />
+  <Scatter
+    fill={d3Scale.scaleCategory10()}
+    data={[]}
+    dataAccessors={{ fill: valueField, x: valueField }}
+    onClick={function(event, datum, Symbol) {...}}
+    onMouseLeave={function(event, datum, Symbol) {...}}
+    onMouseMove={function(event, datum, Symbol) {...}}
+    onMouseOver={function(event, datum, Symbol) {...}}
+    symbolType="circle"
+  />
+</AxisChart>
+</code></pre> */}
             <AxisChart
               height={50}
               width={500}
@@ -316,14 +354,14 @@ class App extends React.Component {
               <Scatter
                 colorScale={colorScale}
                 data={data.filter((datum) => { return datum.location === 'India'; })}
-                dataAccessors={{ x: valueField }}
+                dataAccessors={{ fill: valueField, x: valueField }}
                 focus={this.state.focus}
                 onClick={this.onClick}
                 onMouseLeave={this.onMouseLeave}
                 onMouseMove={this.onMouseMove}
                 onMouseOver={this.onMouseOver}
                 selection={this.state.selectedItems}
-                symbolType={'circle'}
+                symbolType="circle"
               />
             </AxisChart>
         </section>
