@@ -2,6 +2,7 @@ import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
+import sinon from 'sinon';
 import d3Shape from 'd3-shape';
 
 import { Symbol } from '../';
@@ -164,6 +165,36 @@ describe('<Symbol />', () => {
       expect(wrapper).to.have.className('base-classname');
       expect(wrapper).to.have.className('selected-classname');
       expect(wrapper).to.have.className('focused-classname');
+    });
+  });
+
+  describe('events', () => {
+    const eventHandler = sinon.spy();
+
+    it(`calls onClick, mouseDown, mouseMove, mouseOut, and mouseOver 
+    with event, locationId, and the React element`, () => {
+      const datum = { mean: 10 };
+      const wrapper = shallow(
+        <Symbol
+          datum={datum}
+          onClick={eventHandler}
+          onMouseLeave={eventHandler}
+          onMouseMove={eventHandler}
+          onMouseOver={eventHandler}
+        />
+      );
+
+      const event = {
+        preventDefault() {}
+      };
+
+      const inst = wrapper.instance();
+      ['click', 'mouseLeave', 'mouseMove', 'mouseOver'].forEach((evtName) => {
+        eventHandler.reset();
+        wrapper.simulate(evtName, event);
+        expect(eventHandler.calledOnce).to.be.true;
+        expect(eventHandler.calledWith(event, datum, inst)).to.be.true;
+      });
     });
   });
 });
