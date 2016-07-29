@@ -98,8 +98,8 @@ export default class Symbol extends PureComponent {
       <path
         d={path}
         className={classNames(className, {
-          [selectedClassName]: selected,
-          [focusedClassName]: focused,
+          [selectedClassName]: selected && selectedClassName,
+          [focusedClassName]: focused && selectedClassName,
         }) || (void 0)}
         onClick={eventHandleWrapper(onClick, datum, this)}
         onMouseLeave={eventHandleWrapper(onMouseLeave, datum, this)}
