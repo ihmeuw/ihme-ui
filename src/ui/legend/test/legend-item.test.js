@@ -42,7 +42,7 @@ describe('<LegendItem />', () => {
 
   it('accepts a symbolTypeKey that is a string', () => {
     const wrapper = shallow(<LegendItem item={item} symbolTypeKey="symbolType" />);
-    expect(wrapper).to.contain(<Symbol type="triangle" />);
+    expect(wrapper).to.contain(<Symbol symbolType="triangle" />);
   });
 
   it('accepts a symbolTypeKey that is a function that is called with the item', () => {
@@ -51,7 +51,7 @@ describe('<LegendItem />', () => {
     });
     const wrapper = shallow(<LegendItem item={item} symbolTypeKey={spy} />);
 
-    expect(wrapper).to.contain(<Symbol type="triangle" />);
+    expect(wrapper).to.contain(<Symbol symbolType="triangle" />);
     expect(spy.called).to.be.true;
     expect(spy.calledWith(item)).to.be.true;
   });

@@ -131,7 +131,7 @@ export default function LegendItem(props) {
           width="1em" height="1em"
           className={styles.svg}
         >
-          <Symbol type={type} fill={fill} />
+          <Symbol symbolType={type} fill={fill} />
         </svg>
         <span className={styles.label}>
           {renderLabel(props)}

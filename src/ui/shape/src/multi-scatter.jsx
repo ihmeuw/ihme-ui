@@ -1,45 +1,53 @@
 import React, { PropTypes } from 'react';
-
+import classNames from 'classnames';
 import { castArray, map, noop, pick } from 'lodash';
-import { scaleLinear } from 'd3-scale';
-
+import { CommonPropTypes } from '../../../utils';
 import Scatter from './scatter';
 
 export default function MultiScatter(props) {
   const {
+    className,
     colorScale,
     data,
     dataField,
-    focus,
     keyField,
+    scatterClassName,
     selection,
+    symbolField,
     symbolScale,
   } = props;
 
   const childProps = pick(props, [
     'dataAccessors',
+    'focus',
+    'focusedClassName',
+    'focusedStyle',
     'onClick',
     'onMouseLeave',
     'onMouseMove',
     'onMouseOver',
+    'selectedClassName',
+    'selectedStyle',
     'scales',
-    'size'
+    'size',
+    'style',
+    'symbolClassName',
   ]);
 
   return (
-    <g>
+    <g className={classNames(className) || (void 0)}>
       {
         map(data, (scatterData) => {
           const key = scatterData[keyField];
           const values = scatterData[dataField];
           const fill = colorScale(scatterData[keyField]);
-          const symbolType = symbolScale(scatterData[keyField]);
+          const symbolType = symbolScale(scatterData[symbolField]);
 
           return (
             <Scatter
+              className={scatterClassName}
               data={values}
               fill={fill}
-              focus={focus}
               key={`scatter:${key}`}
               selection={castArray(selection)}
               symbolType={symbolType}
@@ -53,93 +61,114 @@ export default function MultiScatter(props) {
 }
 
 MultiScatter.propTypes = {
-  /*
-  function that accepts keyField, and returns a color for the symbol.
-  */
+  /* base classname to apply to mult-scatter <g> wrapper */
+  className: CommonPropTypes.className,
+
+  /* function for a scale of colors. If present, overrides fill */
   colorScale: PropTypes.func,
 
-  /*
-    array of object
-    e.g.
-    [
-      {keyField: 'USA', dataField: []},
-      {keyField: 'Canada', dataField: []},
-      {keyField: 'Mexico', dataField: []}
-    ]
-  */
-  data: PropTypes.arrayOf(PropTypes.object),
+  /* array of datum objects */
+  data: PropTypes.arrayOf(PropTypes.object).isRequired,
 
   /*
-  key names for accessing x and y data.
-  */
+   accessors on datum objects
+     fill: property on data to provide fill (will be passed to colorScale)
+     x: property on data to position in x-direction
+     y: property on data to position in y-direction
+   */
   dataAccessors: PropTypes.shape({
-    x: PropTypes.string,
-    y: PropTypes.string
+    fill: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+    x: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+    y: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
   }).isRequired,
 
-  /*
-  key that holds individual datum to be represented in the scatter plot.
-  */
+  /* key that holds individual datum to be represented in the scatter plot */
   dataField: PropTypes.string,
 
-  /**
-   * The symbol to be focused upon.
-   */
+  /* the symbol to focus */
   focus: PropTypes.object,
 
+  /* classname to be applied if symbol has focus */
+  focusedClassName: CommonPropTypes.className,
+
   /*
-    unique key that identifies the dataset to be plotted within the array of datasets.
-  */
+   inline-style object or function to be applied if symbol has focus;
+   if a function, is called with datum
+   can override style and selectedStyle
+   */
+  focusedStyle: CommonPropTypes.style,
+
+  /* unique key that identifies the dataset to be plotted within the array of datasets */
   keyField: PropTypes.string,
 
+  /* signature: function(event, data, Symbol) {...} */
   onClick: PropTypes.func,
 
+  /* signature: function(event, data, Symbol) {...} */
   onMouseLeave: PropTypes.func,
 
+  /* signature: function(event, data, Symbol) {...} */
   onMouseMove: PropTypes.func,
 
+  /* signature: function(event, data, Symbol) {...} */
   onMouseOver: PropTypes.func,
 
-  /*
-  scales from d3Scale
-  */
+  /* scales */
   scales: PropTypes.shape({
     x: PropTypes.func,
-    y: PropTypes.func
+    y: PropTypes.func,
   }).isRequired,
 
-  /**
-   * A symbol that is selected, or an array of symbols selected.
+  /*
+   classname to apply to Scatter's <g> wrapper;
+   named 'scatterClassName' to disambiguate 'className' prop passed to Symbol
    */
+  scatterClassName: CommonPropTypes.className,
+
+  /* classname to be applied to Symbol if selected */
+  selectedClassName: CommonPropTypes.className,
+
+  /*
+   inline-style object or function to be applied if symbol is selected;
+   if a function, is called with datum
+   can override style
+   */
+  selectedStyle: CommonPropTypes.style,
+
+  /* a symbol that is selected, or an array of symbols selected */
   selection: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.array,
   ]),
 
-  /*
-  size of symbols.
-  */
+  /* size of symbols; see Symbol.propTypes */
   size: PropTypes.number,
 
   /*
-    key name for value of symbol
-  */
+   inline-style object or function to be applied as base style for Symbols;
+   if a function, is called with associated datum
+   */
+  style: CommonPropTypes.style,
+
+  /* base classname to apply to symbol */
+  symbolClassName: CommonPropTypes.className,
+
+  /* key name for value of symbol */
   symbolField: PropTypes.string,
 
-  /*
-    function to transform symbol value to a shape
-  */
-  symbolScale: PropTypes.func
+  /* function to transform symbol value to a shape */
+  symbolScale: PropTypes.func,
 };
 
 MultiScatter.defaultProps = {
-  colorScale: () => { return 'steelblue'; },
+  colorScale() { return 'steelblue'; },
   dataField: 'values',
+  keyField: 'key',
   onClick: noop,
   onMouseLeave: noop,
   onMouseMove: noop,
   onMouseOver: noop,
+  size: 64,
   symbolField: 'type',
-  symbolScale: () => { return 'circle'; },
-  scales: { x: scaleLinear(), y: scaleLinear() },
+  symbolScale() { return 'circle'; },
 };

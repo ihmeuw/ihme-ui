@@ -60,9 +60,6 @@ const propTypes = {
   /* array of datum objects */
   data: PropTypes.array.isRequired,
 
-  /* uniquely identifying property of datum, e.g., location_id */
-  keyField: PropTypes.string.isRequired,
-
   /* property of datum object that holds value */
   valueField: PropTypes.string.isRequired,
 
@@ -155,7 +152,6 @@ export default class ChoroplethLegend extends React.Component {
       x2,
       data,
       valueField,
-      keyField,
       rangeExtent,
       onSliderMove,
       zoom,
@@ -169,12 +165,10 @@ export default class ChoroplethLegend extends React.Component {
       <svg width={width} height={height}>
         <g transform={`translate(${margins.left}, ${margins.top})`}>
           <Scatter
-            data={data}
-            scales={{ x: xScale }}
-            dataAccessors={{ x: valueField }}
-            keyField={keyField}
-            dataField={valueField}
             colorScale={colorScale}
+            data={data}
+            dataAccessors={{ fill: valueField, x: valueField }}
+            scales={{ x: xScale }}
             size={180 * zoom}
           />
           <g transform={`translate(0, ${10 + (5 * zoom)})`}>

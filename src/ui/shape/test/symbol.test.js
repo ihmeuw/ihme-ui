@@ -11,7 +11,7 @@ chai.use(chaiEnzyme());
 describe('<Symbol />', () => {
   it('renders any shape that is supported by d3Shape.symbol', () => {
     const assertion = (type) => {
-      const wrapper = shallow(<Symbol type={type} />);
+      const wrapper = shallow(<Symbol symbolType={type} />);
       expect(wrapper).to.have.exactly(1).descendants('path');
       expect(wrapper.find('path'))
         .to.have.attr('d')
@@ -22,7 +22,7 @@ describe('<Symbol />', () => {
   });
 
   it('renders a circle when given a type that is not supported by d3Shape.symbol', () => {
-    const wrapper = shallow(<Symbol type={'unicorn'} />);
+    const wrapper = shallow(<Symbol symbolType={'unicorn'} />);
     expect(wrapper).to.have.exactly(1).descendants('path');
     expect(wrapper.find('path'))
       .to.have.attr('d')
@@ -52,7 +52,7 @@ describe('<Symbol />', () => {
     it('applies style as an object', () => {
       const wrapper = shallow(
         <Symbol
-          data={datum}
+          datum={datum}
           style={baseStyle}
         />
       );
@@ -64,7 +64,7 @@ describe('<Symbol />', () => {
     it('applies style as a function', () => {
       const wrapper = shallow(
         <Symbol
-          data={datum}
+          datum={datum}
           style={(d) => {
             return { stroke: 'red', strokeWidth: d.mean };
           }}
@@ -78,7 +78,7 @@ describe('<Symbol />', () => {
     it('applies selectedStyle as an object', () => {
       const wrapper = shallow(
         <Symbol
-          data={datum}
+          datum={datum}
           style={baseStyle}
           selected
           selectedStyle={selectedStyle}
@@ -92,7 +92,7 @@ describe('<Symbol />', () => {
     it('applies selectedStyle as a function', () => {
       const wrapper = shallow(
         <Symbol
-          data={datum}
+          datum={datum}
           style={baseStyle}
           selected
           selectedStyle={(d) => {
@@ -108,7 +108,7 @@ describe('<Symbol />', () => {
     it('applies focusedStyle as an object', () => {
       const wrapper = shallow(
         <Symbol
-          data={datum}
+          datum={datum}
           focused
           focusedStyle={focusedStyle}
           style={baseStyle}
@@ -124,7 +124,7 @@ describe('<Symbol />', () => {
     it('applies focusedStyle as a function', () => {
       const wrapper = shallow(
         <Symbol
-          data={datum}
+          datum={datum}
           focused
           focusedStyle={() => {
             return { stroke: 'blue' };

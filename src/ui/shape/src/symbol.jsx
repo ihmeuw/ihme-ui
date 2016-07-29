@@ -28,37 +28,40 @@ const SYMBOL_TYPES = {
   wye: d3Shape.symbolWye
 };
 
-/*
-* <Symbol /> is a wrapper
-* Public API should expose basic public API of d3Shape.symbol()
-**/
 export default class Symbol extends PureComponent {
+  /**
+   * Return path string for given symbol type and size
+   * @param type {String}
+   * @param size {Number}
+   * @return {String}
+   */
   static getPath(type, size) {
     const symbolType = SYMBOL_TYPES[type] || SYMBOL_TYPES.circle;
     return d3Shape.symbol().type(symbolType).size(size)();
   }
 
   /**
+   * Calculate style given base style, selected style, and focused style
    * @param {Object}
-   * @return {Object} computed style for
+   * @return {Object} computed style
    */
-  static getStyle({ data, fill, focused, focusedStyle, selected, selectedStyle, style }) {
+  static getStyle({ datum, fill, focused, focusedStyle, selected, selectedStyle, style }) {
     const baseStyle = { fill };
-    const computedStyle = typeof style === 'function' ? style(data) : style;
+    const computedStyle = typeof style === 'function' ? style(datum) : style;
     let computedSelectedStyle = {};
     let computedFocusedStyle = {};
 
     // if symbol is selected, compute selectedStyle
     if (selected) {
       computedSelectedStyle = typeof selectedStyle === 'function'
-        ? selectedStyle(data)
+        ? selectedStyle(datum)
         : selectedStyle;
     }
 
     // if symbol is focused, compute focusedStyle
     if (focused) {
       computedFocusedStyle = typeof focusedStyle === 'function'
-        ? focusedStyle(data)
+        ? focusedStyle(datum)
         : focusedStyle;
     }
 
@@ -77,7 +80,7 @@ export default class Symbol extends PureComponent {
   render() {
     const {
       className,
-      data,
+      datum,
       focused,
       focusedClassName,
       onClick,
@@ -97,11 +100,11 @@ export default class Symbol extends PureComponent {
         className={classNames(className, {
           [selectedClassName]: selected,
           [focusedClassName]: focused,
-        })}
-        onClick={eventHandleWrapper(onClick, data, this)}
-        onMouseLeave={eventHandleWrapper(onMouseLeave, data, this)}
-        onMouseMove={eventHandleWrapper(onMouseMove, data, this)}
-        onMouseOver={eventHandleWrapper(onMouseOver, data, this)}
+        }) || (void 0)}
+        onClick={eventHandleWrapper(onClick, datum, this)}
+        onMouseLeave={eventHandleWrapper(onMouseLeave, datum, this)}
+        onMouseMove={eventHandleWrapper(onMouseMove, datum, this)}
+        onMouseOver={eventHandleWrapper(onMouseOver, datum, this)}
         style={style}
         transform={`translate(${translateX}, ${translateY})`}
       />
@@ -111,10 +114,10 @@ export default class Symbol extends PureComponent {
 
 Symbol.propTypes = {
   /* base classname to apply to symbol */
-  className: PropTypes.string,
+  className: CommonPropTypes.className,
 
   /* Datum for the click and hover handlers. */
-  data: PropTypes.object,
+  datum: PropTypes.object,
 
   fill: PropTypes.string,
 
@@ -122,7 +125,7 @@ Symbol.propTypes = {
   focused: PropTypes.bool,
 
   /* classname to be applied if symbol has focus */
-  focusedClassName: PropTypes.string,
+  focusedClassName: CommonPropTypes.className,
 
   /*
     inline-style object or function to be applied if symbol has focus;
@@ -131,25 +134,23 @@ Symbol.propTypes = {
   */
   focusedStyle: CommonPropTypes.style,
 
-  itemKey: PropTypes.string,
-
-  /* signature: function(event, data, Symbol) {...} */
+  /* signature: function(event, datum, Symbol) {...} */
   onClick: PropTypes.func,
 
-  /* signature: function(event, data, Symbol) {...} */
+  /* signature: function(event, datum, Symbol) {...} */
   onMouseLeave: PropTypes.func,
 
-  /* signature: function(event, data, Symbol) {...} */
+  /* signature: function(event, datum, Symbol) {...} */
   onMouseMove: PropTypes.func,
 
-  /* signature: function(event, data, Symbol) {...} */
+  /* signature: function(event, datum, Symbol) {...} */
   onMouseOver: PropTypes.func,
 
   /* whether symbol is selected */
   selected: PropTypes.bool,
 
   /* classname to be applied if symbol is selected */
-  selectedClassName: PropTypes.string,
+  selectedClassName: CommonPropTypes.className,
 
   /*
    inline-style object or function to be applied if symbol is selected;
@@ -167,12 +168,12 @@ Symbol.propTypes = {
    */
   style: CommonPropTypes.style,
 
+  /* a SYMBOL_TYPE  */
+  symbolType: PropTypes.oneOf(Object.keys(SYMBOL_TYPES)),
+
   translateX: PropTypes.number,
 
   translateY: PropTypes.number,
-
-  /* a SYMBOL_TYPE  */
-  type: PropTypes.oneOf(Object.keys(SYMBOL_TYPES)),
 };
 
 Symbol.defaultProps = {
@@ -196,23 +197,23 @@ Symbol.defaultProps = {
   size: 64,
   translateX: 0,
   translateY: 0,
-  type: 'circle',
+  symbolType: 'circle',
   style: {}
 };
 
 Symbol.propUpdates = {
   // update path if symbol type or size have changed
   path: (accum, propName, prevProps, nextProps) => {
-    if (!propsChanged(prevProps, nextProps, ['type', 'size'])) return accum;
+    if (!propsChanged(prevProps, nextProps, ['symbolType', 'size'])) return accum;
     return assign(accum, {
-      path: Symbol.getPath(nextProps.type, nextProps.size),
+      path: Symbol.getPath(nextProps.symbolType, nextProps.size),
     });
   },
 
-  // update style if data, focused, focusedStyle, selected, selectedStyle, or style have changed
+  // update style if datum, focused, focusedStyle, selected, selectedStyle, or style have changed
   style: (accum, propName, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, [
-      'data',
+      'datum',
       'fill',
       'focused',
       'focusedStyle',
@@ -224,7 +225,7 @@ Symbol.propUpdates = {
     }
     return assign(accum, {
       style: Symbol.getStyle({
-        data: nextProps.data,
+        datum: nextProps.datum,
         fill: nextProps.fill,
         focused: nextProps.focused,
         focusedStyle: nextProps.focusedStyle,
