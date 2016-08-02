@@ -27,8 +27,8 @@ describe('<Tooltip />', () => {
   describe('position', () => {
     const baseParams = {
       height: 100,
-      mouseClientX: 300,
-      mouseClientY: 300,
+      mouseX: 300,
+      mouseY: 300,
       offsetX: 0,
       offsetY: 0,
       paddingX: 0,
@@ -38,7 +38,7 @@ describe('<Tooltip />', () => {
       windowInnerWidth: 1200,
     };
 
-    it('positions the tooltip centered around mouseClientX', () => {
+    it('positions the tooltip centered around mouseX', () => {
       const position = Tooltip.getPosition(baseParams);
       const [x] = translateVectorFromTransform(position.transform);
       expect(position)
@@ -47,7 +47,7 @@ describe('<Tooltip />', () => {
       expect(x).to.equal(250);
     });
 
-    it('positions the tooltip offsetY above/below from mouseClientY', () => {
+    it('positions the tooltip offsetY above/below from mouseY', () => {
       // above
       const positionAbove = Tooltip.getPosition(Object.assign({}, baseParams, { offsetY: 25 }));
       const [, yAbove] = translateVectorFromTransform(positionAbove.transform);
@@ -145,7 +145,7 @@ describe('<Tooltip />', () => {
       const assertions = [
         {
           params: {
-            mouseClientX: 25,
+            mouseX: 25,
           },
           expectation: (position) => {
             const [x] = translateVectorFromTransform(position.transform);
@@ -154,7 +154,7 @@ describe('<Tooltip />', () => {
         },
         {
           params: {
-            mouseClientX: 25,
+            mouseX: 25,
             paddingX: 50,
           },
           expectation: (position) => {
@@ -164,7 +164,7 @@ describe('<Tooltip />', () => {
         },
         {
           params: {
-            mouseClientX: 1175,
+            mouseX: 1175,
           },
           expectation: (position) => {
             const [x] = translateVectorFromTransform(position.transform);
@@ -173,7 +173,7 @@ describe('<Tooltip />', () => {
         },
         {
           params: {
-            mouseClientX: 1000,
+            mouseX: 1000,
             offsetX: 200,
           },
           expectation: (position) => {
@@ -194,7 +194,7 @@ describe('<Tooltip />', () => {
       const assertions = [
         {
           params: {
-            mouseClientY: 25,
+            mouseY: 25,
             offsetY: 0,
             paddingY: 10,
           },
@@ -205,7 +205,7 @@ describe('<Tooltip />', () => {
         },
         {
           params: {
-            mouseClientY: 25,
+            mouseY: 25,
             offsetY: 10,
             paddingY: 50,
           },
@@ -216,7 +216,7 @@ describe('<Tooltip />', () => {
         },
         {
           params: {
-            mouseClientY: 550,
+            mouseY: 550,
             offsetY: -10,
           },
           expectation: (position) => {

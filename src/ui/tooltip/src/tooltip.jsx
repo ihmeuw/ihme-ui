@@ -9,8 +9,8 @@ export default class Tooltip extends PureComponent {
   /**
    * @param {Object} params
    * @param {Number} params.height - height of tooltip
-   * @param {Number} params.mouseClientX
-   * @param {Number} params.mouseClientY
+   * @param {Number} params.mouseX
+   * @param {Number} params.mouseY
    * @param {Number} params.offsetX
    * @param {Number} params.offsetY
    * @param {Number} params.paddingX
@@ -22,8 +22,8 @@ export default class Tooltip extends PureComponent {
    */
   static getPosition({
     height,
-    mouseClientX,
-    mouseClientY,
+    mouseX,
+    mouseY,
     offsetX,
     offsetY,
     paddingX,
@@ -34,19 +34,19 @@ export default class Tooltip extends PureComponent {
   }) {
     // aim to position tooltip centered about the mouse-cursor in the x-direction
     const halfWidth = width / 2;
-    const offsetXCoordinate = mouseClientX + offsetX;
+    const offsetXCoordinate = mouseX + offsetX;
 
     let x = offsetXCoordinate - halfWidth;
     // guard against placing the tooltip off the left-side of the screen
     if (x < paddingX) x = offsetXCoordinate + paddingX;
     // guard against placing the tooltip off the right-side of the screen
     if (offsetXCoordinate + halfWidth > windowInnerWidth - paddingX) {
-      x = mouseClientX - width - paddingX - offsetX;
+      x = mouseX - width - paddingX - offsetX;
     }
 
     // position tooltip above or below the mouse cursor in the y-direction
     // origin in top-left corner
-    const offsetYCoordinate = mouseClientY - offsetY;
+    const offsetYCoordinate = mouseY - offsetY;
     let y = (offsetY < 0)
             ? offsetYCoordinate // assume tooltip should be placed below mouse
             : offsetYCoordinate - height; // otherwise, assume tooltip should be placed above mouse
@@ -55,7 +55,7 @@ export default class Tooltip extends PureComponent {
     if (y < paddingY) y = offsetYCoordinate + paddingY;
     // guard against placing tooltip below screen
     if (offsetY < 0 && offsetYCoordinate + height > windowInnerHeight - paddingY) {
-      y = mouseClientY - height - paddingY - Math.abs(offsetY);
+      y = mouseY - height - paddingY - Math.abs(offsetY);
     }
 
     return { transform: `translate(${x}px, ${y}px)` };
@@ -88,8 +88,8 @@ export default class Tooltip extends PureComponent {
 
   componentWillReceiveProps(nextProps) {
     if (!propsChanged(this.props, nextProps, [
-      'mouseClientX',
-      'mouseClientY',
+      'mouseX',
+      'mouseY',
       'offsetX',
       'offsetY',
       'paddingX',
@@ -101,8 +101,8 @@ export default class Tooltip extends PureComponent {
     this.setState({
       style: Tooltip.getStyle(nextProps.style, Tooltip.getPosition({
         height,
-        mouseClientX: nextProps.mouseClientX,
-        mouseClientY: nextProps.mouseClientY,
+        mouseX: nextProps.mouseX,
+        mouseY: nextProps.mouseY,
         offsetX: nextProps.offsetX,
         offsetY: nextProps.offsetY,
         paddingX: nextProps.paddingX,
@@ -144,11 +144,11 @@ Tooltip.propTypes = {
   /* className to apply to tooltip wrapper */
   className: CommonPropTypes.className,
 
-  /* clientX of mouse postion */
-  mouseClientX: PropTypes.number,
+  /* mouse postion (x; e.g., clientX) */
+  mouseX: PropTypes.number,
 
-  /* clientY of mouse position */
-  mouseClientY: PropTypes.number,
+  /* mouse position (y; e.g., clientY) */
+  mouseY: PropTypes.number,
 
   /* shift tooltip (in px) left of mouseClientX  */
   offsetX: PropTypes.number,
@@ -176,8 +176,8 @@ Tooltip.propTypes = {
 };
 
 Tooltip.defaultProps = {
-  mouseClientX: 0,
-  mouseClientY: 0,
+  mouseX: 0,
+  mouseY: 0,
   offsetX: 0,
   offsetY: 25,
   paddingX: 10,
