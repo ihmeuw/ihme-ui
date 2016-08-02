@@ -85,7 +85,6 @@ export default class Tooltip extends PureComponent {
     };
 
     bindAll(this, [
-      'getPosition',
       'storeRef',
     ]);
   }
