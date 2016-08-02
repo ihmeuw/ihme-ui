@@ -7,6 +7,10 @@ chai.use(chaiEnzyme());
 
 import Tooltip from '../src/tooltip';
 
+function translateVectorFromTransform(transformString) {
+  return transformString.match(/(\d+)/g).map(Number);
+}
+
 describe('<Tooltip />', () => {
   describe('basic behavior', () => {
     it('does not render if props.show is false', () => {
@@ -27,29 +31,38 @@ describe('<Tooltip />', () => {
       mouseClientY: 300,
       offsetX: 0,
       offsetY: 0,
-      paddingX: 10,
-      paddingY: 10,
+      paddingX: 0,
+      paddingY: 0,
       width: 100,
       windowInnerHeight: 600,
       windowInnerWidth: 1200,
     };
 
     it('positions the tooltip centered around mouseClientX', () => {
-      expect(Tooltip.getPosition(baseParams))
+      const position = Tooltip.getPosition(baseParams);
+      const [x] = translateVectorFromTransform(position.transform);
+      expect(position)
         .to.be.an('object')
-        .with.property('left', 250);
+        .with.property('transform');
+      expect(x).to.equal(250);
     });
 
     it('positions the tooltip offsetY above/below from mouseClientY', () => {
       // above
-      expect(Tooltip.getPosition(Object.assign({}, baseParams, { offsetY: 25 })))
+      const positionAbove = Tooltip.getPosition(Object.assign({}, baseParams, { offsetY: 25 }));
+      const [, yAbove] = translateVectorFromTransform(positionAbove.transform);
+      expect(positionAbove)
         .to.be.an('object')
-        .with.property('top', 175);
+        .with.property('transform');
+      expect(yAbove).to.equal(175);
 
       // below
-      expect(Tooltip.getPosition(Object.assign({}, baseParams, { offsetY: -25 })))
+      const positionBelow = Tooltip.getPosition(Object.assign({}, baseParams, { offsetY: -25 }));
+      const [, yBelow] = translateVectorFromTransform(positionBelow.transform);
+      expect(positionBelow)
         .to.be.an('object')
-        .with.property('top', 325);
+        .with.property('transform');
+      expect(yBelow).to.equal(325);
     });
 
     it('shifts the tooltip offsetX pixels in the x-direction', () => {
@@ -59,7 +72,8 @@ describe('<Tooltip />', () => {
             offsetX: 10
           },
           expectation: (position) => {
-            expect(position.left).to.equal(260);
+            const [x] = translateVectorFromTransform(position.transform);
+            expect(x).to.equal(260);
           },
         },
         {
@@ -67,7 +81,8 @@ describe('<Tooltip />', () => {
             offsetX: 0
           },
           expectation: (position) => {
-            expect(position.left).to.equal(250);
+            const [x] = translateVectorFromTransform(position.transform);
+            expect(x).to.equal(250);
           },
         },
         {
@@ -75,7 +90,8 @@ describe('<Tooltip />', () => {
             offsetX: -10
           },
           expectation: (position) => {
-            expect(position.left).to.equal(240);
+            const [x] = translateVectorFromTransform(position.transform);
+            expect(x).to.equal(240);
           },
         }
       ];
@@ -94,7 +110,8 @@ describe('<Tooltip />', () => {
             offsetY: 10
           },
           expectation: (position) => {
-            expect(position.top).to.equal(190);
+            const [, y] = translateVectorFromTransform(position.transform);
+            expect(y).to.equal(190);
           },
         },
         {
@@ -102,7 +119,8 @@ describe('<Tooltip />', () => {
             offsetY: 0
           },
           expectation: (position) => {
-            expect(position.top).to.equal(200);
+            const [, y] = translateVectorFromTransform(position.transform);
+            expect(y).to.equal(200);
           },
         },
         {
@@ -110,7 +128,8 @@ describe('<Tooltip />', () => {
             offsetY: -10
           },
           expectation: (position) => {
-            expect(position.top).to.equal(310);
+            const [, y] = translateVectorFromTransform(position.transform);
+            expect(y).to.equal(310);
           },
         }
       ];
@@ -129,7 +148,8 @@ describe('<Tooltip />', () => {
             mouseClientX: 25,
           },
           expectation: (position) => {
-            expect(position.left).to.equal(10);
+            const [x] = translateVectorFromTransform(position.transform);
+            expect(x).to.equal(25);
           },
         },
         {
@@ -138,7 +158,8 @@ describe('<Tooltip />', () => {
             paddingX: 50,
           },
           expectation: (position) => {
-            expect(position.left).to.equal(50);
+            const [x] = translateVectorFromTransform(position.transform);
+            expect(x).to.equal(75);
           },
         },
         {
@@ -146,7 +167,8 @@ describe('<Tooltip />', () => {
             mouseClientX: 1175,
           },
           expectation: (position) => {
-            expect(position.left).to.equal(1125);
+            const [x] = translateVectorFromTransform(position.transform);
+            expect(x).to.equal(1075);
           },
         },
         {
@@ -155,7 +177,8 @@ describe('<Tooltip />', () => {
             offsetX: 200,
           },
           expectation: (position) => {
-            expect(position.left).to.equal(1090);
+            const [x] = translateVectorFromTransform(position.transform);
+            expect(x).to.equal(700);
           },
         }
       ];
@@ -176,17 +199,19 @@ describe('<Tooltip />', () => {
             paddingY: 10,
           },
           expectation: (position) => {
-            expect(position.top).to.equal(10);
+            const [, y] = translateVectorFromTransform(position.transform);
+            expect(y).to.equal(35);
           },
         },
         {
           params: {
             mouseClientY: 25,
-            offsetY: 0,
+            offsetY: 10,
             paddingY: 50,
           },
           expectation: (position) => {
-            expect(position.top).to.equal(50);
+            const [, y] = translateVectorFromTransform(position.transform);
+            expect(y).to.equal(65);
           },
         },
         {
@@ -195,7 +220,8 @@ describe('<Tooltip />', () => {
             offsetY: -10,
           },
           expectation: (position) => {
-            expect(position.top).to.equal(490);
+            const [, y] = translateVectorFromTransform(position.transform);
+            expect(y).to.equal(440);
           },
         }
       ];

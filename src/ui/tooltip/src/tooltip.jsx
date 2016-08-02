@@ -32,36 +32,33 @@ export default class Tooltip extends PureComponent {
     windowInnerHeight,
     windowInnerWidth,
   }) {
-    // initially position tooltip in the center (width / 2)
-    // of the mouse cursor in the x-direction
+    // aim to position tooltip centered about the mouse-cursor in the x-direction
     const halfWidth = width / 2;
-    let left = mouseClientX - halfWidth + offsetX;
+    const offsetXCoordinate = mouseClientX + offsetX;
+
+    let x = offsetXCoordinate - halfWidth;
     // guard against placing the tooltip off the left-side of the screen
-    if (left < paddingX) left = paddingX;
+    if (x < paddingX) x = offsetXCoordinate + paddingX;
     // guard against placing the tooltip off the right-side of the screen
-    if (left + halfWidth + offsetX > windowInnerWidth - paddingX) {
-      left = windowInnerWidth - width - paddingX;
+    if (offsetXCoordinate + halfWidth > windowInnerWidth - paddingX) {
+      x = mouseClientX - width - paddingX - offsetX;
     }
 
     // position tooltip above or below the mouse cursor in the y-direction
-    let top;
-    if (offsetY < 0) {
-      // assume tooltip should be placed below mouse
-      top = mouseClientY;
-    } else {
-      // otherwise, assume tooltip should be placed above mouse
-      top = mouseClientY - height;
-    }
-    // account for y offset
-    top = top - offsetY;
+    // origin in top-left corner
+    const offsetYCoordinate = mouseClientY - offsetY;
+    let y = (offsetY < 0)
+            ? offsetYCoordinate // assume tooltip should be placed below mouse
+            : offsetYCoordinate - height; // otherwise, assume tooltip should be placed above mouse
+
     // guard against placing tooltip off top of screen
-    if (top < paddingY) top = paddingY;
+    if (y < paddingY) y = offsetYCoordinate + paddingY;
     // guard against placing tooltip below screen
-    if (top + height + offsetY > windowInnerHeight - paddingY) {
-      top = windowInnerHeight - height - paddingY;
+    if (offsetY < 0 && offsetYCoordinate + height > windowInnerHeight - paddingY) {
+      y = mouseClientY - height - paddingY - Math.abs(offsetY);
     }
 
-    return { left, top };
+    return { transform: `translate(${x}px, ${y}px)` };
   }
 
   /**
