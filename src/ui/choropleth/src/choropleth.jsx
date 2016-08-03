@@ -22,9 +22,9 @@ export default class Choropleth extends React.Component {
   /**
    * Because <Layer /> expects data to be an object with locationIds as keys
    * Need to process data as such
-   * @param {Array} data -> array of datum objects
-   * @param {String} keyField -> name of key field
-   * @return {Object} keys are keyField (e.g., locationId), values are datum objects
+   * @param {Array} data - array of datum objects
+   * @param {String|Function} keyField - string or function that resolves to unique property on datum objects
+   * @return {Object} - keys are keyField (e.g., locationId), values are datum objects
    */
   static processData(data, keyField) {
     return keyBy(data, keyField);

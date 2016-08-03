@@ -10,6 +10,15 @@ import {
 } from '../../../utils';
 
 export default class Path extends PureComponent {
+  /**
+   * Compute inline-style
+   * @param {Object} feature
+   * @param {String} fill
+   * @param {Boolean} selected
+   * @param {Object|Function} style
+   * @param {Object|Function} selectedStyle
+   * @return {Object}
+   */
   static getStyle(feature, fill, selected, style, selectedStyle) {
     const baseStyle = { fill };
     const computedStyle = typeof style === 'function' ? style(feature) : style;

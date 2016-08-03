@@ -20,9 +20,9 @@ import Path from './path';
 export default class FeatureLayer extends PureComponent {
   /**
    * Pull unique key of GeoJSON feature off feature object
-   * @param resolver {String|Function}
-   * @param feature {GeoJSON feature}
-   * @returns {*}
+   * @param {String|Function} resolver
+   * @param {Object} feature - GeoJSON feature
+   * @returns {String}
    */
   static getFeatureKey(resolver, feature) {
     // if keyField is a function, call it with the current feature
