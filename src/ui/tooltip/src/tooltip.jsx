@@ -7,6 +7,21 @@ import styles from './tooltip.css';
 
 export default class Tooltip extends PureComponent {
   /**
+   * Return bounds passed through props or default
+   * to { x: [0, window.innerWidth], y: [0, window.innerHeight] }
+   * @param {Object} [bounds]
+   * @param {Array} [bounds.x]
+   * @param {Array} [bounds.y]
+   * @return {{ x: array, y: array}} Bounds object with keys x and y
+   */
+  static getBounds(bounds) {
+    return {
+      x: getValue(bounds, 'x', [0, getValue(window, 'innerWidth', 0)]),
+      y: getValue(bounds, 'y', [0, getValue(window, 'innerHeight', 0)]),
+    };
+  }
+
+  /**
    * @param {Object} params
    * @param {Object} params.bounds
    * @param {Array} params.bounds.x - default to [0, window.innerWidth]
@@ -116,12 +131,8 @@ export default class Tooltip extends PureComponent {
       'paddingY',
       'style',
     ]) || !this._wrapper) return;
-
     const { width, height } = this._wrapper.getBoundingClientRect();
-    const bounds = {
-      x: getValue(nextProps.bounds, 'x', [0, getValue(window, 'innerWidth', 0)]),
-      y: getValue(nextProps.bounds, 'y', [0, getValue(window, 'innerHeight', 0)]),
-    };
+    const bounds = Tooltip.getBounds(nextProps.bounds);
 
     this.setState({
       style: Tooltip.getStyle(nextProps.style, Tooltip.getPosition({
