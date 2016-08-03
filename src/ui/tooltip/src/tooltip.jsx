@@ -178,7 +178,7 @@ Tooltip.propTypes = {
   /*
    pixel bounds within which to render tooltip;
    defaults to [0, window.innerWidth], [0, window.innerHeight]
-   */
+  */
   bounds: PropTypes.shape({
     x: PropTypes.arrayOf(PropTypes.number),
     y: PropTypes.arrayOf(PropTypes.number),
@@ -193,21 +193,21 @@ Tooltip.propTypes = {
   /* mouse position (y; e.g., clientY) */
   mouseY: PropTypes.number,
 
-  /* shift tooltip (in px) left of mouseClientX  */
+  /* shift tooltip offsetX pixels left (if negative) or right (if positive) of mouseX  */
   offsetX: PropTypes.number,
 
-  /* shift tooltip (in px) above or below mouseClientY */
+  /* shift tooltip offsetY pixels above (if negative) or below (if positive) of mouseY  */
   offsetY: PropTypes.number,
 
   /*
-    guards against placing the tooltip outside of the bounds of the window;
-    at minimum, tooltip will be placed padding.width within window left/right bounds
+    guards against placing the tooltip outside of its bounds;
+    at minimum, tooltip will be placed paddingX within bounds.x
   */
   paddingX: PropTypes.number,
 
   /*
-    guards against placing the tooltip outside of the bounds of the window;
-    at minimum, tooltip will be placed padding.height within window top/bottom bounds
+    guards against placing the tooltip outside of its bounds;
+    at minimum, tooltip will be placed paddingY within bounds.y
   */
   paddingY: PropTypes.number,
 
