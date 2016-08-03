@@ -99,8 +99,7 @@ export default class Tooltip extends PureComponent {
    * Calculate style given base style and absolute position
    * @param {Object} style
    * @param {Object} position
-   * @param {Number} position.left
-   * @param {Number} position.top
+   * @param {String} position.transform
    * @return {Object}
    */
   static getStyle(style, position) {
