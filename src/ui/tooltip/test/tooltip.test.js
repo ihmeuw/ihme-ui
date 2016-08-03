@@ -1,8 +1,9 @@
+/* eslint-disable no-unused-expressions, max-len */
 import React from 'react';
 import chai, { expect } from 'chai';
 import { merge } from 'lodash';
 import chaiEnzyme from 'chai-enzyme';
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 
 chai.use(chaiEnzyme());
 
@@ -22,6 +23,62 @@ describe('<Tooltip />', () => {
     it('renders if props.show is true', () => {
       const wrapper = shallow(<Tooltip show />);
       expect(wrapper.type()).to.equal('div');
+    });
+
+    it('updates position/style if any properties neceessary for calculating position/style is updated', () => {
+      const wrapper = mount(
+        <Tooltip
+          bounds={{ x: [0, 1000], y: [0, 800] }}
+          mouseX={5}
+          mouseY={5}
+          show
+        />
+      );
+      let style = wrapper.state('style');
+      Object.entries({
+        bounds: {
+          x: [200, 300],
+          y: [600, 900],
+        },
+        mouseX: 20,
+        mouseY: 30,
+        offsetX: 5,
+        offsetY: 6,
+        paddingX: 20,
+        paddingY: 20,
+        style: { backgroundColor: 'red' },
+      }).forEach(([key, value]) => {
+        expect(wrapper.state('style')).to.equal(style);
+        wrapper.setProps({
+          [key]: value
+        });
+        const updatedStyle = wrapper.state('style');
+        expect(updatedStyle).to.not.equal(style);
+        style = updatedStyle;
+      });
+    });
+
+    it('does not update style if a property not necessary for caclulating styles is updated', () => {
+      const wrapper = mount(
+        <Tooltip
+          bounds={{ x: [0, 1000], y: [0, 800] }}
+          mouseX={5}
+          mouseY={5}
+          show
+        />
+      );
+      const style = wrapper.state('style');
+      Object.entries({
+        className: 'new-class-name',
+        show: false,
+      }).forEach(([key, value]) => {
+        expect(wrapper.state('style')).to.equal(style);
+        wrapper.setProps({
+          [key]: value
+        });
+        const nonUpdatedStyle = wrapper.state('style');
+        expect(nonUpdatedStyle).to.equal(style);
+      });
     });
   });
 
