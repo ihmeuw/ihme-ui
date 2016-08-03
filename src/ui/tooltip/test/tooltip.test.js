@@ -1,5 +1,6 @@
 import React from 'react';
 import chai, { expect } from 'chai';
+import { merge } from 'lodash';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 
@@ -26,6 +27,10 @@ describe('<Tooltip />', () => {
 
   describe('position', () => {
     const baseParams = {
+      bounds: {
+        x: [0, 1200],
+        y: [0, 600],
+      },
       height: 100,
       mouseX: 300,
       mouseY: 300,
@@ -34,8 +39,6 @@ describe('<Tooltip />', () => {
       paddingX: 0,
       paddingY: 0,
       width: 100,
-      windowInnerHeight: 600,
-      windowInnerWidth: 1200,
     };
 
     it('positions the tooltip centered around mouseX', () => {
@@ -141,7 +144,7 @@ describe('<Tooltip />', () => {
       });
     });
 
-    it('guards placement of the tooltip within the bounds of the window (x-direction)', () => {
+    it('guards placement of the tooltip within x-bounds', () => {
       const assertions = [
         {
           params: {
@@ -180,22 +183,45 @@ describe('<Tooltip />', () => {
             const [x] = translateVectorFromTransform(position.transform);
             expect(x).to.equal(700);
           },
+        },
+        {
+          params: {
+            bounds: {
+              x: [400, 700],
+            },
+            mouseX: 200,
+          },
+          expectation: (position) => {
+            const [x] = translateVectorFromTransform(position.transform);
+            expect(x).to.equal(400);
+          },
+        },
+        {
+          params: {
+            bounds: {
+              x: [400, 700],
+            },
+            mouseX: 800,
+          },
+          expectation: (position) => {
+            const [x] = translateVectorFromTransform(position.transform);
+            expect(x).to.equal(600);
+          },
         }
       ];
 
       assertions.forEach((assert) => {
         assert.expectation(Tooltip.getPosition(
-          Object.assign({}, baseParams, assert.params)
+          merge({}, baseParams, assert.params)
         ));
       });
     });
 
-    it('guards placement of the tooltip within the bounds of the window (y-direction)', () => {
+    it('guards placement of the tooltip within y-bounds', () => {
       const assertions = [
         {
           params: {
             mouseY: 25,
-            offsetY: 0,
             paddingY: 10,
           },
           expectation: (position) => {
@@ -223,12 +249,36 @@ describe('<Tooltip />', () => {
             const [, y] = translateVectorFromTransform(position.transform);
             expect(y).to.equal(440);
           },
+        },
+        {
+          params: {
+            bounds: {
+              y: [200, 400],
+            },
+            mouseY: 100,
+          },
+          expectation: (position) => {
+            const [, y] = translateVectorFromTransform(position.transform);
+            expect(y).to.equal(200);
+          },
+        },
+        {
+          params: {
+            bounds: {
+              y: [200, 400],
+            },
+            mouseY: 600,
+          },
+          expectation: (position) => {
+            const [, y] = translateVectorFromTransform(position.transform);
+            expect(y).to.equal(300);
+          },
         }
       ];
 
       assertions.forEach((assert) => {
         assert.expectation(Tooltip.getPosition(
-          Object.assign({}, baseParams, assert.params)
+          merge({}, baseParams, assert.params)
         ));
       });
     });

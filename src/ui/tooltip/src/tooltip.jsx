@@ -8,6 +8,9 @@ import styles from './tooltip.css';
 export default class Tooltip extends PureComponent {
   /**
    * @param {Object} params
+   * @param {Object} params.bounds
+   * @param {Array} params.bounds.x - default to [0, window.innerWidth]
+   * @param {Array} params.bounds.y - default to [0, window.innerHeight]
    * @param {Number} params.height - height of tooltip
    * @param {Number} params.mouseX
    * @param {Number} params.mouseY
@@ -16,11 +19,10 @@ export default class Tooltip extends PureComponent {
    * @param {Number} params.paddingX
    * @param {Number} params.paddingY
    * @param {Number} params.width - width of tooltip
-   * @param {Number} params.windowInnerWidth - inner width of Window
-   * @param {Number} params.windowInnerHeight - inner height of Window
    * @return {{ left: number, top: number }}
    */
   static getPosition({
+    bounds,
     height,
     mouseX,
     mouseY,
@@ -29,33 +31,50 @@ export default class Tooltip extends PureComponent {
     paddingX,
     paddingY,
     width,
-    windowInnerHeight,
-    windowInnerWidth,
   }) {
+    const {
+      x: [leftBound, rightBound],
+      y: [topBound, bottomBound],
+    } = bounds;
+
     // aim to position tooltip centered about the mouse-cursor in the x-direction
     const halfWidth = width / 2;
     const offsetXCoordinate = mouseX + offsetX;
-
+    const absOffsetX = Math.abs(offsetX);
     let x = offsetXCoordinate - halfWidth;
-    // guard against placing the tooltip off the left-side of the screen
-    if (x < paddingX) x = offsetXCoordinate + paddingX;
-    // guard against placing the tooltip off the right-side of the screen
-    if (offsetXCoordinate + halfWidth > windowInnerWidth - paddingX) {
-      x = mouseX - width - paddingX - offsetX;
+
+    // guard against placing the tooltip out of its left-bound
+    if (x < leftBound + paddingX) {
+      x = offsetXCoordinate < leftBound
+        ? leftBound + paddingX + absOffsetX
+        : offsetXCoordinate + paddingX;
+    }
+    // guard against placing the tooltip out of its right-bound
+    if (offsetXCoordinate + halfWidth > rightBound - paddingX) {
+      x = mouseX > rightBound
+        ? rightBound - width - Math.abs(absOffsetX - paddingX)
+        : mouseX - width - Math.abs(absOffsetX - paddingX);
     }
 
     // position tooltip above or below the mouse cursor in the y-direction
     // origin in top-left corner
     const offsetYCoordinate = mouseY - offsetY;
+    const absOffsetY = Math.abs(offsetY);
     let y = (offsetY < 0)
-            ? offsetYCoordinate // assume tooltip should be placed below mouse
-            : offsetYCoordinate - height; // otherwise, assume tooltip should be placed above mouse
+          ? offsetYCoordinate // assume tooltip should be placed below mouse
+          : offsetYCoordinate - height; // otherwise, assume tooltip should be placed above mouse
 
-    // guard against placing tooltip off top of screen
-    if (y < paddingY) y = offsetYCoordinate + paddingY;
+    // guard against placing tooltip out of its top-bound
+    if (y < topBound + paddingY) {
+      y = offsetYCoordinate < topBound
+        ? topBound + paddingY + absOffsetY
+        : offsetYCoordinate + paddingY;
+    }
     // guard against placing tooltip below screen
-    if (offsetY < 0 && offsetYCoordinate + height > windowInnerHeight - paddingY) {
-      y = mouseY - height - paddingY - Math.abs(offsetY);
+    if (y + height > bottomBound - paddingY) {
+      y = mouseY > bottomBound
+        ? bottomBound - height - Math.abs(absOffsetY - paddingY)
+        : mouseY - height - Math.abs(absOffsetY - paddingY);
     }
 
     return { transform: `translate(${x}px, ${y}px)` };
@@ -88,6 +107,7 @@ export default class Tooltip extends PureComponent {
 
   componentWillReceiveProps(nextProps) {
     if (!propsChanged(this.props, nextProps, [
+      'bounds',
       'mouseX',
       'mouseY',
       'offsetX',
@@ -98,8 +118,14 @@ export default class Tooltip extends PureComponent {
     ]) || !this._wrapper) return;
 
     const { width, height } = this._wrapper.getBoundingClientRect();
+    const bounds = {
+      x: getValue(nextProps.bounds, 'x', [0, getValue(window, 'innerWidth', 0)]),
+      y: getValue(nextProps.bounds, 'y', [0, getValue(window, 'innerHeight', 0)]),
+    };
+
     this.setState({
       style: Tooltip.getStyle(nextProps.style, Tooltip.getPosition({
+        bounds,
         height,
         mouseX: nextProps.mouseX,
         mouseY: nextProps.mouseY,
@@ -108,8 +134,6 @@ export default class Tooltip extends PureComponent {
         paddingX: nextProps.paddingX,
         paddingY: nextProps.paddingY,
         width,
-        windowInnerHeight: getValue(window, 'innerHeight', 0),
-        windowInnerWidth: getValue(window, 'innerWidth', 0),
       })),
     });
   }
@@ -141,6 +165,15 @@ export default class Tooltip extends PureComponent {
 }
 
 Tooltip.propTypes = {
+  /*
+   pixel bounds within which to render tooltip;
+   defaults to [0, window.innerWidth], [0, window.innerHeight]
+   */
+  bounds: PropTypes.shape({
+    x: PropTypes.arrayOf(PropTypes.number),
+    y: PropTypes.arrayOf(PropTypes.number),
+  }),
+
   /* className to apply to tooltip wrapper */
   className: CommonPropTypes.className,
 
