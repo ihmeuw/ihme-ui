@@ -212,7 +212,7 @@ Tooltip.defaultProps = {
   mouseX: 0,
   mouseY: 0,
   offsetX: 0,
-  offsetY: 25,
+  offsetY: 0,
   paddingX: 10,
   paddingY: 10,
   show: false,
