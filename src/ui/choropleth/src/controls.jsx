@@ -3,8 +3,9 @@ import classNames from 'classnames';
 
 import style from './controls.css';
 import Button from '../../button';
+import { CommonPropTypes } from '../../../utils';
 
-const Controls = (props) => {
+export default function Controls(props) {
   return (
     <div className={classNames(style.common, props.className)} style={props.style}>
       <Button
@@ -27,9 +28,17 @@ const Controls = (props) => {
       />
     </div>
   );
-};
+}
 
 Controls.propTypes = {
+  /* classname to add to each button */
+  buttonClassName: CommonPropTypes.className,
+
+  buttonStyle: PropTypes.object,
+
+  /* classname to add to wrapper */
+  className: CommonPropTypes.className,
+
   /* click handler for zoom in button */
   onZoomIn: PropTypes.func.isRequired,
 
@@ -39,19 +48,6 @@ Controls.propTypes = {
   /* click handler for zoom out button */
   onZoomOut: PropTypes.func.isRequired,
 
-  /* class name to add to rendered components */
-  className: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.string,
-  ]),
-  buttonClassName: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.string,
-  ]),
-
-  /* style to apply to rendered components */
+  /* inline styles to apply to wrapper */
   style: PropTypes.object,
-  buttonStyle: PropTypes.object,
 };
-
-export default Controls;

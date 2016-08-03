@@ -2,11 +2,12 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import d3 from 'd3';
 import { presimplify } from 'topojson';
-import { bindAll, filter, has, isEqual, keyBy } from 'lodash';
+import { bindAll, filter, has, isEqual, keyBy, memoize } from 'lodash';
 import {
   calcCenterPoint,
   calcScale,
   calcTranslate,
+  CommonPropTypes,
   concatAndComputeGeoJSONBounds,
   extractGeoJSON,
   quickMerge,
@@ -21,9 +22,9 @@ export default class Choropleth extends React.Component {
   /**
    * Because <Layer /> expects data to be an object with locationIds as keys
    * Need to process data as such
-   * @param {Array} data -> array of datum objects
-   * @param {String} keyField -> name of key field
-   * @return {Object} keys are keyField (e.g., locationId), values are datum objects
+   * @param {Array} data - array of datum objects
+   * @param {String|Function} keyField - string or function that resolves to unique property on datum objects
+   * @return {Object} - keys are keyField (e.g., locationId), values are datum objects
    */
   static processData(data, keyField) {
     return keyBy(data, keyField);
@@ -53,6 +54,7 @@ export default class Choropleth extends React.Component {
     this.zoom = d3.behavior.zoom();
 
     bindAll(this, ['saveSvgRef', 'zoomEvent', 'zoomTo', 'zoomReset']);
+    this.calcMeshLayerStyle = memoize(this.calcMeshLayerStyle);
   }
 
   componentDidMount() {
@@ -81,9 +83,9 @@ export default class Choropleth extends React.Component {
 
       const visibleLayers = filter(nextProps.layers, { visible: true });
 
-      const uncachedLayers = filter(visibleLayers, (layer) => {
-        return layer.type === 'mesh' || !has(cache[layer.type], layer.name);
-      });
+      const uncachedLayers = filter(visibleLayers, (layer) =>
+        layer.type === 'mesh' || !has(cache[layer.type], layer.name)
+      );
 
       if (uncachedLayers.length) {
         state.cache = {
@@ -132,6 +134,26 @@ export default class Choropleth extends React.Component {
     if (Object.keys(state).length) {
       this.setState(state);
     }
+  }
+
+  /**
+   * Avoid creating and recreating new style object
+   * for mesh layers
+   * @param key {*} Unique key for mesh layer used to memoize results of fun
+   * @param style {Object|Function} Style object/function
+   * @param feature {Object} the feature to be rendered by mesh layer
+   *  if style is a function, it receives feature as its arg
+   * @returns {Object}
+   */
+  calcMeshLayerStyle(key, layerStyle, feature) {
+    const baseStyle = { pointerEvents: 'none' };
+    const computedStyle = typeof layerStyle === 'function'
+      ? layerStyle(feature)
+      : layerStyle;
+    return {
+      ...baseStyle,
+      ...computedStyle,
+    };
   }
 
   /**
@@ -225,12 +247,12 @@ export default class Choropleth extends React.Component {
         case 'mesh':
           return (
             <Path
-              key={key}
-              fill="none"
-              feature={this.state.cache.mesh[layer.name]}
-              pathGenerator={this.state.pathGenerator}
               className={layer.className}
-              style={{ ...layer.style, pointerEvents: 'none' }}
+              key={key}
+              feature={this.state.cache.mesh[layer.name]}
+              fill="none"
+              pathGenerator={this.state.pathGenerator}
+              style={this.calcMeshLayerStyle(key, layer.style, this.state.cache.mesh[layer.name])}
             />
           );
         default:
@@ -273,17 +295,36 @@ export default class Choropleth extends React.Component {
 Choropleth.propTypes = {
   /* layers to display */
   layers: PropTypes.arrayOf(PropTypes.shape({
+    className: CommonPropTypes.className,
+
+    // optional function to filter mesh grid, passed adjacent geometries
+    // refer to https://github.com/mbostock/topojson/wiki/API-Reference#mesh
+    filterFn: PropTypes.func,
+
+    // along with layer.type, will be part of the `key` of the layer
+    // therefore, `${layer.type}-${layer.name}` needs to be unique
     name: PropTypes.string.isRequired,
 
     // name corresponding to key within topojson objects collection
     object: PropTypes.string.isRequired,
 
+    // applied to selected paths
+    selectedClassName: CommonPropTypes.className,
+
+    // applied to selected paths
+    selectedStyle: PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.func,
+    ]),
+
+    // applied to paths
+    style: PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.func,
+    ]),
+
     // whether the layer should be a feature collection or mesh grid
     type: PropTypes.oneOf(['feature', 'mesh']).isRequired,
-
-    // optional function to filter mesh grid, passed adjacent geometries
-    // refer to https://github.com/mbostock/topojson/wiki/API-Reference#mesh
-    filterFn: PropTypes.func,
 
     // whether or not to render layer
     visible: PropTypes.bool,
@@ -301,13 +342,19 @@ Choropleth.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
 
   /* unique key of datum */
-  keyField: PropTypes.string.isRequired,
+  keyField: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+  ]).isRequired,
 
   /* mapping of datum key field to geoJSON feature key. default: 'id' (from <Feature />) */
   geoJSONKeyField: PropTypes.string,
 
   /* key of datum that holds the value to display */
-  valueField: PropTypes.string.isRequired,
+  valueField: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+  ]).isRequired,
 
   /* fn that accepts keyfield, and returns stroke color for line */
   colorScale: PropTypes.func.isRequired,

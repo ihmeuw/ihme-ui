@@ -11,7 +11,10 @@ export const CommonPropTypes = {
     PropTypes.array,
     PropTypes.object,
   ]),
-  style: PropTypes.object,
+  style: PropTypes.oneOfType([
+    PropTypes.object, // e.g., inline styles
+    PropTypes.func, // function to be passed some datum, required to return an object
+  ]),
   width: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,
