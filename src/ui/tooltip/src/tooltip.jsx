@@ -60,9 +60,9 @@ export default class Tooltip extends PureComponent {
 
     // guard against placing the tooltip out of its left-bound
     if (x < leftBound + paddingX) {
-      x = offsetXCoordinate < leftBound
+      x = mouseX < leftBound
         ? leftBound + paddingX + absOffsetX
-        : offsetXCoordinate + paddingX;
+        : mouseX + paddingX;
     }
     // guard against placing the tooltip out of its right-bound
     if (offsetXCoordinate + halfWidth > rightBound - paddingX) {
@@ -81,9 +81,9 @@ export default class Tooltip extends PureComponent {
 
     // guard against placing tooltip out of its top-bound
     if (y < topBound + paddingY) {
-      y = offsetYCoordinate < topBound
+      y = mouseY < topBound
         ? topBound + paddingY + absOffsetY
-        : offsetYCoordinate + paddingY;
+        : mouseY + paddingY;
     }
     // guard against placing tooltip below screen
     if (y + height > bottomBound - paddingY) {

@@ -294,7 +294,7 @@ describe('<Tooltip />', () => {
           },
           expectation: (position) => {
             const [, y] = translateVectorFromTransform(position.transform);
-            expect(y).to.equal(65);
+            expect(y).to.equal(75);
           },
         },
         {
