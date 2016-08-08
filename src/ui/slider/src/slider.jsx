@@ -1,29 +1,65 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import d3Scale from 'd3-scale';
-import { bindAll, identity, map, zipObject } from 'lodash';
-import { CommonPropTypes, PureComponent, ensureWithinRange } from '../../../utils';
+import bindAll from 'lodash/bindAll';
+import identity from 'lodash/identity';
+import inRange from 'lodash/inRange';
+import map from 'lodash/map';
+import range from 'lodash/range';
+import reduce from 'lodash/reduce';
+import round from 'lodash/round';
+import zipObject from 'lodash/zipObject';
+import { CommonPropTypes, PureComponent } from '../../../utils';
 import { stateFromPropUpdates, updateFunc } from '../../../utils/props';
 
 import Track from './track';
 import Fill from './fill';
 import Handle from './handle';
 import ResponsiveContainer from '../../responsive-container';
-import { getFloatPrecision, valueWithPrecision } from './util';
 import style from './style.css';
 
 /**
- * Evaluate value and return a compatible object with keys 'min' and 'max'.
+ * Return object of indexes for 'low' and 'high' values
+ * @param values
+ * @param rangeList
+ * @return {Object}
+ */
+function getIndexesForValues(values, rangeList) {
+  return reduce(values, (acc, value, key) => {
+    return {
+      ...acc,
+      [key]: rangeList.indexOf(value),
+    };
+  }, {});
+}
+
+/**
+ * Return object of values for 'low' and 'high' indexes
+ * @param indexes
+ * @param rangeList
+ * @return {Object}
+ */
+function getValuesForIndexes(indexes, rangeList) {
+  return reduce(indexes, (acc, value, key) => {
+    return {
+      ...acc,
+      [key]: rangeList[value],
+    };
+  }, {});
+}
+
+/**
+ * Evaluate value param and return a compatible object with keys 'low' and 'high'.
  * @param value
  * @returns {Object}
  */
-function getMinMaxValues(value) {
-  if (typeof value === 'number') {
-    return { min: value };
-  } else if (Array.isArray(value)) {
-    return zipObject(['min', 'max'], value);
+function getLowHighValues(value) {
+  if (Array.isArray(value)) {
+    return zipObject(['low', 'high'], value);
+  } else if (typeof value === 'object') {
+    return value;
   }
-  return value;
+  return { low: value };
 }
 
 /**
@@ -34,7 +70,7 @@ function getMinMaxValues(value) {
  */
 function valueByHandleCount(value, handleCount) {
   if (handleCount === 1) {
-    return value.min;
+    return value.low;
   }
   return value;
 }
@@ -44,45 +80,45 @@ export default class Slider extends PureComponent {
     super(props);
 
     this.state = {
+      ...stateFromPropUpdates(Slider.propUpdates, {}, props, { scale: d3Scale.scaleLinear() }),
       render: false,
-      values: getMinMaxValues(props.value),
-      scale: d3Scale.scaleLinear()
-        .clamp(true)
-        .domain([props.minValue, props.maxValue]),
       snapTarget: {},
     };
 
-    this.handleCount = Object.keys(this.state.values).length;
+    this.handleCount = Object.keys(this.state.indexes).length;
 
     bindAll(this, [
       'onHandleMove',
       'onHandleKeyDown',
       'onTrackClick',
       'trackRef',
+      'doSetState',
     ]);
   }
 
   componentDidMount() {
-    this.receiveTrackWidth(this.props);
+    this.doSetState(this.receiveTrackWidth(this.state));
   }
 
-  componentWillReceiveProps(newProps) {
-    const state = {};
+  componentWillReceiveProps(nextProps) {
+    let state = {
+      range: this.state.range,
+      scale: this.state.scale,
+    };
+
+    state = stateFromPropUpdates(Slider.propUpdates, this.props, nextProps, state);
 
     // If the extents or width changes, the scale and snapTarget must be recalculated.
-    if ((this.props.minValue !== newProps.minValue) ||
-        (this.props.maxValue !== newProps.maxValue) ||
-        (this.props.step !== newProps.step)) {
-      this.state.scale.domain([newProps.minValue, newProps.maxValue]);
-      this.receiveTrackWidth(newProps);
+    if (this.props.range !== nextProps.range) {
+      state = this.receiveTrackWidth(state);
     }
 
-    this.setState(stateFromPropUpdates(Slider.propUpdates, this.props, newProps, state));
+    this.setState(state);
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.width !== prevProps.width) {
-      this.receiveTrackWidth(this.props);
+      this.doSetState(this.receiveTrackWidth(this.state));
     }
   }
 
@@ -91,14 +127,19 @@ export default class Slider extends PureComponent {
       if (!event.dx) return;
 
       const { pageX, dx } = event;
-      const { scale, values } = this.state;
+      const { scale, indexes } = this.state;
 
-      const nextPos = scale(values[key]) + dx;
-      if (!(ensureWithinRange(pageX, [nextPos - (offset * 2), nextPos]) === pageX)) return;
+      // Calculate next position, handle extent, and index value
+      const nextPos = scale(indexes[key]) + dx;
+      const handleExtent = nextPos - (offset * 2);
+      const index = round(scale.invert(nextPos));
 
-      const value = valueWithPrecision(scale.invert(nextPos), this.precision);
+      // Check that the mouse X pos is within the handle extent,
+      // and that the computed value is in the range list
+      if (!inRange(pageX - handleExtent, nextPos - handleExtent) ||
+            !this.state.range[index]) return;
 
-      this.updateValueFromEvent(value, key);
+      this.updateValueFromEvent(index, key);
     };
   }
 
@@ -107,10 +148,10 @@ export default class Slider extends PureComponent {
       let step;
       switch (event.keyCode) {
         case 37:
-          step = -this.props.step;
+          step = -1;
           break;
         case 39:
-          step = this.props.step;
+          step = 1;
           break;
         default:
           return;
@@ -119,45 +160,47 @@ export default class Slider extends PureComponent {
       event.stopPropagation();
       event.preventDefault();
 
-      const value = valueWithPrecision(this.state.values[key] + step, this.precision);
+      const index = this.state.indexes[key] + step;
 
-      this.updateValueFromEvent(value, key);
+      this.updateValueFromEvent(index, key);
     };
   }
 
   onTrackClick(event) {
-    const { values } = this.state;
+    const { scale, indexes } = this.state;
 
-    const value = valueWithPrecision(this.state.scale.invert(event.snap.x), this.precision);
+    const index = round(scale.invert(event.snap.x));
 
-    /* Determine which handle is closer. 'min' == true, 'max' == false */
-    const comp = values.max === undefined ||
-      (Math.abs(values.min - value) < Math.abs(values.max - value) || values.min > value);
+    /* Determine which handle is closer. 'low' == true, 'high' == false */
+    const comp = indexes.high === undefined ||
+      (Math.abs(indexes.low - index) < Math.abs(indexes.high - index) || indexes.low > index);
 
-    const key = comp ? 'min' : 'max';
+    const key = comp ? 'low' : 'high';
 
-    this.updateValueFromEvent(value, key);
+    this.updateValueFromEvent(index, key);
   }
 
-  updateValueFromEvent(value, key) {
-    if (value !== this.state.values[key] &&
-        value >= this.props.minValue &&
-        value <= this.props.maxValue) {
-      const values = { ...this.state.values, [key]: value };
+  updateValueFromEvent(index, key) {
+    if (index !== this.state.indexes[key] && this.state.range[index]) {
+      const values = getValuesForIndexes({ ...this.state.indexes, [key]: index }, this.state.range);
 
-      if (values.max === undefined || values.min <= values.max) {
+      if (values.high === undefined || values.low <= values.high) {
         this.props.onChange(valueByHandleCount({ ...values }, this.handleCount), key);
       }
     }
   }
 
-  receiveTrackWidth(props) {
-    this.precision = getFloatPrecision(props.step);
-    this.setState({
+  receiveTrackWidth(state) {
+    return {
+      ...state,
       render: true,
-      scale: this.state.scale.range([0, this._track.width]),
-      snapTarget: { x: this._track.width / ((props.maxValue - props.minValue) / props.step) },
-    });
+      scale: state.scale.range([0, this._track.width]),
+      snapTarget: { x: this._track.width / (state.range.length - 1) },
+    };
+  }
+
+  doSetState(state) {
+    this.setState(state);
   }
 
   trackRef(ref) {
@@ -167,12 +210,12 @@ export default class Slider extends PureComponent {
   renderFill() {
     if (!this.state.render || !this.props.fill) return null;
 
-    const { values, scale } = this.state;
+    const { indexes, scale } = this.state;
     const { fillStyle, fillClassName } = this.props;
 
-    return map(values, (value, key) => {
-      const direction = key === 'min' ? 'left' : 'right';
-      const position = scale(value);
+    return map(indexes, (index, key) => {
+      const direction = key === 'low' ? 'left' : 'right';
+      const position = scale(index);
       return (
         <Fill
           key={`fill:${key}`}
@@ -188,29 +231,29 @@ export default class Slider extends PureComponent {
   renderHandles() {
     if (!this.state.render) return null;
 
-    const { values, scale, snapTarget } = this.state;
+    const { indexes, scale, snapTarget } = this.state;
     const { labelFunc, handleClassName, handleStyle } = this.props;
 
     return (
       <div className={style['handle-track']}>
         <div className={style['flag-base']}></div>
-        {map(values, (value, key) => {
-          const direction = key === 'min' ? 'left' : 'right';
-          const position = scale(value);
+        {map(indexes, (index, key) => {
+          const direction = key === 'low' ? 'left' : 'right';
+          const position = scale(index);
           return (
             <ResponsiveContainer
               key={`handle:${key}`}
             >
               <Handle
                 className={classNames(handleClassName,
-                                      { [style.connected]: values.min === values.max })}
+                                      { [style.connected]: indexes.low === indexes.high })}
                 style={handleStyle}
                 onMove={this.onHandleMove}
                 onKeyDown={this.onHandleKeyDown}
                 name={key}
                 direction={direction}
                 position={position}
-                label={value}
+                label={this.state.range[index]}
                 labelFunc={labelFunc}
                 snapTarget={snapTarget}
               />
@@ -257,33 +300,38 @@ export default class Slider extends PureComponent {
 }
 
 Slider.propTypes = {
+  /* class name styles applied to outermost wrapper */
+  wrapperClassName: CommonPropTypes.className,
+  wrapperStyle: PropTypes.object,
+
   fontSize: PropTypes.string,
 
   /* width and height of Slider component. */
   width: PropTypes.number,
 
   /* extents of slider values. */
-  minValue: PropTypes.number.isRequired,
-  maxValue: PropTypes.number.isRequired,
-
-  /* step between slider values. */
-  step: PropTypes.number,
-
-  /* class name styles applied to outermost wrapper */
-  wrapperClassName: CommonPropTypes.className,
-  wrapperStyle: PropTypes.object,
+  range: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.shape({
+      low: PropTypes.number,
+      high: PropTypes.number,
+      steps: PropTypes.number,
+      precision: PropTypes.number,
+    }),
+  ]).isRequired,
 
   /*
    * Initial selected value.
    * If number, a single slider handle will be rendered.
-   * If object with keys 'min' and 'max', two slider handles will be rendered.
+   * If object with keys 'low' and 'high', two slider handles will be rendered.
    */
   value: PropTypes.oneOfType([
     PropTypes.number,
+    PropTypes.string,
     PropTypes.array,
     PropTypes.shape({
-      min: PropTypes.number,
-      max: PropTypes.number,
+      low: PropTypes.number,
+      high: PropTypes.number,
     }),
   ]).isRequired,
 
@@ -322,7 +370,7 @@ Slider.propTypes = {
   /*
    * callback function when value is changed.
    * Params:
-   *   value - object with keys ['min'] and 'max'
+   *   value - object with keys ['low'] and 'high'
    *   key - key of most recent value change.
    */
   onChange: PropTypes.func.isRequired,
@@ -330,12 +378,30 @@ Slider.propTypes = {
 
 Slider.defaultProps = {
   width: 200,
-  step: 1,
   labelFunc: identity,
 };
 
 Slider.propUpdates = {
-  value: updateFunc((nextProp) => {
-    return { values: getMinMaxValues(nextProp) };
+  range: updateFunc((nextProp, propName, nextProps, state) => {
+    let nextRange = nextProp;
+
+    if (!Array.isArray(nextProp)) {
+      const delta = nextProp.high - nextProp.low;
+      const steps = nextProp.steps || delta + 1;
+      nextRange = range(steps).map(
+        (d) => round(d * delta / (steps - 1) + nextProp.low, nextProp.precision)
+      );
+    }
+
+    return {
+      range: nextRange,
+      scale: state.scale.domain([0, nextRange.length - 1]),
+    };
+  }),
+  value: updateFunc((nextProp, propName, nextProps, state) => {
+    return { indexes: getIndexesForValues(getLowHighValues(nextProp), state.range) };
+  }),
+  width: updateFunc(() => {
+    return { render: false };
   }),
 };
