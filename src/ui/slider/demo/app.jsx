@@ -89,15 +89,9 @@ class App extends React.Component {
     const precision = +getValueOrPlaceholder(document.getElementById('newPrecision'));
 
     const newExtent = [minExtent, maxExtent].sort((a, b) => { return a - b; });
-    // const oldExtent = [this.state.minValue, this.state.maxValue];
 
     const newSteps = +document.getElementById('newSteps').value ||
                        (newExtent[1] - newExtent[0] + 1);
-
-    // const valueSetter = (value, step) => {
-    //   return valueWithPrecision(numFromPercent(percentOfRange(value, oldExtent), newExtent),
-    //                             getFloatPrecision(step));
-    // };
 
     this.setState({
       range: {
@@ -186,12 +180,11 @@ class App extends React.Component {
 {/* <pre><code>
     <Slider
       width={200}
-      minValue={2001}
-      maxValue={2025}
+      range={{ low: 2001, high: 2005 }}
       onChange={function (value, key) {...}}
       value={{
-        min: 2001, //(initially)
-        max: 2005, //(initially)
+        low: 2001,  // (initially)
+        high: 2025, // (initially)
       }}
       fill
       ticks
@@ -212,8 +205,7 @@ class App extends React.Component {
 {/* <pre><code>
     <Slider
       width={200}
-      minValue={2001}
-      maxValue={2025}
+      range={{ low: 2001, high: 2005 }}
       onChange={function (value, key) {...}}
       value={2015} // (initially)
       fill
@@ -243,8 +235,7 @@ class App extends React.Component {
     items = ['red', 'orange', 'yellow', ...];
     <Slider
       width={200}
-      minValue={0}
-      maxValue={items.length - 1}
+      range={items}
       onChange={function (value, key) {...}}
       value={this.state.value}
       labelFunc={function (value) {...}}
