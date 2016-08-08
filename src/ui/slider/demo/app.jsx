@@ -2,11 +2,9 @@ import React from 'react';
 import { render } from 'react-dom';
 import d3Random from 'd3-random';
 import bindAll from 'lodash/bindAll';
-import { percentOfRange, numFromPercent } from '../../../utils/';
 
 import Slider from '../';
 import Button from '../../button';
-import { getFloatPrecision, valueWithPrecision } from '../src/util';
 
 function getValueOrPlaceholder(el) {
   return el.value || el.placeholder;
@@ -21,14 +19,25 @@ class App extends React.Component {
     this.state = {
       fontSize: '9pt',
       width: 200,
-      minValue: 2001,
-      maxValue: 2025,
-      rangeSliderValues: {
-        min: 2001,
-        max: 2005,
+      range: {
+        low: 2001,
+        high: 2025,
+        steps: 25,
+        precision: 5,
+      },
+      rangeValue: {
+        low: 2001,
+        high: 2025,
       },
       singleValue: 2015,
-      listValue: 0,
+      singleFillStyle: {
+        backgroundColor: '#ccc',
+        transition: 'width 0.3s ease-out',
+      },
+      singleHandleStyle: {
+        transition: 'all 0.3s ease-out',
+      },
+      listValue: this.items[0],
       fillStyle: {
         backgroundColor: this.items[0],
       },
@@ -56,7 +65,7 @@ class App extends React.Component {
 
   onChange(value, key) {
     console.log(key, value);
-    this.setState({ rangeSliderValues: value });
+    this.setState({ rangeValue: value });
   }
 
   onSingleValueChange(value) {
@@ -65,11 +74,11 @@ class App extends React.Component {
   }
 
   onListValueChange(value) {
-    console.log(this.items[value]);
+    console.log(value);
     this.setState({
       listValue: value,
       fillStyle: {
-        backgroundColor: this.items[value],
+        backgroundColor: value,
       },
     });
   }
@@ -77,25 +86,31 @@ class App extends React.Component {
   setNewMinMax() {
     const minExtent = +getValueOrPlaceholder(document.getElementById('newMinExtent'));
     const maxExtent = +getValueOrPlaceholder(document.getElementById('newMaxExtent'));
-    const newStep = +getValueOrPlaceholder(document.getElementById('newStep'));
+    const precision = +getValueOrPlaceholder(document.getElementById('newPrecision'));
 
     const newExtent = [minExtent, maxExtent].sort((a, b) => { return a - b; });
-    const oldExtent = [this.state.minValue, this.state.maxValue];
+    // const oldExtent = [this.state.minValue, this.state.maxValue];
 
-    const valueSetter = (value, step) => {
-      return valueWithPrecision(numFromPercent(percentOfRange(value, oldExtent), newExtent),
-                                getFloatPrecision(step));
-    };
+    const newSteps = +document.getElementById('newSteps').value ||
+                       (newExtent[1] - newExtent[0] + 1);
+
+    // const valueSetter = (value, step) => {
+    //   return valueWithPrecision(numFromPercent(percentOfRange(value, oldExtent), newExtent),
+    //                             getFloatPrecision(step));
+    // };
 
     this.setState({
-      minValue: Math.min(...newExtent),
-      maxValue: Math.max(...newExtent),
-      step: newStep,
-      rangeSliderValues: {
-        min: valueSetter(this.state.rangeSliderValues.min, newStep),
-        max: valueSetter(this.state.rangeSliderValues.max, newStep),
+      range: {
+        precision,
+        low: Math.min(...newExtent),
+        high: Math.max(...newExtent),
+        steps: newSteps,
       },
-      singleValue: valueSetter(this.state.singleValue, newStep),
+      rangeValue: {
+        low: Math.min(...newExtent),
+        high: Math.max(...newExtent),
+      },
+      singleValue: Math.min(...newExtent),
     });
 
     this.nextExtent = [this.randomGenerator([1900, 2016]), this.randomGenerator([1900, 2016])];
@@ -139,7 +154,12 @@ class App extends React.Component {
             <br />
             <input id="newMaxExtent" type="text" placeholder={`${Math.max(...this.nextExtent)}`} />
             <br />
-            <input id="newStep" type="text" placeholder="1" />
+            <input
+              id="newSteps" type="text"
+              placeholder={`${Math.abs(this.nextExtent[1] - this.nextExtent[0]) + 1}`}
+            />
+            <br />
+            <input id="newPrecision" type="text" placeholder={`${this.state.range.precision}`} />
           </div>
           <div>
             <Button
@@ -180,12 +200,9 @@ class App extends React.Component {
             <Slider
               fontSize={this.state.fontSize}
               width={this.state.width}
-              height={24}
-              minValue={this.state.minValue}
-              maxValue={this.state.maxValue}
+              range={this.state.range}
               onChange={this.onChange}
-              value={this.state.rangeSliderValues}
-              step={this.state.step}
+              value={this.state.rangeValue}
               fill
               ticks
             />
@@ -212,19 +229,12 @@ class App extends React.Component {
             <Slider
               fontSize={this.state.fontSize}
               width={this.state.width}
-              minValue={this.state.minValue}
-              maxValue={this.state.maxValue}
+              range={this.state.range}
               onChange={this.onSingleValueChange}
               value={this.state.singleValue}
-              step={this.state.step}
               fill
-              fillStyle={{
-                backgroundColor: '#ccc',
-                transition: 'width 0.3s ease-out',
-              }}
-              handleStyle={{
-                transition: 'all 0.3s ease-out',
-              }}
+              fillStyle={this.state.singleFillStyle}
+              handleStyle={this.state.singleHandleStyle}
             />
           </section>
           <section>
@@ -245,11 +255,9 @@ class App extends React.Component {
             <Slider
               fontSize={this.state.fontSize}
               width={this.state.width}
-              minValue={0}
-              maxValue={this.items.length - 1}
+              range={this.items}
               onChange={this.onListValueChange}
               value={this.state.listValue}
-              labelFunc={this.listLabelFunc}
               fill
               fillStyle={this.state.fillStyle}
             />
