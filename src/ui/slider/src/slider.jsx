@@ -26,10 +26,15 @@ import style from './style.css';
  */
 function getIndexesForValues(values, rangeList) {
   return reduce(values, (acc, value, key) => {
+    /* eslint-disable no-nested-ternary */
+    // if value is not in the range list, assign either first or last element, depending on key
+    const index = rangeList.indexOf(value);
     return {
       ...acc,
-      [key]: rangeList.indexOf(value),
+      [key]: index !== -1 ?
+               index : key === 'low' ? 0 : rangeList.length - 1,
     };
+    /* eslint-enable no-nested-ternary */
   }, {});
 }
 

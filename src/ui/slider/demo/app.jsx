@@ -26,8 +26,8 @@ class App extends React.Component {
         precision: 5,
       },
       rangeValue: {
-        low: 2001,
-        high: 2025,
+        low: undefined,
+        high: undefined,
       },
       singleValue: 2015,
       singleFillStyle: {
