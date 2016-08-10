@@ -67,19 +67,6 @@ function getLowHighValues(value) {
   return { low: value };
 }
 
-/**
- * Return value more similar to the input value. If one handle, only return number value.
- * @param value
- * @param handleCount
- * @returns {*}
- */
-function valueByHandleCount(value, handleCount) {
-  if (handleCount === 1) {
-    return value.low;
-  }
-  return value;
-}
-
 export default class Slider extends PureComponent {
   constructor(props) {
     super(props);
@@ -190,7 +177,7 @@ export default class Slider extends PureComponent {
       const values = getValuesForIndexes({ ...this.state.indexes, [key]: index }, this.state.range);
 
       if (values.high === undefined || values.low <= values.high) {
-        this.props.onChange(event, valueByHandleCount({ ...values }, this.handleCount), this);
+        this.props.onChange(event, values, this);
       }
     }
   }
