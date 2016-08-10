@@ -144,7 +144,7 @@ export default class Slider extends PureComponent {
       if (!inRange(pageX - handleExtent, nextPos - handleExtent) ||
             !this.state.range[index]) return;
 
-      this.updateValueFromEvent(index, key);
+      this.updateValueFromEvent(event, index, key);
     };
   }
 
@@ -167,7 +167,7 @@ export default class Slider extends PureComponent {
 
       const index = this.state.indexes[key] + step;
 
-      this.updateValueFromEvent(index, key);
+      this.updateValueFromEvent(event, index, key);
     };
   }
 
@@ -182,15 +182,15 @@ export default class Slider extends PureComponent {
 
     const key = comp ? 'low' : 'high';
 
-    this.updateValueFromEvent(index, key);
+    this.updateValueFromEvent(event, index, key);
   }
 
-  updateValueFromEvent(index, key) {
+  updateValueFromEvent(event, index, key) {
     if (index !== this.state.indexes[key] && this.state.range[index]) {
       const values = getValuesForIndexes({ ...this.state.indexes, [key]: index }, this.state.range);
 
       if (values.high === undefined || values.low <= values.high) {
-        this.props.onChange(valueByHandleCount({ ...values }, this.handleCount), key);
+        this.props.onChange(event, valueByHandleCount({ ...values }, this.handleCount), this);
       }
     }
   }
@@ -330,9 +330,9 @@ Slider.propTypes = {
 
   /*
    * callback function when value is changed.
-   * Params:
-   *   value - object with keys ['low'] and 'high'
-   *   key - key of most recent value change.
+   * @param {Object} event - triggered the action
+   * @param {Object} value - low and high values
+   * @param {Object} Slider - the slider object itself
    */
   onChange: PropTypes.func.isRequired,
 

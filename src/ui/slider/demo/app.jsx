@@ -63,17 +63,17 @@ class App extends React.Component {
   }
 
 
-  onChange(value, key) {
-    console.log(key, value);
+  onChange(event, value) {
+    console.log(value);
     this.setState({ rangeValue: value });
   }
 
-  onSingleValueChange(value) {
+  onSingleValueChange(event, value) {
     console.log(value);
     this.setState({ singleValue: value });
   }
 
-  onListValueChange(value) {
+  onListValueChange(event, value) {
     console.log(value);
     this.setState({
       listValue: value,
