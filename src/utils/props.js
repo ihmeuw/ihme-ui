@@ -105,7 +105,7 @@ export function stateFromPropUpdates(propUpdates, prevProps, nextProps, state) {
 export function updateFunc(func) {
   return (acc, key, prevProps = {}, nextProps) => {
     return prevProps[key] !== nextProps[key] ?
-      { ...acc, ...func(nextProps[key], key, nextProps) } :
+      { ...acc, ...func(nextProps[key], key, nextProps, acc) } :
       acc;
   };
 }
@@ -123,5 +123,6 @@ export function updateFunc(func) {
  * @param {any} nextProp
  * @param {string} propName
  * @param {Object} nextProps
+ * @param {Object} state accumulator
  * @returns {Object} accumulated state.
  */

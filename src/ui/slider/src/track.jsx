@@ -89,19 +89,24 @@ export default class Track extends PureComponent {
 }
 
 Track.propTypes = {
-  className: CommonPropTypes.className,
-  style: PropTypes.object,
   children: PropTypes.node,
+
+  className: CommonPropTypes.className,
+
   onClick: PropTypes.func.isRequired,
+
   snapTarget: PropTypes.oneOfType([
     PropTypes.func,
     PropTypes.object,
   ]).isRequired,
 
+  style: PropTypes.object,
+
+  tickClassName: CommonPropTypes.className,
+  tickStyle: PropTypes.object,
+
   /* show ticks */
   ticks: PropTypes.bool,
   ticksClassName: CommonPropTypes.className,
   ticksStyle: PropTypes.object,
-  tickClassName: CommonPropTypes.className,
-  tickStyle: PropTypes.object,
 };
