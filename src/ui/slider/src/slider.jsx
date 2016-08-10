@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import d3Scale from 'd3-scale';
 import bindAll from 'lodash/bindAll';
+import difference from 'lodash/difference';
 import identity from 'lodash/identity';
 import inRange from 'lodash/inRange';
 import map from 'lodash/map';
@@ -17,6 +18,8 @@ import Fill from './fill';
 import Handle from './handle';
 import ResponsiveContainer from '../../responsive-container';
 import style from './style.css';
+
+const VALUE_KEYS = ['low', 'high'];
 
 /**
  * Return object of indexes for 'low' and 'high' values
@@ -60,8 +63,11 @@ function getValuesForIndexes(indexes, rangeList) {
  */
 function getLowHighValues(value) {
   if (Array.isArray(value)) {
-    return zipObject(['low', 'high'], value);
+    return zipObject(VALUE_KEYS, value);
   } else if (typeof value === 'object') {
+    if (difference(Object.keys(value), VALUE_KEYS).length) {
+      throw new TypeError(`Unexpected value keys: [${difference(Object.keys(value), VALUE_KEYS)}]`);
+    }
     return value;
   }
   return { low: value };
