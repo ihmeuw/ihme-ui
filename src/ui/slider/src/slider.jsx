@@ -340,8 +340,8 @@ Slider.propTypes = {
   range: PropTypes.oneOfType([
     PropTypes.array,
     PropTypes.shape({
-      low: PropTypes.number,
-      high: PropTypes.number,
+      low: PropTypes.number.isRequired,
+      high: PropTypes.number.isRequired,
       steps: PropTypes.number,
       precision: PropTypes.number,
     }),
@@ -369,8 +369,8 @@ Slider.propTypes = {
     PropTypes.string,
     PropTypes.array,
     PropTypes.shape({
-      low: PropTypes.number,
-      high: PropTypes.number,
+      low: PropTypes.any,
+      high: PropTypes.any,
     }),
   ]).isRequired,
 
@@ -409,6 +409,7 @@ Slider.propUpdates = {
     return { indexes: getIndexesForValues(getLowHighValues(nextProp), state.range) };
   }),
   width: updateFunc(() => {
+    // Track needs to be rendered with new width before Handles and Fill can be rendered
     return { render: false };
   }),
 };
