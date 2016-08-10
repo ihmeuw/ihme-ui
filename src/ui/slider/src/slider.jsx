@@ -305,14 +305,36 @@ export default class Slider extends PureComponent {
 }
 
 Slider.propTypes = {
-  /* class name styles applied to outermost wrapper */
-  wrapperClassName: CommonPropTypes.className,
-  wrapperStyle: PropTypes.object,
+  /* include fill in the track to indicate value. */
+  fill: PropTypes.bool,
+  fillClassName: CommonPropTypes.className,
+  fillStyle: PropTypes.object,
 
   fontSize: PropTypes.string,
 
-  /* width and height of Slider component. */
-  width: PropTypes.number,
+  handleClassName: CommonPropTypes.className,
+  handleStyle: PropTypes.object,
+
+  /*
+   * function applied to the selected value prior to rendering.
+   * Params:
+   *   value - selected value
+   *
+   * Returns:
+   *   'string'
+   *
+   * Default:
+   *   _.identity
+   */
+  labelFunc: PropTypes.func,
+
+  /*
+   * callback function when value is changed.
+   * Params:
+   *   value - object with keys ['low'] and 'high'
+   *   key - key of most recent value change.
+   */
+  onChange: PropTypes.func.isRequired,
 
   /* extents of slider values. */
   range: PropTypes.oneOfType([
@@ -324,6 +346,18 @@ Slider.propTypes = {
       precision: PropTypes.number,
     }),
   ]).isRequired,
+
+  /* class name and style for each tick */
+  tickClassName: CommonPropTypes.className,
+  tickStyle: PropTypes.object,
+
+  /* show ticks in track */
+  ticks: PropTypes.bool,
+  ticksClassName: CommonPropTypes.className,
+  ticksStyle: PropTypes.object,
+
+  trackClassName: CommonPropTypes.className,
+  trackStyle: PropTypes.object,
 
   /*
    * Initial selected value.
@@ -340,52 +374,20 @@ Slider.propTypes = {
     }),
   ]).isRequired,
 
-  /*
-   * function applied to the selected value prior to rendering.
-   * Params:
-   *   value - selected value
-   *
-   * Returns:
-   *   'string'
-   *
-   * Default:
-   *   _.identity
-   */
-  labelFunc: PropTypes.func,
+  /* width and height of Slider component. */
+  width: PropTypes.number,
 
-  handleClassName: CommonPropTypes.className,
-  handleStyle: PropTypes.object,
-
-  trackClassName: CommonPropTypes.className,
-  trackStyle: PropTypes.object,
-
-  /* include fill in the track to indicate value. */
-  fill: PropTypes.bool,
-  fillClassName: CommonPropTypes.className,
-  fillStyle: PropTypes.object,
-
-  /* show ticks in track */
-  ticks: PropTypes.bool,
-  ticksClassName: CommonPropTypes.className,
-  ticksStyle: PropTypes.object,
-  /* class name and style for each tick */
-  tickClassName: CommonPropTypes.className,
-  tickStyle: PropTypes.object,
-
-  /*
-   * callback function when value is changed.
-   * Params:
-   *   value - object with keys ['low'] and 'high'
-   *   key - key of most recent value change.
-   */
-  onChange: PropTypes.func.isRequired,
+  /* class name styles applied to outermost wrapper */
+  wrapperClassName: CommonPropTypes.className,
+  wrapperStyle: PropTypes.object,
 };
 
 Slider.defaultProps = {
-  width: 200,
   labelFunc: identity,
+  width: 200,
 };
 
+/* Order is important here. */
 Slider.propUpdates = {
   range: updateFunc((nextProp, propName, nextProps, state) => {
     let nextRange = nextProp;
