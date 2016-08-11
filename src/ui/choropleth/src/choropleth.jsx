@@ -243,7 +243,7 @@ export default class Choropleth extends React.Component {
               key={key}
               features={this.state.cache.feature[layer.name].features}
               data={this.state.processedData}
-              keyField={this.props.geoJSONKeyField}
+              keyField={this.props.geometryKeyField}
               valueField={this.props.valueField}
               pathGenerator={this.state.pathGenerator}
               colorScale={this.props.colorScale}
@@ -356,14 +356,28 @@ Choropleth.propTypes = {
   /* array of datum objects */
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
 
-  /* unique key of datum */
+  /*
+    unique key of datum
+    if a function, will be called with the datum object as first parameter
+  */
   keyField: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.func,
   ]).isRequired,
 
-  /* mapping of datum key field to geoJSON feature key. default: 'id' (from <Feature />) */
-  geoJSONKeyField: PropTypes.string,
+  /*
+    uniquely identifying field of geometry objects
+    if a function, will be called with the geometry object as first parameter
+    N.B.: the resolved value of this prop should match the resolved value of `keyField` above
+    e.g., if data objects are of the following shape: { location_id: <number>, mean: <number> }
+          and if features within topojson are of the following shape: { type: <string>, properties: { location_id: <number> }, arcs: <array> }
+          `keyField` may be one of the following: 'location_id', or (datum) => datum.location_id
+          `geometryKeyField` may be one of the following: 'location_id' or (feature) => feature.properties.location_id
+  */
+  geometryKeyField: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+  ]).isRequired,
 
   /* key of datum that holds the value to display */
   valueField: PropTypes.oneOfType([
