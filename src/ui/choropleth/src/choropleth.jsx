@@ -46,7 +46,7 @@ export default class Choropleth extends React.Component {
       scaleBase: scale,
       scaleFactor: 1,
       translate,
-      pathGenerator: this.createPathGenerator(scale, translate),
+      pathGenerator: this.createPathGenerator(scale, translate, props.width, props.height),
       cache: { ...extractedGeoJSON, },
       processedData: Choropleth.processData(props.data, props.keyField)
     };
@@ -120,7 +120,12 @@ export default class Choropleth extends React.Component {
                                         state.scale, null, center);
       }
 
-      state.pathGenerator = this.createPathGenerator(state.scale, state.translate);
+      state.pathGenerator = this.createPathGenerator(
+        state.scale,
+        state.translate,
+        nextProps.width,
+        nextProps.height
+      );
       this.zoom.scale(state.scale);
       this.zoom.translate(state.translate);
     }
@@ -161,7 +166,7 @@ export default class Choropleth extends React.Component {
    * @param translate
    * @returns {Function}
    */
-  createPathGenerator(scale, translate) {
+  createPathGenerator(scale, translate, width, height) {
     const transform = d3.geo.transform({
       point(x, y, z) {
         // mike bostock math
@@ -175,7 +180,12 @@ export default class Choropleth extends React.Component {
       }
     });
 
-    return d3.geo.path().projection(transform);
+    const clip = d3.geo.clipExtent()
+      .extent([[0, 0], [width, height]]);
+
+    return d3.geo.path().projection({
+      stream: (pointStream) => transform.stream(clip.stream(pointStream))
+    });
   }
 
   zoomEvent() {
@@ -183,7 +193,12 @@ export default class Choropleth extends React.Component {
 
     const translate = this.zoom.translate();
 
-    const pathGenerator = this.createPathGenerator(scale, translate);
+    const pathGenerator = this.createPathGenerator(
+      scale,
+      translate,
+      this.props.width,
+      this.props.height
+    );
 
     this.setState({
       scale,
