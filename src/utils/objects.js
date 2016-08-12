@@ -1,4 +1,4 @@
-import { reduce } from 'lodash';
+import { get as getValue, reduce } from 'lodash';
 
 /**
  * if given property is a function, call it with given obj
@@ -8,7 +8,7 @@ import { reduce } from 'lodash';
  * @returns {*}
  */
 export function propResolver(obj, property) {
-  return typeof property === 'function' ? property(obj) : obj[property];
+  return typeof property === 'function' ? property(obj) : getValue(obj, property);
 }
 
 /**
