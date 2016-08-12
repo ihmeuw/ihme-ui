@@ -143,6 +143,7 @@ export default class ChoroplethLegend extends React.Component {
 
   render() {
     const {
+      domain,
       width,
       height,
       margins,
@@ -180,6 +181,7 @@ export default class ChoroplethLegend extends React.Component {
               height={sliderHeight}
             />
             <Slider
+              domain={domain}
               xScale={xScale}
               rangeExtent={rangeExtent}
               width={adjustedWidth}

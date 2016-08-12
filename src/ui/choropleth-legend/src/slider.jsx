@@ -2,52 +2,6 @@ import React, { PropTypes } from 'react';
 import { isWithinRange } from '../../../utils/domain';
 import SliderHandle from './slider-handle';
 
-const propTypes = {
-  /* linear x scale */
-  xScale: PropTypes.func.isRequired,
-
-  /* [min, max] of domain (in data space) user has selected; used to position slider handles */
-  rangeExtent: PropTypes.array.isRequired,
-
-  /* width of parent container, in px */
-  width: PropTypes.number.isRequired,
-
-  /* the height of element (path, line, rect) that the slider will sit atop, in px */
-  height: PropTypes.number,
-
-  /* y shift of entire slider, in px */
-  translateY: PropTypes.number,
-
-  /*
-    float value used for implementing "zooming";
-    any element that needs to become larger in "presentation mode"
-    should respond to this scale factor.
-    guide:
-      zoom: 0 -> smallest possible
-      zoom: 0.5 -> half of normal size
-      zoom: 1 -> normal
-      zoom: 2 -> twice normal size
-  */
-  zoom: PropTypes.number,
-
-  /* top margin applied within svg document handle is placed within; used to calc origin offset */
-  marginTop: PropTypes.number,
-
-  /* left margin applied within svg document handle is placed within; used to calc origin offset */
-  marginLeft: PropTypes.number,
-
-  /* will be called with updated extent (as percentage of slider width) */
-  onSliderMove: PropTypes.func
-};
-
-const defaultProps = {
-  height: 15,
-  zoom: 1,
-  marginTop: 0,
-  marginLeft: 0,
-  translateY: 1,
-  onSliderMove: () => { return; }
-};
 
 export default class Slider extends React.Component {
   constructor(props) {
@@ -183,5 +137,51 @@ export default class Slider extends React.Component {
   }
 }
 
-Slider.propTypes = propTypes;
-Slider.defaultProps = defaultProps;
+Slider.propTypes = {
+  domain: PropTypes.array.isRequired,
+
+  /* linear x scale */
+  xScale: PropTypes.func.isRequired,
+
+  /* [min, max] of domain (in data space) user has selected; used to position slider handles */
+  rangeExtent: PropTypes.array.isRequired,
+
+  /* width of parent container, in px */
+  width: PropTypes.number.isRequired,
+
+  /* the height of element (path, line, rect) that the slider will sit atop, in px */
+  height: PropTypes.number,
+
+  /* y shift of entire slider, in px */
+  translateY: PropTypes.number,
+
+  /*
+   float value used for implementing "zooming";
+   any element that needs to become larger in "presentation mode"
+   should respond to this scale factor.
+   guide:
+   zoom: 0 -> smallest possible
+   zoom: 0.5 -> half of normal size
+   zoom: 1 -> normal
+   zoom: 2 -> twice normal size
+   */
+  zoom: PropTypes.number,
+
+  /* top margin applied within svg document handle is placed within; used to calc origin offset */
+  marginTop: PropTypes.number,
+
+  /* left margin applied within svg document handle is placed within; used to calc origin offset */
+  marginLeft: PropTypes.number,
+
+  /* will be called with updated extent (as percentage of slider width) */
+  onSliderMove: PropTypes.func
+};
+
+Slider.defaultProps = {
+  height: 15,
+  zoom: 1,
+  marginTop: 0,
+  marginLeft: 0,
+  translateY: 1,
+  onSliderMove: () => { return; }
+};
