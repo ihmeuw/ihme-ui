@@ -7,7 +7,7 @@ import { isNaN, isUndefined, map, range as range_ } from 'lodash';
 export function percentOfRange(num, range) {
   const [min, max] = range;
   return (1 / ((max - min) / (num - min)));
-};
+}
 
 /**
  * @param {Number} percent -> value between [0, 1] inclusive
@@ -16,7 +16,7 @@ export function percentOfRange(num, range) {
 export function numFromPercent(percent, range) {
   const [min, max] = range;
   return min + ((max - min) * percent);
-};
+}
 
 /**
  * @param {Number} percent -> value between [0, 1] inclusive
@@ -32,7 +32,7 @@ export function domainFromPercent(newDomain, oldDomain, rangeExtent) {
   if (isNaN(x2Pct) || isUndefined(x2Pct)) x2Pct = 1;
 
   return [numFromPercent(x1Pct, newDomain), numFromPercent(x2Pct, newDomain)];
-};
+}
 
 /**
  * Turn [min, max] domain into multi-step domain
@@ -50,7 +50,7 @@ export function generateColorDomain(colors, domain) {
   return map(range_(colors.length), (i) => {
     return i * step + domainMin;
   });
-};
+}
 
 /**
  * Base check that value is within the range of extent (up to and including start and end)
@@ -60,7 +60,7 @@ export function generateColorDomain(colors, domain) {
  */
 export function isWithinRange(value, extent) {
   return !!(value >= extent[0] && value <= extent[1]);
-};
+}
 
 
 /**
@@ -81,4 +81,4 @@ export function isWithinRange(value, extent) {
 export function ensureWithinRange(value, extent) {
   if (extent.length < 1) return value;
   return Math.min(Math.max(Math.min(...extent), value), Math.max(...extent));
-};
+}
