@@ -1,15 +1,26 @@
 import React, { PropTypes } from 'react';
-import { isWithinRange } from '../../../utils/domain';
+import { isWithinRange, percentOfRange } from '../../../utils';
 import SliderHandle from './slider-handle';
 
+/**
+ * if the slider handle is being moved towards 0 (positionChange < 0)
+ * or towards 1 (positionChange > 0)
+ * and if the slider is within tolerance of the bounds, snap to bounds
+ * without snapping behavior, it is very difficult to reset the slider handles
+ * @param {number} tolerance - tolerance within which to snap to bounds
+ * @param positionAsPercent - position of slider handle, as percent of track
+ * @param positionChange - delta in handle move
+ * @return {number}
+ */
+function maybeSnapToBounds(tolerance, positionAsPercent, positionChange) {
+  if (positionChange < 0 && Math.abs(0 - positionAsPercent) < tolerance) return 0;
+  if (positionChange > 0 && Math.abs(1 - positionAsPercent) < tolerance) return 1;
+  return positionAsPercent;
+}
 
 export default class Slider extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      x1: 0,
-      x2: 1
-    };
 
     this.decoratedSliderMove = this.decoratedSliderMove.bind(this);
   }
@@ -35,28 +46,41 @@ export default class Slider extends React.Component {
    * @param {String} which -> 'x1' or 'x2'
    */
   decoratedSliderMove(positionChange, which) {
-    const { onSliderMove, width } = this.props;
-    const { x1, x2 } = this.state;
+    const {
+      domain,
+      onSliderMove,
+      rangeExtent: [minExtent, maxExtent],
+      width,
+    } = this.props;
 
+    let lowerExtent = percentOfRange(minExtent, domain);
+    let upperExtent = percentOfRange(maxExtent, domain);
+    let positionAsPercent;
     const percentChange = positionChange / width;
-    let positionAsPercent = which === 'x1' ? x1 + percentChange : x2 + percentChange;
-
-    // find position of slider handle as percent of range
-    // if the slider handle is being moved towards 0 (positionChange < 0)
-    // or towards 1 (positionChange > 0)
-    // and if the slider is within tolerance of the bounds, snap to bounds
-    // without snapping behavior, it is very difficult to reset the slider handles
     const tolerance = 0.005;
-    if (positionChange < 0 && Math.abs(0 - positionAsPercent) < tolerance) positionAsPercent = 0;
-    if (positionChange > 0 && Math.abs(1 - positionAsPercent) < tolerance) positionAsPercent = 1;
 
-    // prevent the slider handles from crossing
     switch (which) {
       case 'x1':
-        if (positionAsPercent >= x2) positionAsPercent = x2;
+        positionAsPercent = maybeSnapToBounds(
+          tolerance,
+          lowerExtent + percentChange,
+          percentChange
+        );
+
+        // prevent the slider handles from crossing
+        if (positionAsPercent > upperExtent) positionAsPercent = upperExtent;
+        lowerExtent = positionAsPercent;
         break;
       case 'x2':
-        if (positionAsPercent <= x1) positionAsPercent = x1;
+        positionAsPercent = maybeSnapToBounds(
+          tolerance,
+          upperExtent + percentChange,
+          percentChange
+        );
+
+        // prevent the slider handles from crossing
+        if (positionAsPercent < lowerExtent) positionAsPercent = lowerExtent;
+        upperExtent = positionAsPercent;
         break;
       default:
         break;
@@ -67,18 +91,9 @@ export default class Slider extends React.Component {
     // while xScale is already clamped, this check prevents unnecessary render cycles
     if (!isWithinRange(positionAsPercent, [0, 1])) return;
 
-    // keep internal state within this component
-    this.setState({ [which]: positionAsPercent }, () => {
-      const { x1: nextX1, x2: nextX2 } = this.state;
-
-      // order the range extent
-      const lowerExtent = Math.min(nextX1, nextX2);
-      const upperExtent = Math.max(nextX1, nextX2);
-
-      // fire action handler passed in to <ChoroplethLegend />
-      // with updated range extent
-      onSliderMove([lowerExtent, upperExtent]);
-    });
+    // fire action handler passed in to <ChoroplethLegend />
+    // with updated range extent
+    onSliderMove([lowerExtent, upperExtent]);
   }
 
   render() {
