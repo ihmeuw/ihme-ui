@@ -35,10 +35,11 @@ export {
 } from './react';
 
 export {
+  clampedLinearScale,
+  domainToRange,
   getScale,
   getScaleTypes,
   rangeToDomain,
-  domainToRange,
 } from './scale';
 
 export {
