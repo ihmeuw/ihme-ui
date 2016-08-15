@@ -10,6 +10,7 @@ import {
 
 import {
   CommonPropTypes,
+  propResolver,
   propsChanged,
   PureComponent,
   stateFromPropUpdates,
@@ -18,20 +19,6 @@ import {
 import Path from './path';
 
 export default class FeatureLayer extends PureComponent {
-  /**
-   * Pull unique key of GeoJSON feature off feature object
-   * @param {String|Function} resolver
-   * @param {Object} feature - GeoJSON feature
-   * @returns {String}
-   */
-  static getFeatureKey(resolver, feature) {
-    // if keyField is a function, call it with the current feature
-    // otherwise, try to full it off feature, then feature.properties
-    return typeof resolver === 'function'
-      ? resolver(feature)
-      : feature[resolver] || feature.properties[resolver];
-  }
-
   constructor(props) {
     super(props);
 
@@ -66,7 +53,7 @@ export default class FeatureLayer extends PureComponent {
       <g>
         {
           map(this.state.sortedFeatures, (feature) => {
-            const key = FeatureLayer.getFeatureKey(keyField, feature);
+            const key = propResolver(feature, keyField);
 
             // if key didn't resolve to anything, return null
             if (!key) return null;
@@ -76,7 +63,7 @@ export default class FeatureLayer extends PureComponent {
             const datum = getValue(data, [key]);
             const value = typeof valueField === 'function'
               ? valueField(datum, feature)
-              : getValue(datum, [valueField]);
+              : getValue(datum, valueField);
 
             const fill = value ? colorScale(value) : '#ccc';
 
@@ -188,7 +175,7 @@ FeatureLayer.propUpdates = {
       sortedFeatures: sortBy(nextProps.features, (feature) =>
         indexOf(
           nextProps.selectedLocations,
-          FeatureLayer.getFeatureKey(nextProps.keyField, feature)
+          propResolver(feature, nextProps.keyField)
         )
       ),
     });

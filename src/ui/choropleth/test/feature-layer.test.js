@@ -67,7 +67,7 @@ describe('Choropleth <FeatureLayer />', () => {
         <FeatureLayer
           features={featuresWithProperties}
           data={data}
-          keyField={keyField}
+          keyField="properties.id"
           valueField={valueField}
           pathGenerator={pathGenerator}
           colorScale={colorScale}
