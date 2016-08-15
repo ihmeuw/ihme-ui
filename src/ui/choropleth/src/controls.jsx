@@ -7,7 +7,7 @@ import { CommonPropTypes } from '../../../utils';
 
 export default function Controls(props) {
   return (
-    <div className={classNames(style.common, props.className)} style={props.style}>
+    <div className={classNames(style.wrapper, props.className)} style={props.style}>
       <Button
         className={classNames(style.button, props.buttonClassName)}
         onClick={props.onZoomIn}
