@@ -6,6 +6,8 @@ import { Scatter } from '../../shape';
 import Slider from './slider';
 import { XAxis } from '../../axis';
 
+import styles from './choropleth-legend.css';
+
 const propTypes = {
   /* px width */
   width: PropTypes.number,
@@ -191,6 +193,7 @@ export default class ChoroplethLegend extends React.Component {
             onMouseOver={onMouseOver}
             scales={{ x: xScale }}
             size={180 * zoom}
+            symbolClassName={styles['density-circle']}
           />
           <g transform={`translate(0, ${10 + (5 * zoom)})`}>
             <LinearGradient
