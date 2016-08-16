@@ -18,6 +18,9 @@ import FeatureLayer from './feature-layer';
 import Path from './path';
 import Controls from './controls';
 
+// slightly pad clip extent so that the boundary of the map does not show borders
+const CLIP_EXTENT_PADDING = 1;
+
 export default class Choropleth extends React.Component {
   /**
    * Because <Layer /> expects data to be an object with locationIds as keys
@@ -39,6 +42,13 @@ export default class Choropleth extends React.Component {
     const scale = calcScale(props.width, props.height, bounds);
 
     const translate = calcTranslate(props.width, props.height, scale, bounds, null);
+    this.clipExtent = d3.geo.clipExtent()
+      .extent([
+        [-CLIP_EXTENT_PADDING, -CLIP_EXTENT_PADDING],
+        [props.width + CLIP_EXTENT_PADDING, props.height + CLIP_EXTENT_PADDING]
+      ]);
+    this.zoom = d3.behavior.zoom();
+    this.calcMeshLayerStyle = memoize(this.calcMeshLayerStyle);
 
     this.state = {
       bounds,
@@ -46,15 +56,12 @@ export default class Choropleth extends React.Component {
       scaleBase: scale,
       scaleFactor: 1,
       translate,
-      pathGenerator: this.createPathGenerator(scale, translate, props.width, props.height),
+      pathGenerator: this.createPathGenerator(scale, translate, this.clipExtent),
       cache: { ...extractedGeoJSON, },
       processedData: Choropleth.processData(props.data, props.keyField)
     };
 
-    this.zoom = d3.behavior.zoom();
-
     bindAll(this, ['saveSvgRef', 'zoomEvent', 'zoomTo', 'zoomReset']);
-    this.calcMeshLayerStyle = memoize(this.calcMeshLayerStyle);
   }
 
   componentDidMount() {
@@ -103,6 +110,11 @@ export default class Choropleth extends React.Component {
     if ((nextProps.width !== this.props.width) ||
         (nextProps.height !== this.props.height) ||
         state.bounds) {
+      this.clipExtent = this.clipExtent
+        .extent([
+          [-CLIP_EXTENT_PADDING, -CLIP_EXTENT_PADDING],
+          [nextProps.width + CLIP_EXTENT_PADDING, nextProps.height + CLIP_EXTENT_PADDING]
+        ]);
       const bounds = state.bounds || this.state.bounds;
 
       state.scaleBase = calcScale(nextProps.width, nextProps.height, bounds);
@@ -123,8 +135,7 @@ export default class Choropleth extends React.Component {
       state.pathGenerator = this.createPathGenerator(
         state.scale,
         state.translate,
-        nextProps.width,
-        nextProps.height
+        this.clipExtent
       );
       this.zoom.scale(state.scale);
       this.zoom.translate(state.translate);
@@ -162,11 +173,12 @@ export default class Choropleth extends React.Component {
   }
 
   /**
-   * @param scale
-   * @param translate
-   * @returns {Function}
+   * @param {array} scale
+   * @param {array} translate
+   * @param {object} clipExtent - d3.geo.clipExtent
+   * @returns {function}
    */
-  createPathGenerator(scale, translate, width, height) {
+  createPathGenerator(scale, translate, clipExtent) {
     const transform = d3.geo.transform({
       point(x, y, z) {
         // mike bostock math
@@ -180,11 +192,8 @@ export default class Choropleth extends React.Component {
       }
     });
 
-    const clip = d3.geo.clipExtent()
-      .extent([[0, 0], [width, height]]);
-
     return d3.geo.path().projection({
-      stream: (pointStream) => transform.stream(clip.stream(pointStream))
+      stream: (pointStream) => transform.stream(clipExtent.stream(pointStream))
     });
   }
 
@@ -193,12 +202,7 @@ export default class Choropleth extends React.Component {
 
     const translate = this.zoom.translate();
 
-    const pathGenerator = this.createPathGenerator(
-      scale,
-      translate,
-      this.props.width,
-      this.props.height
-    );
+    const pathGenerator = this.createPathGenerator(scale, translate, this.clipExtent);
 
     this.setState({
       scale,
