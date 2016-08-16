@@ -397,19 +397,19 @@ Choropleth.propTypes = {
   /* height of containing element, in px */
   height: PropTypes.number,
 
-  /* passed to each path; signature: function(event, locationId) {...} */
+  /* passed to each path; signature: function(event, locationId, Path) {...} */
   onClick: PropTypes.func,
 
-  /* passed to each path; signature: function(event, locationId) {...} */
+  /* passed to each path; signature: function(event, locationId, Path) {...} */
   onMouseOver: PropTypes.func,
 
-  /* passed to each path; signature: function(event, locationId) {...} */
+  /* passed to each path; signature: function(event, locationId, Path) {...} */
   onMouseMove: PropTypes.func,
 
-  /* passed to each path; signature: function(event, locationId) {...} */
+  /* passed to each path; signature: function(event, locationId, Path) {...} */
   onMouseDown: PropTypes.func,
 
-  /* passed to each path; signature: function(event, locationId) {...} */
+  /* passed to each path; signature: function(event, locationId, Path) {...} */
   onMouseOut: PropTypes.func,
 
   /* show zoom controls */
