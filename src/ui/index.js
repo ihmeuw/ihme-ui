@@ -10,6 +10,7 @@ import Shape from './shape';
 import Slider from './slider';
 import Spinner from './spinner';
 import SvgText from './svg-text';
+import Tooltip from './tooltip';
 
 export default {
   Axis,
@@ -24,4 +25,5 @@ export default {
   Slider,
   Spinner,
   SvgText,
+  Tooltip,
 };

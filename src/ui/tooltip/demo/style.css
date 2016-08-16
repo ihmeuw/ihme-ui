@@ -1,0 +1,25 @@
+.common {
+    /* reset block elements */
+    margin: 0;
+    padding: 0;
+}
+
+.wrapper {
+    composes: common;
+    padding: 7px;
+}
+
+.header {
+    composes: common;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.row {
+    composes: common;
+    font-size: 10px;
+}
+
+.bold {
+    font-weight: bold;
+}
