@@ -128,7 +128,10 @@ Path.propTypes = {
   fill: PropTypes.string,
 
   /* locationId identifying this geometry */
-  locationId: PropTypes.oneOfType(PropTypes.number, PropTypes.string),
+  locationId: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string,
+  ]),
 
   /* signature: function(event, locationId, Path) {...} */
   onClick: PropTypes.func,
