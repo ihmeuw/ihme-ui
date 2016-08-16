@@ -40,6 +40,18 @@ const propTypes = {
   onClick: PropTypes.func,
 
   /*
+     onMouseLeave for DensityPlot circles
+     same API as Scatter onMouseLeave
+   */
+  onMouseLeave: PropTypes.func,
+
+  /*
+     onMouseMove for DensityPlot circles
+     same API as Scatter onMouseMove
+   */
+  onMouseMove: PropTypes.func,
+
+  /*
     onMouseOver for DensityPlot circles
     same API as Scatter onMouseOver
   */
@@ -154,6 +166,10 @@ export default class ChoroplethLegend extends React.Component {
       data,
       valueField,
       rangeExtent,
+      onClick,
+      onMouseLeave,
+      onMouseMove,
+      onMouseOver,
       onSliderMove,
       zoom,
       unit
@@ -169,6 +185,10 @@ export default class ChoroplethLegend extends React.Component {
             colorScale={colorScale}
             data={data}
             dataAccessors={{ fill: valueField, x: valueField }}
+            onClick={onClick}
+            onMouseLeave={onMouseLeave}
+            onMouseMove={onMouseMove}
+            onMouseOver={onMouseOver}
             scales={{ x: xScale }}
             size={180 * zoom}
           />
