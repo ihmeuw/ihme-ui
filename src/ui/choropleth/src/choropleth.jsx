@@ -253,10 +253,10 @@ export default class Choropleth extends React.Component {
               colorScale={this.props.colorScale}
               selectedLocations={this.props.selectedLocations}
               onClick={this.props.onClick}
-              onMouseOver={this.props.onMouseOver}
-              onMouseMove={this.props.onMouseMove}
               onMouseDown={this.props.onMouseDown}
-              onMouseOut={this.props.onMouseOut}
+              onMouseLeave={this.props.onMouseLeave}
+              onMouseMove={this.props.onMouseMove}
+              onMouseOver={this.props.onMouseOver}
               pathClassName={layer.className}
               pathSelectedClassName={layer.selectedClassName}
               pathStyle={layer.style}
@@ -405,16 +405,16 @@ Choropleth.propTypes = {
   onClick: PropTypes.func,
 
   /* passed to each path; signature: function(event, locationId, Path) {...} */
-  onMouseOver: PropTypes.func,
+  onMouseDown: PropTypes.func,
+
+  /* passed to each path; signature: function(event, locationId, Path) {...} */
+  onMouseLeave: PropTypes.func,
 
   /* passed to each path; signature: function(event, locationId, Path) {...} */
   onMouseMove: PropTypes.func,
 
   /* passed to each path; signature: function(event, locationId, Path) {...} */
-  onMouseDown: PropTypes.func,
-
-  /* passed to each path; signature: function(event, locationId, Path) {...} */
-  onMouseOut: PropTypes.func,
+  onMouseOver: PropTypes.func,
 
   /* show zoom controls */
   controls: PropTypes.bool,
