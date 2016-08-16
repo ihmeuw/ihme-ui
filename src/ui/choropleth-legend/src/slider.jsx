@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { isFinite } from 'lodash';
 import { isWithinRange, percentOfRange } from '../../../utils';
 import SliderHandle from './slider-handle';
 
@@ -89,7 +90,7 @@ export default class Slider extends React.Component {
     // if user is attempting to move slider outside of bounding domain of the data
     // don't trigger new render or fire moveHandler
     // while xScale is already clamped, this check prevents unnecessary render cycles
-    if (!isWithinRange(positionAsPercent, [0, 1])) return;
+    if (!isFinite(positionAsPercent) || !isWithinRange(positionAsPercent, [0, 1])) return;
 
     // fire action handler passed in to <ChoroplethLegend />
     // with updated range extent

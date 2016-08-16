@@ -23,6 +23,7 @@ describe('<Slider />', () => {
   describe('responds to range extent', () => {
     const wrapper = shallow(
       <Slider
+        domain={domain}
         xScale={xScale}
         rangeExtent={[minExtent, maxExtent]}
         width={width}
@@ -47,6 +48,7 @@ describe('<Slider />', () => {
     beforeEach(() => {
       wrapper = mount(
         <Slider
+          domain={domain}
           xScale={xScale}
           rangeExtent={[minExtent, maxExtent]}
           width={width}
@@ -71,34 +73,16 @@ describe('<Slider />', () => {
 
     it('does not trigger supplied sliderMove evt when handle is moved off slider', () => {
       expect(onSliderMove.callCount).to.equal(0);
-
-      // trigger dragmove handler outside of parent el
-      // dx is set to 10 because width of Brush is 1000;
-      // supplied evt handler will be snapped to 0 or 1 if the percentChange in the handle,
-      // is within 0.005 of 1
-      // therefore abs(1 - (10 (dx) / 1000 (width))) >= 0.005 (tolerance), so
-      // it is not snapped, and we can test the intended behavior to not
-      // call supplied sliderMove evt when brush handle is moved outside of slider bounds
-      wrapper.find(SliderHandle).get(1).onHandleMove({ dx: 10 });
-
+      wrapper.find(SliderHandle).get(1).onHandleMove({ dx: 300 });
       expect(onSliderMove.callCount).to.equal(0);
     });
 
     it('snaps to bounds of slider within tolerance', () => {
-      const x1Handle = wrapper.find(SliderHandle).get(0);
+      wrapper.find(SliderHandle).get(0).onHandleMove({ dx: -248 });
+      expect(onSliderMove.lastCall.args[0]).to.deep.equal([0, 0.75]);
 
-      expect(wrapper.state().x1).to.equal(0);
-
-      // 0.008 (x1) - 4 (clientX) / 1000 (width) < 0.005 === snapping
-      x1Handle.setState({ x1: 0.008 });
-      x1Handle.onHandleMove({ dx: -4, which: 'x1' });
-      wrapper.update();
-      expect(wrapper.state().x1).to.equal(0);
-
-      // 0 (x1) + 15 (clientX) / 1000 (width) > 0.005 === no snapping
-      x1Handle.onHandleMove({ dx: 15, which: 'x1' });
-      wrapper.update();
-      expect(wrapper.state().x1).to.not.equal(0);
+      wrapper.find(SliderHandle).get(1).onHandleMove({ dx: 248 });
+      expect(onSliderMove.lastCall.args[0]).to.deep.equal([0.25, 1]);
     });
   });
 });
