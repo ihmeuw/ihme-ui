@@ -58,7 +58,7 @@ describe('<Tooltip />', () => {
       });
     });
 
-    it('does not update style if a property not necessary for caclulating styles is updated', () => {
+    it('does not update style if a property not necessary for calculating styles is updated', () => {
       const wrapper = mount(
         <Tooltip
           bounds={{ x: [0, 1000], y: [0, 800] }}
