@@ -48,10 +48,10 @@ export default class FeatureLayer extends PureComponent {
       data,
       keyField,
       onClick,
-      onMouseOver,
-      onMouseMove,
       onMouseDown,
-      onMouseOut,
+      onMouseLeave,
+      onMouseMove,
+      onMouseOver,
       pathGenerator,
       pathClassName,
       pathSelectedClassName,
@@ -88,10 +88,10 @@ export default class FeatureLayer extends PureComponent {
                 fill={fill}
                 locationId={key}
                 onClick={onClick}
-                onMouseOver={onMouseOver}
-                onMouseMove={onMouseMove}
                 onMouseDown={onMouseDown}
-                onMouseOut={onMouseOut}
+                onMouseLeave={onMouseLeave}
+                onMouseMove={onMouseMove}
+                onMouseOver={onMouseOver}
                 pathGenerator={pathGenerator}
                 selected={!!selectedLocationsMappedById[key]}
                 selectedClassName={pathSelectedClassName}
@@ -130,16 +130,16 @@ FeatureLayer.propTypes = {
   onClick: PropTypes.func,
 
   /* passed to each path; signature: function(event, locationId, Path) {...} */
-  onMouseOver: PropTypes.func,
+  onMouseDown: PropTypes.func,
+
+  /* passed to each path; signature: function(event, locationId, Path) {...} */
+  onMouseLeave: PropTypes.func,
 
   /* passed to each path; signature: function(event, locationId, Path) {...} */
   onMouseMove: PropTypes.func,
 
   /* passed to each path; signature: function(event, locationId, Path) {...} */
-  onMouseDown: PropTypes.func,
-
-  /* passed to each path; signature: function(event, locationId, Path) {...} */
-  onMouseOut: PropTypes.func,
+  onMouseOver: PropTypes.func,
 
   pathClassName: CommonPropTypes.className,
 
