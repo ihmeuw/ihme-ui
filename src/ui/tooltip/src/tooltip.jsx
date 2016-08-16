@@ -54,9 +54,8 @@ export default class Tooltip extends PureComponent {
 
     // aim to position tooltip centered about the mouse-cursor in the x-direction
     const halfWidth = width / 2;
-    const offsetXCoordinate = mouseX + offsetX;
     const absOffsetX = Math.abs(offsetX);
-    let x = offsetXCoordinate - halfWidth;
+    let x = mouseX + offsetX - halfWidth;
 
     // guard against placing the tooltip out of its left-bound
     if (x < leftBound + paddingX) {
@@ -65,7 +64,7 @@ export default class Tooltip extends PureComponent {
         : mouseX + paddingX;
     }
     // guard against placing the tooltip out of its right-bound
-    if (offsetXCoordinate + halfWidth > rightBound - paddingX) {
+    if (x > rightBound - paddingX - width) {
       x = mouseX > rightBound
         ? rightBound - width - Math.abs(absOffsetX - paddingX)
         : mouseX - width - Math.abs(absOffsetX - paddingX);
@@ -86,7 +85,7 @@ export default class Tooltip extends PureComponent {
         : mouseY + paddingY;
     }
     // guard against placing tooltip below screen
-    if (y + height > bottomBound - paddingY) {
+    if (y > bottomBound - paddingY - height) {
       y = mouseY > bottomBound
         ? bottomBound - height - Math.abs(absOffsetY - paddingY)
         : mouseY - height - Math.abs(absOffsetY - paddingY);
