@@ -12,7 +12,7 @@ export default class Tooltip extends PureComponent {
    * @param {Object} [bounds]
    * @param {Array} [bounds.x]
    * @param {Array} [bounds.y]
-   * @return {{ x: array, y: array}} Bounds object with keys x and y
+   * @return {{ x: Number[], y: Number[] }} Bounds object with keys x and y
    */
   static getBounds(bounds) {
     return {
@@ -22,10 +22,11 @@ export default class Tooltip extends PureComponent {
   }
 
   /**
+   * Calculate the translation of the tooltip with respect to the top-left corner of the screen
    * @param {Object} params
    * @param {Object} params.bounds
-   * @param {Array} params.bounds.x - default to [0, window.innerWidth]
-   * @param {Array} params.bounds.y - default to [0, window.innerHeight]
+   * @param {Number[]} params.bounds.x - default to [0, window.innerWidth]
+   * @param {Number[]} params.bounds.y - default to [0, window.innerHeight]
    * @param {Number} params.height - height of tooltip
    * @param {Number} params.mouseX
    * @param {Number} params.mouseY
@@ -34,7 +35,7 @@ export default class Tooltip extends PureComponent {
    * @param {Number} params.paddingX
    * @param {Number} params.paddingY
    * @param {Number} params.width - width of tooltip
-   * @return {{ left: number, top: number }}
+   * @return {{ transform: String }} the translation transform of the tooltip, used for styling
    */
   static getPosition({
     bounds,
