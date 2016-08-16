@@ -1,0 +1,42 @@
+.map-container {
+    width: 100%;
+    display: flex;
+    flex: 3 1 60%;
+    position: relative;
+}
+
+.legend {
+    position: absolute;
+    bottom : 0;
+    left: 0;
+    height: 100px;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.6);
+
+    display: flex;
+}
+
+.legend-wrapper {
+    flex: 2 0 90%;
+}
+
+.button-wrapper {
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    align-self: center;
+}
+
+.button-wrapper button:first-child {
+    margin: 0 5px 5px 0;
+}
+
+.button {
+    height: initial;
+    min-height: 27px;
+    max-height: 50%;
+}
+
+.map {
+    flex: 1 0 auto;
+    width: 100%;
+}
