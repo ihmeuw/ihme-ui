@@ -25,18 +25,15 @@ var buildConfig = _.mergeWith({}, config, {
       },
     ],
   },
+  externals: {
+    react: 'React',
+    'react-dom': 'ReactDOM',
+  },
 }, customizer);
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.MINIFY) {
   buildConfig.plugins.push(
-    new webpack.optimize.UglifyJsPlugin({
-      compressor: {
-        pure_getters: true,
-        unsafe: true,
-        unsafe_comps: true,
-        warnings: false
-      }
-    })
+    new webpack.optimize.UglifyJsPlugin()
   );
 }
 

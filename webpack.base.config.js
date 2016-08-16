@@ -3,6 +3,7 @@
 var path = require('path');
 var autoprefixer = require('autoprefixer');
 var webpack = require('webpack');
+var LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var _ = require('lodash');
 
@@ -20,7 +21,9 @@ module.exports = {
     ],
   },
   plugins: [
+    new LodashModuleReplacementPlugin,
     new webpack.optimize.OccurrenceOrderPlugin(),
+    new webpack.optimize.DedupePlugin(),
     new ExtractTextPlugin('style/' + path.parse(process.argv[2]).name + '.css'),
   ],
   postcss: [autoprefixer({ browsers: ['last 2 versions'] })],
