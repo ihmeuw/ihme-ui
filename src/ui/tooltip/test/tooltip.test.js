@@ -9,10 +9,6 @@ chai.use(chaiEnzyme());
 
 import Tooltip from '../src/tooltip';
 
-function translateVectorFromTransform(transformString) {
-  return transformString.match(/(\d+)/g).map(Number);
-}
-
 describe.only('<Tooltip />', () => {
   describe('basic behavior', () => {
     it('does not render if props.show is false', () => {
@@ -100,28 +96,20 @@ describe.only('<Tooltip />', () => {
 
     it('positions the tooltip centered around mouseX', () => {
       const position = Tooltip.getPosition(baseParams);
-      const [x] = translateVectorFromTransform(position.transform);
+      const [x] = position;
       expect(position)
-        .to.be.an('object')
-        .with.property('transform');
+        .to.be.an('array')
+        .to.have.length(2);
       expect(x).to.equal(250);
     });
 
     it('positions the tooltip offsetY above/below from mouseY', () => {
       // above
-      const positionAbove = Tooltip.getPosition(Object.assign({}, baseParams, { offsetY: 25 }));
-      const [, yAbove] = translateVectorFromTransform(positionAbove.transform);
-      expect(positionAbove)
-        .to.be.an('object')
-        .with.property('transform');
+      const [, yAbove] = Tooltip.getPosition(Object.assign({}, baseParams, { offsetY: 25 }));
       expect(yAbove).to.equal(175);
 
       // below
-      const positionBelow = Tooltip.getPosition(Object.assign({}, baseParams, { offsetY: -25 }));
-      const [, yBelow] = translateVectorFromTransform(positionBelow.transform);
-      expect(positionBelow)
-        .to.be.an('object')
-        .with.property('transform');
+      const [, yBelow] = Tooltip.getPosition(Object.assign({}, baseParams, { offsetY: -25 }));
       expect(yBelow).to.equal(325);
     });
 
@@ -131,8 +119,7 @@ describe.only('<Tooltip />', () => {
           params: {
             offsetX: 10
           },
-          expectation: (position) => {
-            const [x] = translateVectorFromTransform(position.transform);
+          expectation: ([x]) => {
             expect(x).to.equal(260);
           },
         },
@@ -140,8 +127,7 @@ describe.only('<Tooltip />', () => {
           params: {
             offsetX: 0
           },
-          expectation: (position) => {
-            const [x] = translateVectorFromTransform(position.transform);
+          expectation: ([x]) => {
             expect(x).to.equal(250);
           },
         },
@@ -149,8 +135,7 @@ describe.only('<Tooltip />', () => {
           params: {
             offsetX: -10
           },
-          expectation: (position) => {
-            const [x] = translateVectorFromTransform(position.transform);
+          expectation: ([x]) => {
             expect(x).to.equal(240);
           },
         }
@@ -169,8 +154,7 @@ describe.only('<Tooltip />', () => {
           params: {
             offsetY: 10
           },
-          expectation: (position) => {
-            const [, y] = translateVectorFromTransform(position.transform);
+          expectation: ([, y]) => {
             expect(y).to.equal(190);
           },
         },
@@ -178,8 +162,7 @@ describe.only('<Tooltip />', () => {
           params: {
             offsetY: 0
           },
-          expectation: (position) => {
-            const [, y] = translateVectorFromTransform(position.transform);
+          expectation: ([, y]) => {
             expect(y).to.equal(200);
           },
         },
@@ -187,8 +170,7 @@ describe.only('<Tooltip />', () => {
           params: {
             offsetY: -10
           },
-          expectation: (position) => {
-            const [, y] = translateVectorFromTransform(position.transform);
+          expectation: ([, y]) => {
             expect(y).to.equal(310);
           },
         }
@@ -207,8 +189,7 @@ describe.only('<Tooltip />', () => {
           params: {
             mouseX: 25,
           },
-          expectation: (position) => {
-            const [x] = translateVectorFromTransform(position.transform);
+          expectation: ([x]) => {
             expect(x).to.equal(0);
           },
         },
@@ -217,8 +198,7 @@ describe.only('<Tooltip />', () => {
             mouseX: 25,
             paddingX: 50,
           },
-          expectation: (position) => {
-            const [x] = translateVectorFromTransform(position.transform);
+          expectation: ([x]) => {
             expect(x).to.equal(50);
           },
         },
@@ -226,8 +206,7 @@ describe.only('<Tooltip />', () => {
           params: {
             mouseX: 1175,
           },
-          expectation: (position) => {
-            const [x] = translateVectorFromTransform(position.transform);
+          expectation: ([x]) => {
             expect(x).to.equal(1100);
           },
         },
@@ -236,8 +215,7 @@ describe.only('<Tooltip />', () => {
             mouseX: 1000,
             offsetX: 200,
           },
-          expectation: (position) => {
-            const [x] = translateVectorFromTransform(position.transform);
+          expectation: ([x]) => {
             expect(x).to.equal(1100);
           },
         },
@@ -248,8 +226,7 @@ describe.only('<Tooltip />', () => {
             },
             mouseX: 200,
           },
-          expectation: (position) => {
-            const [x] = translateVectorFromTransform(position.transform);
+          expectation: ([x]) => {
             expect(x).to.equal(400);
           },
         },
@@ -260,8 +237,7 @@ describe.only('<Tooltip />', () => {
             },
             mouseX: 800,
           },
-          expectation: (position) => {
-            const [x] = translateVectorFromTransform(position.transform);
+          expectation: ([x]) => {
             expect(x).to.equal(600);
           },
         }
@@ -281,8 +257,7 @@ describe.only('<Tooltip />', () => {
             mouseY: 25,
             paddingY: 10,
           },
-          expectation: (position) => {
-            const [, y] = translateVectorFromTransform(position.transform);
+          expectation: ([, y]) => {
             expect(y).to.equal(35);
           },
         },
@@ -292,8 +267,7 @@ describe.only('<Tooltip />', () => {
             offsetY: 10,
             paddingY: 50,
           },
-          expectation: (position) => {
-            const [, y] = translateVectorFromTransform(position.transform);
+          expectation: ([, y]) => {
             expect(y).to.equal(75);
           },
         },
@@ -302,8 +276,7 @@ describe.only('<Tooltip />', () => {
             mouseY: 550,
             offsetY: -10,
           },
-          expectation: (position) => {
-            const [, y] = translateVectorFromTransform(position.transform);
+          expectation: ([, y]) => {
             expect(y).to.equal(440);
           },
         },
@@ -314,8 +287,7 @@ describe.only('<Tooltip />', () => {
             },
             mouseY: 100,
           },
-          expectation: (position) => {
-            const [, y] = translateVectorFromTransform(position.transform);
+          expectation: ([, y]) => {
             expect(y).to.equal(200);
           },
         },
@@ -326,8 +298,7 @@ describe.only('<Tooltip />', () => {
             },
             mouseY: 600,
           },
-          expectation: (position) => {
-            const [, y] = translateVectorFromTransform(position.transform);
+          expectation: ([, y]) => {
             expect(y).to.equal(300);
           },
         }
