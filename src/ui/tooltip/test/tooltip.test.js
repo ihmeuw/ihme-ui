@@ -13,7 +13,7 @@ function translateVectorFromTransform(transformString) {
   return transformString.match(/(\d+)/g).map(Number);
 }
 
-describe('<Tooltip />', () => {
+describe.only('<Tooltip />', () => {
   describe('basic behavior', () => {
     it('does not render if props.show is false', () => {
       const wrapper = shallow(<Tooltip show={false} />);
@@ -209,7 +209,7 @@ describe('<Tooltip />', () => {
           },
           expectation: (position) => {
             const [x] = translateVectorFromTransform(position.transform);
-            expect(x).to.equal(25);
+            expect(x).to.equal(0);
           },
         },
         {
@@ -219,7 +219,7 @@ describe('<Tooltip />', () => {
           },
           expectation: (position) => {
             const [x] = translateVectorFromTransform(position.transform);
-            expect(x).to.equal(75);
+            expect(x).to.equal(50);
           },
         },
         {
@@ -228,7 +228,7 @@ describe('<Tooltip />', () => {
           },
           expectation: (position) => {
             const [x] = translateVectorFromTransform(position.transform);
-            expect(x).to.equal(1075);
+            expect(x).to.equal(1100);
           },
         },
         {
@@ -238,7 +238,7 @@ describe('<Tooltip />', () => {
           },
           expectation: (position) => {
             const [x] = translateVectorFromTransform(position.transform);
-            expect(x).to.equal(700);
+            expect(x).to.equal(1100);
           },
         },
         {
