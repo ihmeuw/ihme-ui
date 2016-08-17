@@ -9,7 +9,7 @@ chai.use(chaiEnzyme());
 
 import Tooltip from '../src/tooltip';
 
-describe.only('<Tooltip />', () => {
+describe('<Tooltip />', () => {
   describe('basic behavior', () => {
     it('does not render if props.show is false', () => {
       const wrapper = shallow(<Tooltip show={false} />);
