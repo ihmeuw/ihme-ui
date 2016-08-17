@@ -87,21 +87,20 @@ export default class Tooltip extends PureComponent {
 
   /**
    * Calculate style given base style and absolute position
-   * @param {Object} style
    * @param {Object} position
    * @param {String} position.transform
+   * @param {Object} style
    * @return {Object}
    */
-  static getStyle(style, position) {
-    return assign({}, style, position);
+  static getStyle(position, style) {
+    return assign({}, position, style);
   }
 
   constructor(props) {
     super(props);
 
-    const position = { left: 0, top: 0 };
     this.state = {
-      style: Tooltip.getStyle(props.style, position),
+      style: Tooltip.getStyle({}, props.style),
     };
 
     bindAll(this, [
@@ -135,7 +134,7 @@ export default class Tooltip extends PureComponent {
     });
 
     this.setState({
-      style: Tooltip.getStyle(nextProps.style, { transform: `translate(${x}px, ${y}px)` })
+      style: Tooltip.getStyle({ transform: `translate(${x}px, ${y}px)` }, nextProps.style)
     });
   }
 
