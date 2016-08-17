@@ -35,7 +35,7 @@ export default class Tooltip extends PureComponent {
    * @param {Number} params.paddingX
    * @param {Number} params.paddingY
    * @param {Number} params.width - width of tooltip
-   * @return {{ transform: String }} the translation transform of the tooltip, used for styling
+   * @return {Number[]} two-element array representing [x, y] coordinates used for the transform
    */
   static getPosition({
     bounds,
@@ -82,7 +82,7 @@ export default class Tooltip extends PureComponent {
         : mouseY - height - Math.abs(absOffsetY - paddingY);
     }
 
-    return { transform: `translate(${x}px, ${y}px)` };
+    return [x, y];
   }
 
   /**
@@ -122,19 +122,20 @@ export default class Tooltip extends PureComponent {
     ]) || !this._wrapper) return;
     const { width, height } = this._wrapper.getBoundingClientRect();
     const bounds = Tooltip.getBounds(nextProps.bounds);
+    const [x, y] = Tooltip.getPosition({
+      bounds,
+      height,
+      mouseX: nextProps.mouseX,
+      mouseY: nextProps.mouseY,
+      offsetX: nextProps.offsetX,
+      offsetY: nextProps.offsetY,
+      paddingX: nextProps.paddingX,
+      paddingY: nextProps.paddingY,
+      width,
+    });
 
     this.setState({
-      style: Tooltip.getStyle(nextProps.style, Tooltip.getPosition({
-        bounds,
-        height,
-        mouseX: nextProps.mouseX,
-        mouseY: nextProps.mouseY,
-        offsetX: nextProps.offsetX,
-        offsetY: nextProps.offsetY,
-        paddingX: nextProps.paddingX,
-        paddingY: nextProps.paddingY,
-        width,
-      })),
+      style: Tooltip.getStyle(nextProps.style, { transform: `translate(${x}px, ${y}px)` })
     });
   }
 
