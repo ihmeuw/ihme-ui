@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { assign, bindAll, get as getValue } from 'lodash';
+import { assign, bindAll, clamp, get as getValue } from 'lodash';
 import { CommonPropTypes, propsChanged, PureComponent } from '../../../utils';
 
 import styles from './tooltip.css';
@@ -54,22 +54,12 @@ export default class Tooltip extends PureComponent {
     } = bounds;
 
     // aim to position tooltip centered about the mouse-cursor in the x-direction
-    const halfWidth = width / 2;
-    const absOffsetX = Math.abs(offsetX);
-    let x = mouseX + offsetX - halfWidth;
-
-    // guard against placing the tooltip out of its left-bound
-    if (x < leftBound + paddingX) {
-      x = mouseX < leftBound
-        ? leftBound + paddingX + absOffsetX
-        : mouseX + paddingX;
-    }
-    // guard against placing the tooltip out of its right-bound
-    if (x > rightBound - paddingX - width) {
-      x = mouseX > rightBound
-        ? rightBound - width - Math.abs(absOffsetX - paddingX)
-        : mouseX - width - Math.abs(absOffsetX - paddingX);
-    }
+    // guard against placing the tooltip out of its left of right bounds
+    const x = clamp(
+      mouseX + offsetX - width / 2,
+      leftBound + paddingX,
+      rightBound - paddingX - width
+    );
 
     // position tooltip above or below the mouse cursor in the y-direction
     // origin in top-left corner
