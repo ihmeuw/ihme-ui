@@ -5,6 +5,8 @@ coverage
 bundle.js*
 .idea
 dist
-lib
-es
-style
+/ui
+/test-utils
+/utils
+/index.js
+/style
