@@ -1,29 +1,41 @@
 import Axis from './axis';
 import AxisChart from './axis-chart';
 import Button from './button';
+import Choropleth from './choropleth';
 import ChoroplethLegend from './choropleth-legend';
-import Group from './group';
+import Group, { Option } from './group';
 import HtmlLabel from './html-label';
+import Legend from './legend';
 import ResponsiveContainer from './responsive-container';
-import Select from './select';
-import Shape from './shape';
+import { SingleSelect, MultiSelect } from './select';
+import { Area, Line, MultiLine, MultiScatter, Scatter, Symbol, SYMBOL_TYPES } from './shape';
 import Slider from './slider';
 import Spinner from './spinner';
 import SvgText from './svg-text';
 import Tooltip from './tooltip';
 
 export default {
+  Area,
   Axis,
   AxisChart,
   Button,
+  Choropleth,
   ChoroplethLegend,
   Group,
   HtmlLabel,
+  Legend,
+  Line,
+  MultiLine,
+  MultiScatter,
+  MultiSelect,
+  Option,
   ResponsiveContainer,
-  Select,
-  Shape,
+  Scatter,
+  SingleSelect,
   Slider,
   Spinner,
   SvgText,
+  Symbol,
+  SYMBOL_TYPES,
   Tooltip,
 };

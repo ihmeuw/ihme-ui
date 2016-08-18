@@ -1,22 +1,32 @@
 {
+  "presets": ["react"],
+  "plugins": ["lodash", "transform-object-rest-spread", "transform-runtime"],
   "env": {
-    "webpack": {
-      "presets": ["es2015-webpack", "react"]
+    "test": {
+      "presets": ["es2015"],
+      "plugins": ["css-modules-transform"]
     },
-    "cli": {
-      "presets": ["es2015", "react"],
-      "plugins": [
-        [
-          "babel-plugin-webpack-loaders",
-          {
-            "config": "./webpack.config.js",
-            "verbose": false
+    "commonjs:babel": {
+      "presets": ["es2015"],
+      "plugins": [[
+        "css-modules-transform",
+        {
+          "processCss": "./scripts/postCSSProcesser.js",
+          "extractCss": {
+            "dir": "./style/",
+            "relativeRoot": "./src/",
+            "filename": "[name].css"
           }
-        ]
+        }]
+      ]
+    },
+    "commonjs:webpack": {
+      "presets": ["es2015"],
+      "plugins": [
+        ["css-modules-transform", { "processCss": "./scripts/postCSSProcesser.js", "extractCss": "./dist/ihme-ui.css"}]
       ]
     }
   },
-  "plugins": ["transform-object-rest-spread", "transform-runtime"],
   "ignore": [
     "node_modules/",
     "src/test-utils/assets/"
