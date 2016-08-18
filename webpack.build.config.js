@@ -13,7 +13,7 @@ function customizer(objValue, srcValue) {
 
 var buildConfig = _.mergeWith({}, config, {
   output: {
-    library: 'ihme-ui',
+    library: 'ihmeUI',
     libraryTarget: 'umd',
   },
   module: {
