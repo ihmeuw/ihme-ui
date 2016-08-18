@@ -1,33 +1,31 @@
 {
+  "presets": ["react"],
   "plugins": ["lodash", "transform-object-rest-spread", "transform-runtime"],
   "env": {
-    "es": {
-      "presets": ["es2015-webpack", "react"],
-      "plugins": [
-        [
-          "webpack-loaders",
-          {
-            "config": "./webpack.test.config.js",
-            "verbose": false
-          }
-        ]
-      ]
+    "test": {
+      "presets": ["es2015"],
+      "plugins": ["css-modules-transform"]
     },
     "commonjs:babel": {
-      "presets": ["es2015", "react"],
-      "plugins": [
-        [
-          "webpack-loaders",
-          {
-            "config": "./webpack.test.config.js",
-            "verbose": false
+      "presets": ["es2015"],
+      "plugins": [[
+        "css-modules-transform",
+        {
+          "processCss": "./scripts/postCSSProcesser.js",
+          "extractCss": {
+            "dir": "./style/",
+            "relativeRoot": "./src/",
+            "filename": "[name].css"
           }
-        ]
+        }]
       ]
     },
     "commonjs:webpack": {
-      "presets": ["es2015", "react"],
-    },
+      "presets": ["es2015"],
+      "plugins": [
+        ["css-modules-transform", { "processCss": "./scripts/postCSSProcesser.js", "extractCss": "./dist/ihme-ui.css"}]
+      ]
+    }
   },
   "ignore": [
     "node_modules/",

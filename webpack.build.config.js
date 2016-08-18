@@ -19,7 +19,7 @@ var buildConfig = _.mergeWith({}, config, {
   module: {
     loaders: [
       {
-        test: /\.jsx?$/,
+        test: /\.(jsx?)|(css)$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
       },
