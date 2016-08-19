@@ -10,28 +10,28 @@ const propTypes = {
   */
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
 
+  dataAccessors: PropTypes.shape({
+    x: PropTypes.string,
+    y: PropTypes.string
+  }).isRequired,
+
+  fill: PropTypes.string,
+
+  onClick: PropTypes.func,
+
+  onMouseLeave: PropTypes.func,
+
+  onMouseOver: PropTypes.func,
+
   /* scales from d3Scale */
   scales: PropTypes.shape({
     x: PropTypes.func,
     y: PropTypes.func
   }).isRequired,
 
-  fill: PropTypes.string,
-
   stroke: PropTypes.string,
 
   strokeWidth: PropTypes.number,
-
-  dataAccessors: PropTypes.shape({
-    x: PropTypes.string,
-    y: PropTypes.string
-  }).isRequired,
-
-  onClick: PropTypes.func,
-
-  onMouseOver: PropTypes.func,
-
-  onMouseLeave: PropTypes.func,
 };
 
 const defaultProps = {

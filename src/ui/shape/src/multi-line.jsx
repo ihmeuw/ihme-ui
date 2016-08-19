@@ -6,31 +6,13 @@ import Line from './line';
 import Area from './area';
 
 const propTypes = {
+  /* fn that accepts keyfield, and returns stroke color for line */
+  colorScale: PropTypes.func,
+
   /* array of objects
     e.g. [ {location: 'USA',values: []}, {location: 'Canada', values: []} ]
   */
   data: PropTypes.arrayOf(PropTypes.object),
-
-  /* whether or not to draw uncertainty areas for lines */
-  showUncertainty: PropTypes.bool,
-
-  /* whether or not to draw lines (e.g., mean estimate lines) */
-  showLine: PropTypes.bool,
-
-  /* key that uniquely identifies dataset within array of datasets */
-  keyField: PropTypes.string,
-
-  /* key that holds values to be represented by individual lines */
-  dataField: PropTypes.string,
-
-  /* scales from d3Scale */
-  scales: PropTypes.shape({
-    x: PropTypes.func,
-    y: PropTypes.func
-  }).isRequired,
-
-  /* fn that accepts keyfield, and returns stroke color for line */
-  colorScale: PropTypes.func,
 
   /*
     key names containing x, y data
@@ -46,11 +28,29 @@ const propTypes = {
     y1: PropTypes.string
   }).isRequired,
 
+  /* key that holds values to be represented by individual lines */
+  dataField: PropTypes.string,
+
+  /* key that uniquely identifies dataset within array of datasets */
+  keyField: PropTypes.string,
+
   onClick: PropTypes.func,
+
+  onMouseLeave: PropTypes.func,
 
   onMouseOver: PropTypes.func,
 
-  onMouseLeave: PropTypes.func,
+  /* scales from d3Scale */
+  scales: PropTypes.shape({
+    x: PropTypes.func,
+    y: PropTypes.func
+  }).isRequired,
+
+  /* whether or not to draw lines (e.g., mean estimate lines) */
+  showLine: PropTypes.bool,
+
+  /* whether or not to draw uncertainty areas for lines */
+  showUncertainty: PropTypes.bool,
 };
 
 const defaultProps = {
