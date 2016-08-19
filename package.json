@@ -33,7 +33,7 @@
     "coverage": "BABEL_ENV=test $(npm bin)/babel-node $(npm bin)/babel-istanbul cover $(npm bin)/_mocha --require ./scripts/setup-jsdom.js -- `scripts/get-test-directories.sh`",
     "coverage:travis": "BABEL_ENV=test $(npm bin)/babel-node $(npm bin)/babel-istanbul cover $(npm bin)/_mocha --require ./scripts/setup-jsdom.js --report lcovonly -- `scripts/get-test-directories.sh`",
     "coverage-token": "cat ./coverage/coverage.json | ./node_modules/codecov.io/bin/codecov.io.js",
-    "demo": "BABEL_ENV=commonjs:babel scripts/bundle-demos.sh",
+    "demo": "BABEL_ENV=demo scripts/bundle-demos.sh",
     "test": "BABEL_ENV=test $(npm bin)/babel-node $(npm bin)/_mocha --require ./scripts/setup-jsdom.js `./scripts/get-test-directories.sh`",
     "clean": "rm -rf dist test-utils ui utils style index.js",
     "combine-css": "scripts/concat-stylesheets.sh",
