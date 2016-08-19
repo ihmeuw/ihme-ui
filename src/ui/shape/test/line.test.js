@@ -51,7 +51,7 @@ describe('<Line />', () => {
         data={data}
         scales={{ x: xScale, y: yScale }}
         dataAccessors={{ x: keyField, y: valueField }}
-        clickHandler={onClickSpy}
+        onClick={onClickSpy}
         onMouseOver={mouseOverSpy}
         onMouseLeave={mouseLeaveSpy}
       />
