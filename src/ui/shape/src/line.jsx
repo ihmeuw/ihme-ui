@@ -19,13 +19,16 @@ const propTypes = {
 
   fill: PropTypes.string,
 
-  /* signature: function(event, datum, instance) {...} */
+  /* signature: function(event, props.data, Line instance) {...} */
   onClick: PropTypes.func,
 
-  /* signature: function(event, datum, instance) {...} */
+  /* signature: function(event, props.data, Line instance) {...} */
   onMouseLeave: PropTypes.func,
 
-  /* signature: function(event, datum, instance) {...} */
+  /* signature: function(event, props.data, Line instance) {...} */
+  onMouseMove: PropTypes.func,
+
+  /* signature: function(event, props.data, Line instance) {...} */
   onMouseOver: PropTypes.func,
 
   /* scales from d3Scale */
@@ -58,8 +61,9 @@ const Line = (props) => {
     strokeWidth,
     dataAccessors: { x: xAccessor, y: yAccessor },
     onClick,
-    onMouseOver,
     onMouseLeave,
+    onMouseMove,
+    onMouseOver,
   } = props;
 
   const path = line()
@@ -78,8 +82,9 @@ const Line = (props) => {
       strokeWidth={`${strokeWidth}px`}
       d={path(data)}
       onClick={eventHandleWrapper(onClick, data, this)}
-      onMouseOver={eventHandleWrapper(onMouseOver, data, this)}
       onMouseLeave={eventHandleWrapper(onMouseLeave, data, this)}
+      onMouseMove={eventHandleWrapper(onMouseMove, data, this)}
+      onMouseOver={eventHandleWrapper(onMouseOver, data, this)}
     />
   );
 };
