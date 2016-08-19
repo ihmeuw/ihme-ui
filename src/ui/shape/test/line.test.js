@@ -41,11 +41,8 @@ describe('<Line />', () => {
     });
   });
 
-  const hoverCallback = sinon.spy((datum) => {
-    return sinon.spy(() => {
-      return datum;
-    });
-  });
+  const mouseOverSpy = sinon.spy((datum) => { return datum; });
+  const mouseLeaveSpy = sinon.spy((datum) => { return datum; });
 
   const lineFunction = line()
     .x((datum) => { return xScale(datum[keyField]); })
@@ -60,14 +57,16 @@ describe('<Line />', () => {
         scales={{ x: xScale, y: yScale }}
         dataAccessors={{ x: keyField, y: valueField }}
         clickHandler={clickCallback}
-        hoverHandler={hoverCallback}
+        onMouseOver={mouseOverSpy}
+        onMouseLeave={mouseLeaveSpy}
       />
     );
   });
 
   afterEach(() => {
     clickCallback.reset();
-    hoverCallback.reset();
+    mouseOverSpy.reset();
+    mouseLeaveSpy.reset();
   });
 
   it('renders an SVG path node with a d attribute', () => {
@@ -90,9 +89,14 @@ describe('<Line />', () => {
   it('responds to a mouseover event', () => {
     const wrapper = shallow(component);
     wrapper.find('path').first().simulate('mouseOver');
-    expect(hoverCallback.called).to.be.true;
+    expect(mouseOverSpy.called).to.be.true;
+    expect(mouseOverSpy.getCall(0).returnValue).to.be.an('array');
+  });
 
-    const curriedSpy = hoverCallback.getCall(0).returnValue.getCall(0);
-    expect(curriedSpy.returnValue).to.be.an('array');
+  it('responds to a mouseleave event', () => {
+    const wrapper = shallow(component);
+    wrapper.find('path').first().simulate('mouseLeave');
+    expect(mouseLeaveSpy.called).to.be.true;
+    expect(mouseLeaveSpy.getCall(0).returnValue).to.be.an('array');
   });
 });
