@@ -48,7 +48,9 @@ const propTypes = {
 
   clickHandler: PropTypes.func,
 
-  hoverHandler: PropTypes.func
+  onMouseOver: PropTypes.func,
+
+  onMouseLeave: PropTypes.func,
 };
 
 const defaultProps = {
