@@ -34,10 +34,13 @@ const propTypes = {
   /* key that uniquely identifies dataset within array of datasets */
   keyField: PropTypes.string,
 
+  /* signature: function(event, datum, instance) {...} */
   onClick: PropTypes.func,
 
+  /* signature: function(event, datum, instance) {...} */
   onMouseLeave: PropTypes.func,
 
+  /* signature: function(event, datum, instance) {...} */
   onMouseOver: PropTypes.func,
 
   /* scales from d3Scale */

@@ -4,6 +4,8 @@ import { line } from 'd3-shape';
 
 import { noop } from 'lodash';
 
+import { eventHandleWrapper } from '../../../utils/events';
+
 const propTypes = {
   /* array of objects
     e.g. [ {}, {}, {} ]
@@ -17,10 +19,13 @@ const propTypes = {
 
   fill: PropTypes.string,
 
+  /* signature: function(event, datum, instance) {...} */
   onClick: PropTypes.func,
 
+  /* signature: function(event, datum, instance) {...} */
   onMouseLeave: PropTypes.func,
 
+  /* signature: function(event, datum, instance) {...} */
   onMouseOver: PropTypes.func,
 
   /* scales from d3Scale */
@@ -72,9 +77,9 @@ const Line = (props) => {
       stroke={stroke}
       strokeWidth={`${strokeWidth}px`}
       d={path(data)}
-      onClick={() => { onClick(data); }}
-      onMouseOver={() => { onMouseOver(data); }}
-      onMouseLeave={() => { onMouseLeave(data); }}
+      onClick={eventHandleWrapper(onClick, data, this)}
+      onMouseOver={eventHandleWrapper(onMouseOver, data, this)}
+      onMouseLeave={eventHandleWrapper(onMouseLeave, data, this)}
     />
   );
 };
