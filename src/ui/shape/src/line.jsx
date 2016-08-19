@@ -27,7 +27,7 @@ const propTypes = {
     y: PropTypes.string
   }).isRequired,
 
-  clickHandler: PropTypes.func,
+  onClick: PropTypes.func,
 
   onMouseOver: PropTypes.func,
 
@@ -39,7 +39,7 @@ const defaultProps = {
   stroke: 'steelblue',
   strokeWidth: 2.5,
   dataAccessors: { x: 'x', y: 'y' },
-  clickHandler: noop,
+  onClick: noop,
   onMouseOver: noop,
   onMouseLeave: noop,
 };
@@ -52,7 +52,7 @@ const Line = (props) => {
     stroke,
     strokeWidth,
     dataAccessors: { x: xAccessor, y: yAccessor },
-    clickHandler,
+    onClick,
     onMouseOver,
     onMouseLeave,
   } = props;
@@ -72,7 +72,7 @@ const Line = (props) => {
       stroke={stroke}
       strokeWidth={`${strokeWidth}px`}
       d={path(data)}
-      onClick={clickHandler(data)}
+      onClick={() => { onClick(data); }}
       onMouseOver={() => { onMouseOver(data); }}
       onMouseLeave={() => { onMouseLeave(data); }}
     />

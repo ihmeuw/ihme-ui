@@ -46,7 +46,7 @@ const propTypes = {
     y1: PropTypes.string
   }).isRequired,
 
-  clickHandler: PropTypes.func,
+  onClick: PropTypes.func,
 
   onMouseOver: PropTypes.func,
 

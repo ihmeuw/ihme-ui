@@ -35,12 +35,7 @@ describe('<Line />', () => {
   const xScale = d3Scale.scalePoint().domain(domain).range([0, chartDimensions.width]);
   const yScale = d3Scale.scaleLinear().domain(range).range([chartDimensions.height, 0]);
 
-  const clickCallback = sinon.spy((datum) => {
-    return sinon.spy(() => {
-      return datum;
-    });
-  });
-
+  const onClickSpy = sinon.spy((datum) => { return datum; });
   const mouseOverSpy = sinon.spy((datum) => { return datum; });
   const mouseLeaveSpy = sinon.spy((datum) => { return datum; });
 
@@ -56,7 +51,7 @@ describe('<Line />', () => {
         data={data}
         scales={{ x: xScale, y: yScale }}
         dataAccessors={{ x: keyField, y: valueField }}
-        clickHandler={clickCallback}
+        clickHandler={onClickSpy}
         onMouseOver={mouseOverSpy}
         onMouseLeave={mouseLeaveSpy}
       />
@@ -64,7 +59,7 @@ describe('<Line />', () => {
   });
 
   afterEach(() => {
-    clickCallback.reset();
+    onClickSpy.reset();
     mouseOverSpy.reset();
     mouseLeaveSpy.reset();
   });
@@ -80,10 +75,8 @@ describe('<Line />', () => {
   it('responds to a click event', () => {
     const wrapper = shallow(component);
     wrapper.find('path').first().simulate('click');
-    expect(clickCallback.called).to.be.true;
-
-    const curriedSpy = clickCallback.getCall(0).returnValue.getCall(0);
-    expect(curriedSpy.returnValue).to.be.an('array');
+    expect(onClickSpy.called).to.be.true;
+    expect(onClickSpy.getCall(0).returnValue).to.be.an('array');
   });
 
   it('responds to a mouseover event', () => {
