@@ -12,7 +12,6 @@ import { Line } from '../';
 
 chai.use(chaiEnzyme());
 
-
 describe('<Line />', () => {
   const keyField = 'year_id';
   const valueField = 'value';
@@ -35,9 +34,7 @@ describe('<Line />', () => {
   const xScale = d3Scale.scalePoint().domain(domain).range([0, chartDimensions.width]);
   const yScale = d3Scale.scaleLinear().domain(range).range([chartDimensions.height, 0]);
 
-  const onClickSpy = sinon.spy((datum) => { return datum; });
-  const mouseOverSpy = sinon.spy((datum) => { return datum; });
-  const mouseLeaveSpy = sinon.spy((datum) => { return datum; });
+  const eventHandler = sinon.spy();
 
   const lineFunction = line()
     .x((datum) => { return xScale(datum[keyField]); })
@@ -51,17 +48,12 @@ describe('<Line />', () => {
         data={data}
         scales={{ x: xScale, y: yScale }}
         dataAccessors={{ x: keyField, y: valueField }}
-        onClick={onClickSpy}
-        onMouseOver={mouseOverSpy}
-        onMouseLeave={mouseLeaveSpy}
+        onClick={eventHandler}
+        onMouseLeave={eventHandler}
+        onMouseMove={eventHandler}
+        onMouseOver={eventHandler}
       />
     );
-  });
-
-  afterEach(() => {
-    onClickSpy.reset();
-    mouseOverSpy.reset();
-    mouseLeaveSpy.reset();
   });
 
   it('renders an SVG path node with a d attribute', () => {
@@ -72,24 +64,20 @@ describe('<Line />', () => {
     expect(path).to.have.attr('d', expectedPath);
   });
 
-  it('responds to a click event', () => {
-    const wrapper = shallow(component);
-    wrapper.find('path').first().simulate('click');
-    expect(onClickSpy.called).to.be.true;
-    expect(onClickSpy.getCall(0).returnValue).to.be.an('array');
-  });
 
-  it('responds to a mouseover event', () => {
+  it(`calls onClick, mouseLeave, mouseMove, and mouseOver with
+  the browser event, the data prop, and the React element`, () => {
     const wrapper = shallow(component);
-    wrapper.find('path').first().simulate('mouseOver');
-    expect(mouseOverSpy.called).to.be.true;
-    expect(mouseOverSpy.getCall(0).returnValue).to.be.an('array');
-  });
+    const event = {
+      preventDefault() {}
+    };
+    const inst = wrapper.instance();
 
-  it('responds to a mouseleave event', () => {
-    const wrapper = shallow(component);
-    wrapper.find('path').first().simulate('mouseLeave');
-    expect(mouseLeaveSpy.called).to.be.true;
-    expect(mouseLeaveSpy.getCall(0).returnValue).to.be.an('array');
+    ['click', 'mouseLeave', 'mouseMove', 'mouseOver'].forEach((evtName) => {
+      eventHandler.reset();
+      wrapper.simulate(evtName, event);
+      expect(eventHandler.calledOnce).to.be.true;
+      expect(eventHandler.calledWith(event, data, inst)).to.be.true;
+    });
   });
 });
