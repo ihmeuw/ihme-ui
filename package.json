@@ -74,7 +74,6 @@
     "eslint-plugin-react": "^5.1.1",
     "extract-text-webpack-plugin": "^2.0.0-beta.3",
     "jsdom": "^8.1.0",
-    "lodash-webpack-plugin": "^0.10.0",
     "mocha": "^2.3.4",
     "postcss": "^5.1.2",
     "postcss-loader": "^0.8.2",
