@@ -21,7 +21,7 @@ describe('Choropleth <Path />', () => {
   });
 
   describe('events', () => {
-    it(`calls onClick, mouseDown, mouseMove, mouseOut, and mouseOver 
+    it(`calls onClick, mouseDown, mouseMove, mouseLeave, and mouseOver 
     with event, locationId, and the React element`, () => {
       const wrapper = shallow(
         <Path
@@ -31,7 +31,7 @@ describe('Choropleth <Path />', () => {
           onClick={eventHandler}
           onMouseDown={eventHandler}
           onMouseMove={eventHandler}
-          onMouseOut={eventHandler}
+          onMouseLeave={eventHandler}
           onMouseOver={eventHandler}
         />
       );
@@ -41,7 +41,7 @@ describe('Choropleth <Path />', () => {
       };
 
       const inst = wrapper.instance();
-      ['click', 'mouseDown', 'mouseMove', 'mouseOut', 'mouseOver'].forEach((evtName) => {
+      ['click', 'mouseDown', 'mouseMove', 'mouseLeave', 'mouseOver'].forEach((evtName) => {
         eventHandler.reset();
         wrapper.simulate(evtName, event);
         expect(eventHandler.calledOnce).to.be.true;
