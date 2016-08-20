@@ -62,7 +62,7 @@ const propTypes = {
 const defaultProps = {
   showUncertainty: false,
   showLine: true,
-  colorScale: () => { return 'steelblue'; },
+  colorScale: () => 'steelblue',
   scales: { x: scaleLinear(), y: scaleLinear() },
 };
 

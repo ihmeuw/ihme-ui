@@ -69,12 +69,8 @@ export default class Line extends PureComponent {
     } = this.props;
 
     const path = line()
-      .x((datum) => {
-        return scales.x(datum[xAccessor]);
-      })
-      .y((datum) => {
-        return scales.y(datum[yAccessor]);
-      });
+      .x((datum) => scales.x(datum[xAccessor]))
+      .y((datum) => scales.y(datum[yAccessor]));
 
     return (
       <path

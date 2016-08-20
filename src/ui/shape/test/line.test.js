@@ -37,8 +37,8 @@ describe('<Line />', () => {
   const eventHandler = sinon.spy();
 
   const lineFunction = line()
-    .x((datum) => { return xScale(datum[keyField]); })
-    .y((datum) => { return yScale(datum[valueField]); });
+    .x((datum) => xScale(datum[keyField]))
+    .y((datum) => yScale(datum[valueField]));
 
   const expectedPath = lineFunction(data);
 
