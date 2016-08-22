@@ -58,6 +58,7 @@ const defaultProps = {
   dataAccessors: { x: 'x', y: 'y' },
   onClick: noop,
   onMouseOver: noop,
+  onMouseMove: noop,
   onMouseLeave: noop,
 };
 
