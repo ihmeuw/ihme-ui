@@ -21,23 +21,12 @@ const propTypes = {
       y0 -> accessor for yscale (when there're two; e.g., lower bound)
       y1 -> accessor for yscale (when there're two; e.g., upper bound)
   */
-  dataAccessors: PropTypes.oneOf([
-    PropTypes.shape({
-      x: PropTypes.oneOf([PropTypes.string, PropTypes.func]).isRequired,
-      y: PropTypes.oneOf([PropTypes.string, PropTypes.func]).isRequired,
-      y0: PropTypes.oneOf([PropTypes.string, PropTypes.func]).isRequired,
-      y1: PropTypes.oneOf([PropTypes.string, PropTypes.func]).isRequired,
-    }),
-    PropTypes.shape({
-      x: PropTypes.oneOf([PropTypes.string, PropTypes.func]).isRequired,
-      y: PropTypes.oneOf([PropTypes.string, PropTypes.func]).isRequired,
-    }),
-    PropTypes.shape({
-      x: PropTypes.oneOf([PropTypes.string, PropTypes.func]).isRequired,
-      y0: PropTypes.oneOf([PropTypes.string, PropTypes.func]).isRequired,
-      y1: PropTypes.oneOf([PropTypes.string, PropTypes.func]).isRequired,
-    }),
-  ]).isRequired,
+  dataAccessors: PropTypes.shape({
+    x: PropTypes.oneOf([PropTypes.string, PropTypes.func]),
+    y: PropTypes.oneOf([PropTypes.string, PropTypes.func]),
+    y0: PropTypes.oneOf([PropTypes.string, PropTypes.func]),
+    y1: PropTypes.oneOf([PropTypes.string, PropTypes.func]),
+  }).isRequired,
 
   /* key that holds values to be represented by individual lines */
   dataField: PropTypes.string,
@@ -80,11 +69,10 @@ const defaultProps = {
 const MultiLine = (props) => {
   const {
     colorScale,
-    keyField,
-    dataField,
     data,
-    showUncertainty,
-    showLine
+    dataAccessors,
+    dataField,
+    keyField,
   } = props;
 
   const childProps = omit(props, [
@@ -92,14 +80,34 @@ const MultiLine = (props) => {
     'keyField',
     'dataField',
     'style',
-    'showUncertainty',
-    'showLine'
   ]);
+
+  function renderLine(key, values, color) {
+    return (
+      <Line
+        key={`line:${key}`}
+        data={values}
+        stroke={color}
+        {...childProps}
+      />
+    );
+  }
+
+  function renderArea(key, values, color) {
+    return (
+      <Area
+        key={`area:${key}`}
+        data={values}
+        color={color}
+        {...childProps}
+      />
+    );
+  }
 
   return (
     <g>
       {
-        (!showUncertainty && !showLine)
+        (!(dataAccessors.y || (dataAccessors.y0 && dataAccessors.y1)))
           ? null
           : map(data, (lineData) => {
             const key = lineData[keyField];
@@ -108,45 +116,21 @@ const MultiLine = (props) => {
             // on each iteration, lineData is an object
             // e.g., { keyField: STRING, dataField: ARRAY }
 
-            // if uncertainty is turned off, only draw lines
-            if (!showUncertainty) {
-              return (
-                <Line
-                  key={`line:${key}`}
-                  data={values}
-                  stroke={color}
-                  {...childProps}
-                />
-              );
+            // only show Line
+            if (!dataAccessors.y0) {
+              return renderLine(key, values, color);
             }
 
-            // if line is turned off, only show uncertainty
-            if (!showLine) {
-              return (
-                <Area
-                  key={`area:${key}`}
-                  data={values}
-                  color={color}
-                  {...childProps}
-                />
-              );
+            // only show Area
+            if (!dataAccessors.y) {
+              return renderArea(key, values, color);
             }
 
-            // otherwise, show both
+            // show both Line and Area
             return (
               <g key={`area:line:${lineData[keyField]}`}>
-                <Line
-                  key={`line:${key}`}
-                  data={values}
-                  stroke={color}
-                  {...childProps}
-                />
-                <Area
-                  key={`area:${key}`}
-                  data={values}
-                  color={color}
-                  {...childProps}
-                />
+                {renderLine(key, values, color)}
+                {renderArea(key, values, color)}
               </g>
             );
           })
