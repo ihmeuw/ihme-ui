@@ -54,6 +54,13 @@ const defaultProps = {
 };
 
 export default class Line extends PureComponent {
+  static getPath(scales, data, { x: xAccessor, y: yAccessor }) {
+    const pathBuilder = line()
+      .x((datum) => scales.x(datum[xAccessor]))
+      .y((datum) => scales.y(datum[yAccessor]));
+    return pathBuilder(data);
+  }
+
   render() {
     const {
       data,
@@ -61,16 +68,12 @@ export default class Line extends PureComponent {
       fill,
       stroke,
       strokeWidth,
-      dataAccessors: { x: xAccessor, y: yAccessor },
+      dataAccessors,
       onClick,
       onMouseLeave,
       onMouseMove,
       onMouseOver,
     } = this.props;
-
-    const path = line()
-      .x((datum) => scales.x(datum[xAccessor]))
-      .y((datum) => scales.y(datum[yAccessor]));
 
     return (
       <path
@@ -78,7 +81,7 @@ export default class Line extends PureComponent {
         fill={fill}
         stroke={stroke}
         strokeWidth={`${strokeWidth}px`}
-        d={path(data)}
+        d={Line.getPath(scales, data, dataAccessors)}
         onClick={eventHandleWrapper(onClick, data, this)}
         onMouseLeave={eventHandleWrapper(onMouseLeave, data, this)}
         onMouseMove={eventHandleWrapper(onMouseMove, data, this)}
