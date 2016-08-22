@@ -58,6 +58,17 @@ const defaultProps = {
 };
 
 export default class Line extends PureComponent {
+  /**
+   * Return path string for <path>'s d attribute
+   * @param {Object} scales - scales from d3Scale
+   * @param {Function} scales.x - scale for x axis
+   * @param {Function} scales.y - scale for y axis
+   * @param {Object[]} data - array of data points to be used in creating the line
+   * @param {Object} dataAccessors - keys into objects in the data parameter for determining the point coordinates
+   * @param {String} dataAccessors.x - key into data objects for getting the x-value
+   * @param {String} dataAccessors.y - key into data objects for getting the y-value
+   * @return {String}
+   */
   static getPath(scales, data, { x: xAccessor, y: yAccessor }) {
     const pathBuilder = line()
       .x((datum) => scales.x(datum[xAccessor]))
@@ -109,6 +120,7 @@ Line.propTypes = propTypes;
 Line.defaultProps = defaultProps;
 
 Line.propUpdates = {
+  // update state.path if scales, data, or dataAccessors props have changed
   path: (accum, propName, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, ['scales', 'data', 'dataAccessors'])) {
       return accum;
