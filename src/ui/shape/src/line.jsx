@@ -1,17 +1,20 @@
 import React, { PropTypes } from 'react';
-
+import classNames from 'classnames';
 import { line } from 'd3-shape';
-
 import { assign, noop } from 'lodash';
 
 import { eventHandleWrapper } from '../../../utils/events';
 import {
+  CommonPropTypes,
   propsChanged,
   PureComponent,
   stateFromPropUpdates,
 } from '../../../utils';
 
 const propTypes = {
+  /* base classname to apply to symbol */
+  className: CommonPropTypes.className,
+
   /* array of objects
     e.g. [ {}, {}, {} ]
   */
@@ -48,6 +51,7 @@ const propTypes = {
 };
 
 const defaultProps = {
+  className: 'line',
   fill: 'none',
   stroke: 'steelblue',
   strokeWidth: 2.5,
@@ -87,6 +91,7 @@ export default class Line extends PureComponent {
 
   render() {
     const {
+      className,
       data,
       fill,
       stroke,
@@ -101,7 +106,7 @@ export default class Line extends PureComponent {
 
     return (
       <path
-        className="line"
+        className={classNames(className)}
         fill={fill}
         stroke={stroke}
         strokeWidth={`${strokeWidth}px`}
