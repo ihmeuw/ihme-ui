@@ -22,8 +22,8 @@ const propTypes = {
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
 
   dataAccessors: PropTypes.shape({
-    x: PropTypes.oneOf([PropTypes.string, PropTypes.func]),
-    y: PropTypes.oneOf([PropTypes.string, PropTypes.func]),
+    x: PropTypes.oneOf([PropTypes.string, PropTypes.func]).isRequired,
+    y: PropTypes.oneOf([PropTypes.string, PropTypes.func]).isRequired,
   }).isRequired,
 
   fill: PropTypes.string,
