@@ -64,6 +64,41 @@ describe('<Line />', () => {
     expect(path).to.have.attr('d', expectedPath);
   });
 
+  describe('styling', () => {
+    const baseStyle = {
+      stroke: 'red',
+      strokeWidth: 10,
+    };
+
+    it('applies style as an object', () => {
+      const wrapper = shallow(
+        <Line
+          data={data}
+          scales={{ x: xScale, y: yScale }}
+          dataAccessors={{ x: keyField, y: valueField }}
+          style={baseStyle}
+        />
+      );
+
+      expect(wrapper).to.have.style('stroke', 'red');
+      expect(wrapper).to.have.style('stroke-width', '10');
+    });
+
+    it('applies style as a function', () => {
+      const wrapper = shallow(
+        <Line
+          data={data}
+          scales={{ x: xScale, y: yScale }}
+          dataAccessors={{ x: keyField, y: valueField }}
+          style={(d) => ({ stroke: 'red', strokeWidth: d[0][valueField] })}
+        />
+      );
+
+      expect(wrapper).to.have.style('stroke', 'red');
+      expect(wrapper).to.have.style('stroke-width', data[0][valueField]);
+    });
+  });
+
   describe('classnames', () => {
     const wrapper = shallow(
       <Line

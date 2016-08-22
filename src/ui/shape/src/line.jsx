@@ -49,6 +49,12 @@ const propTypes = {
   stroke: PropTypes.string,
 
   strokeWidth: PropTypes.number,
+
+  /*
+   inline-style object or function to be applied as base style;
+   if a function, is called with data
+   */
+  style: CommonPropTypes.style,
 };
 
 const defaultProps = {
@@ -60,6 +66,7 @@ const defaultProps = {
   onMouseOver: noop,
   onMouseMove: noop,
   onMouseLeave: noop,
+  style: {},
 };
 
 export default class Line extends PureComponent {
@@ -86,6 +93,18 @@ export default class Line extends PureComponent {
     return pathBuilder(data);
   }
 
+  /**
+   * Calculate style given base style, fill, stroke, and strokeWidth
+   * @param {Object}
+   * @return {Object} computed style
+   */
+  static getStyle({ data, fill, stroke, strokeWidth, style }) {
+    const baseStyle = { fill, stroke, strokeWidth: `${strokeWidth}px` };
+    const computedStyle = typeof style === 'function' ? style(data) : style;
+
+    return assign({}, baseStyle, computedStyle);
+  }
+
   constructor(props) {
     super(props);
     this.state = stateFromPropUpdates(Line.propUpdates, {}, props, {});
@@ -99,28 +118,23 @@ export default class Line extends PureComponent {
     const {
       className,
       data,
-      fill,
-      stroke,
-      strokeWidth,
       onClick,
       onMouseLeave,
       onMouseMove,
       onMouseOver,
     } = this.props;
 
-    const { path } = this.state;
+    const { path, style } = this.state;
 
     return (
       <path
         className={classNames(className) || (void 0)}
-        fill={fill}
-        stroke={stroke}
-        strokeWidth={`${strokeWidth}px`}
         d={path}
         onClick={eventHandleWrapper(onClick, data, this)}
         onMouseLeave={eventHandleWrapper(onMouseLeave, data, this)}
         onMouseMove={eventHandleWrapper(onMouseMove, data, this)}
         onMouseOver={eventHandleWrapper(onMouseOver, data, this)}
+        style={style}
       />
     );
   }
@@ -138,6 +152,27 @@ Line.propUpdates = {
     }
     return assign(accum, {
       path: Line.getPath(nextProps.scales, nextProps.data, nextProps.dataAccessors),
+    });
+  },
+  // update style if data, fill, stroke, strokeWidth, or style have changed
+  style: (accum, propName, prevProps, nextProps) => {
+    if (!propsChanged(prevProps, nextProps, [
+      'data',
+      'fill',
+      'stroke',
+      'strokeWidth',
+      'style',
+    ])) {
+      return accum;
+    }
+    return assign(accum, {
+      style: Line.getStyle({
+        data: nextProps.data,
+        fill: nextProps.fill,
+        stroke: nextProps.stroke,
+        strokeWidth: nextProps.strokeWidth,
+        style: nextProps.style,
+      }),
     });
   },
 };
