@@ -2,10 +2,14 @@ import React, { PropTypes } from 'react';
 
 import { line } from 'd3-shape';
 
-import { noop } from 'lodash';
+import { assign, noop } from 'lodash';
 
-import { PureComponent } from '../../../utils';
 import { eventHandleWrapper } from '../../../utils/events';
+import {
+  propsChanged,
+  PureComponent,
+  stateFromPropUpdates,
+} from '../../../utils';
 
 const propTypes = {
   /* array of objects
@@ -61,19 +65,28 @@ export default class Line extends PureComponent {
     return pathBuilder(data);
   }
 
+  constructor(props) {
+    super(props);
+    this.state = stateFromPropUpdates(Line.propUpdates, {}, props, {});
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState(stateFromPropUpdates(Line.propUpdates, this.props, nextProps, {}));
+  }
+
   render() {
     const {
       data,
-      scales,
       fill,
       stroke,
       strokeWidth,
-      dataAccessors,
       onClick,
       onMouseLeave,
       onMouseMove,
       onMouseOver,
     } = this.props;
+
+    const { path } = this.state;
 
     return (
       <path
@@ -81,7 +94,7 @@ export default class Line extends PureComponent {
         fill={fill}
         stroke={stroke}
         strokeWidth={`${strokeWidth}px`}
-        d={Line.getPath(scales, data, dataAccessors)}
+        d={path}
         onClick={eventHandleWrapper(onClick, data, this)}
         onMouseLeave={eventHandleWrapper(onMouseLeave, data, this)}
         onMouseMove={eventHandleWrapper(onMouseMove, data, this)}
@@ -94,3 +107,14 @@ export default class Line extends PureComponent {
 Line.propTypes = propTypes;
 
 Line.defaultProps = defaultProps;
+
+Line.propUpdates = {
+  path: (accum, propName, prevProps, nextProps) => {
+    if (!propsChanged(prevProps, nextProps, ['scales', 'data', 'dataAccessors'])) {
+      return accum;
+    }
+    return assign(accum, {
+      path: Line.getPath(nextProps.scales, nextProps.data, nextProps.dataAccessors),
+    });
+  },
+};
