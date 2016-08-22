@@ -12,7 +12,7 @@ import {
 } from '../../../utils';
 
 const propTypes = {
-  /* base classname to apply to symbol */
+  /* base classname to apply to line */
   className: CommonPropTypes.className,
 
   /* array of objects
