@@ -1,11 +1,16 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 import { scaleLinear } from 'd3-scale';
 import { map, omit } from 'lodash';
 
 import Line from './line';
 import Area from './area';
+import { CommonPropTypes } from '../../../utils';
 
 const propTypes = {
+  /* base classname to apply to Areas that are children of MultiLine */
+  areaClassName: CommonPropTypes.className,
+
   /* fn that accepts keyfield, and returns stroke color for line */
   colorScale: PropTypes.func,
 
@@ -38,6 +43,9 @@ const propTypes = {
   /* key that uniquely identifies dataset within array of datasets */
   keyField: PropTypes.string,
 
+  /* base classname to apply to Lines that are children of MultiLine */
+  lineClassName: CommonPropTypes.className,
+
   /* signature: function(event, line data, Line instance) {...} */
   onClick: PropTypes.func,
 
@@ -66,17 +74,24 @@ const defaultProps = {
 
 const MultiLine = (props) => {
   const {
+    areaClassName,
     colorScale,
     data,
     dataAccessors,
     dataField,
     keyField,
+    lineClassName,
   } = props;
 
+  const resolvedAreaClassName = classNames(areaClassName) || (void 0);
+  const resolvedLineClassName = classNames(lineClassName) || (void 0);
+
   const childProps = omit(props, [
+    'areaClassName',
     'data',
-    'keyField',
     'dataField',
+    'keyField',
+    'lineClassName',
     'style',
   ]);
 
@@ -86,6 +101,7 @@ const MultiLine = (props) => {
         key={`line:${key}`}
         data={values}
         stroke={color}
+        className={resolvedLineClassName}
         {...childProps}
       />
     );
@@ -97,6 +113,7 @@ const MultiLine = (props) => {
         key={`area:${key}`}
         data={values}
         color={color}
+        className={resolvedAreaClassName}
         {...childProps}
       />
     );
