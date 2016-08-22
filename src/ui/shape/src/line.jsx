@@ -51,7 +51,6 @@ const propTypes = {
 };
 
 const defaultProps = {
-  className: 'line',
   fill: 'none',
   stroke: 'steelblue',
   strokeWidth: 2.5,
@@ -106,7 +105,7 @@ export default class Line extends PureComponent {
 
     return (
       <path
-        className={classNames(className)}
+        className={classNames(className) || (void 0)}
         fill={fill}
         stroke={stroke}
         strokeWidth={`${strokeWidth}px`}
