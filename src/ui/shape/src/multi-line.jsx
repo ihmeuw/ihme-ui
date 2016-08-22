@@ -21,12 +21,23 @@ const propTypes = {
       y0 -> accessor for yscale (when there're two; e.g., lower bound)
       y1 -> accessor for yscale (when there're two; e.g., upper bound)
   */
-  dataAccessors: PropTypes.shape({
-    x: PropTypes.string,
-    y: PropTypes.string,
-    y0: PropTypes.string,
-    y1: PropTypes.string
-  }).isRequired,
+  dataAccessors: PropTypes.oneOf([
+    PropTypes.shape({
+      x: PropTypes.oneOf([PropTypes.string, PropTypes.func]).isRequired,
+      y: PropTypes.oneOf([PropTypes.string, PropTypes.func]).isRequired,
+      y0: PropTypes.oneOf([PropTypes.string, PropTypes.func]).isRequired,
+      y1: PropTypes.oneOf([PropTypes.string, PropTypes.func]).isRequired,
+    }),
+    PropTypes.shape({
+      x: PropTypes.oneOf([PropTypes.string, PropTypes.func]).isRequired,
+      y: PropTypes.oneOf([PropTypes.string, PropTypes.func]).isRequired,
+    }),
+    PropTypes.shape({
+      x: PropTypes.oneOf([PropTypes.string, PropTypes.func]).isRequired,
+      y0: PropTypes.oneOf([PropTypes.string, PropTypes.func]).isRequired,
+      y1: PropTypes.oneOf([PropTypes.string, PropTypes.func]).isRequired,
+    }),
+  ]).isRequired,
 
   /* key that holds values to be represented by individual lines */
   dataField: PropTypes.string,
