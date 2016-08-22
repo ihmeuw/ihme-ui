@@ -20,6 +20,10 @@ const propTypes = {
       y -> accessor for yscale (when there's one, e.g. <Line />)
       y0 -> accessor for yscale (when there're two; e.g., lower bound)
       y1 -> accessor for yscale (when there're two; e.g., upper bound)
+
+    To show only a line, include just x, y.
+    To show only an area, include just x, y0, y1.
+    To show line and area, include all properties.
   */
   dataAccessors: PropTypes.shape({
     x: PropTypes.oneOf([PropTypes.string, PropTypes.func]),
@@ -51,12 +55,6 @@ const propTypes = {
     x: PropTypes.func,
     y: PropTypes.func
   }).isRequired,
-
-  /* whether or not to draw lines (e.g., mean estimate lines) */
-  showLine: PropTypes.bool,
-
-  /* whether or not to draw uncertainty areas for lines */
-  showUncertainty: PropTypes.bool,
 };
 
 const defaultProps = {
