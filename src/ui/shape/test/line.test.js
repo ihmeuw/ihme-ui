@@ -64,20 +64,36 @@ describe('<Line />', () => {
     expect(path).to.have.attr('d', expectedPath);
   });
 
+  describe('classnames', () => {
+    const wrapper = shallow(
+      <Line
+        className="base-classname"
+        data={data}
+        scales={{ x: xScale, y: yScale }}
+        dataAccessors={{ x: keyField, y: valueField }}
+      />
+    );
 
-  it(`calls onClick, mouseLeave, mouseMove, and mouseOver with
-  the browser event, the data prop, and the React element`, () => {
-    const wrapper = shallow(component);
-    const event = {
-      preventDefault() {}
-    };
-    const inst = wrapper.instance();
+    it('applies a base classname', () => {
+      expect(wrapper).to.have.className('base-classname');
+    });
+  });
 
-    ['click', 'mouseLeave', 'mouseMove', 'mouseOver'].forEach((evtName) => {
-      eventHandler.reset();
-      wrapper.simulate(evtName, event);
-      expect(eventHandler.calledOnce).to.be.true;
-      expect(eventHandler.calledWith(event, data, inst)).to.be.true;
+  describe('events', () => {
+    it(`calls onClick, mouseLeave, mouseMove, and mouseOver with
+    the browser event, the data prop, and the React element`, () => {
+      const wrapper = shallow(component);
+      const event = {
+        preventDefault() {}
+      };
+      const inst = wrapper.instance();
+
+      ['click', 'mouseLeave', 'mouseMove', 'mouseOver'].forEach((evtName) => {
+        eventHandler.reset();
+        wrapper.simulate(evtName, event);
+        expect(eventHandler.calledOnce).to.be.true;
+        expect(eventHandler.calledWith(event, data, inst)).to.be.true;
+      });
     });
   });
 });
