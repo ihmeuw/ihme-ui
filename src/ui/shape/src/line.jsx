@@ -7,6 +7,7 @@ import { eventHandleWrapper } from '../../../utils/events';
 import {
   CommonPropTypes,
   propsChanged,
+  propResolver,
   PureComponent,
   stateFromPropUpdates,
 } from '../../../utils';
@@ -21,8 +22,8 @@ const propTypes = {
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
 
   dataAccessors: PropTypes.shape({
-    x: PropTypes.string,
-    y: PropTypes.string
+    x: PropTypes.oneOf([PropTypes.string, PropTypes.func]),
+    y: PropTypes.oneOf([PropTypes.string, PropTypes.func]),
   }).isRequired,
 
   fill: PropTypes.string,
@@ -62,20 +63,25 @@ const defaultProps = {
 
 export default class Line extends PureComponent {
   /**
+   * Callback type if dataAccessors.x or dataAccessors.y is a function:
+   * @callback dataAccessorsCallback
+   * @param {Object} datum - element of data array
+   * @return {String} - string key into datum for getting coordinate value
+   *
    * Return path string for <path>'s d attribute
    * @param {Object} scales - scales from d3Scale
    * @param {Function} scales.x - scale for x axis
    * @param {Function} scales.y - scale for y axis
    * @param {Object[]} data - array of data points to be used in creating the line
    * @param {Object} dataAccessors - keys into objects in the data parameter for determining the point coordinates
-   * @param {String} dataAccessors.x - key into data objects for getting the x-value
-   * @param {String} dataAccessors.y - key into data objects for getting the y-value
+   * @param {String|dataAccessorsCallback} dataAccessors.x - key into data objects for x-value or a function that returns this key
+   * @param {String|dataAccessorsCallback} dataAccessors.y - key into data objects for x-value or a function that returns this key
    * @return {String}
    */
   static getPath(scales, data, { x: xAccessor, y: yAccessor }) {
     const pathBuilder = line()
-      .x((datum) => scales.x(datum[xAccessor]))
-      .y((datum) => scales.y(datum[yAccessor]));
+      .x((datum) => scales.x(propResolver(datum, xAccessor)))
+      .y((datum) => scales.y(propResolver(datum, yAccessor)));
     return pathBuilder(data);
   }
 
