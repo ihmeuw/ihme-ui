@@ -95,7 +95,7 @@ describe('<Line />', () => {
       );
 
       expect(wrapper).to.have.style('stroke', 'red');
-      expect(wrapper).to.have.style('stroke-width', data[0][valueField]);
+      expect(wrapper).to.have.style('stroke-width', String(data[0][valueField]));
     });
   });
 
