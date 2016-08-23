@@ -31,10 +31,10 @@ const propTypes = {
     To show line and area, include all properties.
   */
   dataAccessors: PropTypes.shape({
-    x: PropTypes.oneOf([PropTypes.string, PropTypes.func]),
-    y: PropTypes.oneOf([PropTypes.string, PropTypes.func]),
-    y0: PropTypes.oneOf([PropTypes.string, PropTypes.func]),
-    y1: PropTypes.oneOf([PropTypes.string, PropTypes.func]),
+    x: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+    y: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+    y0: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+    y1: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
   }).isRequired,
 
   /* key that holds values to be represented by individual lines */
