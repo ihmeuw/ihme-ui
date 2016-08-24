@@ -1,21 +1,32 @@
 import React from 'react';
 import { render } from 'react-dom';
 import * as d3Request from 'd3-request';
-import { bindAll, flatMap, get as getValue } from 'lodash';
+import {
+  bindAll,
+  find,
+  flatMap,
+  get as getValue,
+  xor,
+} from 'lodash';
 
 import Map from '../';
 import Button from '../../../button';
 import { dataGenerator } from '../../../../test-utils';
 
 const keyField = 'loc_id';
-const valueField = 'mean';
+const valueField = (data, feature) => {
+  if (!feature && data.hasOwnProperty('mean')) return data.mean;
+  if (feature && feature.properties.hasOwnProperty('admin_id') && data.hasOwnProperty(feature.properties.admin_id)) return data[feature.properties.admin_id].mean;
+  if (feature && feature.properties.hasOwnProperty('loc_id') && data.hasOwnProperty(feature.properties.loc_id)) return data[feature.properties.loc_id].mean;
+  return null;
+};
 
 function randomNumberBetween0And99() {
   return Math.random() * 100 | 0;
 }
 
 function randomRange() {
-  return [randomNumberBetween0And99(), randomNumberBetween0And99()].sort((a, b) => a -b);
+  return [randomNumberBetween0And99(), randomNumberBetween0And99()].sort((a, b) => a - b);
 }
 
 class App extends React.Component {
@@ -24,18 +35,34 @@ class App extends React.Component {
 
     this.state = {
       data: [],
+      selections: [],
       selectedChoroplethDomain: [0, 1],
+      subnational: false,
     };
 
     bindAll(this, [
+      'onClick',
       'onGenerateNewData',
       'onResetScale',
       'onSliderMove',
+      'onToggleSubnational',
     ]);
   }
 
   componentWillMount() {
     this.setData();
+  }
+
+  onClick(event, locationDatum, Path) {
+    let selectedDatum = locationDatum;
+    const adminId = getValue(Path, ['props', 'feature', 'properties', 'admin_id'], null);
+    if (adminId) {
+      selectedDatum = find(this.state.data, (datum) => datum[keyField] == adminId);
+    }
+
+    this.setState({
+      selections: xor(this.state.selections, [selectedDatum]),
+    });
   }
 
   onGenerateNewData() {
@@ -45,6 +72,12 @@ class App extends React.Component {
   onSliderMove(selectedChoroplethDomain) {
     this.setState({
       selectedChoroplethDomain,
+    });
+  }
+
+  onToggleSubnational() {
+    this.setState({
+      subnational: !this.state.subnational,
     });
   }
 
@@ -65,7 +98,7 @@ class App extends React.Component {
   getData(locationIds, dataRange) {
     return dataGenerator({
       primaryKeys: [{ name: keyField, values: locationIds }],
-      valueKeys: [{ name: valueField, range: dataRange }],
+      valueKeys: [{ name: 'mean', range: dataRange }],
       length: 1
     });
   }
@@ -78,7 +111,7 @@ class App extends React.Component {
 
   render() {
     const { topology } = this.props;
-    const { data, range, selectedChoroplethDomain } = this.state;
+    const { data, range, selections, selectedChoroplethDomain, subnational } = this.state;
 
     if (!Array.isArray(data)) return null;
 
@@ -90,8 +123,11 @@ class App extends React.Component {
           extentPct={selectedChoroplethDomain}
           geometryKeyField={`properties.${keyField}`}
           keyField={keyField}
+          onClick={this.onClick}
           onResetScale={this.onResetScale}
           onSliderMove={this.onSliderMove}
+          selectedLocations={selections}
+          subnational={subnational}
           topology={topology}
           unit="Probability of death"
           valueField={valueField}
@@ -99,6 +135,10 @@ class App extends React.Component {
         <Button
           onClick={this.onGenerateNewData}
           text="Generate new data"
+        />
+        <Button
+          onClick={this.onToggleSubnational}
+          text="Toggle subnational"
         />
       </div>
     );

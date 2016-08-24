@@ -107,14 +107,6 @@ export default class Map extends React.Component {
         visible: !!props.subnational,
       },
       {
-        name: 'disputes',
-        object: 'disputes',
-        style: styleReset,
-        selectedStyle: styleReset,
-        type: 'feature',
-        visible: true,
-      },
-      {
         name: 'disputed-national-borders',
         object: 'national',
         style: { stroke: 'black', strokeWidth: '1px', strokeDasharray: '5, 5' },
@@ -488,7 +480,6 @@ Map.propTypes = {
   */
   topology: PropTypes.shape({
     objects: PropTypes.shape({
-      disputes: PropTypes.object.isRequired,
       national: PropTypes.object.isRequired,
       subnational: PropTypes.object,
     }).isRequired,
@@ -538,7 +529,8 @@ Map.propUpdates = {
     return assign({}, state, {
       layers: state.layers.map(layer => {
         let meshFilter = layer.filterFn;
-        if (layer.name === 'selected-non-disputed-national-borders') {
+        if (layer.name === 'selected-non-disputed-national-borders'
+            || layer.name === 'selected-non-disputed-subnational-borders') {
           meshFilter = context.selectedBordersMeshFilter(nextProps.selectedLocations);
         }
         return assign({}, layer, { filterFn: meshFilter });
