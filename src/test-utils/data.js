@@ -1,5 +1,4 @@
-import { map, flatMap, reduce, assign } from 'lodash';
-import cuid from 'cuid';
+import { assign, flatMap, map, reduce, uniqueId } from 'lodash';
 
 export const dataGenerator = (config = {}) => {
   const {
@@ -155,6 +154,6 @@ export const dataGenerator = (config = {}) => {
   });
 
   return map(rows, (r) => {
-    return assign({ id: cuid() }, r);
+    return assign({ id: uniqueId() }, r);
   });
 };
