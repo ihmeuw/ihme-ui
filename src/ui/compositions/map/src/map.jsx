@@ -65,8 +65,10 @@ export function getRangeExtent([x1Pct, x2Pct], domain) {
  * @param {Array} data
  * @param {Array} locationIdsOnMap - return value from `getGeometryIds`
  */
-export const filterData = memoizeByLastCall((data, locationIdsOnMap) =>
-  intersectionWith(data, locationIdsOnMap, (datum, locId) => datum.loc_id === locId)
+export const filterData = memoizeByLastCall((data, locationIdsOnMap, keyField) =>
+  /* eslint-disable eqeqeq */
+  intersectionWith(data, locationIdsOnMap, (datum, locId) => propResolver(datum, keyField) == locId)
+  /* eslint-enable eqeqeq */
 );
 
 export default class Map extends React.Component {
@@ -322,6 +324,7 @@ export default class Map extends React.Component {
       data,
       domain,
       extentPct,
+      keyField,
       onClick,
       onMouseLeave,
       onMouseMove,
@@ -344,9 +347,9 @@ export default class Map extends React.Component {
             <ChoroplethLegend
               colorSteps={colorSteps}
               colorScale={colorScale}
-              data={filterData(data, locationIdsOnMap)}
+              data={filterData(data, locationIdsOnMap, keyField)}
               domain={domain}
-              keyField="location_id"
+              keyField={keyField}
               margins={{
                 top: 20,
                 right: 50,
