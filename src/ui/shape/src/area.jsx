@@ -2,6 +2,8 @@ import React, { PropTypes } from 'react';
 import { area } from 'd3-shape';
 import { noop } from 'lodash';
 
+import { eventHandleWrapper } from '../../../utils/events';
+
 const propTypes = {
   /* array of objects
    e.g. [ {}, {}, {} ]
@@ -24,7 +26,7 @@ const propTypes = {
     y1: PropTypes.string
   }).isRequired,
 
-  clickHandler: PropTypes.func,
+  onClick: PropTypes.func,
 
   hoverHandler: PropTypes.func
 };
@@ -33,7 +35,7 @@ const defaultProps = {
   color: 'steelblue',
   strokeWidth: 2.5,
   dataAccessors: { x: 'x', y0: 'y0', y1: 'y1' },
-  clickHandler: noop,
+  onClick: noop,
   hoverHandler: noop
 };
 
@@ -44,7 +46,7 @@ const Area = (props) => {
     color,
     strokeWidth,
     dataAccessors: { x: xAccessor, y0: y0Accessor, y1: y1Accessor },
-    clickHandler,
+    onClick,
     hoverHandler
   } = props;
 
@@ -66,8 +68,8 @@ const Area = (props) => {
       stroke={color}
       strokeWidth={`${strokeWidth}px`}
       d={path(data)}
-      onClick={clickHandler(data)}
-      onMouseOver={hoverHandler(data)}
+      onClick={eventHandleWrapper(onClick, data, this)}
+      onMouseOver={eventHandleWrapper(hoverHandler, data, this)}
     />
   );
 };
