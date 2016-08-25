@@ -54,7 +54,7 @@ Area.propTypes = {
   /* scales from d3Scale */
   scales: PropTypes.shape({
     x: PropTypes.func,
-    y: PropTypes.func
+    y: PropTypes.func,
   }).isRequired,
 
   color: PropTypes.string,
