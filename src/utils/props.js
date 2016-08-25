@@ -23,6 +23,10 @@ export const CommonPropTypes = {
     PropTypes.string,
     PropTypes.number,
   ]),
+  dataAccessor: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+  ]),
 };
 
 export const CommonDefaultProps = {
