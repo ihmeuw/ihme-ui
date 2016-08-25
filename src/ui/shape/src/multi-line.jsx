@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 import { scaleLinear } from 'd3-scale';
 import { map, pick } from 'lodash';
 
@@ -10,6 +11,7 @@ class MultiLine extends PureComponent {
   render() {
     const {
       areaClassName,
+      className,
       colorScale,
       data,
       dataAccessors,
@@ -17,6 +19,7 @@ class MultiLine extends PureComponent {
       keyField,
       lineClassName,
       scales,
+      style,
     } = this.props;
 
     const mouseEvents = pick(this.props, [
@@ -27,7 +30,7 @@ class MultiLine extends PureComponent {
     ]);
 
     return (
-      <g>
+      <g className={classNames(className)} style={style}>
         {
           (!(dataAccessors.y || (dataAccessors.y0 && dataAccessors.y1))) ?
             null :
@@ -74,6 +77,8 @@ MultiLine.propTypes = {
 
   /* fn that accepts keyfield, and returns stroke color for line */
   colorScale: PropTypes.func,
+
+  className: CommonPropTypes.className,
 
   /* array of objects
     e.g. [ {location: 'USA',values: []}, {location: 'Canada', values: []} ]
@@ -135,6 +140,8 @@ MultiLine.propTypes = {
     x: PropTypes.func,
     y: PropTypes.func
   }).isRequired,
+
+  style: CommonPropTypes.style,
 };
 
 MultiLine.defaultProps = {
