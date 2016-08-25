@@ -71,7 +71,7 @@ export default class Line extends PureComponent {
 
     return (
       <path
-        className={classNames(className) || (void 0)}
+        className={classNames(className)}
         d={path}
         onClick={eventHandleWrapper(onClick, data, this)}
         onMouseLeave={eventHandleWrapper(onMouseLeave, data, this)}
