@@ -5,41 +5,6 @@ import { noop } from 'lodash';
 import { eventHandleWrapper } from '../../../utils/events';
 import { CommonPropTypes } from '../../../utils';
 
-const propTypes = {
-  /* array of objects
-   e.g. [ {}, {}, {} ]
-   */
-  data: PropTypes.arrayOf(PropTypes.object).isRequired,
-
-  /* scales from d3Scale */
-  scales: PropTypes.shape({
-    x: PropTypes.func,
-    y: PropTypes.func
-  }).isRequired,
-
-  color: PropTypes.string,
-
-  strokeWidth: PropTypes.number,
-
-  dataAccessors: PropTypes.shape({
-    x: CommonPropTypes.dataAccessor.isRequired,
-    y0: CommonPropTypes.dataAccessor.isRequired,
-    y1: CommonPropTypes.dataAccessor.isRequired,
-  }).isRequired,
-
-  onClick: PropTypes.func,
-
-  hoverHandler: PropTypes.func
-};
-
-const defaultProps = {
-  color: 'steelblue',
-  strokeWidth: 2.5,
-  dataAccessors: { x: 'x', y0: 'y0', y1: 'y1' },
-  onClick: noop,
-  hoverHandler: noop
-};
-
 const Area = (props) => {
   const {
     data,
@@ -75,8 +40,39 @@ const Area = (props) => {
   );
 };
 
-Area.propTypes = propTypes;
+Area.propTypes = {
+  /* array of objects
+   e.g. [ {}, {}, {} ]
+   */
+  data: PropTypes.arrayOf(PropTypes.object).isRequired,
 
-Area.defaultProps = defaultProps;
+  /* scales from d3Scale */
+  scales: PropTypes.shape({
+    x: PropTypes.func,
+    y: PropTypes.func
+  }).isRequired,
+
+  color: PropTypes.string,
+
+  strokeWidth: PropTypes.number,
+
+  dataAccessors: PropTypes.shape({
+    x: CommonPropTypes.dataAccessor.isRequired,
+    y0: CommonPropTypes.dataAccessor.isRequired,
+    y1: CommonPropTypes.dataAccessor.isRequired,
+  }).isRequired,
+
+  onClick: PropTypes.func,
+
+  hoverHandler: PropTypes.func
+};
+
+Area.defaultProps = {
+  color: 'steelblue',
+  strokeWidth: 2.5,
+  dataAccessors: { x: 'x', y0: 'y0', y1: 'y1' },
+  onClick: noop,
+  hoverHandler: noop
+};
 
 export default Area;
