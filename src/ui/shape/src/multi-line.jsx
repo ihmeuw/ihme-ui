@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { scaleLinear } from 'd3-scale';
-import { map, omit } from 'lodash';
+import { map, pick } from 'lodash';
 
 import Line from './line';
 import Area from './area';
@@ -16,15 +16,14 @@ class MultiLine extends PureComponent {
       dataField,
       keyField,
       lineClassName,
+      scales,
     } = this.props;
 
-    const childProps = omit(this.props, [
-      'areaClassName',
-      'data',
-      'dataField',
-      'keyField',
-      'lineClassName',
-      'style',
+    const mouseEvents = pick(this.props, [
+      'onClick',
+      'onMouseLeave',
+      'onMouseMove',
+      'onMouseOver',
     ]);
 
     return (
@@ -44,17 +43,21 @@ class MultiLine extends PureComponent {
                   <Area
                     className={areaClassName}
                     color={color}
+                    dataAccessors={dataAccessors}
                     data={values}
                     key={`area:${key}`}
-                    {...childProps}
+                    scales={scales}
+                    {...mouseEvents}
                   />
                 ), (
                   <Line
                     className={lineClassName}
-                    stroke={color}
+                    dataAccessors={dataAccessors}
                     data={values}
                     key={`line:${key}`}
-                    {...childProps}
+                    scales={scales}
+                    stroke={color}
+                    {...mouseEvents}
                   />
                 )]
               );
