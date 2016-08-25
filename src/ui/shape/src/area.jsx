@@ -3,6 +3,7 @@ import { area } from 'd3-shape';
 import { noop } from 'lodash';
 
 import { eventHandleWrapper } from '../../../utils/events';
+import { CommonPropTypes } from '../../../utils';
 
 const propTypes = {
   /* array of objects
@@ -21,9 +22,9 @@ const propTypes = {
   strokeWidth: PropTypes.number,
 
   dataAccessors: PropTypes.shape({
-    x: PropTypes.string,
-    y0: PropTypes.string,
-    y1: PropTypes.string
+    x: CommonPropTypes.dataAccessor.isRequired,
+    y0: CommonPropTypes.dataAccessor.isRequired,
+    y1: CommonPropTypes.dataAccessor.isRequired,
   }).isRequired,
 
   onClick: PropTypes.func,
