@@ -9,15 +9,15 @@ class Area extends PureComponent {
   render() {
     const {
       className,
-      data,
-      scales,
       color,
-      strokeWidth,
+      data,
       dataAccessors: { x: xAccessor, y0: y0Accessor, y1: y1Accessor },
       onClick,
       onMouseLeave,
       onMouseMove,
       onMouseOver,
+      scales,
+      strokeWidth,
       style,
     } = this.props;
 
@@ -29,14 +29,14 @@ class Area extends PureComponent {
     return (
       <path
         className={classNames(className)}
-        fill={color}
-        stroke={color}
-        strokeWidth={`${strokeWidth}px`}
         d={path(data)}
+        fill={color}
         onClick={eventHandleWrapper(onClick, data, this)}
         onMouseLeave={eventHandleWrapper(onMouseLeave, data, this)}
         onMouseMove={eventHandleWrapper(onMouseMove, data, this)}
         onMouseOver={eventHandleWrapper(onMouseOver, data, this)}
+        stroke={color}
+        strokeWidth={`${strokeWidth}px`}
         style={style}
       />
     );
@@ -46,20 +46,12 @@ class Area extends PureComponent {
 Area.propTypes = {
   className: CommonPropTypes.className,
 
+  color: PropTypes.string,
+
   /* array of objects
    e.g. [ {}, {}, {} ]
    */
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
-
-  /* scales from d3Scale */
-  scales: PropTypes.shape({
-    x: PropTypes.func,
-    y: PropTypes.func,
-  }).isRequired,
-
-  color: PropTypes.string,
-
-  strokeWidth: PropTypes.number,
 
   dataAccessors: PropTypes.shape({
     x: CommonPropTypes.dataAccessor.isRequired,
@@ -72,17 +64,25 @@ Area.propTypes = {
   onMouseMove: PropTypes.func,
   onMouseOver: PropTypes.func,
 
+  /* scales from d3Scale */
+  scales: PropTypes.shape({
+    x: PropTypes.func,
+    y: PropTypes.func,
+  }).isRequired,
+
+  strokeWidth: PropTypes.number,
+
   style: CommonPropTypes.style,
 };
 
 Area.defaultProps = {
   color: 'steelblue',
-  strokeWidth: 2.5,
   dataAccessors: { x: 'x', y0: 'y0', y1: 'y1' },
   onClick: CommonDefaultProps.noop,
   onMouseLeave: CommonDefaultProps.noop,
   onMouseMove: CommonDefaultProps.noop,
   onMouseOver: CommonDefaultProps.noop,
+  strokeWidth: 2.5,
 };
 
 export default Area;
