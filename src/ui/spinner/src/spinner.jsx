@@ -7,22 +7,30 @@ import styles from './spinner.css';
 
 class Spinner extends PureComponent {
   render() {
-    const { props } = this;
+    const {
+      className,
+      inline,
+      style,
+      symbolFill,
+      symbolStyle,
+      symbolType,
+    } = this.props;
+
     return (
       <div
         className={classNames(styles.spinner, {
-          [styles['inline-spinner']]: props.inline
-        }, props.className)}
-        style={props.style}
+          [styles['inline-spinner']]: inline
+        }, className)}
+        style={style}
       >
         <svg className={styles.dot} viewBox="-8 -8 16 16" width="1em" height="1em">
-          <Symbol symbolType="circle" fill="black" />
+          <Symbol fill={symbolFill} style={symbolStyle} symbolType={symbolType} />
         </svg>
         <svg className={styles.dot} viewBox="-8 -8 16 16" width="1em" height="1em">
-          <Symbol symbolType="circle" fill="black" />
+          <Symbol fill={symbolFill} style={symbolStyle} symbolType={symbolType} />
         </svg>
         <svg className={styles.dot} viewBox="-8 -8 16 16" width="1em" height="1em">
-          <Symbol symbolType="circle" fill="black" />
+          <Symbol fill={symbolFill} style={symbolStyle} symbolType={symbolType} />
         </svg>
       </div>
     );
@@ -37,6 +45,15 @@ Spinner.propTypes = {
   inline: PropTypes.bool,
 
   style: CommonPropTypes.style,
+
+  symbolFill: PropTypes.string,
+  symbolStyle: CommonPropTypes.style,
+  symbolType: PropTypes.string,
+};
+
+Spinner.defaultProps = {
+  symbolFill: 'black',
+  symbolType: 'circle',
 };
 
 export default Spinner;
