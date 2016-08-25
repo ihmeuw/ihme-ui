@@ -31,30 +31,6 @@ class MultiLine extends PureComponent {
       'style',
     ]);
 
-    function renderLine(key, values, color) {
-      return (
-        <Line
-          key={`line:${key}`}
-          data={values}
-          stroke={color}
-          className={resolvedLineClassName}
-          {...childProps}
-        />
-      );
-    }
-
-    function renderArea(key, values, color) {
-      return (
-        <Area
-          key={`area:${key}`}
-          data={values}
-          color={color}
-          className={resolvedAreaClassName}
-          {...childProps}
-        />
-      );
-    }
-
     return (
       <g>
         {
@@ -67,22 +43,24 @@ class MultiLine extends PureComponent {
               // on each iteration, lineData is an object
               // e.g., { keyField: STRING, dataField: ARRAY }
 
-              // only show Line
-              if (!dataAccessors.y0) {
-                return renderLine(key, values, color);
-              }
-
-              // only show Area
-              if (!dataAccessors.y) {
-                return renderArea(key, values, color);
-              }
-
-              // show both Line and Area
               return (
-                <g key={`area:line:${lineData[keyField]}`}>
-                  {renderLine(key, values, color)}
-                  {renderArea(key, values, color)}
-                </g>
+                [(
+                  <Area
+                    className={resolvedAreaClassName}
+                    color={color}
+                    data={values}
+                    key={`area:${key}`}
+                    {...childProps}
+                  />
+                ), (
+                  <Line
+                    className={resolvedLineClassName}
+                    stroke={color}
+                    data={values}
+                    key={`line:${key}`}
+                    {...childProps}
+                  />
+                )]
               );
             })
         }
