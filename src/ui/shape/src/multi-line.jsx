@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import classNames from 'classnames';
 import { scaleLinear } from 'd3-scale';
 import { map, omit } from 'lodash';
 
@@ -18,9 +17,6 @@ class MultiLine extends PureComponent {
       keyField,
       lineClassName,
     } = this.props;
-
-    const resolvedAreaClassName = classNames(areaClassName) || (void 0);
-    const resolvedLineClassName = classNames(lineClassName) || (void 0);
 
     const childProps = omit(this.props, [
       'areaClassName',
@@ -46,7 +42,7 @@ class MultiLine extends PureComponent {
               return (
                 [(
                   <Area
-                    className={resolvedAreaClassName}
+                    className={areaClassName}
                     color={color}
                     data={values}
                     key={`area:${key}`}
@@ -54,7 +50,7 @@ class MultiLine extends PureComponent {
                   />
                 ), (
                   <Line
-                    className={resolvedLineClassName}
+                    className={lineClassName}
                     stroke={color}
                     data={values}
                     key={`line:${key}`}
