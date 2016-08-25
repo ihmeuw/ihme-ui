@@ -15,7 +15,9 @@ class Area extends PureComponent {
       strokeWidth,
       dataAccessors: { x: xAccessor, y0: y0Accessor, y1: y1Accessor },
       onClick,
-      hoverHandler,
+      onMouseLeave,
+      onMouseMove,
+      onMouseOver,
       style,
     } = this.props;
 
@@ -32,7 +34,9 @@ class Area extends PureComponent {
         strokeWidth={`${strokeWidth}px`}
         d={path(data)}
         onClick={eventHandleWrapper(onClick, data, this)}
-        onMouseOver={eventHandleWrapper(hoverHandler, data, this)}
+        onMouseLeave={eventHandleWrapper(onMouseLeave, data, this)}
+        onMouseMove={eventHandleWrapper(onMouseMove, data, this)}
+        onMouseOver={eventHandleWrapper(onMouseOver, data, this)}
         style={style}
       />
     );
@@ -64,8 +68,9 @@ Area.propTypes = {
   }).isRequired,
 
   onClick: PropTypes.func,
-
-  hoverHandler: PropTypes.func,
+  onMouseLeave: PropTypes.func,
+  onMouseMove: PropTypes.func,
+  onMouseOver: PropTypes.func,
 
   style: CommonPropTypes.style,
 };
@@ -75,7 +80,9 @@ Area.defaultProps = {
   strokeWidth: 2.5,
   dataAccessors: { x: 'x', y0: 'y0', y1: 'y1' },
   onClick: CommonDefaultProps.noop,
-  hoverHandler: CommonDefaultProps.noop,
+  onMouseLeave: CommonDefaultProps.noop,
+  onMouseMove: CommonDefaultProps.noop,
+  onMouseOver: CommonDefaultProps.noop,
 };
 
 export default Area;
