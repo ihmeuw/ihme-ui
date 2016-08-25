@@ -112,12 +112,23 @@ MultiLine.propTypes = {
     To show only an area, include just x, y0, y1.
     To show line and area, include all properties.
   */
-  dataAccessors: PropTypes.shape({
-    x: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-    y: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-    y0: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-    y1: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-  }).isRequired,
+  dataAccessors: PropTypes.oneOfType([
+    PropTypes.shape({
+      x: CommonPropTypes.dataAccessor.isRequired,
+      y: CommonPropTypes.dataAccessor.isRequired,
+    }),
+    PropTypes.shape({
+      x: CommonPropTypes.dataAccessor.isRequired,
+      y0: CommonPropTypes.dataAccessor.isRequired,
+      y1: CommonPropTypes.dataAccessor.isRequired,
+    }),
+    PropTypes.shape({
+      x: CommonPropTypes.dataAccessor.isRequired,
+      y: CommonPropTypes.dataAccessor.isRequired,
+      y0: CommonPropTypes.dataAccessor.isRequired,
+      y1: CommonPropTypes.dataAccessor.isRequired,
+    }),
+  ]).isRequired,
 
   /* key that holds values to be represented by individual lines */
   dataField: PropTypes.string,
