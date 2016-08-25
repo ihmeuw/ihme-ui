@@ -3,42 +3,44 @@ import { area } from 'd3-shape';
 import { noop } from 'lodash';
 
 import { eventHandleWrapper } from '../../../utils/events';
-import { CommonPropTypes } from '../../../utils';
+import { CommonPropTypes, PureComponent } from '../../../utils';
 
-const Area = (props) => {
-  const {
-    data,
-    scales,
-    color,
-    strokeWidth,
-    dataAccessors: { x: xAccessor, y0: y0Accessor, y1: y1Accessor },
-    onClick,
-    hoverHandler
-  } = props;
+class Area extends PureComponent {
+  render() {
+    const {
+      data,
+      scales,
+      color,
+      strokeWidth,
+      dataAccessors: { x: xAccessor, y0: y0Accessor, y1: y1Accessor },
+      onClick,
+      hoverHandler
+    } = this.props;
 
-  const path = area()
-    .x((datum) => {
-      return scales.x(datum[xAccessor]);
-    })
-    .y0((datum) => {
-      return scales.y(datum[y0Accessor]);
-    })
-    .y1((datum) => {
-      return scales.y(datum[y1Accessor]);
-    });
+    const path = area()
+      .x((datum) => {
+        return scales.x(datum[xAccessor]);
+      })
+      .y0((datum) => {
+        return scales.y(datum[y0Accessor]);
+      })
+      .y1((datum) => {
+        return scales.y(datum[y1Accessor]);
+      });
 
-  return (
-    <path
-      className="area"
-      fill={color}
-      stroke={color}
-      strokeWidth={`${strokeWidth}px`}
-      d={path(data)}
-      onClick={eventHandleWrapper(onClick, data, this)}
-      onMouseOver={eventHandleWrapper(hoverHandler, data, this)}
-    />
-  );
-};
+    return (
+      <path
+        className="area"
+        fill={color}
+        stroke={color}
+        strokeWidth={`${strokeWidth}px`}
+        d={path(data)}
+        onClick={eventHandleWrapper(onClick, data, this)}
+        onMouseOver={eventHandleWrapper(hoverHandler, data, this)}
+      />
+    );
+  }
+}
 
 Area.propTypes = {
   /* array of objects
