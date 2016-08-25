@@ -20,15 +20,9 @@ class Area extends PureComponent {
     } = this.props;
 
     const path = area()
-      .x((datum) => {
-        return scales.x(datum[xAccessor]);
-      })
-      .y0((datum) => {
-        return scales.y(datum[y0Accessor]);
-      })
-      .y1((datum) => {
-        return scales.y(datum[y1Accessor]);
-      });
+      .x((datum) => scales.x(datum[xAccessor]))
+      .y0((datum) => scales.y(datum[y0Accessor]))
+      .y1((datum) => scales.y(datum[y1Accessor]));
 
     return (
       <path
