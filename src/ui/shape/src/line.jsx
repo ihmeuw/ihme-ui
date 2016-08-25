@@ -12,63 +12,6 @@ import {
   stateFromPropUpdates,
 } from '../../../utils';
 
-const propTypes = {
-  /* base classname to apply to line */
-  className: CommonPropTypes.className,
-
-  /* array of objects
-    e.g. [ {}, {}, {} ]
-  */
-  data: PropTypes.arrayOf(PropTypes.object).isRequired,
-
-  dataAccessors: PropTypes.shape({
-    x: CommonPropTypes.dataAccessor.isRequired,
-    y: CommonPropTypes.dataAccessor.isRequired,
-  }).isRequired,
-
-  fill: PropTypes.string,
-
-  /* signature: function(event, props.data, Line instance) {...} */
-  onClick: PropTypes.func,
-
-  /* signature: function(event, props.data, Line instance) {...} */
-  onMouseLeave: PropTypes.func,
-
-  /* signature: function(event, props.data, Line instance) {...} */
-  onMouseMove: PropTypes.func,
-
-  /* signature: function(event, props.data, Line instance) {...} */
-  onMouseOver: PropTypes.func,
-
-  /* scales from d3Scale */
-  scales: PropTypes.shape({
-    x: PropTypes.func,
-    y: PropTypes.func
-  }).isRequired,
-
-  stroke: PropTypes.string,
-
-  strokeWidth: PropTypes.number,
-
-  /*
-   inline-style object or function to be applied as base style;
-   if a function, is called with data
-   */
-  style: CommonPropTypes.style,
-};
-
-const defaultProps = {
-  fill: 'none',
-  stroke: 'steelblue',
-  strokeWidth: 2.5,
-  dataAccessors: { x: 'x', y: 'y' },
-  onClick: noop,
-  onMouseOver: noop,
-  onMouseMove: noop,
-  onMouseLeave: noop,
-  style: {},
-};
-
 export default class Line extends PureComponent {
   /**
    * Callback type if dataAccessors.x or dataAccessors.y is a function:
@@ -140,9 +83,62 @@ export default class Line extends PureComponent {
   }
 }
 
-Line.propTypes = propTypes;
+Line.propTypes = {
+  /* base classname to apply to line */
+  className: CommonPropTypes.className,
 
-Line.defaultProps = defaultProps;
+  /* array of objects
+    e.g. [ {}, {}, {} ]
+  */
+  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+
+  dataAccessors: PropTypes.shape({
+    x: CommonPropTypes.dataAccessor.isRequired,
+    y: CommonPropTypes.dataAccessor.isRequired,
+  }).isRequired,
+
+  fill: PropTypes.string,
+
+  /* signature: function(event, props.data, Line instance) {...} */
+  onClick: PropTypes.func,
+
+  /* signature: function(event, props.data, Line instance) {...} */
+  onMouseLeave: PropTypes.func,
+
+  /* signature: function(event, props.data, Line instance) {...} */
+  onMouseMove: PropTypes.func,
+
+  /* signature: function(event, props.data, Line instance) {...} */
+  onMouseOver: PropTypes.func,
+
+  /* scales from d3Scale */
+  scales: PropTypes.shape({
+    x: PropTypes.func,
+    y: PropTypes.func
+  }).isRequired,
+
+  stroke: PropTypes.string,
+
+  strokeWidth: PropTypes.number,
+
+  /*
+   inline-style object or function to be applied as base style;
+   if a function, is called with data
+   */
+  style: CommonPropTypes.style,
+};
+
+Line.defaultProps = {
+  fill: 'none',
+  stroke: 'steelblue',
+  strokeWidth: 2.5,
+  dataAccessors: { x: 'x', y: 'y' },
+  onClick: noop,
+  onMouseOver: noop,
+  onMouseMove: noop,
+  onMouseLeave: noop,
+  style: {},
+};
 
 Line.propUpdates = {
   // update state.path if scales, data, or dataAccessors props have changed
