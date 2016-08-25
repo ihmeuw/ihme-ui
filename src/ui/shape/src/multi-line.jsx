@@ -7,71 +7,6 @@ import Line from './line';
 import Area from './area';
 import { CommonPropTypes } from '../../../utils';
 
-const propTypes = {
-  /* base classname to apply to Areas that are children of MultiLine */
-  areaClassName: CommonPropTypes.className,
-
-  /* fn that accepts keyfield, and returns stroke color for line */
-  colorScale: PropTypes.func,
-
-  /* array of objects
-    e.g. [ {location: 'USA',values: []}, {location: 'Canada', values: []} ]
-  */
-  data: PropTypes.arrayOf(PropTypes.object),
-
-  /*
-    key names containing x, y data
-      x -> accessor for xscale
-      y -> accessor for yscale (when there's one, e.g. <Line />)
-      y0 -> accessor for yscale (when there're two; e.g., lower bound)
-      y1 -> accessor for yscale (when there're two; e.g., upper bound)
-
-    To show only a line, include just x, y.
-    To show only an area, include just x, y0, y1.
-    To show line and area, include all properties.
-  */
-  dataAccessors: PropTypes.shape({
-    x: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-    y: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-    y0: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-    y1: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-  }).isRequired,
-
-  /* key that holds values to be represented by individual lines */
-  dataField: PropTypes.string,
-
-  /* key that uniquely identifies dataset within array of datasets */
-  keyField: PropTypes.string,
-
-  /* base classname to apply to Lines that are children of MultiLine */
-  lineClassName: CommonPropTypes.className,
-
-  /* signature: function(event, line data, Line instance) {...} */
-  onClick: PropTypes.func,
-
-  /* signature: function(event, line data, Line instance) {...} */
-  onMouseLeave: PropTypes.func,
-
-  /* signature: function(event, line data, Line instance) {...} */
-  onMouseMove: PropTypes.func,
-
-  /* signature: function(event, line data, Line instance) {...} */
-  onMouseOver: PropTypes.func,
-
-  /* scales from d3Scale */
-  scales: PropTypes.shape({
-    x: PropTypes.func,
-    y: PropTypes.func
-  }).isRequired,
-};
-
-const defaultProps = {
-  showUncertainty: false,
-  showLine: true,
-  colorScale: () => 'steelblue',
-  scales: { x: scaleLinear(), y: scaleLinear() },
-};
-
 const MultiLine = (props) => {
   const {
     areaClassName,
@@ -154,8 +89,69 @@ const MultiLine = (props) => {
   );
 };
 
-MultiLine.propTypes = propTypes;
+MultiLine.propTypes = {
+  /* base classname to apply to Areas that are children of MultiLine */
+  areaClassName: CommonPropTypes.className,
 
-MultiLine.defaultProps = defaultProps;
+  /* fn that accepts keyfield, and returns stroke color for line */
+  colorScale: PropTypes.func,
+
+  /* array of objects
+    e.g. [ {location: 'USA',values: []}, {location: 'Canada', values: []} ]
+  */
+  data: PropTypes.arrayOf(PropTypes.object),
+
+  /*
+    key names containing x, y data
+      x -> accessor for xscale
+      y -> accessor for yscale (when there's one, e.g. <Line />)
+      y0 -> accessor for yscale (when there're two; e.g., lower bound)
+      y1 -> accessor for yscale (when there're two; e.g., upper bound)
+
+    To show only a line, include just x, y.
+    To show only an area, include just x, y0, y1.
+    To show line and area, include all properties.
+  */
+  dataAccessors: PropTypes.shape({
+    x: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+    y: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+    y0: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+    y1: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  }).isRequired,
+
+  /* key that holds values to be represented by individual lines */
+  dataField: PropTypes.string,
+
+  /* key that uniquely identifies dataset within array of datasets */
+  keyField: PropTypes.string,
+
+  /* base classname to apply to Lines that are children of MultiLine */
+  lineClassName: CommonPropTypes.className,
+
+  /* signature: function(event, line data, Line instance) {...} */
+  onClick: PropTypes.func,
+
+  /* signature: function(event, line data, Line instance) {...} */
+  onMouseLeave: PropTypes.func,
+
+  /* signature: function(event, line data, Line instance) {...} */
+  onMouseMove: PropTypes.func,
+
+  /* signature: function(event, line data, Line instance) {...} */
+  onMouseOver: PropTypes.func,
+
+  /* scales from d3Scale */
+  scales: PropTypes.shape({
+    x: PropTypes.func,
+    y: PropTypes.func
+  }).isRequired,
+};
+
+MultiLine.defaultProps = {
+  showUncertainty: false,
+  showLine: true,
+  colorScale: () => 'steelblue',
+  scales: { x: scaleLinear(), y: scaleLinear() },
+};
 
 export default MultiLine;
