@@ -1,10 +1,9 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { area } from 'd3-shape';
-import { noop } from 'lodash';
 
 import { eventHandleWrapper } from '../../../utils/events';
-import { CommonPropTypes, PureComponent } from '../../../utils';
+import { CommonDefaultProps, CommonPropTypes, PureComponent } from '../../../utils';
 
 class Area extends PureComponent {
   render() {
@@ -81,8 +80,8 @@ Area.defaultProps = {
   color: 'steelblue',
   strokeWidth: 2.5,
   dataAccessors: { x: 'x', y0: 'y0', y1: 'y1' },
-  onClick: noop,
-  hoverHandler: noop
+  onClick: CommonDefaultProps.noop,
+  hoverHandler: CommonDefaultProps.noop,
 };
 
 export default Area;
