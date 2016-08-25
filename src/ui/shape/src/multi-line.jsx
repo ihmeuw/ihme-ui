@@ -11,6 +11,7 @@ class MultiLine extends PureComponent {
   render() {
     const {
       areaClassName,
+      areaStyle,
       className,
       colorScale,
       data,
@@ -50,6 +51,7 @@ class MultiLine extends PureComponent {
                     data={values}
                     key={`area:${key}`}
                     scales={scales}
+                    style={areaStyle}
                     {...mouseEvents}
                   />
                 ), (
@@ -74,6 +76,7 @@ class MultiLine extends PureComponent {
 MultiLine.propTypes = {
   /* base classname to apply to Areas that are children of MultiLine */
   areaClassName: CommonPropTypes.className,
+  areaStyle: CommonPropTypes.style,
 
   /* fn that accepts keyfield, and returns stroke color for line */
   colorScale: PropTypes.func,

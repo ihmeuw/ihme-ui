@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 import { area } from 'd3-shape';
 import { noop } from 'lodash';
 
@@ -8,13 +9,15 @@ import { CommonPropTypes, PureComponent } from '../../../utils';
 class Area extends PureComponent {
   render() {
     const {
+      className,
       data,
       scales,
       color,
       strokeWidth,
       dataAccessors: { x: xAccessor, y0: y0Accessor, y1: y1Accessor },
       onClick,
-      hoverHandler
+      hoverHandler,
+      style,
     } = this.props;
 
     const path = area()
@@ -30,19 +33,22 @@ class Area extends PureComponent {
 
     return (
       <path
-        className="area"
+        className={classNames(className)}
         fill={color}
         stroke={color}
         strokeWidth={`${strokeWidth}px`}
         d={path(data)}
         onClick={eventHandleWrapper(onClick, data, this)}
         onMouseOver={eventHandleWrapper(hoverHandler, data, this)}
+        style={style}
       />
     );
   }
 }
 
 Area.propTypes = {
+  className: CommonPropTypes.className,
+
   /* array of objects
    e.g. [ {}, {}, {} ]
    */
@@ -66,7 +72,9 @@ Area.propTypes = {
 
   onClick: PropTypes.func,
 
-  hoverHandler: PropTypes.func
+  hoverHandler: PropTypes.func,
+
+  style: CommonPropTypes.style,
 };
 
 Area.defaultProps = {
