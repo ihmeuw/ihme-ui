@@ -14,17 +14,11 @@ chai.use(chaiEnzyme());
 describe('Choropleth <FeatureLayer />', () => {
   const features = getGeoJSON('states', 'feature').features;
 
-  // keyField references the id field on the returned geoJSON
-  const keyField = 'id';
-
-  // valueField references the key on the data built up below
-  // which holds the value to map to the location
-  const valueField = 'mean';
-
   const data = getLocationIds(features).reduce((map, locationId) => {
     /* eslint-disable no-param-reassign */
     map[locationId] = {
-      [valueField]: Math.floor(Math.random() * 100)
+      id: locationId,
+      mean: Math.floor(Math.random() * 100)
     };
 
     return map;
@@ -34,16 +28,17 @@ describe('Choropleth <FeatureLayer />', () => {
   const pathGenerator = d3.geo.path();
   const colorScale = baseColorScale();
 
-  describe('keyField', () => {
+  describe('geometryKeyField', () => {
     const expectedNumberofPaths = Object.keys(data).length;
 
-    it('pulls the keyField off feature if it exists', () => {
+    it('pulls the geometryKeyField off feature if it exists', () => {
       const wrapper = shallow(
         <FeatureLayer
           features={features}
           data={data}
-          keyField={keyField}
-          valueField={valueField}
+          geometryKeyField="id"
+          keyField="id"
+          valueField="mean"
           pathGenerator={pathGenerator}
           colorScale={colorScale}
         />
@@ -52,7 +47,7 @@ describe('Choropleth <FeatureLayer />', () => {
       expect(wrapper.find('g')).to.have.exactly(expectedNumberofPaths).descendants(Path);
     });
 
-    it('pulls the keyField off feature.properties', () => {
+    it('pulls the geometryKeyField off feature.properties', () => {
       const featuresWithProperties = features.map(feature => {
         const id = feature.id;
         return {
@@ -67,8 +62,9 @@ describe('Choropleth <FeatureLayer />', () => {
         <FeatureLayer
           features={featuresWithProperties}
           data={data}
-          keyField="properties.id"
-          valueField={valueField}
+          geometryKeyField="properties.id"
+          keyField="id"
+          valueField="mean"
           pathGenerator={pathGenerator}
           colorScale={colorScale}
         />
@@ -77,13 +73,14 @@ describe('Choropleth <FeatureLayer />', () => {
       expect(wrapper.find('g')).to.have.exactly(expectedNumberofPaths).descendants(Path);
     });
 
-    it('accepts a function as a keyField', () => {
+    it('accepts a function as a geometryKeyField', () => {
       const wrapper = shallow(
         <FeatureLayer
           features={features}
           data={data}
-          keyField={(feature) => feature.id}
-          valueField={valueField}
+          geometryKeyField={(feature) => feature.id}
+          keyField="id"
+          valueField="mean"
           pathGenerator={pathGenerator}
           colorScale={colorScale}
         />
@@ -101,8 +98,9 @@ describe('Choropleth <FeatureLayer />', () => {
         <FeatureLayer
           features={features}
           data={data}
-          keyField={keyField}
-          valueField={valueField}
+          geometryKeyField="id"
+          keyField="id"
+          valueField="mean"
           pathGenerator={pathGenerator}
           colorScale={colorScale}
         />
@@ -121,8 +119,9 @@ describe('Choropleth <FeatureLayer />', () => {
         <FeatureLayer
           features={features}
           data={data}
-          keyField={keyField}
-          valueField={(datum) => datum.mean}
+          geometryKeyField="id"
+          keyField="id"
+          valueField={(dataMappedToKeys, feature) => dataMappedToKeys[feature.id].mean}
           pathGenerator={pathGenerator}
           colorScale={colorScale}
         />
@@ -145,8 +144,9 @@ describe('Choropleth <FeatureLayer />', () => {
         <FeatureLayer
           features={features}
           data={data}
-          keyField={keyField}
-          valueField={valueField}
+          geometryKeyField="id"
+          keyField="id"
+          valueField="mean"
           pathGenerator={pathGenerator}
           colorScale={colorScale}
           selectedLocations={[find(data, { id: selectedFeature.id })]}
@@ -168,8 +168,9 @@ describe('Choropleth <FeatureLayer />', () => {
         <FeatureLayer
           features={features}
           data={data}
-          keyField={keyField}
-          valueField={valueField}
+          geometryKeyField="id"
+          keyField="id"
+          valueField="mean"
           pathGenerator={pathGenerator}
           colorScale={colorScale}
         />
@@ -201,8 +202,9 @@ describe('Choropleth <FeatureLayer />', () => {
         <FeatureLayer
           features={features}
           data={data}
-          keyField={keyField}
-          valueField={valueField}
+          geometryKeyField="id"
+          keyField="id"
+          valueField="mean"
           pathGenerator={pathGenerator}
           colorScale={colorScale}
         />
@@ -233,8 +235,9 @@ describe('Choropleth <FeatureLayer />', () => {
         <FeatureLayer
           features={features}
           data={data}
-          keyField={keyField}
-          valueField={valueField}
+          geometryKeyField="id"
+          keyField="id"
+          valueField="mean"
           pathGenerator={pathGenerator}
           colorScale={colorScale}
         />
