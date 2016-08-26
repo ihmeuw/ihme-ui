@@ -171,7 +171,7 @@ export default class Map extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState(stateFromPropUpdates(Map.propUpdates, this.props, nextProps, this.state));
+    this.setState(stateFromPropUpdates(Map.propUpdates, this.props, nextProps, this.state, this));
   }
 
   shouldComponentUpdate(nextProps, nextState) {
