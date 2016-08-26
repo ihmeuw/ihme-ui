@@ -47,9 +47,7 @@ Line.propTypes = {
   /* base classname to apply to line */
   className: CommonPropTypes.className,
 
-  /* array of objects
-    e.g. [ {}, {}, {} ]
-  */
+  /* array of objects. e.g. [ {}, {}, {} ] */
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
 
   dataAccessors: PropTypes.shape({
@@ -59,14 +57,8 @@ Line.propTypes = {
 
   /* mouse events signature: function(event, props.data, Line instance) {...} */
   onClick: PropTypes.func,
-
-  /* signature: function(event, props.data, Line instance) {...} */
   onMouseLeave: PropTypes.func,
-
-  /* signature: function(event, props.data, Line instance) {...} */
   onMouseMove: PropTypes.func,
-
-  /* signature: function(event, props.data, Line instance) {...} */
   onMouseOver: PropTypes.func,
 
   /* scales from d3Scale */
