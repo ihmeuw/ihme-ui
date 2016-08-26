@@ -6,32 +6,42 @@ import { eventHandleWrapper } from '../../../utils/events';
 import {
   CommonPropTypes,
   CommonDefaultProps,
+  propsChanged,
   propResolver,
   PureComponent,
+  stateFromPropUpdates,
 } from '../../../utils';
 
 export default class Line extends PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.state = stateFromPropUpdates(Line.propUpdates, {}, props, {});
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState(stateFromPropUpdates(Line.propUpdates, this.props, nextProps, {}));
+  }
+
   render() {
     const {
       className,
       data,
-      dataAccessors,
       onClick,
       onMouseLeave,
       onMouseMove,
       onMouseOver,
-      scales,
       style,
     } = this.props;
 
-    const pathGenerator = line()
-      .x((datum) => scales.x(propResolver(datum, dataAccessors.x)))
-      .y((datum) => scales.y(propResolver(datum, dataAccessors.y)));
+    const {
+      path,
+    } = this.state;
 
     return (
       <path
         className={className && classNames(className)}
-        d={pathGenerator(data)}
+        d={path}
         fill="none"
         onClick={eventHandleWrapper(onClick, data, this)}
         onMouseLeave={eventHandleWrapper(onMouseLeave, data, this)}
@@ -64,7 +74,7 @@ Line.propTypes = {
   /* scales from d3Scale */
   scales: PropTypes.shape({
     x: PropTypes.func,
-    y: PropTypes.func
+    y: PropTypes.func,
   }).isRequired,
 
   /*
@@ -83,5 +93,20 @@ Line.defaultProps = {
   style: {
     stroke: 'steelblue',
     strokeWidth: 1,
+  },
+};
+
+Line.propUpdates = {
+  path: (acc, propName, prevProps, nextProps) => {
+    if (propsChanged(prevProps, nextProps, ['data', 'dataAccessors', 'scales'])) {
+      const pathGenerator = line()
+        .x((datum) => nextProps.scales.x(propResolver(datum, nextProps.dataAccessors.x)))
+        .y((datum) => nextProps.scales.y(propResolver(datum, nextProps.dataAccessors.y)));
+      return {
+        ...acc,
+        path: pathGenerator(nextProps.data),
+      };
+    }
+    return acc;
   },
 };

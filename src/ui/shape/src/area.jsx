@@ -6,33 +6,42 @@ import { eventHandleWrapper } from '../../../utils/events';
 import {
   CommonPropTypes,
   CommonDefaultProps,
+  propsChanged,
   propResolver,
   PureComponent,
+  stateFromPropUpdates,
 } from '../../../utils';
 
 export default class Area extends PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.state = stateFromPropUpdates(Area.propUpdates, {}, props, {});
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState(stateFromPropUpdates(Area.propUpdates, this.props, nextProps, {}));
+  }
+
   render() {
     const {
       className,
       data,
-      dataAccessors,
       onClick,
       onMouseLeave,
       onMouseMove,
       onMouseOver,
-      scales,
       style,
     } = this.props;
 
-    const pathGenerator = area()
-      .x((datum) => scales.x(propResolver(datum, dataAccessors.x)))
-      .y0((datum) => scales.y(propResolver(datum, dataAccessors.y0)))
-      .y1((datum) => scales.y(propResolver(datum, dataAccessors.y1)));
+    const {
+      path,
+    } = this.state;
 
     return (
       <path
         className={className && classNames(className)}
-        d={pathGenerator(data)}
+        d={path}
         onClick={eventHandleWrapper(onClick, data, this)}
         onMouseLeave={eventHandleWrapper(onMouseLeave, data, this)}
         onMouseMove={eventHandleWrapper(onMouseMove, data, this)}
@@ -80,5 +89,21 @@ Area.defaultProps = {
     fill: 'steelblue',
     stroke: 'steelblue',
     strokeWidth: 1,
+  },
+};
+
+Area.propUpdates = {
+  path: (acc, propName, prevProps, nextProps) => {
+    if (propsChanged(prevProps, nextProps, ['data', 'dataAccessors', 'scales'])) {
+      const pathGenerator = area()
+        .x((datum) => nextProps.scales.x(propResolver(datum, nextProps.dataAccessors.x)))
+        .y0((datum) => nextProps.scales.y(propResolver(datum, nextProps.dataAccessors.y0)))
+        .y1((datum) => nextProps.scales.y(propResolver(datum, nextProps.dataAccessors.y1)));
+      return {
+        ...acc,
+        path: pathGenerator(nextProps.data),
+      };
+    }
+    return acc;
   },
 };
