@@ -17,13 +17,13 @@ describe('<Area />', () => {
   const valueField = 'value';
   const chartDimensions = {
     width: 600,
-    height: 400
+    height: 400,
   };
 
   const data = dataGenerator({
     primaryKeys: [{ name: keyField, values: [keyField] }],
     valueKeys: [{ name: valueField, range: [100, 200], uncertainty: true }],
-    length: 10
+    length: 10,
   });
 
   const range = [minBy(data, 'value_lb')[valueField], maxBy(data, 'value_ub')[valueField]];
@@ -33,9 +33,9 @@ describe('<Area />', () => {
   const yScale = d3Scale.scaleLinear().domain(range).range([chartDimensions.height, 0]);
 
   const areaFunction = area()
-    .x((datum) => { return xScale(datum[keyField]); })
-    .y0((datum) => { return yScale(datum.value_lb); })
-    .y1((datum) => { return yScale(datum.value_ub); });
+    .x((datum) => xScale(datum[keyField]))
+    .y0((datum) => yScale(datum.value_lb))
+    .y1((datum) => yScale(datum.value_ub));
 
   const expectedPath = areaFunction(data);
 

@@ -17,13 +17,13 @@ describe('<Line />', () => {
   const valueField = 'value';
   const chartDimensions = {
     width: 600,
-    height: 400
+    height: 400,
   };
 
   const data = dataGenerator({
     primaryKeys: [{ name: keyField, values: [keyField] }],
     valueKeys: [{ name: valueField, range: [100, 200], uncertainty: true }],
-    length: 10
+    length: 10,
   });
 
   let component;
@@ -105,7 +105,7 @@ describe('<Line />', () => {
     the browser event, the data prop, and the React element`, () => {
       const wrapper = shallow(component);
       const event = {
-        preventDefault() {}
+        preventDefault() {},
       };
       const inst = wrapper.instance();
 
