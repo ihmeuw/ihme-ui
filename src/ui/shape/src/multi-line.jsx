@@ -7,7 +7,7 @@ import Line from './line';
 import Area from './area';
 import { propResolver, PureComponent, CommonPropTypes } from '../../../utils';
 
-class MultiLine extends PureComponent {
+export default class MultiLine extends PureComponent {
   render() {
     const {
       areaClassName,
@@ -160,5 +160,3 @@ MultiLine.defaultProps = {
   colorScale: () => 'steelblue',
   scales: { x: scaleLinear(), y: scaleLinear() },
 };
-
-export default MultiLine;
