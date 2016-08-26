@@ -33,7 +33,7 @@ export default class FeatureLayer extends PureComponent {
     const {
       colorScale,
       data,
-      keyField,
+      geometryKeyField,
       onClick,
       onMouseDown,
       onMouseLeave,
@@ -52,14 +52,13 @@ export default class FeatureLayer extends PureComponent {
       <g>
         {
           map(this.state.sortedFeatures, (feature) => {
-            const key = propResolver(feature, keyField);
+            const geometryKey = propResolver(feature, geometryKeyField);
 
-            // if key didn't resolve to anything, return null
-            if (!key) return null;
+            // if geometryKey didn't resolve to anything, return null
+            if (!geometryKey) return null;
 
-            // if valueField is a function, call it with the datum associated with
-            // current feature, as well as curent feature
-            const datum = getValue(data, [key]);
+
+            const datum = getValue(data, [geometryKey]);
             const value = typeof valueField === 'function'
               ? valueField(datum, feature)
               : getValue(datum, valueField);
@@ -69,8 +68,8 @@ export default class FeatureLayer extends PureComponent {
             return (
               <Path
                 className={pathClassName}
-                key={key}
                 datum={datum}
+                key={geometryKey}
                 feature={feature}
                 fill={fill}
                 onClick={onClick}
@@ -106,11 +105,24 @@ FeatureLayer.propTypes = {
   /* array of geoJSON feature objects, e.g.: [{ geometry: [Object], properties: [Object] }] */
   features: PropTypes.arrayOf(PropTypes.object).isRequired,
 
-  /* mapping of datum key field to geoJSON feature key. default: 'id' */
-  keyField: PropTypes.oneOfType([
+  /*
+    uniquely identifying field of geometry objects
+    if a function, will be called with the geometry object as first parameter
+    N.B.: the resolved value of this prop should match the resolved value of `keyField`
+   */
+  geometryKeyField: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.func, // if a function, is called with current feature as arg
-  ]),
+  ]).isRequired,
+
+  /*
+   unique key of datum
+   if a function, will be called with the datum object as first parameter
+   */
+  keyField: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+  ]).isRequired,
 
   /* passed to each path; signature: function(event, datum, Path) {...} */
   onClick: PropTypes.func,
