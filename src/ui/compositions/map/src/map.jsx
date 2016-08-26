@@ -335,17 +335,20 @@ export default class Map extends React.Component {
 
   renderLegend() {
     const {
+      axisTickFormat,
       colorSteps,
       data,
       domain,
       extentPct,
       keyField,
+      legendMargins,
       onClick,
       onMouseLeave,
       onMouseMove,
       onMouseOver,
       onSliderMove,
       selectedLocations,
+      sliderHandleFormat,
       unit,
     } = this.props;
     const {
@@ -361,17 +364,13 @@ export default class Map extends React.Component {
         <div className={styles['legend-wrapper']}>
           <ResponsiveContainer disableHeight>
             <ChoroplethLegend
+              axisTickFormat={axisTickFormat}
               colorSteps={colorSteps}
               colorScale={colorScale}
               data={filterData(data, locationIdsOnMap, keyField)}
               domain={domain}
               keyField={keyField}
-              margins={{
-                top: 20,
-                right: 50,
-                bottom: 0,
-                left: 50,
-              }}
+              margins={legendMargins}
               onClick={onClick}
               onMouseLeave={onMouseLeave}
               onMouseMove={onMouseMove}
@@ -379,6 +378,7 @@ export default class Map extends React.Component {
               onSliderMove={onSliderMove}
               rangeExtent={rangeExtent}
               selectedLocations={selectedLocations}
+              sliderHandleFormat={sliderHandleFormat}
               unit={unit}
               valueField="mean"
               x1={linearGradientStops[0] * 100}
@@ -414,6 +414,8 @@ export default class Map extends React.Component {
 }
 
 Map.propTypes = {
+  axisTickFormat: PropTypes.func,
+
   className: PropTypes.string,
 
   /*
@@ -442,9 +444,6 @@ Map.propTypes = {
     PropTypes.func,
   ]).isRequired,
 
-  /* is data for this component currently being fetched */
-  loading: PropTypes.bool,
-
   /*
     unique key of datum;
     see <Choropleth /> propTypes for more detail
@@ -453,6 +452,17 @@ Map.propTypes = {
     PropTypes.string,
     PropTypes.func,
   ]).isRequired,
+
+  /* margins passed to ChoroplethLegend */
+  legendMargins: PropTypes.shape({
+    top: PropTypes.number,
+    right: PropTypes.number,
+    bottom: PropTypes.number,
+    left: PropTypes.number,
+  }),
+
+  /* is data for this component currently being fetched */
+  loading: PropTypes.bool,
 
   /*
     event handler passed to both choropleth and choropleth legend;
@@ -497,6 +507,8 @@ Map.propTypes = {
   /* array of data objects */
   selectedLocations: PropTypes.array,
 
+  sliderHandleFormat: PropTypes.func,
+
   /* whether to include subnational layer */
   subnational: PropTypes.bool,
 
@@ -537,6 +549,12 @@ Map.propTypes = {
 Map.defaultProps = {
   colorSteps: defaultColorSteps.slice().reverse(),
   extentPct: [0, 1],
+  legendMargins: {
+    top: 20,
+    right: 50,
+    bottom: 0,
+    left: 50,
+  },
   loading: false,
   selectedLocations: [],
   subnational: false,

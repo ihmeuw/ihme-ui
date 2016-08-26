@@ -12,6 +12,7 @@ import {
 import Map from '../';
 import Button from '../../../button';
 import { dataGenerator } from '../../../../test-utils';
+import { numberFormat } from '../../../../utils';
 
 const keyField = 'loc_id';
 const valueField = (data, feature) => {
@@ -118,6 +119,7 @@ class App extends React.Component {
     return (
       <div id="wrapper">
         <Map
+          axisTickFormat={numberFormat}
           data={data}
           domain={range}
           extentPct={selectedChoroplethDomain}
@@ -127,6 +129,7 @@ class App extends React.Component {
           onResetScale={this.onResetScale}
           onSliderMove={this.onSliderMove}
           selectedLocations={selections}
+          sliderHandleFormat={numberFormat}
           subnational={subnational}
           topology={topology}
           unit="Probability of death"
