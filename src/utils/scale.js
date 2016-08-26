@@ -48,20 +48,39 @@ export const domainToRange = function domainToRange(scale, values) {
 };
 
 /**
- * This is a simple wrapper for a clamped d3Scale.scaleLinear
- * that returns a `clampedValue` for any value outside of the scale's clamp
- * @param {string|number} clampedValue
+ * This is a simple wrapper for a clamped d3Scale continuous scale
+ * it returns a `clampedValue` for any value outside of the scale's clamp
+ * @param {string|number} [clampedValue]
  * @return {function} scale
  */
-export function clampedLinearScale(clampedValue = '#ccc') {
+export function clampedScale(clampedValue = '#ccc') {
   let clamps;
-  const baseScale = d3Scale.scaleLinear()
-    .clamp(true);
+  let baseScale;
 
   function scale(value) {
     if (clamps && !isWithinRange(value, clamps)) return clampedValue;
+    if (!baseScale) {
+      throw new Error('clampedScale must be initialized with a base scale; see scale.base()');
+    }
     return baseScale(value);
   }
+
+  scale.base = (base) => {
+    if (!base) return baseScale;
+
+    if (!baseScale) {
+      baseScale = base.clamp(true);
+    } else {
+      // copy over existing configuration
+      const existingDomain = baseScale.domain().slice();
+      const existingRange = baseScale.range().slice();
+      baseScale = base
+        .domain(existingDomain)
+        .range(existingRange)
+        .clamp(true);
+    }
+    return scale;
+  };
 
   /**
    * if clamping bounds are provided, sets values
@@ -74,7 +93,7 @@ export function clampedLinearScale(clampedValue = '#ccc') {
     /* eslint-disable max-len */
     if (!nextClamps) return clamps;
     if (!Array.isArray(nextClamps)) {
-      throw new Error('clampedLinearScale.clamps must be an array of [minClampingExtent, maxClampingExtent]');
+      throw new Error('clampedScale.clamps must be an array of [minClampingExtent, maxClampingExtent]');
     }
     clamps = nextClamps;
     return scale;
@@ -100,11 +119,14 @@ export function clampedLinearScale(clampedValue = '#ccc') {
   scale.copy = () => {
     const target = (value) => {
       if (clamps && !isWithinRange(value, clamps)) return clampedValue;
+      if (!baseScale) {
+        throw new Error('clampedScale must be initialized with a base scale; see scale.base()');
+      }
       return baseScale(value);
     };
 
     forOwn(scale, (fn, key) => {
-      target[key] = fn;
+      if (!target.hasOwnProperty(key)) target[key] = fn;
     });
 
     return target;
