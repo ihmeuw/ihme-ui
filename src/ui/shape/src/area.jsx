@@ -45,9 +45,7 @@ class Area extends PureComponent {
 Area.propTypes = {
   className: CommonPropTypes.className,
 
-  /* array of objects
-   e.g. [ {}, {}, {} ]
-   */
+  /* array of objects. e.g. [ {}, {}, {} ] */
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
 
   dataAccessors: PropTypes.shape({
@@ -56,6 +54,7 @@ Area.propTypes = {
     y1: CommonPropTypes.dataAccessor.isRequired,
   }).isRequired,
 
+  /* mouse events signature: function(event, props.data, Area instance) {...} */
   onClick: PropTypes.func,
   onMouseLeave: PropTypes.func,
   onMouseMove: PropTypes.func,
