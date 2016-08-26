@@ -59,8 +59,17 @@ export default class FeatureLayer extends PureComponent {
 
 
             const datum = getValue(data, [geometryKey]);
+
+            // if valueField is a function, call it with all data as well as current feature
+            // this enables being able to associate datum with features that don't necessarily map to
+            // those features' key.
+            // e.g., associate an administering location's datum with a disputed area feature:
+            //  - geometryKeyField: 'location_id'
+            //  - valueField: (data, feature) => data[feature.properties.admin_id]
+            // if valueField is a string, assume we just want to index into whatever datum resolves from data[geometryKey]
+            // TODO make difference in how valueField is applied more transparent
             const value = typeof valueField === 'function'
-              ? valueField(datum, feature)
+              ? valueField(data, feature)
               : getValue(datum, valueField);
 
             const fill = value ? colorScale(value) : '#ccc';
@@ -155,11 +164,15 @@ FeatureLayer.propTypes = {
   /* array of data */
   selectedLocations: PropTypes.arrayOf(PropTypes.object),
 
-  /* key of datum that holds the value to display */
+  /*
+    key of datum that holds the value to display
+    if a string, used as property access for data[feature[geometryKeyField]][valueField]
+    if a function, passed all data (object keyed by keyField) and current feature
+  */
   valueField: PropTypes.oneOfType([
     PropTypes.string,
-    PropTypes.func, // if a function, is called with current feature as arg
-  ]),
+    PropTypes.func,
+  ]).isRequired,
 };
 
 FeatureLayer.defaultProps = {
