@@ -101,7 +101,10 @@ describe('scale utilities', () => {
     });
 
     it('returns a copy of the scale', () => {
-      const scale = clampedScale().base(d3Scale.scaleLinear()).domain([0, 100]).range([0, 1000]);
+      const scale = clampedScale()
+        .base(d3Scale.scaleLinear())
+        .domain([0, 100])
+        .range([0, 1000]);
       expect(scale).to.equal(scale);
       expect(scale(50)).to.equal(500);
       const copy = scale.copy();
