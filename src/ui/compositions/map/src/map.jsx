@@ -78,7 +78,7 @@ export default class Map extends React.Component {
   constructor(props) {
     super(props);
 
-    const { colorSteps, domain, extentPct, selectedLocations, topology } = props;
+    const { colorSteps, domain, extentPct, selectedLocations } = props;
     const rangeExtent = getRangeExtent(extentPct, domain);
 
     bindAll(this, [
@@ -166,6 +166,8 @@ export default class Map extends React.Component {
         .range(colorSteps),
       layers,
     };
+
+    this.state = stateFromPropUpdates(Map.propUpdates, {}, props, state, this);
   }
 
   componentWillReceiveProps(nextProps) {
