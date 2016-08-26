@@ -79,10 +79,10 @@ describe('<MultiLine />', () => {
       const caLine = wrapper.find('Line').last();
 
       expect(usaLine)
-        .to.have.prop('stroke', colorScale('USA'));
+        .to.have.style('stroke', colorScale('USA'));
 
       expect(caLine)
-        .to.have.prop('stroke', colorScale('Canada'));
+        .to.have.style('stroke', colorScale('Canada'));
     });
   });
 
@@ -97,9 +97,7 @@ describe('<MultiLine />', () => {
           dataField={'values'}
           scales={scales}
           colorScale={colorScale}
-          showUncertainty
-          showLine={false}
-          dataAccessors={{ x: keyField, y: valueField, y0: 'value_lb', y1: 'value_ub' }}
+          dataAccessors={{ x: keyField, y0: 'value_lb', y1: 'value_ub' }}
         />
       );
     });
@@ -121,8 +119,6 @@ describe('<MultiLine />', () => {
           dataField={'values'}
           scales={scales}
           colorScale={colorScale}
-          showUncertainty
-          showLine
           dataAccessors={{ x: keyField, y: valueField, y0: 'value_lb', y1: 'value_ub' }}
         />
       );
@@ -146,9 +142,7 @@ describe('<MultiLine />', () => {
           dataField={'values'}
           scales={scales}
           colorScale={colorScale}
-          showUncertainty={false}
-          showLine={false}
-          dataAccessors={{ x: keyField, y: valueField, y0: 'value_lb', y1: 'value_ub' }}
+          dataAccessors={{ x: keyField }}
         />
       );
     });
