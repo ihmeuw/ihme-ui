@@ -5,13 +5,14 @@ import { map, pick } from 'lodash';
 
 import Line from './line';
 import Area from './area';
-import { propResolver, PureComponent, CommonPropTypes } from '../../../utils';
+import { propResolver, PureComponent, CommonDefaultProps, CommonPropTypes } from '../../../utils';
 
 export default class MultiLine extends PureComponent {
   render() {
     const {
       areaClassName,
       areaStyle,
+      areaValuesIteratee,
       className,
       colorScale,
       data,
@@ -20,6 +21,7 @@ export default class MultiLine extends PureComponent {
       keyField,
       lineClassName,
       lineStyle,
+      lineValuesIteratee,
       scales,
       style,
     } = this.props;
@@ -34,20 +36,23 @@ export default class MultiLine extends PureComponent {
     return (
       <g className={className && classNames(className)} style={style}>
         {
-          map(data, (lineData) => {
-            const key = propResolver(lineData, keyField);
-            const values = propResolver(lineData, dataField);
+          map(data, (datum) => {
+            const key = propResolver(datum, keyField);
+            const values = propResolver(datum, dataField);
             const color = colorScale(key);
-            // on each iteration, lineData is an object
+            // on each iteration, datum is an object
             // e.g., { keyField: STRING, dataField: ARRAY }
+
+            const areaValues = areaValuesIteratee(values, key);
+            const lineValues = lineValuesIteratee(values, key);
 
             return (
               [
-                (!!dataAccessors.x && !!dataAccessors.y0 && !!dataAccessors.y1) ?
+                (!!dataAccessors.x && !!dataAccessors.y0 && !!dataAccessors.y1 && !!areaValues) ?
                   <Area
                     className={areaClassName}
                     dataAccessors={dataAccessors}
-                    data={values}
+                    data={areaValues}
                     key={`area:${key}`}
                     scales={scales}
                     style={{
@@ -57,11 +62,11 @@ export default class MultiLine extends PureComponent {
                     }}
                     {...mouseEvents}
                   /> : null,
-                (!!dataAccessors.x && !!dataAccessors.y) ?
+                (!!dataAccessors.x && !!dataAccessors.y && !!lineValues) ?
                   <Line
                     className={lineClassName}
                     dataAccessors={dataAccessors}
-                    data={values}
+                    data={lineValues}
                     key={`line:${key}`}
                     scales={scales}
                     style={{
@@ -83,6 +88,14 @@ MultiLine.propTypes = {
   /* base classname to apply to Areas that are children of MultiLine */
   areaClassName: CommonPropTypes.className,
   areaStyle: CommonPropTypes.style,
+
+  /*
+   function to apply to the datum to transform area values. default: _.identity
+   @param values
+   @param key
+   @return transformed data (or undefined)
+   */
+  areaValuesIteratee: PropTypes.func,
 
   /* fn that accepts keyfield, and returns stroke color for line */
   colorScale: PropTypes.func,
@@ -133,6 +146,12 @@ MultiLine.propTypes = {
   lineClassName: CommonPropTypes.className,
   lineStyle: CommonPropTypes.style,
 
+  /*
+   function to apply to the datum to transform line values. default: _.identity
+   @see areaValuesIteratee
+   */
+  lineValuesIteratee: PropTypes.func,
+
   /* signature: function(event, line data, Line instance) {...} */
   onClick: PropTypes.func,
 
@@ -155,8 +174,10 @@ MultiLine.propTypes = {
 };
 
 MultiLine.defaultProps = {
+  areaValuesIteratee: CommonDefaultProps.identity,
+  colorScale: () => 'steelblue',
+  lineValuesIteratee: CommonDefaultProps.identity,
+  scales: { x: scaleLinear(), y: scaleLinear() },
   showUncertainty: false,
   showLine: true,
-  colorScale: () => 'steelblue',
-  scales: { x: scaleLinear(), y: scaleLinear() },
 };
