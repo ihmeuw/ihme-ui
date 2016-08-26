@@ -7,7 +7,7 @@ import d3Scale from 'd3-scale';
 import Slider from '../src/slider';
 import SliderHandle from '../src/slider-handle';
 
-describe('<Slider />', () => {
+describe('ChoroplethLegend <Slider />', () => {
   const domain = [0, 100];
   const width = 1000;
   const xScale = d3Scale.scaleLinear()
