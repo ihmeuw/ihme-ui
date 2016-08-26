@@ -129,16 +129,18 @@ class App extends React.Component {
           yScaleType="linear"
           className={chartClassName}
         >
-          <XAxis style={axisStyle} label="Year" />
-          <YAxis style={axisStyle} label="Probability" />
           <MultiLine
+            areaStyle={{ strokeWidth: '1px', fillOpacity: '0.5' }}
             data={lineData}
             keyField={'location'}
             dataField={'values'}
             colorScale={colorScale}
             showUncertainty
             dataAccessors={dataAccessors}
+            onClick={()=>{console.log('click')}}
           />
+          <XAxis style={axisStyle} label="Year" />
+          <YAxis style={axisStyle} label="Probability" />
         </AxisChart>
       </div>
     );
