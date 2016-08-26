@@ -83,20 +83,6 @@ describe('<Line />', () => {
       expect(wrapper).to.have.style('stroke', 'red');
       expect(wrapper).to.have.style('stroke-width', '10');
     });
-
-    it('applies style as a function', () => {
-      const wrapper = shallow(
-        <Line
-          data={data}
-          scales={{ x: xScale, y: yScale }}
-          dataAccessors={{ x: keyField, y: valueField }}
-          style={(d) => ({ stroke: 'red', strokeWidth: d[0][valueField] })}
-        />
-      );
-
-      expect(wrapper).to.have.style('stroke', 'red');
-      expect(wrapper).to.have.style('stroke-width', String(data[0][valueField]));
-    });
   });
 
   describe('classnames', () => {
