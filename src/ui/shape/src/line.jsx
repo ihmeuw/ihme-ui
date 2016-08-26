@@ -30,7 +30,7 @@ export default class Line extends PureComponent {
 
     return (
       <path
-        className={classNames(className)}
+        className={className && classNames(className)}
         d={path(data)}
         fill="none"
         onClick={eventHandleWrapper(onClick, data, this)}
