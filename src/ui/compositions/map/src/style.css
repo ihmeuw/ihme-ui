@@ -38,5 +38,12 @@
 
 .map {
     flex: 1 0 auto;
+.title {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
+    background-color: rgba(255, 255, 255, 0.6);
+
+    display: flex;
 }

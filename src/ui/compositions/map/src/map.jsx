@@ -18,6 +18,7 @@ import ChoroplethLegend from '../../../choropleth-legend';
 import ResponsiveContainer from '../../../responsive-container';
 import {
   clampedLinearScale,
+  CommonPropTypes,
   generateColorDomain,
   numFromPercent,
   propResolver,
@@ -273,6 +274,14 @@ export default class Map extends React.Component {
     };
   }
 
+  renderTitle() {
+    const { title, titleClassName, titleStyle } = this.props;
+    if (!title) return null;
+    return (
+      <div className={classNames(styles.title, titleClassName)} style={titleStyle}>{title}</div>
+    );
+  }
+
   renderMap() {
     const {
       data,
@@ -381,6 +390,7 @@ export default class Map extends React.Component {
     return (
       <div className={classNames(styles['map-container'], this.props.className)}>
         {this.renderMap()}
+        {this.renderTitle()}
         {this.renderLegend()}
       </div>
     );
@@ -473,6 +483,12 @@ Map.propTypes = {
 
   /* whether to include subnational layer */
   subnational: PropTypes.bool,
+
+  title: PropTypes.string,
+
+  titleClassName: CommonPropTypes.className,
+
+  titleStyle: PropTypes.object,
 
   /*
     preprojected topojson to render;
