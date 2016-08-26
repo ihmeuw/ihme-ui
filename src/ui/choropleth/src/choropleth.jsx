@@ -10,6 +10,7 @@ import {
   CommonPropTypes,
   concatAndComputeGeoJSONBounds,
   extractGeoJSON,
+  propResolver,
   quickMerge,
 } from '../../../utils';
 
@@ -17,6 +18,9 @@ import style from './choropleth.css';
 import FeatureLayer from './feature-layer';
 import Path from './path';
 import Controls from './controls';
+
+// slightly pad clip extent so that the boundary of the map does not show borders
+const CLIP_EXTENT_PADDING = 1;
 
 export default class Choropleth extends React.Component {
   /**
@@ -27,7 +31,7 @@ export default class Choropleth extends React.Component {
    * @return {Object} - keys are keyField (e.g., locationId), values are datum objects
    */
   static processData(data, keyField) {
-    return keyBy(data, keyField);
+    return keyBy(data, (datum) => propResolver(datum, keyField));
   }
 
   constructor(props) {
@@ -39,6 +43,13 @@ export default class Choropleth extends React.Component {
     const scale = calcScale(props.width, props.height, bounds);
 
     const translate = calcTranslate(props.width, props.height, scale, bounds, null);
+    this.clipExtent = d3.geo.clipExtent()
+      .extent([
+        [-CLIP_EXTENT_PADDING, -CLIP_EXTENT_PADDING],
+        [props.width + CLIP_EXTENT_PADDING, props.height + CLIP_EXTENT_PADDING]
+      ]);
+    this.zoom = d3.behavior.zoom();
+    this.calcMeshLayerStyle = memoize(this.calcMeshLayerStyle);
 
     this.state = {
       bounds,
@@ -46,15 +57,12 @@ export default class Choropleth extends React.Component {
       scaleBase: scale,
       scaleFactor: 1,
       translate,
-      pathGenerator: this.createPathGenerator(scale, translate),
+      pathGenerator: this.createPathGenerator(scale, translate, this.clipExtent),
       cache: { ...extractedGeoJSON, },
       processedData: Choropleth.processData(props.data, props.keyField)
     };
 
-    this.zoom = d3.behavior.zoom();
-
     bindAll(this, ['saveSvgRef', 'zoomEvent', 'zoomTo', 'zoomReset']);
-    this.calcMeshLayerStyle = memoize(this.calcMeshLayerStyle);
   }
 
   componentDidMount() {
@@ -103,6 +111,11 @@ export default class Choropleth extends React.Component {
     if ((nextProps.width !== this.props.width) ||
         (nextProps.height !== this.props.height) ||
         state.bounds) {
+      this.clipExtent = this.clipExtent
+        .extent([
+          [-CLIP_EXTENT_PADDING, -CLIP_EXTENT_PADDING],
+          [nextProps.width + CLIP_EXTENT_PADDING, nextProps.height + CLIP_EXTENT_PADDING]
+        ]);
       const bounds = state.bounds || this.state.bounds;
 
       state.scaleBase = calcScale(nextProps.width, nextProps.height, bounds);
@@ -120,7 +133,11 @@ export default class Choropleth extends React.Component {
                                         state.scale, null, center);
       }
 
-      state.pathGenerator = this.createPathGenerator(state.scale, state.translate);
+      state.pathGenerator = this.createPathGenerator(
+        state.scale,
+        state.translate,
+        this.clipExtent
+      );
       this.zoom.scale(state.scale);
       this.zoom.translate(state.translate);
     }
@@ -157,11 +174,12 @@ export default class Choropleth extends React.Component {
   }
 
   /**
-   * @param scale
-   * @param translate
-   * @returns {Function}
+   * @param {array} scale
+   * @param {array} translate
+   * @param {object} clipExtent - d3.geo.clipExtent
+   * @returns {function}
    */
-  createPathGenerator(scale, translate) {
+  createPathGenerator(scale, translate, clipExtent) {
     const transform = d3.geo.transform({
       point(x, y, z) {
         // mike bostock math
@@ -175,7 +193,9 @@ export default class Choropleth extends React.Component {
       }
     });
 
-    return d3.geo.path().projection(transform);
+    return d3.geo.path().projection({
+      stream: (pointStream) => transform.stream(clipExtent.stream(pointStream))
+    });
   }
 
   zoomEvent() {
@@ -183,7 +203,7 @@ export default class Choropleth extends React.Component {
 
     const translate = this.zoom.translate();
 
-    const pathGenerator = this.createPathGenerator(scale, translate);
+    const pathGenerator = this.createPathGenerator(scale, translate, this.clipExtent);
 
     this.setState({
       scale,
@@ -225,23 +245,24 @@ export default class Choropleth extends React.Component {
         case 'feature':
           return (
             <FeatureLayer
-              key={key}
-              features={this.state.cache.feature[layer.name].features}
-              data={this.state.processedData}
-              keyField={this.props.geoJSONKeyField}
-              valueField={this.props.valueField}
-              pathGenerator={this.state.pathGenerator}
               colorScale={this.props.colorScale}
-              selectedLocations={this.props.selectedLocations}
+              data={this.state.processedData}
+              features={this.state.cache.feature[layer.name].features}
+              geometryKeyField={this.props.geometryKeyField}
+              key={key}
+              keyField={this.props.keyField}
               onClick={this.props.onClick}
-              onMouseOver={this.props.onMouseOver}
-              onMouseMove={this.props.onMouseMove}
               onMouseDown={this.props.onMouseDown}
-              onMouseOut={this.props.onMouseOut}
+              onMouseLeave={this.props.onMouseLeave}
+              onMouseMove={this.props.onMouseMove}
+              onMouseOver={this.props.onMouseOver}
               pathClassName={layer.className}
+              pathGenerator={this.state.pathGenerator}
               pathSelectedClassName={layer.selectedClassName}
               pathStyle={layer.style}
               pathSelectedStyle={layer.selectedStyle}
+              selectedLocations={this.props.selectedLocations}
+              valueField={this.props.valueField}
             />
           );
         case 'mesh':
@@ -341,14 +362,28 @@ Choropleth.propTypes = {
   /* array of datum objects */
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
 
-  /* unique key of datum */
+  /*
+    unique key of datum
+    if a function, will be called with the datum object as first parameter
+  */
   keyField: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.func,
   ]).isRequired,
 
-  /* mapping of datum key field to geoJSON feature key. default: 'id' (from <Feature />) */
-  geoJSONKeyField: PropTypes.string,
+  /*
+    uniquely identifying field of geometry objects
+    if a function, will be called with the geometry object as first parameter
+    N.B.: the resolved value of this prop should match the resolved value of `keyField` above
+    e.g., if data objects are of the following shape: { location_id: <number>, mean: <number> }
+          and if features within topojson are of the following shape: { type: <string>, properties: { location_id: <number> }, arcs: <array> }
+          `keyField` may be one of the following: 'location_id', or (datum) => datum.location_id
+          `geometryKeyField` may be one of the following: 'location_id' or (feature) => feature.properties.location_id
+  */
+  geometryKeyField: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+  ]).isRequired,
 
   /* key of datum that holds the value to display */
   valueField: PropTypes.oneOfType([
@@ -359,8 +394,8 @@ Choropleth.propTypes = {
   /* fn that accepts keyfield, and returns stroke color for line */
   colorScale: PropTypes.func.isRequired,
 
-  /* array of datum[keyField], e.g., location ids */
-  selectedLocations: PropTypes.arrayOf(PropTypes.number),
+  /* array of data */
+  selectedLocations: PropTypes.arrayOf(PropTypes.object),
 
   /* width of containing element, in px */
   width: PropTypes.number,
@@ -368,20 +403,20 @@ Choropleth.propTypes = {
   /* height of containing element, in px */
   height: PropTypes.number,
 
-  /* passed to each path; signature: function(event, locationId) {...} */
+  /* passed to each path; signature: function(event, datum, Path) {...} */
   onClick: PropTypes.func,
 
-  /* passed to each path; signature: function(event, locationId) {...} */
-  onMouseOver: PropTypes.func,
-
-  /* passed to each path; signature: function(event, locationId) {...} */
-  onMouseMove: PropTypes.func,
-
-  /* passed to each path; signature: function(event, locationId) {...} */
+  /* passed to each path; signature: function(event, datum, Path) {...} */
   onMouseDown: PropTypes.func,
 
-  /* passed to each path; signature: function(event, locationId) {...} */
-  onMouseOut: PropTypes.func,
+  /* passed to each path; signature: function(event, datum, Path) {...} */
+  onMouseLeave: PropTypes.func,
+
+  /* passed to each path; signature: function(event, datum, Path) {...} */
+  onMouseMove: PropTypes.func,
+
+  /* passed to each path; signature: function(event, datum, Path) {...} */
+  onMouseOver: PropTypes.func,
 
   /* show zoom controls */
   controls: PropTypes.bool,

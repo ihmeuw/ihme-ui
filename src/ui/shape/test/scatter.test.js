@@ -1,8 +1,9 @@
+/* eslint-disable no-unused-expressions, max-len */
 import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
-import { minBy, maxBy, uniqBy, map } from 'lodash';
+import { drop, forEach, minBy, maxBy, uniqBy, map } from 'lodash';
 import d3Scale from 'd3-scale';
 import sinon from 'sinon';
 import { dataGenerator } from '../../../test-utils';
@@ -20,6 +21,7 @@ describe('<Scatter />', () => {
   const dataAccessors = {
     x: 'year_id',
     y: 'population',
+    key: 'id'
   };
 
   const data = dataGenerator({
@@ -29,10 +31,11 @@ describe('<Scatter />', () => {
   });
 
   const yDomain = [minBy(data, 'population').population, maxBy(data, 'population').population];
-  const xDomain = map(uniqBy(data, 'year_id'), (obj) => { return (obj.year_id); });
+  const xDomain = map(uniqBy(data, 'year_id'), (obj) => obj.year_id);
 
   const xScale = d3Scale.scalePoint().domain(xDomain).range([0, chartDimensions.width]);
   const yScale = d3Scale.scaleLinear().domain(yDomain).range([chartDimensions.height, 0]);
+  const colorScale = d3Scale.scaleLinear().domain(yDomain).range(['#fc8d59', '#ffffbf', '#91bfdb']);
 
   const component = (
     <Scatter
@@ -109,25 +112,61 @@ describe('<Scatter />', () => {
   });
 
   describe('dataAccessors', () => {
-    const scaleSpy = sinon.spy(xScale);
+    const stringAccessors = {
+      fill: 'population',
+      key: 'id',
+      x: 'year_id',
+      y: 'population',
+    };
 
-    afterEach(() => { scaleSpy.reset(); });
+    const spyMap = {
+      fill: {
+        spy: sinon.spy(colorScale),
+        accessor: stringAccessors.fill,
+        prop: 'fill',
+      },
+      x: {
+        spy: sinon.spy(xScale),
+        accessor: stringAccessors.x,
+        prop: 'translateX',
+      },
+      y: {
+        spy: sinon.spy(yScale),
+        accessor: stringAccessors.y,
+        prop: 'translateY',
+      }
+    };
+
+    beforeEach(() => {
+      forEach(spyMap, (spyConfig) => {
+        spyConfig.spy.reset();
+      });
+    });
 
     it('uses property access if a dataAccessor is not a function', () => {
       const wrapper = shallow(
         <Scatter
+          colorScale={spyMap.fill.spy}
           data={data}
-          dataAccessors={{ x: 'year_id' }}
-          scales={{ x: scaleSpy }}
+          dataAccessors={stringAccessors}
+          scales={{
+            x: spyMap.x.spy,
+            y: spyMap.y.spy,
+          }}
         />
       );
 
       const assertion = (symbol, idx) => {
-        expect(symbol).to.have.prop('translateX');
-
-        const spyCall = scaleSpy.getCall(idx);
-        const symbolDatum = symbol.prop('datum');
-        expect(spyCall.calledWith(symbolDatum.year_id)).to.be.true;
+        expect(symbol).to.have.prop('fill').that.is.a('string');
+        expect(symbol).to.have.prop('translateX').that.is.a('number');
+        forEach(spyMap, (spyConfig, key) => {
+          if (!spyConfig.spy.called) {
+            throw new Error(`${key} spy not called; ${symbol.prop(spyConfig.prop)}`);
+          }
+          const spyCall = spyConfig.spy.getCall(idx);
+          const symbolDatum = symbol.prop('datum');
+          expect(spyCall.calledWith(symbolDatum[spyConfig.accessor])).to.be.true;
+        });
       };
 
       wrapper.find(Symbol).forEach(assertion);
@@ -136,22 +175,32 @@ describe('<Scatter />', () => {
     it('accepts a function of plotDatum as a dataAccessor', () => {
       const wrapper = shallow(
         <Scatter
+          colorScale={spyMap.fill.spy}
           data={data}
           dataAccessors={{
-            x: (plotDatum) => {
-              return plotDatum.year_id;
-            }
+            fill: (d) => d.population,
+            key: (d) => d.id,
+            x: (d) => d.year_id,
+            y: (d) => d.population,
           }}
-          scales={{ x: scaleSpy }}
+          scales={{
+            x: spyMap.x.spy,
+            y: spyMap.y.spy,
+          }}
         />
       );
 
       const assertion = (symbol, idx) => {
-        expect(symbol).to.have.prop('translateX');
-
-        const spyCall = scaleSpy.getCall(idx);
-        const symbolDatum = symbol.prop('datum');
-        expect(spyCall.calledWith(symbolDatum.year_id)).to.be.true;
+        expect(symbol).to.have.prop('fill').that.is.a('string');
+        expect(symbol).to.have.prop('translateX').that.is.a('number');
+        forEach(spyMap, (spyConfig, key) => {
+          if (!spyConfig.spy.called) {
+            throw new Error(`${key} spy not called; ${symbol.prop(spyConfig.prop)}`);
+          }
+          const spyCall = spyConfig.spy.getCall(idx);
+          const symbolDatum = symbol.prop('datum');
+          expect(spyCall.calledWith(symbolDatum[spyConfig.accessor])).to.be.true;
+        });
       };
 
       wrapper.find(Symbol).forEach(assertion);
@@ -161,11 +210,12 @@ describe('<Scatter />', () => {
       const wrapper = shallow(
         <Scatter
           data={data}
-          dataAccessors={{ x: 'year_id' }}
+          dataAccessors={{ key: 'id', x: 'year_id' }}
           scales={{ x: xScale }}
         />
       );
       wrapper.find(Symbol).forEach((symbol) => {
+        expect(symbol).to.have.prop('translateX').that.is.a('number');
         expect(symbol).to.have.prop('translateY', 0);
       });
     });
@@ -174,12 +224,13 @@ describe('<Scatter />', () => {
       const wrapper = shallow(
         <Scatter
           data={data}
-          dataAccessors={{ y: 'population' }}
+          dataAccessors={{ key: 'id', y: 'population' }}
           scales={{ y: yScale }}
         />
       );
       wrapper.find(Symbol).forEach((symbol) => {
         expect(symbol).to.have.prop('translateX', 0);
+        expect(symbol).to.have.prop('translateY').that.is.a('number');
       });
     });
 
@@ -188,14 +239,14 @@ describe('<Scatter />', () => {
       const wrapper = shallow(
         <Scatter
           data={manuallyEnteredData}
-          dataAccessors={{ x: 'x' }}
-          scales={{ x: scaleSpy }}
+          dataAccessors={{ key: 'x', x: 'x' }}
+          scales={{ x: spyMap.x.spy }}
         />
       );
 
       const assertion = (symbol, idx) => {
         expect(symbol).to.have.prop('translateX').that.is.a('number');
-        const spyCall = scaleSpy.getCall(idx);
+        const spyCall = spyMap.x.spy.getCall(idx);
         const symbolDatum = symbol.prop('datum');
         expect(spyCall.calledWith(symbolDatum.x)).to.be.true;
       };
@@ -208,8 +259,8 @@ describe('<Scatter />', () => {
       const wrapper = shallow(
         <Scatter
           data={junkData}
-          dataAccessors={{ x: 'x' }}
-          scales={{ x: scaleSpy }}
+          dataAccessors={{ key: 'x', x: 'x' }}
+          scales={{ x: spyMap.x.spy }}
         />
       );
 
@@ -218,7 +269,106 @@ describe('<Scatter />', () => {
       };
 
       wrapper.find(Symbol).forEach(assertion);
-      expect(scaleSpy.called).to.be.false;
+      expect(spyMap.x.spy.called).to.be.false;
+    });
+  });
+
+  describe('selection', () => {
+    it('renders selected symbols last', () => {
+      const selectedDatum = data[0];
+
+      const wrapper = shallow(
+        <Scatter
+          data={data}
+          dataAccessors={{
+            key: (d) => d.id,
+            x: (d) => d.year_id,
+            y: (d) => d.population,
+          }}
+          scales={{
+            x: xScale,
+            y: yScale,
+          }}
+        />
+      );
+
+      expect(wrapper
+        .find('g')
+        .find(Symbol)
+        .first()
+        .prop('datum')
+      ).to.equal(selectedDatum);
+      wrapper.setProps({ selection: [selectedDatum] });
+      expect(wrapper
+        .find('g')
+        .find(Symbol)
+        .first()
+        .prop('datum')
+      ).to.not.equal(selectedDatum);
+      expect(wrapper
+        .find('g')
+        .find(Symbol)
+        .last()
+        .prop('datum')
+      ).to.equal(selectedDatum);
+    });
+
+    it('does a stable sort of the symbols', () => {
+      const wrapper = shallow(
+        <Scatter
+          data={data}
+          dataAccessors={{
+            key: (d) => d.id,
+            x: (d) => d.year_id,
+            y: (d) => d.population,
+          }}
+          scales={{
+            x: xScale,
+            y: yScale,
+          }}
+        />
+      );
+
+      wrapper.find('g').find(Symbol).forEach((node, idx) => {
+        expect(node.prop('datum')).to.equal(data[idx]);
+      });
+
+      // selecting the first symbol should result in the following order:
+      // newIndex :|: oldIndex
+      //        0 -> 1
+      //        1 -> 2
+      //        2 -> 0
+      const selectedDatum = data[0];
+      wrapper.setProps({ selection: [selectedDatum] });
+      const expectedSymbolOrder = drop(data);
+      expectedSymbolOrder.push(selectedDatum);
+
+      wrapper.find('g').find(Symbol).forEach((node, idx) => {
+        expect(node.prop('datum')).to.equal(expectedSymbolOrder[idx]);
+      });
+    });
+
+    it(`does not update state.sortedData 
+        if neither selection nor data have changed`, () => {
+      const wrapper = shallow(
+        <Scatter
+          data={data}
+          dataAccessors={{
+            key: (d) => d.id,
+            x: (d) => d.year_id,
+            y: (d) => d.population,
+          }}
+          scales={{
+            x: xScale,
+            y: yScale,
+          }}
+        />
+      );
+
+      const initialState = wrapper.state('sortedData');
+      expect(initialState).to.deep.equal(data);
+      wrapper.update();
+      expect(initialState).to.equal(wrapper.state('sortedData'));
     });
   });
 });

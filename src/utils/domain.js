@@ -4,25 +4,25 @@ import { isNaN, isUndefined, map, range as range_ } from 'lodash';
  * @param {Number} num
  * @param {Array} range
  */
-export const percentOfRange = function percentOfRange(num, range) {
+export function percentOfRange(num, range) {
   const [min, max] = range;
   return (1 / ((max - min) / (num - min)));
-};
+}
 
 /**
  * @param {Number} percent -> value between [0, 1] inclusive
  * @param {Array} range
  */
-export const numFromPercent = function numFromPercent(percent, range) {
+export function numFromPercent(percent, range) {
   const [min, max] = range;
   return min + ((max - min) * percent);
-};
+}
 
 /**
  * @param {Number} percent -> value between [0, 1] inclusive
  * @param {Array} range
  */
-export const domainFromPercent = function domainFromPercent(newDomain, oldDomain, rangeExtent) {
+export function domainFromPercent(newDomain, oldDomain, rangeExtent) {
   // find what percent of range the old domain was clamped to
   let x1Pct = percentOfRange(rangeExtent[0], oldDomain);
   let x2Pct = percentOfRange(rangeExtent[1], oldDomain);
@@ -32,7 +32,7 @@ export const domainFromPercent = function domainFromPercent(newDomain, oldDomain
   if (isNaN(x2Pct) || isUndefined(x2Pct)) x2Pct = 1;
 
   return [numFromPercent(x1Pct, newDomain), numFromPercent(x2Pct, newDomain)];
-};
+}
 
 /**
  * Turn [min, max] domain into multi-step domain
@@ -41,7 +41,7 @@ export const domainFromPercent = function domainFromPercent(newDomain, oldDomain
  * @param {Array} domain -> [min, max] of x-scale domain
  * @returns {Array}
  */
-export const generateColorDomain = function generateColorDomain(colors, domain) {
+export function generateColorDomain(colors, domain) {
   if (colors.length < 2 || domain.length < 2 || domain[0] === domain[1]) return domain;
 
   const step = Math.abs(domain[1] - domain[0]) / (colors.length - 1);
@@ -50,7 +50,7 @@ export const generateColorDomain = function generateColorDomain(colors, domain) 
   return map(range_(colors.length), (i) => {
     return i * step + domainMin;
   });
-};
+}
 
 /**
  * Base check that value is within the range of extent (up to and including start and end)
@@ -58,9 +58,9 @@ export const generateColorDomain = function generateColorDomain(colors, domain) 
  * @param {Array} extent -> e.g., [1990, 1994]
  * @return {Boolean}
  */
-export const isWithinRange = function withinRange(value, extent) {
+export function isWithinRange(value, extent) {
   return !!(value >= extent[0] && value <= extent[1]);
-};
+}
 
 
 /**
@@ -78,7 +78,7 @@ export const isWithinRange = function withinRange(value, extent) {
  * @param {Array} extent
  * @return {Number}
  */
-export const ensureWithinRange = function ensureWithinRange(value, extent) {
+export function ensureWithinRange(value, extent) {
   if (extent.length < 1) return value;
   return Math.min(Math.max(Math.min(...extent), value), Math.max(...extent));
-};
+}

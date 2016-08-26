@@ -3,6 +3,7 @@ import AxisChart from './axis-chart';
 import Button from './button';
 import Choropleth from './choropleth';
 import ChoroplethLegend from './choropleth-legend';
+import { Map } from './compositions';
 import Group, { Option } from './group';
 import HtmlLabel from './html-label';
 import Legend from './legend';
@@ -25,6 +26,7 @@ export default {
   HtmlLabel,
   Legend,
   Line,
+  Map,
   MultiLine,
   MultiScatter,
   MultiSelect,

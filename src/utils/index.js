@@ -26,6 +26,10 @@ export {
 } from './geo';
 
 export {
+  numberFormat,
+} from './numbers';
+
+export {
   propResolver,
   quickMerge,
 } from './objects';
@@ -35,10 +39,11 @@ export {
 } from './react';
 
 export {
+  clampedScale,
+  domainToRange,
   getScale,
   getScaleTypes,
   rangeToDomain,
-  domainToRange,
 } from './scale';
 
 export {

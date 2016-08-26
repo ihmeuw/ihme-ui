@@ -87,11 +87,12 @@ export function propsChanged(prevProps, nextProps, propsToCompare, propsToOmit) 
  * @param {Object} prevProps
  * @param {Object} nextProps
  * @param {Object} state
+ * @param {Object} [context] - optional `this` context with which to call propUpdate functions
  * @returns {Object} accumulated state.
  */
-export function stateFromPropUpdates(propUpdates, prevProps, nextProps, state) {
+export function stateFromPropUpdates(propUpdates, prevProps, nextProps, state, context) {
   return reduce(propUpdates, (acc, value, key) => {
-    return value(acc, key, prevProps, nextProps);
+    return value(acc, key, prevProps, nextProps, context);
   }, state);
 }
 
@@ -107,9 +108,9 @@ export function stateFromPropUpdates(propUpdates, prevProps, nextProps, state) {
  * @returns {comparisonActionCallback} comparison action callback.
  */
 export function updateFunc(func) {
-  return (acc, key, prevProps = {}, nextProps) => {
+  return (acc, key, prevProps = {}, nextProps, context) => {
     return prevProps[key] !== nextProps[key] ?
-      { ...acc, ...func(nextProps[key], key, nextProps, acc) } :
+      { ...acc, ...func(nextProps[key], key, nextProps, acc, context) } :
       acc;
   };
 }
@@ -120,6 +121,7 @@ export function updateFunc(func) {
  * @param {string} propName
  * @param {Object} prevProps
  * @param {Object} nextProps
+ * @param {Object} [context] - optional `this` context with which to call updateFuncCallback
  */
 
 /**

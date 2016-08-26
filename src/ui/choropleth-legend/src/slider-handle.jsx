@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import interact from 'interact.js';
+import SvgText from '../../svg-text';
 
 import style from './slider-handle.css';
-import SvgText from '../../svg-text';
 
 const propTypes = {
   /* top margin applied within svg document handle is placed within; used to calc origin offset */
@@ -21,6 +21,9 @@ const propTypes = {
   /* range extent value (in data space) */
   label: PropTypes.number,
 
+  /* label format function; given props.label as argument; defaults to identity function */
+  labelFormat: PropTypes.func,
+
   /* fn of signature function(mouse::clientX, whichHandle) */
   onSliderMove: PropTypes.func,
 
@@ -33,6 +36,7 @@ const defaultProps = {
   position: 0,
   height: 15,
   label: null,
+  labelFormat: (n) => n,
   which: 'x1'
 };
 
@@ -74,7 +78,7 @@ export default class SliderHandle extends React.Component {
   }
 
   render() {
-    const { position, which, label, height } = this.props;
+    const { position, which, label, labelFormat, height } = this.props;
     const handleHeight = height + 5;
 
     return (
@@ -92,7 +96,7 @@ export default class SliderHandle extends React.Component {
         >
         </rect>
         <SvgText
-          value={label}
+          value={labelFormat(label)}
           anchor={which === 'x1' ? 'end' : 'start'}
           x={position}
           dx={which === 'x1' ? -8 : 8}

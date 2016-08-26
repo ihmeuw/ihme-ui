@@ -2,14 +2,15 @@ import React, { PropTypes } from 'react';
 import {
   assign,
   get as getValue,
-  indexOf,
-  keyBy,
+  includes,
+  findIndex,
   map,
   sortBy,
 } from 'lodash';
 
 import {
   CommonPropTypes,
+  propResolver,
   propsChanged,
   PureComponent,
   stateFromPropUpdates,
@@ -18,20 +19,6 @@ import {
 import Path from './path';
 
 export default class FeatureLayer extends PureComponent {
-  /**
-   * Pull unique key of GeoJSON feature off feature object
-   * @param {String|Function} resolver
-   * @param {Object} feature - GeoJSON feature
-   * @returns {String}
-   */
-  static getFeatureKey(resolver, feature) {
-    // if keyField is a function, call it with the current feature
-    // otherwise, try to full it off feature, then feature.properties
-    return typeof resolver === 'function'
-      ? resolver(feature)
-      : feature[resolver] || feature.properties[resolver];
-  }
-
   constructor(props) {
     super(props);
 
@@ -46,54 +33,61 @@ export default class FeatureLayer extends PureComponent {
     const {
       colorScale,
       data,
-      keyField,
+      geometryKeyField,
       onClick,
-      onMouseOver,
-      onMouseMove,
       onMouseDown,
-      onMouseOut,
+      onMouseLeave,
+      onMouseMove,
+      onMouseOver,
       pathGenerator,
       pathClassName,
       pathSelectedClassName,
       pathSelectedStyle,
       pathStyle,
+      selectedLocations,
       valueField,
     } = this.props;
-
-    const { selectedLocationsMappedById } = this.state;
 
     return (
       <g>
         {
           map(this.state.sortedFeatures, (feature) => {
-            const key = FeatureLayer.getFeatureKey(keyField, feature);
+            const geometryKey = propResolver(feature, geometryKeyField);
 
-            // if key didn't resolve to anything, return null
-            if (!key) return null;
+            // if geometryKey didn't resolve to anything, return null
+            if (!geometryKey) return null;
 
-            // if valueField is a function, call it with the datum associated with
-            // current feature, as well as curent feature
-            const datum = getValue(data, [key]);
+
+            const datum = getValue(data, [geometryKey]);
+
+            // if valueField is a function, call it with all data as well as current feature
+            // this enables being able to associate datum with features that don't necessarily map to
+            // those features' key.
+            // e.g., associate an administering location's datum with a disputed area feature:
+            //  - geometryKeyField: 'location_id'
+            //  - valueField: (data, feature) => data[feature.properties.admin_id]
+            // if valueField is a string, assume we just want to index into whatever datum resolves from data[geometryKey]
+            // TODO make difference in how valueField is applied more transparent
             const value = typeof valueField === 'function'
-              ? valueField(datum, feature)
-              : getValue(datum, [valueField]);
+              ? valueField(data, feature)
+              : getValue(datum, valueField);
 
             const fill = value ? colorScale(value) : '#ccc';
 
             return (
               <Path
                 className={pathClassName}
-                key={key}
+                datum={datum}
+                key={geometryKey}
                 feature={feature}
                 fill={fill}
-                locationId={key}
                 onClick={onClick}
-                onMouseOver={onMouseOver}
-                onMouseMove={onMouseMove}
                 onMouseDown={onMouseDown}
-                onMouseOut={onMouseOut}
+                onMouseLeave={onMouseLeave}
+                onMouseMove={onMouseMove}
+                onMouseOver={onMouseOver}
                 pathGenerator={pathGenerator}
-                selected={!!selectedLocationsMappedById[key]}
+                selected={includes(selectedLocations, datum)}
                 selectedClassName={pathSelectedClassName}
                 selectedStyle={pathSelectedStyle}
                 style={pathStyle}
@@ -120,26 +114,39 @@ FeatureLayer.propTypes = {
   /* array of geoJSON feature objects, e.g.: [{ geometry: [Object], properties: [Object] }] */
   features: PropTypes.arrayOf(PropTypes.object).isRequired,
 
-  /* mapping of datum key field to geoJSON feature key. default: 'id' */
-  keyField: PropTypes.oneOfType([
+  /*
+    uniquely identifying field of geometry objects
+    if a function, will be called with the geometry object as first parameter
+    N.B.: the resolved value of this prop should match the resolved value of `keyField`
+   */
+  geometryKeyField: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.func, // if a function, is called with current feature as arg
-  ]),
+  ]).isRequired,
 
-  /* passed to each path; signature: function(event, locationId, Path) {...} */
+  /*
+   unique key of datum
+   if a function, will be called with the datum object as first parameter
+   */
+  keyField: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+  ]).isRequired,
+
+  /* passed to each path; signature: function(event, datum, Path) {...} */
   onClick: PropTypes.func,
 
-  /* passed to each path; signature: function(event, locationId, Path) {...} */
-  onMouseOver: PropTypes.func,
-
-  /* passed to each path; signature: function(event, locationId, Path) {...} */
-  onMouseMove: PropTypes.func,
-
-  /* passed to each path; signature: function(event, locationId, Path) {...} */
+  /* passed to each path; signature: function(event, datum, Path) {...} */
   onMouseDown: PropTypes.func,
 
-  /* passed to each path; signature: function(event, locationId, Path) {...} */
-  onMouseOut: PropTypes.func,
+  /* passed to each path; signature: function(event, datum, Path) {...} */
+  onMouseLeave: PropTypes.func,
+
+  /* passed to each path; signature: function(event, datum, Path) {...} */
+  onMouseMove: PropTypes.func,
+
+  /* passed to each path; signature: function(event, datum, Path) {...} */
+  onMouseOver: PropTypes.func,
 
   pathClassName: CommonPropTypes.className,
 
@@ -154,41 +161,35 @@ FeatureLayer.propTypes = {
   /* base style object or function to pass to each path; if a function, receives feature as arg */
   pathStyle: CommonPropTypes.style,
 
-  /* array of datum[keyField], e.g., location ids */
-  selectedLocations: PropTypes.arrayOf(PropTypes.number),
+  /* array of data */
+  selectedLocations: PropTypes.arrayOf(PropTypes.object),
 
-  /* key of datum that holds the value to display */
+  /*
+    key of datum that holds the value to display
+    if a string, used as property access for data[feature[geometryKeyField]][valueField]
+    if a function, passed all data (object keyed by keyField) and current feature
+  */
   valueField: PropTypes.oneOfType([
     PropTypes.string,
-    PropTypes.func, // if a function, is called with current feature as arg
-  ]),
+    PropTypes.func,
+  ]).isRequired,
 };
 
 FeatureLayer.defaultProps = {
-  dataField: 'mean',
-  keyField: 'id',
-  selectedLocations: []
+  selectedLocations: [],
 };
 
 FeatureLayer.propUpdates = {
-  selectedLocationsMappedById: (accum, key, prevProps, nextProps) => {
-    if (!propsChanged(prevProps, nextProps, ['selectedLocations'])) return accum;
-    // optimization: turn array of ids into map keyed by those ids
-    // faster to check if object has property than if array includes some value
-    return assign(accum, {
-      selectedLocationsMappedById: keyBy(nextProps.selectedLocations, (locId) => locId),
-    });
-  },
   sortedFeatures: (accum, key, prevProps, nextProps) => {
+    /* eslint-disable max-len, eqeqeq */
     if (!propsChanged(prevProps, nextProps, ['selectedLocations', 'features'])) return accum;
     return assign(accum, {
       // sort features by whether or not they are selected
       // this is a way of ensuring that selected paths are rendered last
       // similar to, in a path click handler, doing a this.parentNode.appendChild(this)
       sortedFeatures: sortBy(nextProps.features, (feature) =>
-        indexOf(
-          nextProps.selectedLocations,
-          FeatureLayer.getFeatureKey(nextProps.keyField, feature)
+        findIndex(nextProps.selectedLocations, (locationDatum) =>
+          propResolver(locationDatum, nextProps.keyField) == propResolver(feature, nextProps.geometryKeyField)
         )
       ),
     });

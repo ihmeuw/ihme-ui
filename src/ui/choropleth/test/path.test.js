@@ -21,17 +21,18 @@ describe('Choropleth <Path />', () => {
   });
 
   describe('events', () => {
-    it(`calls onClick, mouseDown, mouseMove, mouseOut, and mouseOver 
-    with event, locationId, and the React element`, () => {
+    it(`calls onClick, mouseDown, mouseMove, mouseLeave, and mouseOver 
+    with event, datum, and the React element`, () => {
+      const datum = { location_id: 5, mean: 7 };
       const wrapper = shallow(
         <Path
+          datum={datum}
           pathGenerator={pathGenerator}
           feature={feature}
-          locationId={6}
           onClick={eventHandler}
           onMouseDown={eventHandler}
           onMouseMove={eventHandler}
-          onMouseOut={eventHandler}
+          onMouseLeave={eventHandler}
           onMouseOver={eventHandler}
         />
       );
@@ -41,11 +42,11 @@ describe('Choropleth <Path />', () => {
       };
 
       const inst = wrapper.instance();
-      ['click', 'mouseDown', 'mouseMove', 'mouseOut', 'mouseOver'].forEach((evtName) => {
+      ['click', 'mouseDown', 'mouseMove', 'mouseLeave', 'mouseOver'].forEach((evtName) => {
         eventHandler.reset();
         wrapper.simulate(evtName, event);
         expect(eventHandler.calledOnce).to.be.true;
-        expect(eventHandler.calledWith(event, 6, inst)).to.be.true;
+        expect(eventHandler.calledWith(event, datum, inst)).to.be.true;
       });
     });
 
@@ -54,7 +55,6 @@ describe('Choropleth <Path />', () => {
         <Path
           pathGenerator={pathGenerator}
           feature={feature}
-          locationId={6}
           onClick={eventHandler}
         />
       );
@@ -79,7 +79,6 @@ describe('Choropleth <Path />', () => {
         <Path
           pathGenerator={pathGenerator}
           feature={feature}
-          locationId={6}
           selected
         />
       );
@@ -94,7 +93,6 @@ describe('Choropleth <Path />', () => {
         <Path
           pathGenerator={pathGenerator}
           feature={feature}
-          locationId={6}
           selectedStyle={{ strokeDasharray: '5, 5' }}
           style={{ stroke: 'red' }}
         />
@@ -112,7 +110,6 @@ describe('Choropleth <Path />', () => {
         <Path
           pathGenerator={pathGenerator}
           feature={feature}
-          locationId={6}
           selectedStyle={(geoJSONFeature) => {
             return { strokeWidth: `${geoJSONFeature.id * 2}px` };
           }}
@@ -134,7 +131,6 @@ describe('Choropleth <Path />', () => {
         <Path
           pathGenerator={pathGenerator}
           feature={feature}
-          locationId={6}
           className="foo"
           selectedClassName="bar"
         />

@@ -42,7 +42,7 @@ export default class Path extends PureComponent {
       'onClick',
       'onMouseDown',
       'onMouseMove',
-      'onMouseOut',
+      'onMouseLeave',
       'onMouseOver'
     ]);
   }
@@ -58,7 +58,7 @@ export default class Path extends PureComponent {
     // if being dragged, don't fire onClick
     if (this.dragging) return;
 
-    this.props.onClick(e, this.props.locationId, this);
+    this.props.onClick(e, this.props.datum, this);
   }
 
   onMouseDown(e) {
@@ -66,7 +66,14 @@ export default class Path extends PureComponent {
 
     // clear mouseMove flag
     this.dragging = false;
-    this.props.onMouseDown(e, this.props.locationId, this);
+    this.props.onMouseDown(e, this.props.datum, this);
+  }
+
+  // e.g., destroy tooltip
+  onMouseLeave(e) {
+    e.preventDefault();
+
+    this.props.onMouseLeave(e, this.props.datum, this);
   }
 
   // e.g., position tooltip
@@ -75,21 +82,14 @@ export default class Path extends PureComponent {
 
     // set flag to prevent onClick handler from firing when map is being dragged
     this.dragging = true;
-    this.props.onMouseMove(e, this.props.locationId, this);
-  }
-
-  // e.g., destroy tooltip
-  onMouseOut(e) {
-    e.preventDefault();
-
-    this.props.onMouseOut(e, this.props.locationId, this);
+    this.props.onMouseMove(e, this.props.datum, this);
   }
 
   // e.g., init tooltip
   onMouseOver(e) {
     e.preventDefault();
 
-    this.props.onMouseOver(e, this.props.locationId, this);
+    this.props.onMouseOver(e, this.props.datum, this);
   }
 
   render() {
@@ -101,12 +101,12 @@ export default class Path extends PureComponent {
         d={path}
         className={classNames(className, {
           [selectedClassName]: selected && selectedClassName,
-        })}
+        }) || (void 0)}
         style={style}
         onClick={this.onClick}
         onMouseDown={this.onMouseDown}
+        onMouseLeave={this.onMouseLeave}
         onMouseMove={this.onMouseMove}
-        onMouseOut={this.onMouseOut}
         onMouseOver={this.onMouseOver}
       >
       </path>
@@ -118,6 +118,9 @@ Path.propTypes = {
   /* base classname to apply to path */
   className: CommonPropTypes.className,
 
+  /* datum associated with this location */
+  datum: PropTypes.object,
+
   /* a GeoJSON feature or geometry object; see https://github.com/d3/d3/wiki/Geo-Paths#_path */
   feature: PropTypes.oneOfType([
     PropTypes.array,
@@ -127,23 +130,20 @@ Path.propTypes = {
   /* fill of path */
   fill: PropTypes.string,
 
-  /* locationId identifying this geometry */
-  locationId: PropTypes.number,
-
-  /* signature: function(event, locationId, Path) {...} */
+  /* signature: function(event, datum, Path) {...} */
   onClick: PropTypes.func,
 
-  /* signature: function(event, locationId, Path) {...} */
-  onMouseOver: PropTypes.func,
-
-  /* signature: function(event, locationId, Path) {...} */
-  onMouseMove: PropTypes.func,
-
-  /* signature: function(event, locationId, Path) {...} */
+  /* signature: function(event, datum, Path) {...} */
   onMouseDown: PropTypes.func,
 
-  /* signature: function(event, locationId, Path) {...} */
-  onMouseOut: PropTypes.func,
+  /* signature: function(event, datum, Path) {...} */
+  onMouseLeave: PropTypes.func,
+
+  /* signature: function(event, datum, Path) {...} */
+  onMouseMove: PropTypes.func,
+
+  /* signature: function(event, datum, Path) {...} */
+  onMouseOver: PropTypes.func,
 
   /* a function which accepts a `feature` and returns a valid `d` attribute */
   pathGenerator: PropTypes.func.isRequired,
@@ -163,10 +163,10 @@ Path.propTypes = {
 
 Path.defaultProps = {
   onClick: noop,
-  onMouseOver: noop,
-  onMouseMove: noop,
   onMouseDown: noop,
-  onMouseOut: noop,
+  onMouseLeave: noop,
+  onMouseMove: noop,
+  onMouseOver: noop,
   selected: false,
   selectedStyle: {
     strokeWidth: '2px',
