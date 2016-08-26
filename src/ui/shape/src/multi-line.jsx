@@ -19,6 +19,7 @@ class MultiLine extends PureComponent {
       dataField,
       keyField,
       lineClassName,
+      lineStyle,
       scales,
       style,
     } = this.props;
@@ -31,7 +32,7 @@ class MultiLine extends PureComponent {
     ]);
 
     return (
-      <g className={classNames(className)} style={style}>
+      <g className={className && classNames(className)} style={style}>
         {
           (!(dataAccessors.y || (dataAccessors.y0 && dataAccessors.y1))) ?
             null :
@@ -46,12 +47,15 @@ class MultiLine extends PureComponent {
                 [(
                   <Area
                     className={areaClassName}
-                    color={color}
                     dataAccessors={dataAccessors}
                     data={values}
                     key={`area:${key}`}
                     scales={scales}
-                    style={areaStyle}
+                    style={{
+                      fill: color,
+                      stroke: color,
+                      ...areaStyle,
+                    }}
                     {...mouseEvents}
                   />
                 ), (
@@ -61,7 +65,10 @@ class MultiLine extends PureComponent {
                     data={values}
                     key={`line:${key}`}
                     scales={scales}
-                    stroke={color}
+                    style={{
+                      stroke: color,
+                      ...lineStyle,
+                    }}
                     {...mouseEvents}
                   />
                 )]
@@ -125,6 +132,7 @@ MultiLine.propTypes = {
 
   /* base classname to apply to Lines that are children of MultiLine */
   lineClassName: CommonPropTypes.className,
+  lineStyle: CommonPropTypes.style,
 
   /* signature: function(event, line data, Line instance) {...} */
   onClick: PropTypes.func,
