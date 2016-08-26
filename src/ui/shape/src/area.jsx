@@ -6,10 +6,11 @@ import { eventHandleWrapper } from '../../../utils/events';
 import {
   CommonPropTypes,
   CommonDefaultProps,
+  propResolver,
   PureComponent,
 } from '../../../utils';
 
-class Area extends PureComponent {
+export default class Area extends PureComponent {
   render() {
     const {
       className,
@@ -24,9 +25,9 @@ class Area extends PureComponent {
     } = this.props;
 
     const path = area()
-      .x((datum) => scales.x(datum[dataAccessors.x]))
-      .y0((datum) => scales.y(datum[dataAccessors.y0]))
-      .y1((datum) => scales.y(datum[dataAccessors.y1]));
+      .x((datum) => scales.x(propResolver(datum, dataAccessors.x)))
+      .y0((datum) => scales.y(propResolver(datum, dataAccessors.y0)))
+      .y1((datum) => scales.y(propResolver(datum, dataAccessors.y1)));
 
     return (
       <path
@@ -81,5 +82,3 @@ Area.defaultProps = {
     strokeWidth: 1,
   },
 };
-
-export default Area;
