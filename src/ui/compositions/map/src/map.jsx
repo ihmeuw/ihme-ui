@@ -302,7 +302,9 @@ export default class Map extends React.Component {
       onMouseMove,
       onMouseOver,
       topology,
-      valueField
+      valueField,
+      zoomControlsClassName,
+      zoomControlsStyle,
     } = this.props;
     const { colorScale, layers } = this.state;
 
@@ -313,6 +315,8 @@ export default class Map extends React.Component {
           <Choropleth
             colorScale={colorScale}
             controls
+            controlsClassName={zoomControlsClassName}
+            controlsStyle={zoomControlsStyle}
             data={data}
             geometryKeyField={geometryKeyField}
             keyField={keyField}
@@ -521,6 +525,13 @@ Map.propTypes = {
     PropTypes.string,
     PropTypes.func,
   ]).isRequired,
+
+  zoomControlsClassName: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+  ]),
+
+  zoomControlsStyle: PropTypes.object,
 };
 
 Map.defaultProps = {
