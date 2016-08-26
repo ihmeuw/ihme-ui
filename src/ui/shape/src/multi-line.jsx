@@ -5,7 +5,7 @@ import { map, pick } from 'lodash';
 
 import Line from './line';
 import Area from './area';
-import { PureComponent, CommonPropTypes } from '../../../utils';
+import { propResolver, PureComponent, CommonPropTypes } from '../../../utils';
 
 class MultiLine extends PureComponent {
   render() {
@@ -35,9 +35,9 @@ class MultiLine extends PureComponent {
       <g className={className && classNames(className)} style={style}>
         {
           map(data, (lineData) => {
-            const key = lineData[keyField];
-            const values = lineData[dataField];
-            const color = colorScale(lineData[keyField]);
+            const key = propResolver(lineData, keyField);
+            const values = propResolver(lineData, dataField);
+            const color = colorScale(key);
             // on each iteration, lineData is an object
             // e.g., { keyField: STRING, dataField: ARRAY }
 
@@ -124,10 +124,10 @@ MultiLine.propTypes = {
   ]).isRequired,
 
   /* key that holds values to be represented by individual lines */
-  dataField: PropTypes.string,
+  dataField: CommonPropTypes.dataAccessor,
 
   /* key that uniquely identifies dataset within array of datasets */
-  keyField: PropTypes.string,
+  keyField: CommonPropTypes.dataAccessor,
 
   /* base classname to apply to Lines that are children of MultiLine */
   lineClassName: CommonPropTypes.className,
