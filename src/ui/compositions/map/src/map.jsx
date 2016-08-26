@@ -589,7 +589,7 @@ Map.propUpdates = {
     });
     return assign({}, state, {
       layers,
-      locationIdsOnMap: context.getGeometryIds(nextProps.topojson, layers),
+      locationIdsOnMap: context.getGeometryIds(nextProps.topology, layers),
     });
   },
 };
