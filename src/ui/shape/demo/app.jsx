@@ -104,6 +104,8 @@ class App extends React.Component {
      colorScale={colorScale}
      data={locationData}
      dataAccessors={{
+       fill: keyField,
+       key: 'id',
        x: keyField,    // year_id
        y: valueField   // population
      }}
@@ -143,6 +145,7 @@ class App extends React.Component {
                 data={locationData}
                 dataAccessors={{
                   fill: keyField,
+                  key: 'id',
                   x: keyField,    // year_id
                   y: valueField   // population
                 }}
@@ -184,6 +187,8 @@ class App extends React.Component {
      fill="steelblue"
      data={[]}
      dataAccessors={{
+       fill: keyField,
+       key: 'id',
        x: keyField,    // year_id
        y: valueField   // population
      }}
@@ -211,6 +216,8 @@ class App extends React.Component {
                 fill="steelblue"
                 data={data.filter((datum) => { return datum.location === 'India'; })}
                 dataAccessors={{
+                  fill: keyField,
+                  key: 'id',
                   x: keyField,    // year_id
                   y: valueField   // population
                 }}
@@ -239,7 +246,7 @@ class App extends React.Component {
   <Scatter
     fill="tomato"
     data={[]}
-    dataAccessors={{ x: valueField }}
+    dataAccessors={{ x: valueField, key: 'id' }}
     onClick={function(event, datum, Symbol) {...}}
     onMouseLeave={function(event, datum, Symbol) {...}}
     onMouseMove={function(event, datum, Symbol) {...}}
@@ -260,7 +267,7 @@ class App extends React.Component {
               <Scatter
                 fill="tomato"
                 data={data.filter((datum) => { return datum.location === 'India'; })}
-                dataAccessors={{ x: valueField }}
+                dataAccessors={{ x: valueField, key: 'id' }}
                 focus={this.state.focus}
                 onClick={this.onClick}
                 onMouseLeave={this.onMouseLeave}
@@ -286,7 +293,7 @@ class App extends React.Component {
   <Scatter
     fill={'cornflowerblue'}
     data={[]}
-    dataAccessors={{ y: valueField }}
+    dataAccessors={{ y: valueField, key: 'id' }}
     symbolType={'circle'}
     onClick={function(event, datum, Symbol) {...}}
     onMouseLeave={function(event, datum, Symbol) {...}}
@@ -307,7 +314,7 @@ class App extends React.Component {
               <Scatter
                 fill="cornflowerblue"
                 data={data.filter((datum) => { return datum.location === 'India'; })}
-                dataAccessors={{ y: valueField }}
+                dataAccessors={{ y: valueField, key: 'id' }}
                 focus={this.state.focus}
                 onClick={this.onClick}
                 onMouseLeave={this.onMouseLeave}
@@ -333,7 +340,7 @@ class App extends React.Component {
   <Scatter
     fill={d3Scale.scaleCategory10()}
     data={[]}
-    dataAccessors={{ fill: valueField, x: valueField }}
+    dataAccessors={{ fill: valueField, key: 'id', x: valueField }}
     onClick={function(event, datum, Symbol) {...}}
     onMouseLeave={function(event, datum, Symbol) {...}}
     onMouseMove={function(event, datum, Symbol) {...}}
@@ -354,7 +361,7 @@ class App extends React.Component {
               <Scatter
                 colorScale={colorScale}
                 data={data.filter((datum) => { return datum.location === 'India'; })}
-                dataAccessors={{ fill: valueField, x: valueField }}
+                dataAccessors={{ fill: valueField, key: 'id', x: valueField }}
                 focus={this.state.focus}
                 onClick={this.onClick}
                 onMouseLeave={this.onMouseLeave}
