@@ -1,37 +1,59 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import { Symbol } from '../../shape';
+import { CommonPropTypes, PureComponent } from '../../../utils';
 
 import styles from './spinner.css';
 
-const propTypes = {
+class Spinner extends PureComponent {
+  render() {
+    const {
+      className,
+      inline,
+      style,
+      symbolFill,
+      symbolStyle,
+      symbolType,
+    } = this.props;
+
+    return (
+      <div
+        className={classNames(styles.spinner, {
+          [styles['inline-spinner']]: inline
+        }, className)}
+        style={style}
+      >
+        <svg className={styles.dot} viewBox="-8 -8 16 16" width="1em" height="1em">
+          <Symbol fill={symbolFill} style={symbolStyle} symbolType={symbolType} />
+        </svg>
+        <svg className={styles.dot} viewBox="-8 -8 16 16" width="1em" height="1em">
+          <Symbol fill={symbolFill} style={symbolStyle} symbolType={symbolType} />
+        </svg>
+        <svg className={styles.dot} viewBox="-8 -8 16 16" width="1em" height="1em">
+          <Symbol fill={symbolFill} style={symbolStyle} symbolType={symbolType} />
+        </svg>
+      </div>
+    );
+  }
+}
+
+Spinner.propTypes = {
+  /* an extra classname */
+  className: CommonPropTypes.className,
+
   /* display spinner inline with other elements (e.g., in a button) */
   inline: PropTypes.bool,
 
-  /* how large the dots will be */
-  size: PropTypes.oneOf(['small', 'medium', 'large']),
+  style: CommonPropTypes.style,
 
-  /* an extra classname */
-  className: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.array,
-    PropTypes.object
-  ])
+  symbolFill: PropTypes.string,
+  symbolStyle: CommonPropTypes.style,
+  symbolType: PropTypes.string,
 };
 
-const Spinner = (props) => {
-  return (
-    <div
-      className={classNames(styles.spinner, {
-        [styles['inline-spinner']]: props.inline
-      }, props.className)}
-    >
-      <span className={styles[`${props.size}-dot`]}></span>
-      <span className={styles[`${props.size}-dot`]}></span>
-      <span className={styles[`${props.size}-dot`]}></span>
-    </div>
-  );
+Spinner.defaultProps = {
+  symbolFill: 'black',
+  symbolType: 'circle',
 };
-
-Spinner.propTypes = propTypes;
 
 export default Spinner;
