@@ -176,8 +176,6 @@ FeatureLayer.propTypes = {
 };
 
 FeatureLayer.defaultProps = {
-  dataField: 'mean',
-  keyField: 'id',
   selectedLocations: [],
 };
 
