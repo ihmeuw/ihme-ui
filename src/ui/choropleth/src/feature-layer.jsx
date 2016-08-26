@@ -2,8 +2,8 @@ import React, { PropTypes } from 'react';
 import {
   assign,
   get as getValue,
-  indexOf,
-  keyBy,
+  includes,
+  findIndex,
   map,
   sortBy,
 } from 'lodash';
@@ -44,10 +44,9 @@ export default class FeatureLayer extends PureComponent {
       pathSelectedClassName,
       pathSelectedStyle,
       pathStyle,
+      selectedLocations,
       valueField,
     } = this.props;
-
-    const { selectedLocationsMappedById } = this.state;
 
     return (
       <g>
@@ -71,16 +70,16 @@ export default class FeatureLayer extends PureComponent {
               <Path
                 className={pathClassName}
                 key={key}
+                datum={datum}
                 feature={feature}
                 fill={fill}
-                locationId={key}
                 onClick={onClick}
                 onMouseDown={onMouseDown}
                 onMouseLeave={onMouseLeave}
                 onMouseMove={onMouseMove}
                 onMouseOver={onMouseOver}
                 pathGenerator={pathGenerator}
-                selected={!!selectedLocationsMappedById[key]}
+                selected={includes(selectedLocations, datum)}
                 selectedClassName={pathSelectedClassName}
                 selectedStyle={pathSelectedStyle}
                 style={pathStyle}
@@ -113,19 +112,19 @@ FeatureLayer.propTypes = {
     PropTypes.func, // if a function, is called with current feature as arg
   ]),
 
-  /* passed to each path; signature: function(event, locationId, Path) {...} */
+  /* passed to each path; signature: function(event, datum, Path) {...} */
   onClick: PropTypes.func,
 
-  /* passed to each path; signature: function(event, locationId, Path) {...} */
+  /* passed to each path; signature: function(event, datum, Path) {...} */
   onMouseDown: PropTypes.func,
 
-  /* passed to each path; signature: function(event, locationId, Path) {...} */
+  /* passed to each path; signature: function(event, datum, Path) {...} */
   onMouseLeave: PropTypes.func,
 
-  /* passed to each path; signature: function(event, locationId, Path) {...} */
+  /* passed to each path; signature: function(event, datum, Path) {...} */
   onMouseMove: PropTypes.func,
 
-  /* passed to each path; signature: function(event, locationId, Path) {...} */
+  /* passed to each path; signature: function(event, datum, Path) {...} */
   onMouseOver: PropTypes.func,
 
   pathClassName: CommonPropTypes.className,
@@ -141,8 +140,8 @@ FeatureLayer.propTypes = {
   /* base style object or function to pass to each path; if a function, receives feature as arg */
   pathStyle: CommonPropTypes.style,
 
-  /* array of datum[keyField], e.g., location ids */
-  selectedLocations: PropTypes.arrayOf(PropTypes.number),
+  /* array of data */
+  selectedLocations: PropTypes.arrayOf(PropTypes.object),
 
   /* key of datum that holds the value to display */
   valueField: PropTypes.oneOfType([
@@ -154,28 +153,20 @@ FeatureLayer.propTypes = {
 FeatureLayer.defaultProps = {
   dataField: 'mean',
   keyField: 'id',
-  selectedLocations: []
+  selectedLocations: [],
 };
 
 FeatureLayer.propUpdates = {
-  selectedLocationsMappedById: (accum, key, prevProps, nextProps) => {
-    if (!propsChanged(prevProps, nextProps, ['selectedLocations'])) return accum;
-    // optimization: turn array of ids into map keyed by those ids
-    // faster to check if object has property than if array includes some value
-    return assign(accum, {
-      selectedLocationsMappedById: keyBy(nextProps.selectedLocations, (locId) => locId),
-    });
-  },
   sortedFeatures: (accum, key, prevProps, nextProps) => {
+    /* eslint-disable max-len, eqeqeq */
     if (!propsChanged(prevProps, nextProps, ['selectedLocations', 'features'])) return accum;
     return assign(accum, {
       // sort features by whether or not they are selected
       // this is a way of ensuring that selected paths are rendered last
       // similar to, in a path click handler, doing a this.parentNode.appendChild(this)
       sortedFeatures: sortBy(nextProps.features, (feature) =>
-        indexOf(
-          nextProps.selectedLocations,
-          propResolver(feature, nextProps.keyField)
+        findIndex(nextProps.selectedLocations, (locationDatum) =>
+          propResolver(locationDatum, nextProps.keyField) == propResolver(feature, nextProps.geometryKeyField)
         )
       ),
     });

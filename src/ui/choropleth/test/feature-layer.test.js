@@ -3,7 +3,7 @@ import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 import d3 from 'd3';
-import { drop, omit } from 'lodash';
+import { drop, find, omit } from 'lodash';
 import { getGeoJSON, getLocationIds, baseColorScale } from '../../../test-utils';
 
 import FeatureLayer from '../src/feature-layer';
@@ -111,7 +111,7 @@ describe('Choropleth <FeatureLayer />', () => {
       expect(wrapper
         .find('g')
         .find(Path)
-        .filterWhere(n => n.prop('locationId') === featureToTest.id)
+        .filterWhere(n => n.prop('datum').id === featureToTest.id)
         .first()
       ).to.have.prop('fill', colorScale(featureToTest.mean));
     });
@@ -131,7 +131,7 @@ describe('Choropleth <FeatureLayer />', () => {
       expect(wrapper
         .find('g')
         .find(Path)
-        .filterWhere(n => n.prop('locationId') === featureToTest.id)
+        .filterWhere(n => n.prop('datum').id === featureToTest.id)
         .first()
       ).to.have.prop('fill', colorScale(featureToTest.mean));
     });
@@ -149,7 +149,7 @@ describe('Choropleth <FeatureLayer />', () => {
           valueField={valueField}
           pathGenerator={pathGenerator}
           colorScale={colorScale}
-          selectedLocations={[selectedFeature.id]}
+          selectedLocations={[find(data, { id: selectedFeature.id })]}
         />
       );
 
@@ -181,7 +181,7 @@ describe('Choropleth <FeatureLayer />', () => {
         .first()
         .props().feature
       ).to.equal(firstFeature);
-      wrapper.setProps({ selectedLocations: [firstFeature.id] });
+      wrapper.setProps({ selectedLocations: [find(data, { id: firstFeature.id })] });
       expect(wrapper
         .find('g')
         .find(Path)
@@ -218,7 +218,7 @@ describe('Choropleth <FeatureLayer />', () => {
       //        1 -> 2
       //        2 -> 0
       const selectedFeature = features[0];
-      wrapper.setProps({ selectedLocations: [selectedFeature.id] });
+      wrapper.setProps({ selectedLocations: [find(data, { id: selectedFeature.id })] });
       const expectedFeatureOrder = drop(features);
       expectedFeatureOrder.push(selectedFeature);
 
@@ -244,28 +244,6 @@ describe('Choropleth <FeatureLayer />', () => {
       expect(initialState).to.deep.equal(features);
       wrapper.update();
       expect(initialState).to.equal(wrapper.state('sortedFeatures'));
-    });
-
-    it('holds a map of location ids in state', () => {
-      const selectedLocationsList = [features[0].id];
-      const wrapper = shallow(
-        <FeatureLayer
-          features={features}
-          data={data}
-          keyField={keyField}
-          valueField={valueField}
-          pathGenerator={pathGenerator}
-          colorScale={colorScale}
-          selectedLocations={selectedLocationsList}
-        />
-      );
-
-      expect(wrapper.state('selectedLocationsMappedById')).to.be.an('object')
-        .that.has.keys(selectedLocationsList.map(String));
-      const updatedLocationsList = selectedLocationsList.concat([features[1].id]);
-      wrapper.setProps({ selectedLocations: updatedLocationsList });
-      expect(wrapper.state('selectedLocationsMappedById')).to.be.an('object')
-        .that.has.keys(updatedLocationsList.map(String));
     });
   });
 });
