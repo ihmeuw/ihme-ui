@@ -13,12 +13,13 @@ import {
   isEqual,
   toString,
 } from 'lodash';
+import d3Scale from 'd3-scale';
 import Button from '../../../button';
 import Choropleth from '../../../choropleth';
 import ChoroplethLegend from '../../../choropleth-legend';
 import ResponsiveContainer from '../../../responsive-container';
 import {
-  clampedLinearScale,
+  clampedScale,
   CommonPropTypes,
   generateColorDomain,
   numFromPercent,
@@ -158,11 +159,11 @@ export default class Map extends React.Component {
       },
     ];
 
-    this.state = {
-      colorScale: clampedLinearScale()
-        .range(colorSteps)
-        .domain(generateColorDomain(colorSteps, rangeExtent)),
-      locationIdsOnMap: this.getGeometryIds(topology, layers),
+    const state = {
+      colorScale: clampedScale('#ccc')
+        .base(d3Scale.scaleLinear())
+        .domain(generateColorDomain(colorSteps, rangeExtent))
+        .range(colorSteps),
       layers,
     };
   }
