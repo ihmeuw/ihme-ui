@@ -14,7 +14,7 @@ class Area extends PureComponent {
     const {
       className,
       data,
-      dataAccessors: { x: xAccessor, y0: y0Accessor, y1: y1Accessor },
+      dataAccessors,
       onClick,
       onMouseLeave,
       onMouseMove,
@@ -24,9 +24,9 @@ class Area extends PureComponent {
     } = this.props;
 
     const path = area()
-      .x((datum) => scales.x(datum[xAccessor]))
-      .y0((datum) => scales.y(datum[y0Accessor]))
-      .y1((datum) => scales.y(datum[y1Accessor]));
+      .x((datum) => scales.x(datum[dataAccessors.x]))
+      .y0((datum) => scales.y(datum[dataAccessors.y0]))
+      .y1((datum) => scales.y(datum[dataAccessors.y1]));
 
     return (
       <path
