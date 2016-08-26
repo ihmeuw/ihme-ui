@@ -11,6 +11,7 @@ import {
   includes,
   intersectionWith,
   isEqual,
+  toString,
 } from 'lodash';
 import Button from '../../../button';
 import Choropleth from '../../../choropleth';
@@ -242,33 +243,39 @@ export default class Map extends React.Component {
   }
 
   selectedBordersMeshFilter(selections) {
-    const { geometryKeyField } = this.props;
+    const { geometryKeyField, keyField } = this.props;
+    const keysOfSelectedLocations = selections.map(datum =>
+      toString(propResolver(datum, keyField))
+    );
 
     return (geometry, neighborGeometry) => {
-      const geometryKey = propResolver(geometry, geometryKeyField);
-      const geometryDisputes = getValue(geometry, ['properties', 'disputes'], []);
-      const neighborGeometryKey = propResolver(neighborGeometry, geometryKeyField);
-      const neighborGeometryDisputes = getValue(neighborGeometry, ['properties', 'disputes'], []);
+      const geometryKey = toString(propResolver(geometry, geometryKeyField));
+      const geometryDisputes = getValue(geometry, ['properties', 'disputes'], []).map(toString);
+      const neighborGeometryKey = toString(propResolver(neighborGeometry, geometryKeyField));
+      const neighborGeometryDisputes = getValue(neighborGeometry, [
+        'properties',
+        'disputes',
+      ], []).map(toString);
 
       return (
           // geometry is one of the geometries selected
-          includes(selections, geometryKey)
+          includes(keysOfSelectedLocations, geometryKey)
 
           // neighborGeometry is one of the geometries selected
-          || includes(selections, neighborGeometryKey)
+          || includes(keysOfSelectedLocations, neighborGeometryKey)
 
           // or one of the selections disputed by geometry or neighborGeometry
-          || selections.some(locId => {
+          || keysOfSelectedLocations.some(locId => {
             return includes(geometryDisputes, locId) ||
               includes(neighborGeometryDisputes, locId);
           })
         )
 
         && !(
-          includes(selections, geometryKey)
+          includes(keysOfSelectedLocations, geometryKey)
           && includes(neighborGeometryDisputes, geometryKey)
 
-          || includes(selections, neighborGeometryKey)
+          || includes(keysOfSelectedLocations, neighborGeometryKey)
           && includes(geometryDisputes, neighborGeometryKey)
         );
     };
@@ -331,6 +338,7 @@ export default class Map extends React.Component {
       onMouseMove,
       onMouseOver,
       onSliderMove,
+      selectedLocations,
       unit,
     } = this.props;
     const {
@@ -363,6 +371,7 @@ export default class Map extends React.Component {
               onMouseOver={onMouseOver}
               onSliderMove={onSliderMove}
               rangeExtent={rangeExtent}
+              selectedLocations={selectedLocations}
               unit={unit}
               valueField="mean"
               x1={linearGradientStops[0] * 100}
@@ -478,7 +487,7 @@ Map.propTypes = {
   */
   onResetScale: PropTypes.func.isRequired,
 
-  /* array of geometryKeyFields, e.g., location ids */
+  /* array of data objects */
   selectedLocations: PropTypes.array,
 
   /* whether to include subnational layer */
