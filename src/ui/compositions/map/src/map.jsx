@@ -350,6 +350,7 @@ export default class Map extends React.Component {
       selectedLocations,
       sliderHandleFormat,
       unit,
+      valueField,
     } = this.props;
     const {
       colorScale,
@@ -380,7 +381,7 @@ export default class Map extends React.Component {
               selectedLocations={selectedLocations}
               sliderHandleFormat={sliderHandleFormat}
               unit={unit}
-              valueField="mean"
+              valueField={valueField}
               x1={linearGradientStops[0] * 100}
               x2={linearGradientStops[1] * 100}
             />
