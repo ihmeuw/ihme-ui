@@ -79,10 +79,10 @@ describe('<MultiLine />', () => {
       const caLine = wrapper.find('Line').last();
 
       expect(usaLine)
-        .to.have.prop('stroke', colorScale('USA'));
+        .to.have.style('stroke', colorScale('USA'));
 
       expect(caLine)
-        .to.have.prop('stroke', colorScale('Canada'));
+        .to.have.style('stroke', colorScale('Canada'));
     });
   });
 
