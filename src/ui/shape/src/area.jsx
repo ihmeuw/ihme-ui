@@ -3,13 +3,16 @@ import classNames from 'classnames';
 import { area } from 'd3-shape';
 
 import { eventHandleWrapper } from '../../../utils/events';
-import { CommonDefaultProps, CommonPropTypes, PureComponent } from '../../../utils';
+import {
+  CommonPropTypes,
+  CommonDefaultProps,
+  PureComponent,
+} from '../../../utils';
 
 class Area extends PureComponent {
   render() {
     const {
       className,
-      color,
       data,
       dataAccessors: { x: xAccessor, y0: y0Accessor, y1: y1Accessor },
       onClick,
@@ -17,7 +20,6 @@ class Area extends PureComponent {
       onMouseMove,
       onMouseOver,
       scales,
-      strokeWidth,
       style,
     } = this.props;
 
@@ -28,15 +30,12 @@ class Area extends PureComponent {
 
     return (
       <path
-        className={classNames(className)}
+        className={className && classNames(className)}
         d={path(data)}
-        fill={color}
         onClick={eventHandleWrapper(onClick, data, this)}
         onMouseLeave={eventHandleWrapper(onMouseLeave, data, this)}
         onMouseMove={eventHandleWrapper(onMouseMove, data, this)}
         onMouseOver={eventHandleWrapper(onMouseOver, data, this)}
-        stroke={color}
-        strokeWidth={`${strokeWidth}px`}
         style={style}
       />
     );
@@ -45,8 +44,6 @@ class Area extends PureComponent {
 
 Area.propTypes = {
   className: CommonPropTypes.className,
-
-  color: PropTypes.string,
 
   /* array of objects
    e.g. [ {}, {}, {} ]
@@ -70,19 +67,20 @@ Area.propTypes = {
     y: PropTypes.func,
   }).isRequired,
 
-  strokeWidth: PropTypes.number,
-
   style: CommonPropTypes.style,
 };
 
 Area.defaultProps = {
-  color: 'steelblue',
   dataAccessors: { x: 'x', y0: 'y0', y1: 'y1' },
   onClick: CommonDefaultProps.noop,
   onMouseLeave: CommonDefaultProps.noop,
   onMouseMove: CommonDefaultProps.noop,
   onMouseOver: CommonDefaultProps.noop,
-  strokeWidth: 2.5,
+  style: {
+    fill: 'steelblue',
+    stroke: 'steelblue',
+    strokeWidth: 1,
+  },
 };
 
 export default Area;
