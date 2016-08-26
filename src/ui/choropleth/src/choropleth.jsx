@@ -10,6 +10,7 @@ import {
   CommonPropTypes,
   concatAndComputeGeoJSONBounds,
   extractGeoJSON,
+  propResolver,
   quickMerge,
 } from '../../../utils';
 
@@ -30,7 +31,7 @@ export default class Choropleth extends React.Component {
    * @return {Object} - keys are keyField (e.g., locationId), values are datum objects
    */
   static processData(data, keyField) {
-    return keyBy(data, keyField);
+    return keyBy(data, (datum) => propResolver(datum, keyField));
   }
 
   constructor(props) {
@@ -244,23 +245,24 @@ export default class Choropleth extends React.Component {
         case 'feature':
           return (
             <FeatureLayer
-              key={key}
-              features={this.state.cache.feature[layer.name].features}
-              data={this.state.processedData}
-              keyField={this.props.geometryKeyField}
-              valueField={this.props.valueField}
-              pathGenerator={this.state.pathGenerator}
               colorScale={this.props.colorScale}
-              selectedLocations={this.props.selectedLocations}
+              data={this.state.processedData}
+              features={this.state.cache.feature[layer.name].features}
+              geometryKeyField={this.props.geometryKeyField}
+              key={key}
+              keyField={this.props.keyField}
               onClick={this.props.onClick}
               onMouseDown={this.props.onMouseDown}
               onMouseLeave={this.props.onMouseLeave}
               onMouseMove={this.props.onMouseMove}
               onMouseOver={this.props.onMouseOver}
               pathClassName={layer.className}
+              pathGenerator={this.state.pathGenerator}
               pathSelectedClassName={layer.selectedClassName}
               pathStyle={layer.style}
               pathSelectedStyle={layer.selectedStyle}
+              selectedLocations={this.props.selectedLocations}
+              valueField={this.props.valueField}
             />
           );
         case 'mesh':
@@ -392,8 +394,8 @@ Choropleth.propTypes = {
   /* fn that accepts keyfield, and returns stroke color for line */
   colorScale: PropTypes.func.isRequired,
 
-  /* array of datum[keyField], e.g., location ids */
-  selectedLocations: PropTypes.arrayOf(PropTypes.number),
+  /* array of data */
+  selectedLocations: PropTypes.arrayOf(PropTypes.object),
 
   /* width of containing element, in px */
   width: PropTypes.number,
@@ -401,19 +403,19 @@ Choropleth.propTypes = {
   /* height of containing element, in px */
   height: PropTypes.number,
 
-  /* passed to each path; signature: function(event, locationId, Path) {...} */
+  /* passed to each path; signature: function(event, datum, Path) {...} */
   onClick: PropTypes.func,
 
-  /* passed to each path; signature: function(event, locationId, Path) {...} */
+  /* passed to each path; signature: function(event, datum, Path) {...} */
   onMouseDown: PropTypes.func,
 
-  /* passed to each path; signature: function(event, locationId, Path) {...} */
+  /* passed to each path; signature: function(event, datum, Path) {...} */
   onMouseLeave: PropTypes.func,
 
-  /* passed to each path; signature: function(event, locationId, Path) {...} */
+  /* passed to each path; signature: function(event, datum, Path) {...} */
   onMouseMove: PropTypes.func,
 
-  /* passed to each path; signature: function(event, locationId, Path) {...} */
+  /* passed to each path; signature: function(event, datum, Path) {...} */
   onMouseOver: PropTypes.func,
 
   /* show zoom controls */
