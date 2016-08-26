@@ -32,17 +32,9 @@ describe('<Area />', () => {
   const xScale = d3Scale.scalePoint().domain(domain).range([0, chartDimensions.width]);
   const yScale = d3Scale.scaleLinear().domain(range).range([chartDimensions.height, 0]);
 
-  const clickCallback = sinon.spy((datum) => {
-    return sinon.spy(() => {
-      return datum;
-    });
-  });
+  const clickCallback = sinon.spy();
 
-  const hoverCallback = sinon.spy((datum) => {
-    return sinon.spy(() => {
-      return datum;
-    });
-  });
+  const hoverCallback = sinon.spy();
 
   const areaFunction = area()
     .x((datum) => { return xScale(datum[keyField]); })
@@ -58,8 +50,8 @@ describe('<Area />', () => {
         data={data}
         scales={{ x: xScale, y: yScale }}
         dataAccessors={{ x: keyField, y0: 'value_lb', y1: 'value_ub' }}
-        clickHandler={clickCallback}
-        hoverHandler={hoverCallback}
+        onClick={clickCallback}
+        onMouseOver={hoverCallback}
       />
     );
   });
@@ -82,8 +74,8 @@ describe('<Area />', () => {
     wrapper.find('path').first().simulate('click');
     expect(clickCallback.called).to.be.true;
 
-    const curriedSpy = clickCallback.getCall(0).returnValue.getCall(0);
-    expect(curriedSpy.returnValue).to.be.an('array');
+    const curriedSpy = clickCallback.args[0];
+    expect(curriedSpy).to.be.an('array');
   });
 
   it('responds to a mouseover event', () => {
@@ -91,7 +83,7 @@ describe('<Area />', () => {
     wrapper.find('path').first().simulate('mouseOver');
     expect(hoverCallback.called).to.be.true;
 
-    const curriedSpy = hoverCallback.getCall(0).returnValue.getCall(0);
-    expect(curriedSpy.returnValue).to.be.an('array');
+    const curriedSpy = hoverCallback.args[0];
+    expect(curriedSpy).to.be.an('array');
   });
 });
