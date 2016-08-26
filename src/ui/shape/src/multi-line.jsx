@@ -34,17 +34,16 @@ class MultiLine extends PureComponent {
     return (
       <g className={className && classNames(className)} style={style}>
         {
-          (!(dataAccessors.y || (dataAccessors.y0 && dataAccessors.y1))) ?
-            null :
-            map(data, (lineData) => {
-              const key = lineData[keyField];
-              const values = lineData[dataField];
-              const color = colorScale(lineData[keyField]);
-              // on each iteration, lineData is an object
-              // e.g., { keyField: STRING, dataField: ARRAY }
+          map(data, (lineData) => {
+            const key = lineData[keyField];
+            const values = lineData[dataField];
+            const color = colorScale(lineData[keyField]);
+            // on each iteration, lineData is an object
+            // e.g., { keyField: STRING, dataField: ARRAY }
 
-              return (
-                [(
+            return (
+              [
+                (!!dataAccessors.x && !!dataAccessors.y0 && !!dataAccessors.y1) ?
                   <Area
                     className={areaClassName}
                     dataAccessors={dataAccessors}
@@ -57,8 +56,8 @@ class MultiLine extends PureComponent {
                       ...areaStyle,
                     }}
                     {...mouseEvents}
-                  />
-                ), (
+                  /> : null,
+                (!!dataAccessors.x && !!dataAccessors.y) ?
                   <Line
                     className={lineClassName}
                     dataAccessors={dataAccessors}
@@ -70,10 +69,10 @@ class MultiLine extends PureComponent {
                       ...lineStyle,
                     }}
                     {...mouseEvents}
-                  />
-                )]
-              );
-            })
+                  /> : null,
+              ]
+            );
+          })
         }
       </g>
     );
@@ -149,7 +148,7 @@ MultiLine.propTypes = {
   /* scales from d3Scale */
   scales: PropTypes.shape({
     x: PropTypes.func,
-    y: PropTypes.func
+    y: PropTypes.func,
   }).isRequired,
 
   style: CommonPropTypes.style,
