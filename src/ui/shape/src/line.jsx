@@ -24,14 +24,14 @@ export default class Line extends PureComponent {
       style,
     } = this.props;
 
-    const path = line()
+    const pathGenerator = line()
       .x((datum) => scales.x(propResolver(datum, dataAccessors.x)))
       .y((datum) => scales.y(propResolver(datum, dataAccessors.y)));
 
     return (
       <path
         className={className && classNames(className)}
-        d={path(data)}
+        d={pathGenerator(data)}
         fill="none"
         onClick={eventHandleWrapper(onClick, data, this)}
         onMouseLeave={eventHandleWrapper(onMouseLeave, data, this)}

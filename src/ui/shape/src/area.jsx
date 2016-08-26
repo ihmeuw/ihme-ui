@@ -24,7 +24,7 @@ export default class Area extends PureComponent {
       style,
     } = this.props;
 
-    const path = area()
+    const pathGenerator = area()
       .x((datum) => scales.x(propResolver(datum, dataAccessors.x)))
       .y0((datum) => scales.y(propResolver(datum, dataAccessors.y0)))
       .y1((datum) => scales.y(propResolver(datum, dataAccessors.y1)));
@@ -32,7 +32,7 @@ export default class Area extends PureComponent {
     return (
       <path
         className={className && classNames(className)}
-        d={path(data)}
+        d={pathGenerator(data)}
         onClick={eventHandleWrapper(onClick, data, this)}
         onMouseLeave={eventHandleWrapper(onMouseLeave, data, this)}
         onMouseMove={eventHandleWrapper(onMouseMove, data, this)}
