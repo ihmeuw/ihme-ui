@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { castArray, map, pick } from 'lodash';
 import Scatter from './scatter';
 
-import { propResolver, PureComponent, CommonPropTypes } from '../../../utils';
+import { propResolver, PureComponent, CommonDefaultProps, CommonPropTypes } from '../../../utils';
 
 export default class MultiScatter extends PureComponent {
   render() {
@@ -14,6 +14,7 @@ export default class MultiScatter extends PureComponent {
       dataField,
       keyField,
       scatterClassName,
+      scatterValuesIteratee,
       selection,
       symbolField,
       symbolScale,
@@ -46,17 +47,19 @@ export default class MultiScatter extends PureComponent {
             const fill = colorScale(key);
             const symbolType = symbolScale(symbol);
 
-            return (
+            const scatterValues = scatterValuesIteratee(values, key);
+
+            return !!scatterValues ? (
               <Scatter
                 className={scatterClassName}
-                data={values}
+                data={scatterValues}
                 fill={fill}
                 key={`scatter:${key}`}
                 selection={castArray(selection)}
                 symbolType={symbolType}
                 {...childProps}
               />
-            );
+            ) : null;
           })
         }
       </g>
@@ -129,6 +132,14 @@ MultiScatter.propTypes = {
    */
   scatterClassName: CommonPropTypes.className,
 
+  /*
+   function to apply to the datum to transform scatter values. default: _.identity
+   @param values
+   @param key
+   @return transformed data (or undefined)
+   */
+  scatterValuesIteratee: PropTypes.func,
+
   /* classname to be applied to Symbol if selected */
   selectedClassName: CommonPropTypes.className,
 
@@ -168,6 +179,7 @@ MultiScatter.defaultProps = {
   colorScale() { return 'steelblue'; },
   dataField: 'values',
   keyField: 'key',
+  scatterValuesIteratee: CommonDefaultProps.identity,
   size: 64,
   symbolField: 'type',
   symbolScale() { return 'circle'; },
