@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { castArray, map, noop, pick } from 'lodash';
+import { castArray, map, pick } from 'lodash';
 import Scatter from './scatter';
 
 import { propResolver, PureComponent, CommonPropTypes } from '../../../utils';
@@ -168,10 +168,6 @@ MultiScatter.defaultProps = {
   colorScale() { return 'steelblue'; },
   dataField: 'values',
   keyField: 'key',
-  onClick: noop,
-  onMouseLeave: noop,
-  onMouseMove: noop,
-  onMouseOver: noop,
   size: 64,
   symbolField: 'type',
   symbolScale() { return 'circle'; },
