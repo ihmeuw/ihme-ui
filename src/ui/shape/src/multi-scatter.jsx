@@ -1,63 +1,66 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { castArray, map, noop, pick } from 'lodash';
-import { CommonPropTypes } from '../../../utils';
 import Scatter from './scatter';
 
-export default function MultiScatter(props) {
-  const {
-    className,
-    colorScale,
-    data,
-    dataField,
-    keyField,
-    scatterClassName,
-    selection,
-    symbolField,
-    symbolScale,
-  } = props;
+import { PureComponent, CommonPropTypes } from '../../../utils';
 
-  const childProps = pick(props, [
-    'dataAccessors',
-    'focus',
-    'focusedClassName',
-    'focusedStyle',
-    'onClick',
-    'onMouseLeave',
-    'onMouseMove',
-    'onMouseOver',
-    'selectedClassName',
-    'selectedStyle',
-    'scales',
-    'size',
-    'style',
-    'symbolClassName',
-  ]);
+export default class MultiScatter extends PureComponent {
+  render() {
+    const {
+      className,
+      colorScale,
+      data,
+      dataField,
+      keyField,
+      scatterClassName,
+      selection,
+      symbolField,
+      symbolScale,
+    } = this.props;
 
-  return (
-    <g className={classNames(className) || (void 0)}>
-      {
-        map(data, (scatterData) => {
-          const key = scatterData[keyField];
-          const values = scatterData[dataField];
-          const fill = colorScale(scatterData[keyField]);
-          const symbolType = symbolScale(scatterData[symbolField]);
+    const childProps = pick(this.props, [
+      'dataAccessors',
+      'focus',
+      'focusedClassName',
+      'focusedStyle',
+      'onClick',
+      'onMouseLeave',
+      'onMouseMove',
+      'onMouseOver',
+      'selectedClassName',
+      'selectedStyle',
+      'scales',
+      'size',
+      'style',
+      'symbolClassName',
+    ]);
 
-          return (
-            <Scatter
-              className={scatterClassName}
-              data={values}
-              fill={fill}
-              key={`scatter:${key}`}
-              selection={castArray(selection)}
-              symbolType={symbolType}
-              {...childProps}
-            />
-          );
-        })
-      }
-    </g>
-  );
+    return (
+      <g className={classNames(className) || (void 0)}>
+        {
+          map(data, (scatterData) => {
+            const key = scatterData[keyField];
+            const values = scatterData[dataField];
+            const fill = colorScale(scatterData[keyField]);
+            const symbolType = symbolScale(scatterData[symbolField]);
+
+            return (
+              <Scatter
+                className={scatterClassName}
+                data={values}
+                fill={fill}
+                key={`scatter:${key}`}
+                selection={castArray(selection)}
+                symbolType={symbolType}
+                {...childProps}
+              />
+            );
+          })
+        }
+      </g>
+    );
+  }
 }
 
 MultiScatter.propTypes = {
