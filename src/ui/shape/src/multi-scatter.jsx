@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { castArray, map, noop, pick } from 'lodash';
 import Scatter from './scatter';
 
-import { PureComponent, CommonPropTypes } from '../../../utils';
+import { propResolver, PureComponent, CommonPropTypes } from '../../../utils';
 
 export default class MultiScatter extends PureComponent {
   render() {
@@ -37,13 +37,14 @@ export default class MultiScatter extends PureComponent {
     ]);
 
     return (
-      <g className={classNames(className) || (void 0)}>
+      <g className={className && classNames(className)}>
         {
-          map(data, (scatterData) => {
-            const key = scatterData[keyField];
-            const values = scatterData[dataField];
-            const fill = colorScale(scatterData[keyField]);
-            const symbolType = symbolScale(scatterData[symbolField]);
+          map(data, (datum) => {
+            const key = propResolver(datum, keyField);
+            const values = propResolver(datum, dataField);
+            const symbol = propResolver(datum, symbolField);
+            const fill = colorScale(key);
+            const symbolType = symbolScale(symbol);
 
             return (
               <Scatter
