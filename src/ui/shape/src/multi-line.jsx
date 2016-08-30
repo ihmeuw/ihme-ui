@@ -176,6 +176,8 @@ MultiLine.propTypes = {
 MultiLine.defaultProps = {
   areaValuesIteratee: CommonDefaultProps.identity,
   colorScale: () => 'steelblue',
+  dataField: 'values',
+  keyField: 'key',
   lineValuesIteratee: CommonDefaultProps.identity,
   scales: { x: scaleLinear(), y: scaleLinear() },
   showUncertainty: false,
