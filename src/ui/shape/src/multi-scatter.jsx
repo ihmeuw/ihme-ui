@@ -81,9 +81,9 @@ MultiScatter.propTypes = {
      y: property on data to position in y-direction
    */
   dataAccessors: PropTypes.shape({
-    fill: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-    x: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-    y: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+    fill: CommonPropTypes.dataAccessor,
+    x: CommonPropTypes.dataAccessor.isRequired,
+    y: CommonPropTypes.dataAccessor.isRequired,
   }).isRequired,
 
   /* key that holds individual datum to be represented in the scatter plot */
