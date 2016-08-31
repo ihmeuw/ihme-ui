@@ -80,6 +80,7 @@ export default class Symbol extends PureComponent {
   render() {
     const {
       className,
+      clipPathId,
       datum,
       focused,
       focusedClassName,
@@ -101,6 +102,7 @@ export default class Symbol extends PureComponent {
           [selectedClassName]: selected && selectedClassName,
           [focusedClassName]: focused && selectedClassName,
         }) || (void 0)}
+        clipPath={`url(#${clipPathId})`}
         onClick={eventHandleWrapper(onClick, datum, this)}
         onMouseLeave={eventHandleWrapper(onMouseLeave, datum, this)}
         onMouseMove={eventHandleWrapper(onMouseMove, datum, this)}
@@ -115,6 +117,9 @@ export default class Symbol extends PureComponent {
 Symbol.propTypes = {
   /* base classname to apply to symbol */
   className: CommonPropTypes.className,
+
+  /* string id url for clip path */
+  clipPathId: PropTypes.string,
 
   /* Datum for the click and hover handlers. */
   datum: PropTypes.object,

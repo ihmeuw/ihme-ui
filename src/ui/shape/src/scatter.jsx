@@ -33,6 +33,7 @@ export default class Scatter extends PureComponent {
   render() {
     const {
       className,
+      clipPathId,
       colorScale,
       dataAccessors,
       fill,
@@ -57,7 +58,7 @@ export default class Scatter extends PureComponent {
     ]);
 
     return (
-      <g className={className && classNames(className)}>
+      <g className={className && classNames(className)} clipPath={`url(#${clipPathId})`}>
         {
           map(sortedData, (plotDatum) => {
             // value passed into colorScale
@@ -94,6 +95,9 @@ export default class Scatter extends PureComponent {
 Scatter.propTypes = {
   /* base classname to apply to scatter <g> wrapper */
   className: CommonPropTypes.className,
+
+  /* string id url for clip path */
+  clipPathId: PropTypes.string,
 
   /* function for a scale of colors. If present, overrides fill */
   colorScale: PropTypes.func,

@@ -26,6 +26,7 @@ export default class Line extends PureComponent {
   render() {
     const {
       className,
+      clipPathId,
       data,
       onClick,
       onMouseLeave,
@@ -41,6 +42,7 @@ export default class Line extends PureComponent {
     return (
       <path
         className={className && classNames(className)}
+        clipPath={`url(#${clipPathId})`}
         d={path}
         fill="none"
         onClick={eventHandleWrapper(onClick, data, this)}
@@ -56,6 +58,9 @@ export default class Line extends PureComponent {
 Line.propTypes = {
   /* base classname to apply to line */
   className: CommonPropTypes.className,
+
+  /* string id url for clip path */
+  clipPathId: PropTypes.string,
 
   /* array of objects. e.g. [ {}, {}, {} ] */
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
