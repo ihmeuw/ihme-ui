@@ -110,10 +110,10 @@ Scatter.propTypes = {
       y: property on data to position in y-direction
   */
   dataAccessors: PropTypes.shape({
-    fill: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-    key: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired,
-    x: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-    y: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+    fill: CommonPropTypes.dataAccessor,
+    key: CommonPropTypes.dataAccessor.isRequired,
+    x: CommonPropTypes.dataAccessor,
+    y: CommonPropTypes.dataAccessor,
   }).isRequired,
 
   /* string for the color of this data group */
