@@ -35,6 +35,7 @@ describe('<AxisChart />', () => {
         yScaleType="linear"
         width={800}
         height={600}
+        clipPath
       >
         {
           map(lineData, (dataSet) => {
@@ -63,6 +64,13 @@ describe('<AxisChart />', () => {
       .to.have.prop('scales')
       .that.is.an('object')
       .that.has.keys(['x', 'y']);
+  });
+
+  it('passes clip-path id to child components', () => {
+    const wrapper = shallow(component);
+    expect(wrapper.find('p').first())
+      .to.have.prop('clipPathId')
+      .that.is.a('string');
   });
 
   describe('updates based on new props', () => {

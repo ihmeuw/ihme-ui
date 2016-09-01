@@ -7,6 +7,7 @@ import Scatter from './scatter';
 export default function MultiScatter(props) {
   const {
     className,
+    clipPathId,
     colorScale,
     data,
     dataField,
@@ -35,7 +36,7 @@ export default function MultiScatter(props) {
   ]);
 
   return (
-    <g className={classNames(className) || (void 0)}>
+    <g className={classNames(className) || (void 0)} clipPath={clipPathId && `url(#${clipPathId})`}>
       {
         map(data, (scatterData) => {
           const key = scatterData[keyField];
@@ -63,6 +64,9 @@ export default function MultiScatter(props) {
 MultiScatter.propTypes = {
   /* base classname to apply to mult-scatter <g> wrapper */
   className: CommonPropTypes.className,
+
+  /* string id url for clip path */
+  clipPathId: PropTypes.string,
 
   /* function for a scale of colors. If present, overrides fill */
   colorScale: PropTypes.func,
