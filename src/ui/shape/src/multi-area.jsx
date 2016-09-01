@@ -17,11 +17,16 @@ export default class MultiArea extends PureComponent {
       colorScale,
       data,
       dataAccessors,
-      dataField,
-      keyField,
+      fieldAccessors,
       scales,
       style,
     } = this.props;
+
+    const {
+      color: colorField,
+      data: dataField,
+      key: keyField,
+    } = fieldAccessors;
 
     const childProps = pick(this.props, [
       'onClick',
@@ -40,7 +45,7 @@ export default class MultiArea extends PureComponent {
           map(data, (datum) => {
             const key = propResolver(datum, keyField);
             const values = propResolver(datum, dataField);
-            const color = colorScale(key);
+            const color = colorScale(colorField ? propResolver(datum, colorField) : key);
 
             const areaValues = areaValuesIteratee(values, key);
 
@@ -107,11 +112,17 @@ MultiArea.propTypes = {
     y1: CommonPropTypes.dataAccessor.isRequired,
   }).isRequired,
 
-  /* key that holds values to be represented by individual lines */
-  dataField: CommonPropTypes.dataAccessor,
-
-  /* key that uniquely identifies dataset within array of datasets */
-  keyField: CommonPropTypes.dataAccessor,
+  /*
+   key names containing fields for child component configuration
+     color -> (optional) color data as input to color scale.
+     data -> data provided to child components. default: 'values'
+     key -> unique key to apply to child components. used as input to color scale if color field is not specified. default: 'key'
+   */
+  fieldAccessors: PropTypes.shape({
+    color: CommonPropTypes.dataAccessor,
+    data: CommonPropTypes.dataAccessor.isRequired,
+    key: CommonPropTypes.dataAccessor.isRequired,
+  }),
 
   /* mouse events signature: function(event, data, instance) {...} */
   onClick: PropTypes.func,
@@ -131,7 +142,9 @@ MultiArea.propTypes = {
 MultiArea.defaultProps = {
   areaValuesIteratee: CommonDefaultProps.identity,
   colorScale() { return 'steelblue'; },
-  dataField: 'values',
-  keyField: 'key',
+  fieldAccessors: {
+    data: 'values',
+    key: 'key',
+  },
   scales: { x: scaleLinear(), y: scaleLinear() },
 };
