@@ -63,7 +63,7 @@ export default class AxisChart extends React.Component {
   render() {
     const { props } = this;
     const { chartDimensions, scales } = this.state;
-    const clipPathId = uniqueId('chartClip');
+    const clipPathId = uniqueId('chartClip_');
 
     return (
       <svg
