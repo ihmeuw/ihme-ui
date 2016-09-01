@@ -6,11 +6,11 @@ import {
   isFinite,
   keyBy,
   map,
-  noop,
   pick,
   sortBy,
 } from 'lodash';
 import {
+  CommonDefaultProps,
   CommonPropTypes,
   propResolver,
   propsChanged,
@@ -155,10 +155,10 @@ Scatter.propTypes = {
 
 Scatter.defaultProps = {
   fill: 'steelblue',
-  onClick: noop,
-  onMouseLeave: noop,
-  onMouseMove: noop,
-  onMouseOver: noop,
+  onClick: CommonDefaultProps.noop,
+  onMouseLeave: CommonDefaultProps.noop,
+  onMouseMove: CommonDefaultProps.noop,
+  onMouseOver: CommonDefaultProps.noop,
   size: 64,
   symbolType: 'circle',
 };
