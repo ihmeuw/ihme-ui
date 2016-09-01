@@ -42,7 +42,7 @@ export default class Area extends PureComponent {
     return (
       <path
         className={className && classNames(className)}
-        clipPath={`url(#${clipPathId})`}
+        clipPath={clipPathId && `url(#${clipPathId})`}
         d={path}
         onClick={eventHandleWrapper(onClick, data, this)}
         onMouseLeave={eventHandleWrapper(onMouseLeave, data, this)}

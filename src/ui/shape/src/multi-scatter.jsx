@@ -36,7 +36,7 @@ export default function MultiScatter(props) {
   ]);
 
   return (
-    <g className={classNames(className) || (void 0)} clipPath={`url(#${clipPathId})`}>
+    <g className={classNames(className) || (void 0)} clipPath={clipPathId && `url(#${clipPathId})`}>
       {
         map(data, (scatterData) => {
           const key = scatterData[keyField];

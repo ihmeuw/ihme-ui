@@ -38,7 +38,7 @@ export default class MultiLine extends PureComponent {
       <g
         className={className && classNames(className)}
         style={style}
-        clipPath={`url(#${clipPathId})`}
+        clipPath={clipPathId && `url(#${clipPathId})`}
       >
         {
           map(data, (datum) => {

@@ -42,7 +42,7 @@ export default class Line extends PureComponent {
     return (
       <path
         className={className && classNames(className)}
-        clipPath={`url(#${clipPathId})`}
+        clipPath={clipPathId && `url(#${clipPathId})`}
         d={path}
         fill="none"
         onClick={eventHandleWrapper(onClick, data, this)}

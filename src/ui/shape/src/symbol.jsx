@@ -102,7 +102,7 @@ export default class Symbol extends PureComponent {
           [selectedClassName]: selected && selectedClassName,
           [focusedClassName]: focused && selectedClassName,
         }) || (void 0)}
-        clipPath={`url(#${clipPathId})`}
+        clipPath={clipPathId && `url(#${clipPathId})`}
         onClick={eventHandleWrapper(onClick, datum, this)}
         onMouseLeave={eventHandleWrapper(onMouseLeave, datum, this)}
         onMouseMove={eventHandleWrapper(onMouseMove, datum, this)}
