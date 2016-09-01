@@ -85,8 +85,8 @@ MultiScatter.propTypes = {
    */
   dataAccessors: PropTypes.shape({
     fill: CommonPropTypes.dataAccessor,
-    x: CommonPropTypes.dataAccessor.isRequired,
-    y: CommonPropTypes.dataAccessor.isRequired,
+    x: CommonPropTypes.dataAccessor,
+    y: CommonPropTypes.dataAccessor,
   }).isRequired,
 
   /* key that holds individual datum to be represented in the scatter plot */
