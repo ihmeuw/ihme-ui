@@ -13,6 +13,7 @@ export default class MultiArea extends PureComponent {
       areaStyle,
       areaValuesIteratee,
       className,
+      clipPathId,
       colorScale,
       data,
       dataAccessors,
@@ -22,7 +23,7 @@ export default class MultiArea extends PureComponent {
       style,
     } = this.props;
 
-    const mouseEvents = pick(this.props, [
+    const childProps = pick(this.props, [
       'onClick',
       'onMouseLeave',
       'onMouseMove',
@@ -30,7 +31,11 @@ export default class MultiArea extends PureComponent {
     ]);
 
     return (
-      <g className={className && classNames(className)} style={style}>
+      <g
+        className={className && classNames(className)}
+        clipPath={clipPathId && `url(#${clipPathId})`}
+        style={style}
+      >
         {
           map(data, (datum) => {
             const key = propResolver(datum, keyField);
@@ -54,7 +59,7 @@ export default class MultiArea extends PureComponent {
                   stroke: color,
                   ...areaStyle,
                 }}
-                {...mouseEvents}
+                {...childProps}
               />
             ) : null;
           })
@@ -70,17 +75,20 @@ MultiArea.propTypes = {
   areaStyle: CommonPropTypes.style,
 
   /*
-   function to apply to the datum to transform area values. default: _.identity
+   function to apply to the datum to transform values. default: _.identity
    @param values
    @param key
    @return transformed data (or undefined)
    */
   areaValuesIteratee: PropTypes.func,
 
+  className: CommonPropTypes.className,
+
+  /* string id url for clip path */
+  clipPathId: PropTypes.string,
+
   /* fn that accepts keyfield, and returns stroke color for line */
   colorScale: PropTypes.func,
-
-  className: CommonPropTypes.className,
 
   /* array of objects
     e.g. [ {location: 'USA',values: []}, {location: 'Canada', values: []} ]
@@ -105,16 +113,10 @@ MultiArea.propTypes = {
   /* key that uniquely identifies dataset within array of datasets */
   keyField: CommonPropTypes.dataAccessor,
 
-  /* signature: function(event, line data, Line instance) {...} */
+  /* mouse events signature: function(event, data, instance) {...} */
   onClick: PropTypes.func,
-
-  /* signature: function(event, line data, Line instance) {...} */
   onMouseLeave: PropTypes.func,
-
-  /* signature: function(event, line data, Line instance) {...} */
   onMouseMove: PropTypes.func,
-
-  /* signature: function(event, line data, Line instance) {...} */
   onMouseOver: PropTypes.func,
 
   /* scales from d3Scale */
@@ -128,10 +130,8 @@ MultiArea.propTypes = {
 
 MultiArea.defaultProps = {
   areaValuesIteratee: CommonDefaultProps.identity,
-  colorScale: () => 'steelblue',
+  colorScale() { return 'steelblue'; },
   dataField: 'values',
   keyField: 'key',
   scales: { x: scaleLinear(), y: scaleLinear() },
-  showUncertainty: false,
-  showLine: true,
 };

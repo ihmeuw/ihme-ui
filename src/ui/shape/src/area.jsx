@@ -69,7 +69,7 @@ Area.propTypes = {
     y1: CommonPropTypes.dataAccessor.isRequired,
   }).isRequired,
 
-  /* mouse events signature: function(event, props.data, Area instance) {...} */
+  /* mouse events signature: function(event, data, instance) {...} */
   onClick: PropTypes.func,
   onMouseLeave: PropTypes.func,
   onMouseMove: PropTypes.func,

@@ -115,16 +115,10 @@ MultiScatter.propTypes = {
   /* unique key that identifies the dataset to be plotted within the array of datasets */
   keyField: PropTypes.string,
 
-  /* signature: function(event, data, Symbol) {...} */
+  /* mouse events signature: function(event, data, instance) {...} */
   onClick: PropTypes.func,
-
-  /* signature: function(event, data, Symbol) {...} */
   onMouseLeave: PropTypes.func,
-
-  /* signature: function(event, data, Symbol) {...} */
   onMouseMove: PropTypes.func,
-
-  /* signature: function(event, data, Symbol) {...} */
   onMouseOver: PropTypes.func,
 
   /* scales */

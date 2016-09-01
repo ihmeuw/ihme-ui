@@ -129,16 +129,10 @@ Scatter.propTypes = {
   /* the symbol to focus */
   focus: PropTypes.object,
 
-  /* signature: function(event, data, Symbol) {...} */
+  /* mouse events signature: function(event, data, instance) {...} */
   onClick: PropTypes.func,
-
-  /* signature: function(event, data, Symbol) {...} */
   onMouseLeave: PropTypes.func,
-
-  /* signature: function(event, data, Symbol) {...} */
   onMouseMove: PropTypes.func,
-
-  /* signature: function(event, data, Symbol) {...} */
   onMouseOver: PropTypes.func,
 
   /* scales */

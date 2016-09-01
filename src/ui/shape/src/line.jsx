@@ -70,7 +70,7 @@ Line.propTypes = {
     y: CommonPropTypes.dataAccessor.isRequired,
   }).isRequired,
 
-  /* mouse events signature: function(event, props.data, Line instance) {...} */
+  /* mouse events signature: function(event, data, instance) {...} */
   onClick: PropTypes.func,
   onMouseLeave: PropTypes.func,
   onMouseMove: PropTypes.func,

@@ -1,14 +1,15 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import d3Shape from 'd3-shape';
-import { assign, noop } from 'lodash';
+import { assign } from 'lodash';
 
 import { eventHandleWrapper } from '../../../utils/events';
 import {
+  CommonDefaultProps,
   CommonPropTypes,
   propsChanged,
   PureComponent,
-  stateFromPropUpdates
+  stateFromPropUpdates,
 } from '../../../utils';
 
 const SYMBOL_TYPES = {
@@ -20,12 +21,12 @@ const SYMBOL_TYPES = {
       const width = Math.sqrt(size);
       const height = 1.5;
       return context.rect(-width / 2, -height / 2, width, height);
-    }
+    },
   },
   square: d3Shape.symbolSquare,
   star: d3Shape.symbolStar,
   triangle: d3Shape.symbolTriangle,
-  wye: d3Shape.symbolWye
+  wye: d3Shape.symbolWye,
 };
 
 export default class Symbol extends PureComponent {
@@ -53,16 +54,14 @@ export default class Symbol extends PureComponent {
 
     // if symbol is selected, compute selectedStyle
     if (selected) {
-      computedSelectedStyle = typeof selectedStyle === 'function'
-        ? selectedStyle(datum)
-        : selectedStyle;
+      computedSelectedStyle = typeof selectedStyle === 'function' ?
+        selectedStyle(datum) : selectedStyle;
     }
 
     // if symbol is focused, compute focusedStyle
     if (focused) {
-      computedFocusedStyle = typeof focusedStyle === 'function'
-        ? focusedStyle(datum)
-        : focusedStyle;
+      computedFocusedStyle = typeof focusedStyle === 'function' ?
+        focusedStyle(datum) : focusedStyle;
     }
 
     return assign({}, baseStyle, computedStyle, computedSelectedStyle, computedFocusedStyle);
@@ -91,7 +90,7 @@ export default class Symbol extends PureComponent {
       selected,
       selectedClassName,
       translateX,
-      translateY
+      translateY,
     } = this.props;
     const { path, style } = this.state;
 
@@ -139,16 +138,10 @@ Symbol.propTypes = {
   */
   focusedStyle: CommonPropTypes.style,
 
-  /* signature: function(event, datum, Symbol) {...} */
+  /* mouse events signature: function(event, data, instance) {...} */
   onClick: PropTypes.func,
-
-  /* signature: function(event, datum, Symbol) {...} */
   onMouseLeave: PropTypes.func,
-
-  /* signature: function(event, datum, Symbol) {...} */
   onMouseMove: PropTypes.func,
-
-  /* signature: function(event, datum, Symbol) {...} */
   onMouseOver: PropTypes.func,
 
   /* whether symbol is selected */
@@ -187,23 +180,23 @@ Symbol.defaultProps = {
   focusedClassName: 'focused',
   focusedStyle: {
     stroke: '#AAF',
-    strokeWidth: 1
+    strokeWidth: 1,
   },
-  onClick: noop,
-  onMouseLeave: noop,
-  onMouseMove: noop,
-  onMouseOver: noop,
+  onClick: CommonDefaultProps.noop,
+  onMouseLeave: CommonDefaultProps.noop,
+  onMouseMove: CommonDefaultProps.noop,
+  onMouseOver: CommonDefaultProps.noop,
   selected: false,
   selectedClassName: 'selected',
   selectedStyle: {
     stroke: '#000',
-    strokeWidth: 1
+    strokeWidth: 1,
   },
   size: 64,
   translateX: 0,
   translateY: 0,
   symbolType: 'circle',
-  style: {}
+  style: {},
 };
 
 Symbol.propUpdates = {
