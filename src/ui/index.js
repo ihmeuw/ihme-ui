@@ -9,7 +9,15 @@ import HtmlLabel from './html-label';
 import Legend from './legend';
 import ResponsiveContainer from './responsive-container';
 import { SingleSelect, MultiSelect } from './select';
-import { Area, Line, MultiLine, MultiScatter, Scatter, Symbol, SYMBOL_TYPES } from './shape';
+import {
+  Area,
+  Line,
+  MultiArea,
+  MultiLine,
+  MultiScatter,
+  Scatter,
+  Symbol,
+  SYMBOL_TYPES } from './shape';
 import Slider from './slider';
 import Spinner from './spinner';
 import SvgText from './svg-text';
@@ -27,6 +35,7 @@ export default {
   Legend,
   Line,
   Map,
+  MultiArea,
   MultiLine,
   MultiScatter,
   MultiSelect,
