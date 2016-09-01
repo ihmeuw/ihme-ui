@@ -27,9 +27,10 @@ export function getSymbolTypes() {
 /**
  * Get a d3 symbol by shortened name.
  * @param type
+ * @param default_
  * @returns {symbol|circle} specified symbol type. Defaults to `circle`.
  */
-export function getSymbol(type) {
-  return SHAPES[type] || SHAPES.circle;
+export function getSymbol(type, default_ = SHAPES.circle) {
+  return SHAPES[type] || default_;
 }
 

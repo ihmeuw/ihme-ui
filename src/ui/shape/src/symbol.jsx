@@ -11,23 +11,9 @@ import {
   PureComponent,
   stateFromPropUpdates,
 } from '../../../utils';
+import { getSymbol, getSymbolTypes } from '../../../utils/symbol';
 
-const SYMBOL_TYPES = {
-  circle: d3Shape.symbolCircle,
-  cross: d3Shape.symbolCross,
-  diamond: d3Shape.symbolDiamond,
-  line: {
-    draw(context, size) {
-      const width = Math.sqrt(size);
-      const height = 1.5;
-      return context.rect(-width / 2, -height / 2, width, height);
-    },
-  },
-  square: d3Shape.symbolSquare,
-  star: d3Shape.symbolStar,
-  triangle: d3Shape.symbolTriangle,
-  wye: d3Shape.symbolWye,
-};
+const SYMBOL_TYPES = getSymbolTypes();
 
 export default class Symbol extends PureComponent {
   /**
@@ -37,7 +23,7 @@ export default class Symbol extends PureComponent {
    * @return {String}
    */
   static getPath(type, size) {
-    const symbolType = SYMBOL_TYPES[type] || SYMBOL_TYPES.circle;
+    const symbolType = getSymbol(type);
     return d3Shape.symbol().type(symbolType).size(size)();
   }
 
