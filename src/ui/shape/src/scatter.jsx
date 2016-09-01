@@ -58,7 +58,10 @@ export default class Scatter extends PureComponent {
     ]);
 
     return (
-      <g className={className && classNames(className)} clipPath={clipPathId && `url(#${clipPathId})`}>
+      <g
+        className={className && classNames(className)}
+        clipPath={clipPathId && `url(#${clipPathId})`}
+      >
         {
           map(sortedData, (plotDatum) => {
             // value passed into colorScale
