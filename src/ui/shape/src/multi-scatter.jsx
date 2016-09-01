@@ -9,6 +9,7 @@ export default class MultiScatter extends PureComponent {
   render() {
     const {
       className,
+      clipPathId,
       colorScale,
       data,
       dataField,
@@ -38,7 +39,10 @@ export default class MultiScatter extends PureComponent {
     ]);
 
     return (
-      <g className={className && classNames(className)}>
+      <g
+        className={className && classNames(className)}
+        clipPath={clipPathId && `url(#${clipPathId})`}
+      >
         {
           map(data, (datum) => {
             const key = propResolver(datum, keyField);
@@ -70,6 +74,9 @@ export default class MultiScatter extends PureComponent {
 MultiScatter.propTypes = {
   /* base classname to apply to mult-scatter <g> wrapper */
   className: CommonPropTypes.className,
+
+  /* string id url for clip path */
+  clipPathId: PropTypes.string,
 
   /* function for a scale of colors. If present, overrides fill */
   colorScale: PropTypes.func,

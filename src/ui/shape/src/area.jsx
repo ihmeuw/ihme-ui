@@ -26,6 +26,7 @@ export default class Area extends PureComponent {
   render() {
     const {
       className,
+      clipPathId,
       data,
       onClick,
       onMouseLeave,
@@ -41,6 +42,7 @@ export default class Area extends PureComponent {
     return (
       <path
         className={className && classNames(className)}
+        clipPath={clipPathId && `url(#${clipPathId})`}
         d={path}
         onClick={eventHandleWrapper(onClick, data, this)}
         onMouseLeave={eventHandleWrapper(onMouseLeave, data, this)}
@@ -54,6 +56,9 @@ export default class Area extends PureComponent {
 
 Area.propTypes = {
   className: CommonPropTypes.className,
+
+  /* string id url for clip path */
+  clipPathId: PropTypes.string,
 
   /* array of objects. e.g. [ {}, {}, {} ] */
   data: PropTypes.arrayOf(PropTypes.object).isRequired,

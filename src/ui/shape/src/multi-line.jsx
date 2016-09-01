@@ -14,6 +14,7 @@ export default class MultiLine extends PureComponent {
       areaStyle,
       areaValuesIteratee,
       className,
+      clipPathId,
       colorScale,
       data,
       dataAccessors,
@@ -34,7 +35,11 @@ export default class MultiLine extends PureComponent {
     ]);
 
     return (
-      <g className={className && classNames(className)} style={style}>
+      <g
+        className={className && classNames(className)}
+        style={style}
+        clipPath={clipPathId && `url(#${clipPathId})`}
+      >
         {
           map(data, (datum) => {
             const key = propResolver(datum, keyField);
@@ -101,6 +106,9 @@ MultiLine.propTypes = {
   colorScale: PropTypes.func,
 
   className: CommonPropTypes.className,
+
+  /* string id url for clip path */
+  clipPathId: PropTypes.string,
 
   /* array of objects
     e.g. [ {location: 'USA',values: []}, {location: 'Canada', values: []} ]
