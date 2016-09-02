@@ -99,7 +99,6 @@ describe('<MultiScatter />', () => {
     it('passes specified properties to its children', () => {
       const nonInheritedProps = [
         'scatterClassName',
-        'symbolScale',
       ];
       const assertion = (symbol) => {
         nonInheritedProps.forEach(prop => {
@@ -129,6 +128,7 @@ describe('<MultiScatter />', () => {
         'size',
         'style',
         'symbolClassName',
+        'symbolScale',
         'symbolType',
       ];
       const assertion = (symbol) => {

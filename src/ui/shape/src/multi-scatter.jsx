@@ -42,6 +42,7 @@ export default class MultiScatter extends PureComponent {
       'scales',
       'size',
       'symbolClassName',
+      'symbolScale',
     ]);
 
     return (
@@ -54,9 +55,10 @@ export default class MultiScatter extends PureComponent {
           map(data, (datum) => {
             const key = propResolver(datum, keyField);
             const values = propResolver(datum, dataField);
-            const symbol = propResolver(datum, symbolField);
+
             const color = colorScale(colorField ? propResolver(datum, colorField) : key);
-            const symbolType = symbolScale(symbol);
+
+            const symbolType = symbolField && symbolScale(propResolver(datum, symbolField));
 
             const scatterValues = scatterValuesIteratee(values, key);
 
@@ -100,8 +102,10 @@ MultiScatter.propTypes = {
    */
   dataAccessors: PropTypes.shape({
     fill: CommonPropTypes.dataAccessor,
+    key: CommonPropTypes.dataAccessor,
     x: CommonPropTypes.dataAccessor,
     y: CommonPropTypes.dataAccessor,
+    symbol: CommonPropTypes.dataAccessor,
   }).isRequired,
 
   /*
@@ -115,7 +119,7 @@ MultiScatter.propTypes = {
     color: CommonPropTypes.dataAccessor,
     data: CommonPropTypes.dataAccessor.isRequired,
     key: CommonPropTypes.dataAccessor.isRequired,
-    symbol: CommonPropTypes.dataAccessor.isRequired,
+    symbol: CommonPropTypes.dataAccessor,
   }),
 
   /* the symbol to focus */
