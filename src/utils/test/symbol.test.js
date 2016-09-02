@@ -1,15 +1,15 @@
 import { expect } from 'chai';
 import d3Shape from 'd3-shape';
 
-import { getSymbol, getSymbolTypes } from '../symbol';
+import { getSymbol, symbolTypes } from '../symbol';
 
 describe('getSymbolTypes()', () => {
   it('provides a list of symbol names', () => {
-    const symbolTypes = getSymbolTypes();
+    const types = symbolTypes();
 
-    expect(symbolTypes).to.not.be.empty;
-    expect(symbolTypes).to.contain('circle');
-    expect(symbolTypes).to.contain('line');
+    expect(types).to.not.be.empty;
+    expect(types).to.contain('circle');
+    expect(types).to.contain('line');
   });
 });
 

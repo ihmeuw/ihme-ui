@@ -20,16 +20,17 @@ const SHAPES = {
  * Get a list of shortened d3 symbol names.
  * @returns {Array} list of shortened scale names.
  */
-export function getSymbolTypes() {
+export function symbolTypes() {
   return Object.keys(SHAPES);
 }
 
 /**
  * Get a d3 symbol by shortened name.
  * @param type
+ * @param default_
  * @returns {symbol|circle} specified symbol type. Defaults to `circle`.
  */
-export function getSymbol(type) {
-  return SHAPES[type] || SHAPES.circle;
+export function getSymbol(type, default_ = SHAPES.circle) {
+  return SHAPES[type] || default_;
 }
 

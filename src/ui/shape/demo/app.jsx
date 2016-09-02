@@ -146,16 +146,19 @@ class App extends React.Component {
                 dataAccessors={{
                   fill: keyField,
                   key: 'id',
-                  x: keyField,    // year_id
-                  y: valueField   // population
+                  x: keyField,
+                  y: valueField,
+                  symbol: 'location',
                 }}
-                dataField="values"
+                fieldAccessors={{
+                  data: 'values',
+                  key: 'location',
+                }}
                 focus={this.state.focus}
                 focusedStyle={{
                   stroke: '#000',
                   strokeWidth: 2,
                 }}
-                keyField="location"
                 onClick={this.onClick}
                 onMouseLeave={this.onMouseLeave}
                 onMouseMove={this.onMouseMove}

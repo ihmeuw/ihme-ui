@@ -18,8 +18,7 @@ export default class MultiLine extends PureComponent {
       colorScale,
       data,
       dataAccessors,
-      dataField,
-      keyField,
+      fieldAccessors,
       lineClassName,
       lineStyle,
       lineValuesIteratee,
@@ -27,7 +26,13 @@ export default class MultiLine extends PureComponent {
       style,
     } = this.props;
 
-    const mouseEvents = pick(this.props, [
+    const {
+      color: colorField,
+      data: dataField,
+      key: keyField,
+    } = fieldAccessors;
+
+    const childProps = pick(this.props, [
       'onClick',
       'onMouseLeave',
       'onMouseMove',
@@ -37,16 +42,14 @@ export default class MultiLine extends PureComponent {
     return (
       <g
         className={className && classNames(className)}
-        style={style}
         clipPath={clipPathId && `url(#${clipPathId})`}
+        style={style}
       >
         {
           map(data, (datum) => {
             const key = propResolver(datum, keyField);
             const values = propResolver(datum, dataField);
-            const color = colorScale(key);
-            // on each iteration, datum is an object
-            // e.g., { keyField: STRING, dataField: ARRAY }
+            const color = colorScale(colorField ? propResolver(datum, colorField) : key);
 
             const areaValues = areaValuesIteratee(values, key);
             const lineValues = lineValuesIteratee(values, key);
@@ -65,7 +68,7 @@ export default class MultiLine extends PureComponent {
                       stroke: color,
                       ...areaStyle,
                     }}
-                    {...mouseEvents}
+                    {...childProps}
                   /> : null,
                 (!!dataAccessors.x && !!dataAccessors.y && !!lineValues) ?
                   <Line
@@ -78,7 +81,7 @@ export default class MultiLine extends PureComponent {
                       stroke: color,
                       ...lineStyle,
                     }}
-                    {...mouseEvents}
+                    {...childProps}
                   /> : null,
               ]
             );
@@ -102,13 +105,13 @@ MultiLine.propTypes = {
    */
   areaValuesIteratee: PropTypes.func,
 
-  /* fn that accepts keyfield, and returns stroke color for line */
-  colorScale: PropTypes.func,
-
   className: CommonPropTypes.className,
 
   /* string id url for clip path */
   clipPathId: PropTypes.string,
+
+  /* fn that accepts keyfield, and returns stroke color for line */
+  colorScale: PropTypes.func,
 
   /* array of objects
     e.g. [ {location: 'USA',values: []}, {location: 'Canada', values: []} ]
@@ -144,11 +147,17 @@ MultiLine.propTypes = {
     }),
   ]).isRequired,
 
-  /* key that holds values to be represented by individual lines */
-  dataField: CommonPropTypes.dataAccessor,
-
-  /* key that uniquely identifies dataset within array of datasets */
-  keyField: CommonPropTypes.dataAccessor,
+  /*
+   key names containing fields for child component configuration
+     color -> (optional) color data as input to color scale.
+     data -> data provided to child components. default: 'values'
+     key -> unique key to apply to child components. used as input to color scale if color field is not specified. default: 'key'
+   */
+  fieldAccessors: PropTypes.shape({
+    color: CommonPropTypes.dataAccessor,
+    data: CommonPropTypes.dataAccessor.isRequired,
+    key: CommonPropTypes.dataAccessor.isRequired,
+  }),
 
   /* base classname to apply to Lines that are children of MultiLine */
   lineClassName: CommonPropTypes.className,
@@ -160,16 +169,10 @@ MultiLine.propTypes = {
    */
   lineValuesIteratee: PropTypes.func,
 
-  /* signature: function(event, line data, Line instance) {...} */
+  /* mouse events signature: function(event, data, instance) {...} */
   onClick: PropTypes.func,
-
-  /* signature: function(event, line data, Line instance) {...} */
   onMouseLeave: PropTypes.func,
-
-  /* signature: function(event, line data, Line instance) {...} */
   onMouseMove: PropTypes.func,
-
-  /* signature: function(event, line data, Line instance) {...} */
   onMouseOver: PropTypes.func,
 
   /* scales from d3Scale */
@@ -183,9 +186,11 @@ MultiLine.propTypes = {
 
 MultiLine.defaultProps = {
   areaValuesIteratee: CommonDefaultProps.identity,
-  colorScale: () => 'steelblue',
+  colorScale() { return 'steelblue'; },
+  fieldAccessors: {
+    data: 'values',
+    key: 'key',
+  },
   lineValuesIteratee: CommonDefaultProps.identity,
   scales: { x: scaleLinear(), y: scaleLinear() },
-  showUncertainty: false,
-  showLine: true,
 };

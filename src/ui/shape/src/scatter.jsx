@@ -6,11 +6,11 @@ import {
   isFinite,
   keyBy,
   map,
-  noop,
   pick,
   sortBy,
 } from 'lodash';
 import {
+  CommonDefaultProps,
   CommonPropTypes,
   propResolver,
   propsChanged,
@@ -40,6 +40,8 @@ export default class Scatter extends PureComponent {
       focus,
       scales,
       symbolClassName,
+      symbolScale,
+      symbolType,
     } = this.props;
 
     const { selectedDataMappedToKeys, sortedData } = this.state;
@@ -54,7 +56,6 @@ export default class Scatter extends PureComponent {
       'selectedClassName',
       'selectedStyle',
       'size',
-      'symbolType',
     ]);
 
     return (
@@ -63,26 +64,30 @@ export default class Scatter extends PureComponent {
         clipPath={clipPathId && `url(#${clipPathId})`}
       >
         {
-          map(sortedData, (plotDatum) => {
+          map(sortedData, (datum) => {
             // value passed into colorScale
             // use dataAccessors.x as fail-over for backward compatibility
-            const fillValue = propResolver(plotDatum, dataAccessors.fill || dataAccessors.x);
+            const key = propResolver(datum, dataAccessors.key);
+            const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x);
 
-            // value passed into xScale
-            const xValue = propResolver(plotDatum, dataAccessors.x);
-
-            // value passed into yScale
-            const yValue = propResolver(plotDatum, dataAccessors.y);
             const focusedDatumKey = focus ? propResolver(focus, dataAccessors.key) : null;
-            const key = propResolver(plotDatum, dataAccessors.key);
+
+            const resolvedSymbolType = dataAccessors.symbol ?
+              symbolScale(propResolver(datum, dataAccessors.symbol)) :
+              symbolType;
+
+            const xValue = propResolver(datum, dataAccessors.x);
+            const yValue = propResolver(datum, dataAccessors.y);
+
             return (
               <Symbol
                 className={symbolClassName}
                 key={key}
-                datum={plotDatum}
+                datum={datum}
                 fill={colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill}
                 focused={focusedDatumKey === key}
                 selected={selectedDataMappedToKeys.hasOwnProperty(key)}
+                symbolType={resolvedSymbolType}
                 translateX={scales.x && isFinite(xValue) ? scales.x(xValue) : 0}
                 translateY={scales.y && isFinite(yValue) ? scales.y(yValue) : 0}
                 {...childProps}
@@ -117,10 +122,10 @@ Scatter.propTypes = {
       y: property on data to position in y-direction
   */
   dataAccessors: PropTypes.shape({
-    fill: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-    key: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired,
-    x: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-    y: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+    fill: CommonPropTypes.dataAccessor,
+    key: CommonPropTypes.dataAccessor.isRequired,
+    x: CommonPropTypes.dataAccessor,
+    y: CommonPropTypes.dataAccessor,
   }).isRequired,
 
   /* string for the color of this data group */
@@ -129,16 +134,10 @@ Scatter.propTypes = {
   /* the symbol to focus */
   focus: PropTypes.object,
 
-  /* signature: function(event, data, Symbol) {...} */
+  /* mouse events signature: function(event, data, instance) {...} */
   onClick: PropTypes.func,
-
-  /* signature: function(event, data, Symbol) {...} */
   onMouseLeave: PropTypes.func,
-
-  /* signature: function(event, data, Symbol) {...} */
   onMouseMove: PropTypes.func,
-
-  /* signature: function(event, data, Symbol) {...} */
   onMouseOver: PropTypes.func,
 
   /* scales */
@@ -156,16 +155,18 @@ Scatter.propTypes = {
   /* base classname to apply to symbol */
   symbolClassName: CommonPropTypes.className,
 
+  symbolScale: PropTypes.func,
+
   /* string for the type of symbol to be used */
   symbolType: PropTypes.string,
 };
 
 Scatter.defaultProps = {
   fill: 'steelblue',
-  onClick: noop,
-  onMouseLeave: noop,
-  onMouseMove: noop,
-  onMouseOver: noop,
+  onClick: CommonDefaultProps.noop,
+  onMouseLeave: CommonDefaultProps.noop,
+  onMouseMove: CommonDefaultProps.noop,
+  onMouseOver: CommonDefaultProps.noop,
   size: 64,
   symbolType: 'circle',
 };

@@ -1,64 +1,84 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { castArray, map, noop, pick } from 'lodash';
-import { CommonPropTypes } from '../../../utils';
+import { castArray, map, pick } from 'lodash';
 import Scatter from './scatter';
 
-export default function MultiScatter(props) {
-  const {
-    className,
-    clipPathId,
-    colorScale,
-    data,
-    dataField,
-    keyField,
-    scatterClassName,
-    selection,
-    symbolField,
-    symbolScale,
-  } = props;
+import { propResolver, PureComponent, CommonDefaultProps, CommonPropTypes } from '../../../utils';
 
-  const childProps = pick(props, [
-    'dataAccessors',
-    'focus',
-    'focusedClassName',
-    'focusedStyle',
-    'onClick',
-    'onMouseLeave',
-    'onMouseMove',
-    'onMouseOver',
-    'selectedClassName',
-    'selectedStyle',
-    'scales',
-    'size',
-    'style',
-    'symbolClassName',
-  ]);
+export default class MultiScatter extends PureComponent {
+  render() {
+    const {
+      className,
+      clipPathId,
+      colorScale,
+      data,
+      fieldAccessors,
+      scatterClassName,
+      scatterValuesIteratee,
+      selection,
+      style,
+      symbolScale,
+      symbolStyle,
+    } = this.props;
 
-  return (
-    <g className={classNames(className) || (void 0)} clipPath={clipPathId && `url(#${clipPathId})`}>
-      {
-        map(data, (scatterData) => {
-          const key = scatterData[keyField];
-          const values = scatterData[dataField];
-          const fill = colorScale(scatterData[keyField]);
-          const symbolType = symbolScale(scatterData[symbolField]);
+    const {
+      color: colorField,
+      data: dataField,
+      key: keyField,
+      symbol: symbolField,
+    } = fieldAccessors;
 
-          return (
-            <Scatter
-              className={scatterClassName}
-              data={values}
-              fill={fill}
-              key={`scatter:${key}`}
-              selection={castArray(selection)}
-              symbolType={symbolType}
-              {...childProps}
-            />
-          );
-        })
-      }
-    </g>
-  );
+    const childProps = pick(this.props, [
+      'dataAccessors',
+      'focus',
+      'focusedClassName',
+      'focusedStyle',
+      'onClick',
+      'onMouseLeave',
+      'onMouseMove',
+      'onMouseOver',
+      'selectedClassName',
+      'selectedStyle',
+      'scales',
+      'size',
+      'symbolClassName',
+      'symbolScale',
+    ]);
+
+    return (
+      <g
+        className={className && classNames(className)}
+        clipPath={clipPathId && `url(#${clipPathId})`}
+        style={style}
+      >
+        {
+          map(data, (datum) => {
+            const key = propResolver(datum, keyField);
+            const values = propResolver(datum, dataField);
+
+            const color = colorScale(colorField ? propResolver(datum, colorField) : key);
+
+            const symbolType = symbolField && symbolScale(propResolver(datum, symbolField));
+
+            const scatterValues = scatterValuesIteratee(values, key);
+
+            return !!scatterValues ? (
+              <Scatter
+                className={scatterClassName}
+                data={scatterValues}
+                fill={color}
+                key={`scatter:${key}`}
+                selection={castArray(selection)}
+                style={symbolStyle}
+                symbolType={symbolType}
+                {...childProps}
+              />
+            ) : null;
+          })
+        }
+      </g>
+    );
+  }
 }
 
 MultiScatter.propTypes = {
@@ -81,13 +101,26 @@ MultiScatter.propTypes = {
      y: property on data to position in y-direction
    */
   dataAccessors: PropTypes.shape({
-    fill: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-    x: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-    y: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+    fill: CommonPropTypes.dataAccessor,
+    key: CommonPropTypes.dataAccessor,
+    x: CommonPropTypes.dataAccessor,
+    y: CommonPropTypes.dataAccessor,
+    symbol: CommonPropTypes.dataAccessor,
   }).isRequired,
 
-  /* key that holds individual datum to be represented in the scatter plot */
-  dataField: PropTypes.string,
+  /*
+   key names containing fields for child component configuration
+     color -> (optional) color data as input to color scale.
+     data -> data provided to child components. default: 'values'
+     key -> unique key to apply to child components. used as input to color scale if color field is not specified. default: 'key'
+     symbol -> symbol data as input to the symbol scale.
+   */
+  fieldAccessors: PropTypes.shape({
+    color: CommonPropTypes.dataAccessor,
+    data: CommonPropTypes.dataAccessor.isRequired,
+    key: CommonPropTypes.dataAccessor.isRequired,
+    symbol: CommonPropTypes.dataAccessor,
+  }),
 
   /* the symbol to focus */
   focus: PropTypes.object,
@@ -102,19 +135,10 @@ MultiScatter.propTypes = {
    */
   focusedStyle: CommonPropTypes.style,
 
-  /* unique key that identifies the dataset to be plotted within the array of datasets */
-  keyField: PropTypes.string,
-
-  /* signature: function(event, data, Symbol) {...} */
+  /* mouse events signature: function(event, data, instance) {...} */
   onClick: PropTypes.func,
-
-  /* signature: function(event, data, Symbol) {...} */
   onMouseLeave: PropTypes.func,
-
-  /* signature: function(event, data, Symbol) {...} */
   onMouseMove: PropTypes.func,
-
-  /* signature: function(event, data, Symbol) {...} */
   onMouseOver: PropTypes.func,
 
   /* scales */
@@ -128,6 +152,14 @@ MultiScatter.propTypes = {
    named 'scatterClassName' to disambiguate 'className' prop passed to Symbol
    */
   scatterClassName: CommonPropTypes.className,
+
+  /*
+   function to apply to the datum to transform scatter values. default: _.identity
+   @param values
+   @param key
+   @return transformed data (or undefined)
+   */
+  scatterValuesIteratee: PropTypes.func,
 
   /* classname to be applied to Symbol if selected */
   selectedClassName: CommonPropTypes.className,
@@ -148,30 +180,28 @@ MultiScatter.propTypes = {
   /* size of symbols; see Symbol.propTypes */
   size: PropTypes.number,
 
-  /*
-   inline-style object or function to be applied as base style for Symbols;
-   if a function, is called with associated datum
-   */
   style: CommonPropTypes.style,
 
   /* base classname to apply to symbol */
   symbolClassName: CommonPropTypes.className,
 
-  /* key name for value of symbol */
-  symbolField: PropTypes.string,
-
   /* function to transform symbol value to a shape */
   symbolScale: PropTypes.func,
+
+  /*
+   inline-style object or function to be applied as base style for Symbols;
+   if a function, is called with associated datum
+   */
+  symbolStyle: PropTypes.style,
 };
 
 MultiScatter.defaultProps = {
   colorScale() { return 'steelblue'; },
-  dataField: 'values',
-  keyField: 'key',
-  onClick: noop,
-  onMouseLeave: noop,
-  onMouseMove: noop,
-  onMouseOver: noop,
+  fieldAccessors: {
+    data: 'values',
+    key: 'key',
+  },
+  scatterValuesIteratee: CommonDefaultProps.identity,
   size: 64,
   symbolField: 'type',
   symbolScale() { return 'circle'; },

@@ -59,3 +59,8 @@ export {
   stateFromPropUpdates,
   updateFunc,
 } from './props';
+
+export {
+  getSymbol,
+  symbolTypes,
+} from './symbol';
