@@ -12,7 +12,6 @@ import { SingleSelect, MultiSelect } from './select';
 import {
   Area,
   Line,
-  MultiArea,
   MultiLine,
   MultiScatter,
   Scatter,
@@ -35,7 +34,6 @@ export default {
   Legend,
   Line,
   Map,
-  MultiArea,
   MultiLine,
   MultiScatter,
   MultiSelect,
