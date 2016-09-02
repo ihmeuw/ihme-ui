@@ -64,11 +64,14 @@ describe('<MultiScatter />', () => {
         <MultiScatter
           data={scatterData}
           dataAccessors={dataAccessors}
-          dataField="values"
+          fieldAccessors={{
+            key: 'location',
+            data: 'values',
+            symbol: 'location',
+          }}
           focus={data[0]}
           focusedClassName="focused"
           focusedStyle={{ stroke: 'yellow' }}
-          keyField="location"
           onClick={noop}
           onMouseLeave={noop}
           onMouseMove={noop}
@@ -78,8 +81,8 @@ describe('<MultiScatter />', () => {
           selectedStyle={{ stroke: 'red' }}
           scatterClassName="scatter"
           size={128}
-          symbolField="location"
           symbolScale={symbolScale}
+          symbolStyle={{ fill: 'red' }}
           colorScale={colorScale}
           scales={{ x: xScale, y: yScale }}
           style={{ strokeWeight: 2 }}
@@ -95,10 +98,7 @@ describe('<MultiScatter />', () => {
 
     it('passes specified properties to its children', () => {
       const nonInheritedProps = [
-        'dataField',
-        'keyField',
         'scatterClassName',
-        'symbolField',
         'symbolScale',
       ];
       const assertion = (symbol) => {

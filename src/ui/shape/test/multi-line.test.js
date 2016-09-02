@@ -42,8 +42,10 @@ describe('<MultiLine />', () => {
       component = (
         <MultiLine
           data={lineData}
-          keyField={'location'}
-          dataField={'values'}
+          fieldAccessors={{
+            key: 'location',
+            data: 'values',
+          }}
           scales={scales}
           colorScale={colorScale}
           dataAccessors={{ x: keyField, y: valueField }}
@@ -93,8 +95,10 @@ describe('<MultiLine />', () => {
       component = (
         <MultiLine
           data={lineData}
-          keyField={'location'}
-          dataField={'values'}
+          fieldAccessors={{
+            key: 'location',
+            data: 'values',
+          }}
           scales={scales}
           colorScale={colorScale}
           dataAccessors={{ x: keyField, y0: 'value_lb', y1: 'value_ub' }}
@@ -115,8 +119,10 @@ describe('<MultiLine />', () => {
       component = (
         <MultiLine
           data={lineData}
-          keyField={'location'}
-          dataField={'values'}
+          fieldAccessors={{
+            key: 'location',
+            data: 'values',
+          }}
           scales={scales}
           colorScale={colorScale}
           dataAccessors={{ x: keyField, y: valueField, y0: 'value_lb', y1: 'value_ub' }}
@@ -138,8 +144,10 @@ describe('<MultiLine />', () => {
       component = (
         <MultiLine
           data={lineData}
-          keyField={'location'}
-          dataField={'values'}
+          fieldAccessors={{
+            key: 'location',
+            data: 'values',
+          }}
           scales={scales}
           colorScale={colorScale}
           dataAccessors={{ x: keyField }}
