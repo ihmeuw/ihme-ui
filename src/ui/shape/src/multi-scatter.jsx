@@ -17,8 +17,10 @@ export default class MultiScatter extends PureComponent {
       scatterClassName,
       scatterValuesIteratee,
       selection,
+      style,
       symbolField,
       symbolScale,
+      symbolStyle,
     } = this.props;
 
     const childProps = pick(this.props, [
@@ -34,7 +36,6 @@ export default class MultiScatter extends PureComponent {
       'selectedStyle',
       'scales',
       'size',
-      'style',
       'symbolClassName',
     ]);
 
@@ -42,6 +43,7 @@ export default class MultiScatter extends PureComponent {
       <g
         className={className && classNames(className)}
         clipPath={clipPathId && `url(#${clipPathId})`}
+        style={style}
       >
         {
           map(data, (datum) => {
@@ -60,6 +62,7 @@ export default class MultiScatter extends PureComponent {
                 fill={fill}
                 key={`scatter:${key}`}
                 selection={castArray(selection)}
+                style={symbolStyle}
                 symbolType={symbolType}
                 {...childProps}
               />
@@ -160,20 +163,19 @@ MultiScatter.propTypes = {
   /* size of symbols; see Symbol.propTypes */
   size: PropTypes.number,
 
-  /*
-   inline-style object or function to be applied as base style for Symbols;
-   if a function, is called with associated datum
-   */
   style: CommonPropTypes.style,
 
   /* base classname to apply to symbol */
   symbolClassName: CommonPropTypes.className,
 
-  /* key name for value of symbol */
-  symbolField: PropTypes.string,
-
   /* function to transform symbol value to a shape */
   symbolScale: PropTypes.func,
+
+  /*
+   inline-style object or function to be applied as base style for Symbols;
+   if a function, is called with associated datum
+   */
+  symbolStyle: PropTypes.style,
 };
 
 MultiScatter.defaultProps = {
