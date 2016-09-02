@@ -12,16 +12,21 @@ export default class MultiScatter extends PureComponent {
       clipPathId,
       colorScale,
       data,
-      dataField,
-      keyField,
+      fieldAccessors,
       scatterClassName,
       scatterValuesIteratee,
       selection,
       style,
-      symbolField,
       symbolScale,
       symbolStyle,
     } = this.props;
+
+    const {
+      color: colorField,
+      data: dataField,
+      key: keyField,
+      symbol: symbolField,
+    } = fieldAccessors;
 
     const childProps = pick(this.props, [
       'dataAccessors',
@@ -50,7 +55,7 @@ export default class MultiScatter extends PureComponent {
             const key = propResolver(datum, keyField);
             const values = propResolver(datum, dataField);
             const symbol = propResolver(datum, symbolField);
-            const fill = colorScale(key);
+            const color = colorScale(colorField ? propResolver(datum, colorField) : key);
             const symbolType = symbolScale(symbol);
 
             const scatterValues = scatterValuesIteratee(values, key);
@@ -59,7 +64,7 @@ export default class MultiScatter extends PureComponent {
               <Scatter
                 className={scatterClassName}
                 data={scatterValues}
-                fill={fill}
+                fill={color}
                 key={`scatter:${key}`}
                 selection={castArray(selection)}
                 style={symbolStyle}
@@ -99,8 +104,19 @@ MultiScatter.propTypes = {
     y: CommonPropTypes.dataAccessor,
   }).isRequired,
 
-  /* key that holds individual datum to be represented in the scatter plot */
-  dataField: PropTypes.string,
+  /*
+   key names containing fields for child component configuration
+     color -> (optional) color data as input to color scale.
+     data -> data provided to child components. default: 'values'
+     key -> unique key to apply to child components. used as input to color scale if color field is not specified. default: 'key'
+     symbol -> symbol data as input to the symbol scale.
+   */
+  fieldAccessors: PropTypes.shape({
+    color: CommonPropTypes.dataAccessor,
+    data: CommonPropTypes.dataAccessor.isRequired,
+    key: CommonPropTypes.dataAccessor.isRequired,
+    symbol: CommonPropTypes.dataAccessor.isRequired,
+  }),
 
   /* the symbol to focus */
   focus: PropTypes.object,
@@ -114,9 +130,6 @@ MultiScatter.propTypes = {
    can override style and selectedStyle
    */
   focusedStyle: CommonPropTypes.style,
-
-  /* unique key that identifies the dataset to be plotted within the array of datasets */
-  keyField: PropTypes.string,
 
   /* mouse events signature: function(event, data, instance) {...} */
   onClick: PropTypes.func,
@@ -180,8 +193,10 @@ MultiScatter.propTypes = {
 
 MultiScatter.defaultProps = {
   colorScale() { return 'steelblue'; },
-  dataField: 'values',
-  keyField: 'key',
+  fieldAccessors: {
+    data: 'values',
+    key: 'key',
+  },
   scatterValuesIteratee: CommonDefaultProps.identity,
   size: 64,
   symbolField: 'type',
