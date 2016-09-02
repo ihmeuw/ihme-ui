@@ -15,8 +15,7 @@ import {
   MultiLine,
   MultiScatter,
   Scatter,
-  Symbol,
-  SYMBOL_TYPES } from './shape';
+  Symbol } from './shape';
 import Slider from './slider';
 import Spinner from './spinner';
 import SvgText from './svg-text';
@@ -45,6 +44,5 @@ export default {
   Spinner,
   SvgText,
   Symbol,
-  SYMBOL_TYPES,
   Tooltip,
 };

@@ -20,7 +20,7 @@ const SHAPES = {
  * Get a list of shortened d3 symbol names.
  * @returns {Array} list of shortened scale names.
  */
-export function getSymbolTypes() {
+export function symbolTypes() {
   return Object.keys(SHAPES);
 }
 

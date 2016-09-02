@@ -11,9 +11,7 @@ import {
   PureComponent,
   stateFromPropUpdates,
 } from '../../../utils';
-import { getSymbol, getSymbolTypes } from '../../../utils/symbol';
-
-const SYMBOL_TYPES = getSymbolTypes();
+import { getSymbol, symbolTypes } from '../../../utils/symbol';
 
 export default class Symbol extends PureComponent {
   /**
@@ -153,7 +151,7 @@ Symbol.propTypes = {
   style: CommonPropTypes.style,
 
   /* a SYMBOL_TYPE  */
-  symbolType: PropTypes.oneOf(Object.keys(SYMBOL_TYPES)),
+  symbolType: PropTypes.oneOf(symbolTypes()),
 
   translateX: PropTypes.number,
 
@@ -220,5 +218,3 @@ Symbol.propUpdates = {
     });
   },
 };
-
-export { SYMBOL_TYPES };
