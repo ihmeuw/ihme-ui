@@ -31,6 +31,13 @@ describe('<Symbol />', () => {
       .that.equals(d3Shape.symbol().type(d3Shape.symbolCircle)());
   });
 
+  it('applies a rotate modifier', () => {
+    const wrapper = shallow(<Symbol symbolType="triangle down" />);
+    expect(wrapper.find('path'))
+      .to.have.attr('transform')
+      .that.equals('translate(0, 0) rotate(180)');
+  });
+
   describe('styling', () => {
     const datum = {
       mean: 10,
