@@ -123,7 +123,8 @@ Scatter.propTypes = {
   */
   dataAccessors: PropTypes.shape({
     fill: CommonPropTypes.dataAccessor,
-    key: CommonPropTypes.dataAccessor.isRequired,
+    key: CommonPropTypes.dataAccessor,
+    symbol: CommonPropTypes.dataAccessor,
     x: CommonPropTypes.dataAccessor,
     y: CommonPropTypes.dataAccessor,
   }).isRequired,
