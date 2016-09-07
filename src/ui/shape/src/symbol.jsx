@@ -13,6 +13,12 @@ import {
 } from '../../../utils';
 import { getSymbol, symbolTypes } from '../../../utils/symbol';
 
+const SYMBOL_ROTATE = {
+  down: 180,
+  left: 270,
+  right: 90,
+};
+
 export default class Symbol extends PureComponent {
   /**
    * Return path string for given symbol type and size
@@ -76,7 +82,7 @@ export default class Symbol extends PureComponent {
       translateX,
       translateY,
     } = this.props;
-    const { path, style } = this.state;
+    const { path, rotate, style } = this.state;
 
     return (
       <path
@@ -91,7 +97,7 @@ export default class Symbol extends PureComponent {
         onMouseMove={eventHandleWrapper(onMouseMove, datum, this)}
         onMouseOver={eventHandleWrapper(onMouseOver, datum, this)}
         style={style}
-        transform={`translate(${translateX}, ${translateY})`}
+        transform={`translate(${translateX}, ${translateY}) rotate(${rotate})`}
       />
     );
   }
@@ -187,8 +193,10 @@ Symbol.propUpdates = {
   // update path if symbol type or size have changed
   path: (accum, propName, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, ['symbolType', 'size'])) return accum;
+    const [symbolType, rotate] = nextProps.symbolType.split(' ', 2);
     return assign(accum, {
-      path: Symbol.getPath(nextProps.symbolType, nextProps.size),
+      path: Symbol.getPath(symbolType, nextProps.size),
+      rotate: SYMBOL_ROTATE[rotate] || 0,
     });
   },
 

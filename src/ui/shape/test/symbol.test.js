@@ -23,12 +23,26 @@ describe('<Symbol />', () => {
   });
 
   it('renders a circle when given a type that is not supported by d3Shape.symbol', () => {
-    const wrapper = shallow(<Symbol symbolType={'unicorn'} />);
+    const wrapper = shallow(<Symbol symbolType="unicorn" />);
     expect(wrapper).to.have.exactly(1).descendants('path');
     expect(wrapper.find('path'))
       .to.have.attr('d')
       .that.is.a('string')
       .that.equals(d3Shape.symbol().type(d3Shape.symbolCircle)());
+  });
+
+  it('applies a rotate modifier when appropriate', () => {
+    const wrapper = shallow(<Symbol symbolType="triangle down" />);
+    expect(wrapper.find('path'))
+      .to.have.attr('transform')
+      .that.equals('translate(0, 0) rotate(180)');
+  });
+
+  it('does not apply a rotate modifier when appropriate', () => {
+    const wrapper = shallow(<Symbol symbolType="triangle" />);
+    expect(wrapper.find('path'))
+      .to.have.attr('transform')
+      .that.equals('translate(0, 0) rotate(0)');
   });
 
   describe('styling', () => {
@@ -66,9 +80,7 @@ describe('<Symbol />', () => {
       const wrapper = shallow(
         <Symbol
           datum={datum}
-          style={(d) => {
-            return { stroke: 'red', strokeWidth: d.mean };
-          }}
+          style={(d) => ({ stroke: 'red', strokeWidth: d.mean })}
         />
       );
 
@@ -96,9 +108,7 @@ describe('<Symbol />', () => {
           datum={datum}
           style={baseStyle}
           selected
-          selectedStyle={(d) => {
-            return { stroke: 'white', strokeWidth: d.mean * 2 };
-          }}
+          selectedStyle={(d) => ({ stroke: 'white', strokeWidth: d.mean * 2 })}
         />
       );
 
@@ -127,9 +137,7 @@ describe('<Symbol />', () => {
         <Symbol
           datum={datum}
           focused
-          focusedStyle={() => {
-            return { stroke: 'blue' };
-          }}
+          focusedStyle={() => ({ stroke: 'blue' })}
           style={baseStyle}
           selected
           selectedStyle={selectedStyle}
