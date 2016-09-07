@@ -23,7 +23,7 @@ describe('<Symbol />', () => {
   });
 
   it('renders a circle when given a type that is not supported by d3Shape.symbol', () => {
-    const wrapper = shallow(<Symbol symbolType={'unicorn'} />);
+    const wrapper = shallow(<Symbol symbolType="unicorn" />);
     expect(wrapper).to.have.exactly(1).descendants('path');
     expect(wrapper.find('path'))
       .to.have.attr('d')
@@ -31,11 +31,18 @@ describe('<Symbol />', () => {
       .that.equals(d3Shape.symbol().type(d3Shape.symbolCircle)());
   });
 
-  it('applies a rotate modifier', () => {
+  it('applies a rotate modifier when appropriate', () => {
     const wrapper = shallow(<Symbol symbolType="triangle down" />);
     expect(wrapper.find('path'))
       .to.have.attr('transform')
       .that.equals('translate(0, 0) rotate(180)');
+  });
+
+  it('does not apply a rotate modifier when appropriate', () => {
+    const wrapper = shallow(<Symbol symbolType="triangle" />);
+    expect(wrapper.find('path'))
+      .to.have.attr('transform')
+      .that.equals('translate(0, 0) rotate(0)');
   });
 
   describe('styling', () => {
