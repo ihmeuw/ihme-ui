@@ -15,7 +15,7 @@ describe('Number utilities', () => {
       expect(numberFormat(0.005836)).to.equal('5.836e-3');
     });
 
-    it('displays all 0.001 > values < 1000 to thousandths precision by default', () => {
+    it('displays all 0.01 > values < 1000 to thousandths precision by default', () => {
       expect(numberFormat(1)).to.equal('1.000');
       expect(numberFormat(15)).to.equal('15.000');
       expect(numberFormat(0.239745)).to.equal('0.240');
