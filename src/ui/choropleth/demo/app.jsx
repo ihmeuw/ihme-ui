@@ -5,7 +5,8 @@ import { bindAll, filter, find, flatMap, forEach, includes, values, xor } from '
 import { json } from 'd3-request';
 import { scaleLinear } from 'd3-scale';
 
-import { colorSteps, dataGenerator } from '../../../test-utils';
+import { dataGenerator } from '../../../test-utils';
+import { colorSteps } from '../../../utils';
 import { generateColorDomain } from '../../../utils/domain';
 
 import ResponsiveContainer from '../../responsive-container';

@@ -3,7 +3,7 @@ import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 
-import { colorSteps } from '../../../test-utils';
+import { colorSteps } from '../../../utils';
 import LinearGradient from '../src/linear-gradient';
 
 chai.use(chaiEnzyme());

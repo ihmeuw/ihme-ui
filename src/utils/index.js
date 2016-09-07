@@ -3,6 +3,11 @@ export {
 } from './array';
 
 export {
+  colorSteps,
+  baseColorScale,
+} from './colors';
+
+export {
   percentOfRange,
   numFromPercent,
   domainFromPercent,

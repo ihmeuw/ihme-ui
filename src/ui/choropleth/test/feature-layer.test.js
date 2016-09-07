@@ -4,7 +4,8 @@ import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 import d3 from 'd3';
 import { drop, find, omit } from 'lodash';
-import { getGeoJSON, getLocationIds, baseColorScale } from '../../../test-utils';
+import { getGeoJSON, getLocationIds } from '../../../test-utils';
+import { baseColorScale } from '../../../utils';
 
 import FeatureLayer from '../src/feature-layer';
 import Path from '../src/path';
