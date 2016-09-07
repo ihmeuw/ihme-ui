@@ -15,11 +15,17 @@ describe('Number utilities', () => {
       expect(numberFormat(0.005836)).to.equal('5.836e-3');
     });
 
-    it('displays all 0.001 > values < 1000 to hundredths precision', () => {
-      expect(numberFormat(1)).to.equal('1.00');
-      expect(numberFormat(15)).to.equal('15.00');
-      expect(numberFormat(0.239745)).to.equal('0.24');
-      expect(numberFormat(28.123456)).to.equal('28.12');
+    it('displays all 0.001 > values < 1000 to thousandths precision by default', () => {
+      expect(numberFormat(1)).to.equal('1.000');
+      expect(numberFormat(15)).to.equal('15.000');
+      expect(numberFormat(0.239745)).to.equal('0.240');
+      expect(numberFormat(28.123456)).to.equal('28.123');
+    });
+
+    it('can accept an alternate precision', () => {
+      expect(numberFormat(5432.35784, 1)).to.equal('5.4k');
+      expect(numberFormat(0.239745, 5)).to.equal('0.23975');
+      expect(numberFormat(0.01, 2)).to.equal('1.00e-2');
     });
   });
 });
