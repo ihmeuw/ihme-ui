@@ -33,7 +33,7 @@ ihme-ui relies on external stylesheets built from CSS modules. To include all st
 or, from NPMCDN,
 
 ```html
-<link rel="stylesheet" href="//npmcdn.com/ihme-ui/style/ihme-ui.css">
+<link rel="stylesheet" href="//unpkg.com/ihme-ui/style/ihme-ui.css">
 ```
 
 Alternately, you can include only those stylesheets you need. For example, to include only the stylesheet for the `<Button />` component, you can exclusively include
@@ -44,6 +44,6 @@ Alternately, you can include only those stylesheets you need. For example, to in
 
 If you make use of `<SingleSelect />` or `<MultiSelect />`, you will additionally need to include the following stylesheets:
 ```html
-  <link rel="stylesheet" href="https://npmcdn.com/react-virtualized@7.0.1/styles.css">
+  <link rel="stylesheet" href="https://unpkg.com/react-virtualized@7.0.1/styles.css">
   <link rel="stylesheet" href="node_modules/ihme-react-select/dist/ihme-react-select.min.css">
 ```
