@@ -9,7 +9,8 @@ import Button from '../../button';
 // utils
 import { scaleLinear } from 'd3-scale';
 import { maxBy, minBy, range } from 'lodash';
-import { dataGenerator, colorSteps } from '../../../test-utils';
+import { dataGenerator } from '../../../test-utils';
+import { colorSteps } from '../../../utils';
 import { generateColorDomain, isWithinRange, numFromPercent } from '../../../utils/domain';
 
 const valueField = 'value';

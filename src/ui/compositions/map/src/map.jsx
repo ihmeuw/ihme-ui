@@ -25,8 +25,8 @@ import {
   numFromPercent,
   propResolver,
   stateFromPropUpdates,
+  colorSteps as defaultColorSteps,
 } from '../../../../utils';
-import { colorSteps as defaultColorSteps } from '../../../../test-utils';
 
 import styles from './style.css';
 
