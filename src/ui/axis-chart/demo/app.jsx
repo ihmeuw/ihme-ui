@@ -132,8 +132,10 @@ class App extends React.Component {
           <MultiLine
             areaStyle={{ strokeWidth: '1px', fillOpacity: '0.5' }}
             data={lineData}
-            keyField={'location'}
-            dataField={'values'}
+            fieldAccessors={{
+              data: 'values',
+              key: 'location',
+            }}
             colorScale={colorScale}
             showUncertainty
             dataAccessors={dataAccessors}
