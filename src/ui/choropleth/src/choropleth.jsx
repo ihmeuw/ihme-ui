@@ -314,6 +314,65 @@ export default class Choropleth extends React.Component {
 }
 
 Choropleth.propTypes = {
+  /* classname to add rendered components */
+  className: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+  ]),
+
+  /* fn that accepts keyfield, and returns stroke color for line */
+  colorScale: PropTypes.func.isRequired,
+
+  /* show zoom controls */
+  controls: PropTypes.bool,
+
+  /* classname to add to zoom controls container */
+  controlsClassName: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+  ]),
+
+  /* classname to add to zoom control buttons */
+  controlsButtonClassName: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+  ]),
+
+  /* inline styles to apply to zoom control buttons */
+  controlsButtonStyle: PropTypes.object,
+
+  /* inline styles to apply to zoom controls container */
+  controlsStyle: PropTypes.object,
+
+  /* array of datum objects */
+  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+
+  /*
+   uniquely identifying field of geometry objects
+   if a function, will be called with the geometry object as first parameter
+   N.B.: the resolved value of this prop should match the resolved value of `keyField` above
+   e.g., if data objects are of the following shape: { location_id: <number>, mean: <number> }
+   and if features within topojson are of the following shape: { type: <string>, properties: { location_id: <number> }, arcs: <array> }
+   `keyField` may be one of the following: 'location_id', or (datum) => datum.location_id
+   `geometryKeyField` may be one of the following: 'location_id' or (feature) => feature.properties.location_id
+   */
+  geometryKeyField: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+  ]).isRequired,
+
+  /* height of containing element, in px */
+  height: PropTypes.number,
+
+  /*
+   unique key of datum
+   if a function, will be called with the datum object as first parameter
+   */
+  keyField: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+  ]).isRequired,
+
   /* layers to display */
   layers: PropTypes.arrayOf(PropTypes.shape({
     className: CommonPropTypes.className,
@@ -351,58 +410,6 @@ Choropleth.propTypes = {
     visible: PropTypes.bool,
   })).isRequired,
 
-  /* full topojson */
-  topology: PropTypes.shape({
-    arcs: PropTypes.array,
-    objects: PropTypes.object,
-    transform: PropTypes.object,
-    type: PropTypes.string
-  }).isRequired,
-
-  /* array of datum objects */
-  data: PropTypes.arrayOf(PropTypes.object).isRequired,
-
-  /*
-    unique key of datum
-    if a function, will be called with the datum object as first parameter
-  */
-  keyField: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.func,
-  ]).isRequired,
-
-  /*
-    uniquely identifying field of geometry objects
-    if a function, will be called with the geometry object as first parameter
-    N.B.: the resolved value of this prop should match the resolved value of `keyField` above
-    e.g., if data objects are of the following shape: { location_id: <number>, mean: <number> }
-          and if features within topojson are of the following shape: { type: <string>, properties: { location_id: <number> }, arcs: <array> }
-          `keyField` may be one of the following: 'location_id', or (datum) => datum.location_id
-          `geometryKeyField` may be one of the following: 'location_id' or (feature) => feature.properties.location_id
-  */
-  geometryKeyField: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.func,
-  ]).isRequired,
-
-  /* key of datum that holds the value to display */
-  valueField: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.func,
-  ]).isRequired,
-
-  /* fn that accepts keyfield, and returns stroke color for line */
-  colorScale: PropTypes.func.isRequired,
-
-  /* array of data */
-  selectedLocations: PropTypes.arrayOf(PropTypes.object),
-
-  /* width of containing element, in px */
-  width: PropTypes.number,
-
-  /* height of containing element, in px */
-  height: PropTypes.number,
-
   /* passed to each path; signature: function(event, datum, Path) {...} */
   onClick: PropTypes.func,
 
@@ -418,38 +425,39 @@ Choropleth.propTypes = {
   /* passed to each path; signature: function(event, datum, Path) {...} */
   onMouseOver: PropTypes.func,
 
-  /* show zoom controls */
-  controls: PropTypes.bool,
+  /* array of data */
+  selectedLocations: PropTypes.arrayOf(PropTypes.object),
+
+  /* inline styles to apply to choropleth container */
+  style: PropTypes.object,
+
+  /* full topojson */
+  topology: PropTypes.shape({
+    arcs: PropTypes.array,
+    objects: PropTypes.object,
+    transform: PropTypes.object,
+    type: PropTypes.string
+  }).isRequired,
+
+  /* key of datum that holds the value to display */
+  valueField: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+  ]).isRequired,
+
+  /* width of containing element, in px */
+  width: PropTypes.number,
 
   /* amount to zoom in/out from zoom controls. current zoom scale is multiplied by prop value.
    e.g. 1.1 is equal to 10% steps, 2.0 is equal to 100% steps */
   zoomStep: PropTypes.number,
-
-  /* class name to add rendered components */
-  className: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.string,
-  ]),
-  controlsClassName: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.string,
-  ]),
-  controlsButtonClassName: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.string,
-  ]),
-
-  /* style to apply to rendered components */
-  style: PropTypes.object,
-  controlsStyle: PropTypes.object,
-  controlsButtonStyle: PropTypes.object,
 };
 
 Choropleth.defaultProps = {
+  controls: false,
+  height: 400,
   layers: [],
   selectedLocations: [],
   width: 600,
-  height: 400,
-  controls: false,
   zoomStep: 1.1,
 };
