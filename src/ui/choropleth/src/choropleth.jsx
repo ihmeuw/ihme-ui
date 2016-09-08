@@ -410,6 +410,12 @@ Choropleth.propTypes = {
     visible: PropTypes.bool,
   })).isRequired,
 
+  /* max allowable zoom factor; 1 === fit bounds */
+  maxZoom: PropTypes.number,
+
+  /* min allowable zoom factor; 1 === fit bounds */
+  minZoom: PropTypes.number,
+
   /* passed to each path; signature: function(event, datum, Path) {...} */
   onClick: PropTypes.func,
 
@@ -457,6 +463,8 @@ Choropleth.defaultProps = {
   controls: false,
   height: 400,
   layers: [],
+  maxZoom: Infinity,
+  minZoom: -Infinity,
   selectedLocations: [],
   width: 600,
   zoomStep: 1.1,
