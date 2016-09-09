@@ -67,7 +67,7 @@ export default class Choropleth extends React.Component {
 
     const scale = calcScale(props.width, props.height, bounds);
 
-    const translate = calcTranslate(props.width, props.height, scale, bounds, null);
+    const translate = calcTranslate(props.width, props.height, scale, bounds);
     this.clipExtent = geoClipExtent()
       .extent([
         [-CLIP_EXTENT_PADDING, -CLIP_EXTENT_PADDING],
@@ -168,7 +168,7 @@ export default class Choropleth extends React.Component {
       if (state.bounds) {
         // if state.bounds is set when topology or layers change drastically, reset calculations
         state.translate = calcTranslate(nextProps.width, nextProps.height,
-                                        state.scaleBase, bounds, null);
+                                        state.scaleBase, bounds);
       } else {
         // else calculate new translate from previous center point
         const center = calcCenterPoint(this.props.width, this.props.height,
@@ -271,7 +271,7 @@ export default class Choropleth extends React.Component {
 
   zoomReset() {
     const [x, y] = calcTranslate(this.props.width, this.props.height,
-                                this.state.scaleBase, this.state.bounds, null);
+                                this.state.scaleBase, this.state.bounds);
 
     this._svgSelection.call(
       this.zoom.transform,
