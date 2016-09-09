@@ -78,7 +78,7 @@ class App extends React.Component {
     this.setState({
       listValue: value,
       fillStyle: {
-        backgroundColor: value,
+        backgroundColor: value.low,
       },
     });
   }
