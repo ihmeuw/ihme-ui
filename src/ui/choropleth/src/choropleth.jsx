@@ -27,20 +27,6 @@ import FeatureLayer from './feature-layer';
 import Path from './path';
 import Controls from './controls';
 
-/**
- * if topojson provides its own bbox, format similar to return value of concatAndComputeGeoJSONBounds
- * else, return undefined
- * @param {array} bounds - array of four numbers
- * @return {array|undefined} nested array of [[x0, y0], [x1, y1]]
- */
-function formatTopoJSONBounds(bounds) {
-  /* eslint-disable consistent-return */
-  if (!bounds) return;
-  const [x0, y0, x1, y1] = bounds;
-  return [[x0, y0], [x1, y1]];
-  /* eslint-enable consistent-return */
-}
-
 // slightly pad clip extent so that the boundary of the map does not show borders
 const CLIP_EXTENT_PADDING = 1;
 
@@ -60,10 +46,7 @@ export default class Choropleth extends React.Component {
     super(props);
 
     const extractedGeoJSON = extractGeoJSON(presimplify(props.topology), props.layers);
-
-    // no need to calculate bounds if already specified on topojson
-    const bounds = formatTopoJSONBounds(props.topology.bbox)
-                  || concatAndComputeGeoJSONBounds(extractedGeoJSON);
+    const bounds = concatAndComputeGeoJSONBounds(extractedGeoJSON);
 
     const scale = calcScale(props.width, props.height, bounds);
 
@@ -497,7 +480,6 @@ Choropleth.propTypes = {
   /* full topojson */
   topology: PropTypes.shape({
     arcs: PropTypes.array,
-    bbox: PropTypes.arrayOf(PropTypes.number),
     objects: PropTypes.object,
     transform: PropTypes.object,
     type: PropTypes.string
