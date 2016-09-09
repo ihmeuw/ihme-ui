@@ -192,7 +192,7 @@ MultiScatter.propTypes = {
    inline-style object or function to be applied as base style for Symbols;
    if a function, is called with associated datum
    */
-  symbolStyle: PropTypes.style,
+  symbolStyle: CommonPropTypes.style,
 };
 
 MultiScatter.defaultProps = {
