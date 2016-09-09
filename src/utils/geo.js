@@ -109,18 +109,20 @@ export function calcScale(width, height, bounds, proportion = 1) {
 
 /**
  * calculate translations at which the topology will fit centered in its container
- * @param {Number} width
- * @param {Number} height
- * @param {Number} scale
- * @param {Array} bounds -> optional bounds of topology;
+ * @param {number} width
+ * @param {number} height
+ * @param {number} scale
+ * @param {array} [bounds] -> optional bounds of topology;
  *                          if not passed in, must pass in center
- * @param {Array} center -> optional center point of topology;
+ * @param {array} [center] -> optional center point of topology;
  *                          if not passed in, must pass in bounds
- * @returns {Array}
+ * @returns {array}
  */
-export function calcTranslate(width, height, scale, bounds, center) {
-  const geometryX = center ? center[0] : bounds[1][0] + bounds[0][0];
-  const geometryY = center ? center[1] : bounds[1][1] + bounds[0][1];
+export function calcTranslate(width, height, scale, bounds = [[], []], center = []) {
+  const [[x0, y0], [x1, y1]] = bounds;
+  const [xC, yC] = center;
+  const geometryX = xC || x1 + x0;
+  const geometryY = yC || y1 + y0;
 
   // mike bostock math
   return [
