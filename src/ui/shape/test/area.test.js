@@ -4,8 +4,7 @@ import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import { maxBy, minBy } from 'lodash';
-import d3Scale from 'd3-scale';
-import { area } from 'd3-shape';
+import { area, scaleLinear, scalePoint } from 'd3';
 
 import { dataGenerator } from '../../../test-utils';
 import { Area } from '../';
@@ -29,8 +28,8 @@ describe('<Area />', () => {
   const range = [minBy(data, 'value_lb')[valueField], maxBy(data, 'value_ub')[valueField]];
   const domain = [minBy(data, keyField)[keyField], maxBy(data, keyField)[keyField]];
 
-  const xScale = d3Scale.scalePoint().domain(domain).range([0, chartDimensions.width]);
-  const yScale = d3Scale.scaleLinear().domain(range).range([chartDimensions.height, 0]);
+  const xScale = scalePoint().domain(domain).range([0, chartDimensions.width]);
+  const yScale = scaleLinear().domain(range).range([chartDimensions.height, 0]);
 
   const areaFunction = area()
     .x((datum) => xScale(datum[keyField]))

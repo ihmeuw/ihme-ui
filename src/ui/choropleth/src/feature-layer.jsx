@@ -35,7 +35,6 @@ export default class FeatureLayer extends PureComponent {
       data,
       geometryKeyField,
       onClick,
-      onMouseDown,
       onMouseLeave,
       onMouseMove,
       onMouseOver,
@@ -82,7 +81,6 @@ export default class FeatureLayer extends PureComponent {
                 feature={feature}
                 fill={fill}
                 onClick={onClick}
-                onMouseDown={onMouseDown}
                 onMouseLeave={onMouseLeave}
                 onMouseMove={onMouseMove}
                 onMouseOver={onMouseOver}
@@ -135,9 +133,6 @@ FeatureLayer.propTypes = {
 
   /* passed to each path; signature: function(event, datum, Path) {...} */
   onClick: PropTypes.func,
-
-  /* passed to each path; signature: function(event, datum, Path) {...} */
-  onMouseDown: PropTypes.func,
 
   /* passed to each path; signature: function(event, datum, Path) {...} */
   onMouseLeave: PropTypes.func,

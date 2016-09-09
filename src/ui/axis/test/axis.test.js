@@ -2,14 +2,13 @@ import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { mount, shallow } from 'enzyme';
-import d3Scale from 'd3-scale';
-import { format } from 'd3-format';
+import { format, scaleLinear } from 'd3';
 
 import Axis, { XAxis, YAxis } from '../';
 
 chai.use(chaiEnzyme());
 
-const dummyScale = d3Scale.scaleLinear();
+const dummyScale = scaleLinear();
 
 describe('<Axis />', () => {
   it('renders a <g> that wraps axis', () => {
@@ -105,7 +104,7 @@ describe('<Axis />', () => {
         />
       );
 
-      const newScale = d3Scale.scaleLinear();
+      const newScale = scaleLinear();
       wrapper.setProps({ scale: newScale });
       expect(wrapper.state('scale')).to.be.equal(newScale);
     });
@@ -162,7 +161,7 @@ describe('<XAxis />', () => {
         scales={{ x: dummyScale }}
       />
     );
-    const newScale = d3Scale.scaleLinear();
+    const newScale = scaleLinear();
     wrapper.setProps({ scales: { x: newScale } });
     expect(wrapper.state('scale')).to.be.equal(newScale);
   });
@@ -193,7 +192,7 @@ describe('<YAxis />', () => {
         scales={{ y: dummyScale }}
       />
     );
-    const newScale = d3Scale.scaleLinear();
+    const newScale = scaleLinear();
     wrapper.setProps({ scales: { y: newScale } });
     expect(wrapper.state('scale')).to.be.equal(newScale);
   });

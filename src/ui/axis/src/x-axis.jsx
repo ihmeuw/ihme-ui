@@ -1,5 +1,5 @@
 import { PropTypes } from 'react';
-import { scaleLinear } from 'd3-scale';
+import { scaleLinear } from 'd3';
 import { atLeastOneOfProp, propsChanged } from '../../../utils';
 
 import Axis, { AXIS_SCALE_PROP_TYPES } from './axis';

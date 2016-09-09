@@ -1,4 +1,4 @@
-import d3Scale from 'd3-scale';
+import * as d3Scale from 'd3-scale';
 import { forOwn } from 'lodash';
 import { isWithinRange } from './index';
 

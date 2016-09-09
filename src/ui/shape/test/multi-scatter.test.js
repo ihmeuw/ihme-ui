@@ -3,7 +3,7 @@ import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 import { minBy, maxBy, noop, uniqBy, map } from 'lodash';
-import d3Scale from 'd3-scale';
+import { scalePoint, scaleLinear, scaleOrdinal } from 'd3';
 
 import { dataGenerator } from '../../../test-utils';
 
@@ -47,13 +47,13 @@ describe('<MultiScatter />', () => {
     const yDomain = [minBy(data, 'population').population, maxBy(data, 'population').population];
     const xDomain = map(uniqBy(data, 'year_id'), (obj) => { return (obj.year_id); });
 
-    const xScale = d3Scale.scalePoint().domain(xDomain).range([0, chartDimensions.width]);
-    const yScale = d3Scale.scaleLinear().domain(yDomain).range([chartDimensions.height, 0]);
+    const xScale = scalePoint().domain(xDomain).range([0, chartDimensions.width]);
+    const yScale = scaleLinear().domain(yDomain).range([chartDimensions.height, 0]);
 
-    const symbolScale = d3Scale.scaleOrdinal()
+    const symbolScale = scaleOrdinal()
         .domain(['USA', 'Canada', 'Mexico'])
         .range(['circle', 'star', 'square']);
-    const colorScale = d3Scale.scaleOrdinal()
+    const colorScale = scaleOrdinal()
         .domain(['USA', 'Canada', 'Mexico'])
         .range(['red', 'blue', 'green']);
 

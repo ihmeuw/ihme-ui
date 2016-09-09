@@ -1,6 +1,14 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import d3 from 'd3';
+import {
+  geoClipExtent,
+  geoPath,
+  geoTransform,
+  select,
+  zoom,
+  zoomIdentity,
+  zoomTransform,
+} from 'd3';
 import { presimplify } from 'topojson';
 import { bindAll, filter, has, isEqual, keyBy, memoize } from 'lodash';
 import {
@@ -18,6 +26,20 @@ import style from './choropleth.css';
 import FeatureLayer from './feature-layer';
 import Path from './path';
 import Controls from './controls';
+
+/**
+ * if topojson provides its own bbox, format similar to return value of concatAndComputeGeoJSONBounds
+ * else, return undefined
+ * @param {array} bounds - array of four numbers
+ * @return {array|undefined} nested array of [[x0, y0], [x1, y1]]
+ */
+function formatTopoJSONBounds(bounds) {
+  /* eslint-disable consistent-return */
+  if (!bounds) return;
+  const [x0, y0, x1, y1] = bounds;
+  return [[x0, y0], [x1, y1]];
+  /* eslint-enable consistent-return */
+}
 
 // slightly pad clip extent so that the boundary of the map does not show borders
 const CLIP_EXTENT_PADDING = 1;
@@ -38,39 +60,58 @@ export default class Choropleth extends React.Component {
     super(props);
 
     const extractedGeoJSON = extractGeoJSON(presimplify(props.topology), props.layers);
-    const bounds = concatAndComputeGeoJSONBounds(extractedGeoJSON);
+
+    // no need to calculate bounds if already specified on topojson
+    const bounds = formatTopoJSONBounds(props.topology.bbox)
+                  || concatAndComputeGeoJSONBounds(extractedGeoJSON);
 
     const scale = calcScale(props.width, props.height, bounds);
 
-    const translate = calcTranslate(props.width, props.height, scale, bounds, null);
-    this.clipExtent = d3.geo.clipExtent()
+    const translate = calcTranslate(props.width, props.height, scale, bounds);
+    this.clipExtent = geoClipExtent()
       .extent([
         [-CLIP_EXTENT_PADDING, -CLIP_EXTENT_PADDING],
         [props.width + CLIP_EXTENT_PADDING, props.height + CLIP_EXTENT_PADDING]
       ]);
-    this.zoom = d3.behavior.zoom();
+    this.zoom = zoom()
+      .scaleExtent([Math.max(scale, props.minZoom), Math.max(scale, props.maxZoom)]);
+
     this.calcMeshLayerStyle = memoize(this.calcMeshLayerStyle);
 
     this.state = {
       bounds,
       scale,
       scaleBase: scale,
-      scaleFactor: 1,
       translate,
       pathGenerator: this.createPathGenerator(scale, translate, this.clipExtent),
       cache: { ...extractedGeoJSON, },
       processedData: Choropleth.processData(props.data, props.keyField)
     };
 
-    bindAll(this, ['saveSvgRef', 'zoomEvent', 'zoomTo', 'zoomReset']);
+    bindAll(this, [
+      'currentZoomTransform',
+      'saveSvgRef',
+      'zoomEvent',
+      'zoomIn',
+      'zoomOut',
+      'zoomReset',
+    ]);
   }
 
   componentDidMount() {
-    this._svg.call(
+    const [x, y] = this.state.translate;
+
+    this._svgSelection.call(
       this.zoom
+        .on('zoom.ihme-ui-choropleth', this.zoomEvent)
+    );
+
+    this._svgSelection.call(
+      this.zoom.transform,
+      zoomIdentity
+        .translate(x, y)
         .scale(this.state.scale)
-        .translate(this.state.translate)
-        .on('zoom', this.zoomEvent));
+    );
   }
 
   componentWillReceiveProps(nextProps) {
@@ -119,18 +160,23 @@ export default class Choropleth extends React.Component {
       const bounds = state.bounds || this.state.bounds;
 
       state.scaleBase = calcScale(nextProps.width, nextProps.height, bounds);
-      state.scale = state.scaleBase * this.state.scaleFactor;
+      // new scale equals scale at which bounds fit perfectly within new width and height
+      // transformed by how zoomed the current scale is (how much scaleFactor has been applied)
+      state.scale = state.scaleBase * (this.state.scale / this.state.scaleBase);
 
       if (state.bounds) {
         // if state.bounds is set when topology or layers change drastically, reset calculations
         state.translate = calcTranslate(nextProps.width, nextProps.height,
-                                        state.scaleBase, bounds, null);
+                                        state.scaleBase, bounds);
       } else {
+        // get current zoom transform (scale and translate)
+        const transform = this.currentZoomTransform();
+
         // else calculate new translate from previous center point
         const center = calcCenterPoint(this.props.width, this.props.height,
-                                       this.zoom.scale(), this.zoom.translate());
+                                        transform.k, [transform.x, transform.y]);
         state.translate = calcTranslate(nextProps.width, nextProps.height,
-                                        state.scale, null, center);
+                                        state.scale, bounds, center);
       }
 
       state.pathGenerator = this.createPathGenerator(
@@ -138,8 +184,13 @@ export default class Choropleth extends React.Component {
         state.translate,
         this.clipExtent
       );
-      this.zoom.scale(state.scale);
-      this.zoom.translate(state.translate);
+
+      this._svgSelection.call(
+        this.zoom.transform,
+        zoomIdentity
+          .translate(state.translate[0], state.translate[1])
+          .scale(state.scale)
+      );
     }
 
     // if the data has changed, transform it to be consumable by <Layer />
@@ -180,7 +231,7 @@ export default class Choropleth extends React.Component {
    * @returns {function}
    */
   createPathGenerator(scale, translate, clipExtent) {
-    const transform = d3.geo.transform({
+    const transform = geoTransform({
       point(x, y, z) {
         // mike bostock math
         const area = 1 / scale / scale;
@@ -193,46 +244,56 @@ export default class Choropleth extends React.Component {
       }
     });
 
-    return d3.geo.path().projection({
+    return geoPath().projection({
       stream: (pointStream) => transform.stream(clipExtent.stream(pointStream))
     });
   }
 
   zoomEvent() {
-    const scale = this.zoom.scale();
-
-    const translate = this.zoom.translate();
-
+    const transform = this.currentZoomTransform();
+    const scale = transform.k;
+    const translate = [transform.x, transform.y];
     const pathGenerator = this.createPathGenerator(scale, translate, this.clipExtent);
 
     this.setState({
       scale,
-      scaleFactor: scale / this.state.scaleBase,
       translate,
       pathGenerator,
     });
   }
 
-  zoomTo(scale) {
-    return () => {
-      const center = calcCenterPoint(this.props.width, this.props.height,
-                                     this.zoom.scale(), this.zoom.translate());
-      this.zoom.scale(scale);
-      this.zoom.translate(calcTranslate(this.props.width, this.props.height,
-                                        this.zoom.scale(), null, center));
-      this.zoom.event(this._svg);
-    };
+  zoomIn() {
+    this._svgSelection.call(this.zoom.scaleBy, this.props.zoomStep);
+  }
+
+  zoomOut() {
+    this._svgSelection.call(this.zoom.scaleBy, 1 / this.props.zoomStep);
   }
 
   zoomReset() {
-    this.zoom.scale(this.state.scaleBase);
-    this.zoom.translate(calcTranslate(this.props.width, this.props.height,
-                                      this.state.scaleBase, this.state.bounds, null));
-    this.zoom.event(this._svg);
+    const [x, y] = calcTranslate(this.props.width, this.props.height,
+                                this.state.scaleBase, this.state.bounds);
+
+    this._svgSelection.call(
+      this.zoom.transform,
+      zoomIdentity
+        .translate(x, y)
+        .scale(this.state.scaleBase)
+    );
+  }
+
+  /**
+   * return current zoom transform or identity transform if
+   * svgNode does not exist or does not have a zoom transform
+   */
+  currentZoomTransform() {
+    if (!this._svgNode) return zoomIdentity;
+    return zoomTransform(this._svgNode);
   }
 
   saveSvgRef(ref) {
-    this._svg = ref && d3.select(ref);
+    this._svgNode = ref;
+    this._svgSelection = ref && select(ref);
   }
 
   renderLayers() {
@@ -252,7 +313,6 @@ export default class Choropleth extends React.Component {
               key={key}
               keyField={this.props.keyField}
               onClick={this.props.onClick}
-              onMouseDown={this.props.onMouseDown}
               onMouseLeave={this.props.onMouseLeave}
               onMouseMove={this.props.onMouseMove}
               onMouseOver={this.props.onMouseOver}
@@ -295,8 +355,8 @@ export default class Choropleth extends React.Component {
           style={this.props.controlsStyle}
           buttonClassName={this.props.controlsButtonClassName}
           buttonStyle={this.props.controlsButtonStyle}
-          onZoomIn={this.zoomTo(this.zoom.scale() * this.props.zoomStep)}
-          onZoomOut={this.zoomTo(this.zoom.scale() / this.props.zoomStep)}
+          onZoomIn={this.zoomIn}
+          onZoomOut={this.zoomOut}
           onZoomReset={this.zoomReset}
         />}
         <svg
@@ -314,6 +374,65 @@ export default class Choropleth extends React.Component {
 }
 
 Choropleth.propTypes = {
+  /* classname to add rendered components */
+  className: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+  ]),
+
+  /* fn that accepts keyfield, and returns stroke color for line */
+  colorScale: PropTypes.func.isRequired,
+
+  /* show zoom controls */
+  controls: PropTypes.bool,
+
+  /* classname to add to zoom controls container */
+  controlsClassName: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+  ]),
+
+  /* classname to add to zoom control buttons */
+  controlsButtonClassName: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+  ]),
+
+  /* inline styles to apply to zoom control buttons */
+  controlsButtonStyle: PropTypes.object,
+
+  /* inline styles to apply to zoom controls container */
+  controlsStyle: PropTypes.object,
+
+  /* array of datum objects */
+  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+
+  /*
+   uniquely identifying field of geometry objects
+   if a function, will be called with the geometry object as first parameter
+   N.B.: the resolved value of this prop should match the resolved value of `keyField` above
+   e.g., if data objects are of the following shape: { location_id: <number>, mean: <number> }
+   and if features within topojson are of the following shape: { type: <string>, properties: { location_id: <number> }, arcs: <array> }
+   `keyField` may be one of the following: 'location_id', or (datum) => datum.location_id
+   `geometryKeyField` may be one of the following: 'location_id' or (feature) => feature.properties.location_id
+   */
+  geometryKeyField: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+  ]).isRequired,
+
+  /* height of containing element, in px */
+  height: PropTypes.number,
+
+  /*
+   unique key of datum
+   if a function, will be called with the datum object as first parameter
+   */
+  keyField: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+  ]).isRequired,
+
   /* layers to display */
   layers: PropTypes.arrayOf(PropTypes.shape({
     className: CommonPropTypes.className,
@@ -351,63 +470,14 @@ Choropleth.propTypes = {
     visible: PropTypes.bool,
   })).isRequired,
 
-  /* full topojson */
-  topology: PropTypes.shape({
-    arcs: PropTypes.array,
-    objects: PropTypes.object,
-    transform: PropTypes.object,
-    type: PropTypes.string
-  }).isRequired,
+  /* max allowable zoom factor; 1 === fit bounds */
+  maxZoom: PropTypes.number,
 
-  /* array of datum objects */
-  data: PropTypes.arrayOf(PropTypes.object).isRequired,
-
-  /*
-    unique key of datum
-    if a function, will be called with the datum object as first parameter
-  */
-  keyField: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.func,
-  ]).isRequired,
-
-  /*
-    uniquely identifying field of geometry objects
-    if a function, will be called with the geometry object as first parameter
-    N.B.: the resolved value of this prop should match the resolved value of `keyField` above
-    e.g., if data objects are of the following shape: { location_id: <number>, mean: <number> }
-          and if features within topojson are of the following shape: { type: <string>, properties: { location_id: <number> }, arcs: <array> }
-          `keyField` may be one of the following: 'location_id', or (datum) => datum.location_id
-          `geometryKeyField` may be one of the following: 'location_id' or (feature) => feature.properties.location_id
-  */
-  geometryKeyField: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.func,
-  ]).isRequired,
-
-  /* key of datum that holds the value to display */
-  valueField: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.func,
-  ]).isRequired,
-
-  /* fn that accepts keyfield, and returns stroke color for line */
-  colorScale: PropTypes.func.isRequired,
-
-  /* array of data */
-  selectedLocations: PropTypes.arrayOf(PropTypes.object),
-
-  /* width of containing element, in px */
-  width: PropTypes.number,
-
-  /* height of containing element, in px */
-  height: PropTypes.number,
+  /* min allowable zoom factor; 1 === fit bounds */
+  minZoom: PropTypes.number,
 
   /* passed to each path; signature: function(event, datum, Path) {...} */
   onClick: PropTypes.func,
-
-  /* passed to each path; signature: function(event, datum, Path) {...} */
-  onMouseDown: PropTypes.func,
 
   /* passed to each path; signature: function(event, datum, Path) {...} */
   onMouseLeave: PropTypes.func,
@@ -418,38 +488,42 @@ Choropleth.propTypes = {
   /* passed to each path; signature: function(event, datum, Path) {...} */
   onMouseOver: PropTypes.func,
 
-  /* show zoom controls */
-  controls: PropTypes.bool,
+  /* array of data */
+  selectedLocations: PropTypes.arrayOf(PropTypes.object),
+
+  /* inline styles to apply to choropleth container */
+  style: PropTypes.object,
+
+  /* full topojson */
+  topology: PropTypes.shape({
+    arcs: PropTypes.array,
+    bbox: PropTypes.arrayOf(PropTypes.number),
+    objects: PropTypes.object,
+    transform: PropTypes.object,
+    type: PropTypes.string
+  }).isRequired,
+
+  /* key of datum that holds the value to display */
+  valueField: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+  ]).isRequired,
+
+  /* width of containing element, in px */
+  width: PropTypes.number,
 
   /* amount to zoom in/out from zoom controls. current zoom scale is multiplied by prop value.
    e.g. 1.1 is equal to 10% steps, 2.0 is equal to 100% steps */
   zoomStep: PropTypes.number,
-
-  /* class name to add rendered components */
-  className: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.string,
-  ]),
-  controlsClassName: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.string,
-  ]),
-  controlsButtonClassName: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.string,
-  ]),
-
-  /* style to apply to rendered components */
-  style: PropTypes.object,
-  controlsStyle: PropTypes.object,
-  controlsButtonStyle: PropTypes.object,
 };
 
 Choropleth.defaultProps = {
+  controls: false,
+  height: 400,
   layers: [],
+  maxZoom: Infinity,
+  minZoom: 0,
   selectedLocations: [],
   width: 600,
-  height: 400,
-  controls: false,
   zoomStep: 1.1,
 };

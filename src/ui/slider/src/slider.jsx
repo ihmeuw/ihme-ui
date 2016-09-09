@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import d3Scale from 'd3-scale';
+import { scaleLinear } from 'd3';
 import bindAll from 'lodash/bindAll';
 import difference from 'lodash/difference';
 import identity from 'lodash/identity';
@@ -78,7 +78,7 @@ export default class Slider extends PureComponent {
     super(props);
 
     this.state = {
-      ...stateFromPropUpdates(Slider.propUpdates, {}, props, { scale: d3Scale.scaleLinear() }),
+      ...stateFromPropUpdates(Slider.propUpdates, {}, props, { scale: scaleLinear() }),
       render: false,
       snapTarget: {},
     };

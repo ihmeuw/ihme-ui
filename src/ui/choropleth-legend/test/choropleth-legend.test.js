@@ -6,7 +6,7 @@ import { shallow } from 'enzyme';
 import { dataGenerator } from '../../../test-utils';
 import { colorSteps } from '../../../utils';
 import { maxBy, minBy, noop } from 'lodash';
-import d3Scale from 'd3-scale';
+import { scaleLinear, scalePow, scaleLog } from 'd3';
 
 import ChoroplethLegend from '../';
 
@@ -40,7 +40,7 @@ describe('<ChoroplethLegend />', () => {
       rangeExtent={domain}
       valueField={valueField}
       width={600}
-      xScale={d3Scale.scaleLinear()}
+      xScale={scaleLinear()}
     />);
     ['Scatter', 'LinearGradient', 'Slider', 'XAxis'].forEach(component => {
       expect(wrapper.find(component)).to.be.present();
@@ -49,7 +49,7 @@ describe('<ChoroplethLegend />', () => {
 
   describe('xScale', () => {
     it('accepts continuous d3Scales', () => {
-      [d3Scale.scaleLinear, d3Scale.scalePow, d3Scale.scaleLog].forEach(scale => {
+      [scaleLinear, scalePow, scaleLog].forEach(scale => {
         const wrapper = shallow(<ChoroplethLegend
           colorScale={noop}
           colorSteps={colorSteps}
@@ -85,7 +85,7 @@ describe('<ChoroplethLegend />', () => {
         rangeExtent={domain}
         valueField={valueField}
         width={600}
-        xScale={d3Scale.scaleLinear()}
+        xScale={scaleLinear()}
       />);
 
       expect(wrapper.state('scatterScaleMap').x.domain()).to.deep.equal(domain);
@@ -109,7 +109,7 @@ describe('<ChoroplethLegend />', () => {
         rangeExtent={domain}
         valueField={valueField}
         width={600}
-        xScale={d3Scale.scaleLinear()}
+        xScale={scaleLinear()}
       />);
 
       const oldRange = wrapper.state('scatterScaleMap').x.range();
@@ -135,13 +135,13 @@ describe('<ChoroplethLegend />', () => {
         rangeExtent={domain}
         valueField={valueField}
         width={600}
-        xScale={d3Scale.scaleLinear()}
+        xScale={scaleLinear()}
       />);
 
       const oldScale = wrapper.state('scatterScaleMap').x;
 
       wrapper.setProps({
-        xScale: d3Scale.scaleLog(),
+        xScale: scaleLog(),
       });
 
       const newScale = wrapper.state('scatterScaleMap').x;

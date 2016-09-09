@@ -3,7 +3,7 @@ import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
-import d3Shape from 'd3-shape';
+import { symbol, symbolCircle } from 'd3';
 
 import { Symbol } from '../';
 
@@ -28,7 +28,7 @@ describe('<Symbol />', () => {
     expect(wrapper.find('path'))
       .to.have.attr('d')
       .that.is.a('string')
-      .that.equals(d3Shape.symbol().type(d3Shape.symbolCircle)());
+      .that.equals(symbol().type(symbolCircle)());
   });
 
   it('applies a rotate modifier when appropriate', () => {

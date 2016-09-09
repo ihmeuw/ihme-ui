@@ -2,7 +2,7 @@ import React from 'react';
 import { expect } from 'chai';
 import { shallow, mount } from 'enzyme';
 import sinon from 'sinon';
-import d3Scale from 'd3-scale';
+import { scaleLinear } from 'd3';
 
 import Slider from '../src/slider';
 import SliderHandle from '../src/slider-handle';
@@ -10,7 +10,7 @@ import SliderHandle from '../src/slider-handle';
 describe('ChoroplethLegend <Slider />', () => {
   const domain = [0, 100];
   const width = 1000;
-  const xScale = d3Scale.scaleLinear()
+  const xScale = scaleLinear()
     .domain(domain)
     .range([0, width])
     .clamp(true);

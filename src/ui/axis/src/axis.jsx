@@ -2,9 +2,7 @@ import React, { PropTypes } from 'react';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import ReactFauxDom from 'react-faux-dom';
 import classNames from 'classnames';
-import { axisBottom, axisLeft, axisRight, axisTop } from 'd3-axis';
-import { scaleLinear } from 'd3-scale';
-import { select } from 'd3-selection';
+import { axisBottom, axisLeft, axisRight, axisTop, scaleLinear, select } from 'd3';
 import mean from 'lodash/mean';
 import { CommonPropTypes, atLeastOneOfProp, propsChanged } from '../../../utils';
 

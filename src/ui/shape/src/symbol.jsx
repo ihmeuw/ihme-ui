@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import d3Shape from 'd3-shape';
+import { symbol } from 'd3';
 import { assign } from 'lodash';
 
 import { eventHandleWrapper } from '../../../utils/events';
@@ -28,7 +28,7 @@ export default class Symbol extends PureComponent {
    */
   static getPath(type, size) {
     const symbolType = getSymbol(type);
-    return d3Shape.symbol().type(symbolType).size(size)();
+    return symbol().type(symbolType).size(size)();
   }
 
   /**

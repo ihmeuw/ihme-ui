@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
-import * as d3Request from 'd3-request';
+import { json } from 'd3';
 import {
   bindAll,
   find,
@@ -148,7 +148,7 @@ class App extends React.Component {
   }
 }
 
-d3Request.json("world.topo.json", function(error, topology) {
+json("world.topo.json", function(error, topology) {
   if (error) throw error;
 
   render(<App topology={topology} />, document.getElementById('app'));

@@ -7,7 +7,7 @@ import ChoroplethLegend from '../';
 import Button from '../../button';
 
 // utils
-import { scaleLinear } from 'd3-scale';
+import { scaleLinear } from 'd3';
 import { maxBy, minBy, range } from 'lodash';
 import { dataGenerator } from '../../../test-utils';
 import { colorSteps } from '../../../utils';
