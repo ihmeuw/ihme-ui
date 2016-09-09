@@ -1,9 +1,9 @@
-import d3Shape from 'd3-shape';
+import * as d3 from 'd3';
 
 const SHAPES = {
-  ...Object.keys(d3Shape).reduce((acc, key) => {
+  ...Object.keys(d3).reduce((acc, key) => {
     if (key.match(/symbol[A-Z]/)) {
-      return { ...acc, [key.toLowerCase().replace('symbol', '')]: d3Shape[key] };
+      return { ...acc, [key.toLowerCase().replace('symbol', '')]: d3[key] };
     }
     return acc;
   }, {}),

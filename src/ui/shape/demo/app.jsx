@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 
-import d3Scale from 'd3-scale';
+import { schemeCategory10, scaleOrdinal } from 'd3';
 
 import { bindAll, maxBy, minBy, map, slice, uniqBy, without, xor } from 'lodash';
 
@@ -38,11 +38,11 @@ const valueFieldDomain = [minBy(data, valueField)[valueField], maxBy(data, value
 
 const keyFieldDomain = map(uniqBy(data, keyField), (obj) => { return (obj[keyField]); });
 
-const symbolScale = d3Scale.scaleOrdinal()
+const symbolScale = scaleOrdinal()
   .domain(['Brazil', 'Russia', 'India', 'China', 'Mexico', 'Indonesia', 'Nigeria', 'Vietnam'])
   .range(['circle', 'cross', 'diamond', 'line', 'square', 'star', 'triangle', 'wye']);
 
-const colorScale = d3Scale.scaleCategory10();
+const colorScale = scaleOrdinal(schemeCategory10);
 
 class App extends React.Component {
   constructor(props) {
@@ -341,7 +341,7 @@ class App extends React.Component {
 >
   <XAxis />
   <Scatter
-    fill={d3Scale.scaleCategory10()}
+    fill={scaleCategory10()}
     data={[]}
     dataAccessors={{ fill: valueField, key: 'id', x: valueField }}
     onClick={function(event, datum, Symbol) {...}}

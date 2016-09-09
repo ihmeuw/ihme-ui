@@ -1,6 +1,14 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import d3 from 'd3';
+import {
+  geoClipExtent,
+  geoPath,
+  geoTransform,
+  select,
+  zoom,
+  zoomIdentity,
+  zoomTransform,
+} from 'd3';
 import { presimplify } from 'topojson';
 import { bindAll, filter, has, isEqual, keyBy, memoize } from 'lodash';
 import {
@@ -43,12 +51,12 @@ export default class Choropleth extends React.Component {
     const scale = calcScale(props.width, props.height, bounds);
 
     const translate = calcTranslate(props.width, props.height, scale, bounds, null);
-    this.clipExtent = d3.geo.clipExtent()
+    this.clipExtent = geoClipExtent()
       .extent([
         [-CLIP_EXTENT_PADDING, -CLIP_EXTENT_PADDING],
         [props.width + CLIP_EXTENT_PADDING, props.height + CLIP_EXTENT_PADDING]
       ]);
-    this.zoom = d3.behavior.zoom();
+    this.zoom = zoom();
     this.calcMeshLayerStyle = memoize(this.calcMeshLayerStyle);
 
     this.state = {
@@ -62,15 +70,28 @@ export default class Choropleth extends React.Component {
       processedData: Choropleth.processData(props.data, props.keyField)
     };
 
-    bindAll(this, ['saveSvgRef', 'zoomEvent', 'zoomTo', 'zoomReset']);
+    bindAll(this, [
+      'currentZoomTransform',
+      'saveSvgRef',
+      'zoomEvent',
+      'zoomTo',
+      'zoomReset',
+    ]);
   }
 
   componentDidMount() {
-    this._svg.call(
+    this._svgSelection.call(
       this.zoom
+        .on('zoom.ihme-ui-choropleth', this.zoomEvent)
+    );
+
+    const [x, y] = this.state.translate;
+    this._svgSelection.call(
+      this.zoom.transform,
+      zoomIdentity
+        .translate(x, y)
         .scale(this.state.scale)
-        .translate(this.state.translate)
-        .on('zoom', this.zoomEvent));
+    );
   }
 
   componentWillReceiveProps(nextProps) {
@@ -118,6 +139,11 @@ export default class Choropleth extends React.Component {
         ]);
       const bounds = state.bounds || this.state.bounds;
 
+      // get current zoom transform (scale and translate)
+      const transform = this.currentZoomTransform();
+      const scale = transform.k;
+      const translate = [transform.x, transform.y];
+
       state.scaleBase = calcScale(nextProps.width, nextProps.height, bounds);
       state.scale = state.scaleBase * this.state.scaleFactor;
 
@@ -128,7 +154,7 @@ export default class Choropleth extends React.Component {
       } else {
         // else calculate new translate from previous center point
         const center = calcCenterPoint(this.props.width, this.props.height,
-                                       this.zoom.scale(), this.zoom.translate());
+                                       scale, translate);
         state.translate = calcTranslate(nextProps.width, nextProps.height,
                                         state.scale, null, center);
       }
@@ -138,8 +164,13 @@ export default class Choropleth extends React.Component {
         state.translate,
         this.clipExtent
       );
-      this.zoom.scale(state.scale);
-      this.zoom.translate(state.translate);
+
+      this._svgSelection.call(
+        this.zoom.transform,
+        zoomIdentity
+          .translate(state.translate[0], state.translate[1])
+          .scale(state.scale)
+      );
     }
 
     // if the data has changed, transform it to be consumable by <Layer />
@@ -180,7 +211,7 @@ export default class Choropleth extends React.Component {
    * @returns {function}
    */
   createPathGenerator(scale, translate, clipExtent) {
-    const transform = d3.geo.transform({
+    const transform = geoTransform({
       point(x, y, z) {
         // mike bostock math
         const area = 1 / scale / scale;
@@ -193,16 +224,15 @@ export default class Choropleth extends React.Component {
       }
     });
 
-    return d3.geo.path().projection({
+    return geoPath().projection({
       stream: (pointStream) => transform.stream(clipExtent.stream(pointStream))
     });
   }
 
   zoomEvent() {
-    const scale = this.zoom.scale();
-
-    const translate = this.zoom.translate();
-
+    const transform = this.currentZoomTransform();
+    const scale = transform.k;
+    const translate = [transform.x, transform.y];
     const pathGenerator = this.createPathGenerator(scale, translate, this.clipExtent);
 
     this.setState({
@@ -213,26 +243,49 @@ export default class Choropleth extends React.Component {
     });
   }
 
-  zoomTo(scale) {
+  zoomTo(nextScale) {
     return () => {
+      const transform = this.currentZoomTransform();
+      const scale = transform.k;
+      const translate = [transform.x, transform.y];
       const center = calcCenterPoint(this.props.width, this.props.height,
-                                     this.zoom.scale(), this.zoom.translate());
-      this.zoom.scale(scale);
-      this.zoom.translate(calcTranslate(this.props.width, this.props.height,
-                                        this.zoom.scale(), null, center));
-      this.zoom.event(this._svg);
+                                      scale, translate);
+      const [x, y] = calcTranslate(this.props.width, this.props.height,
+                                  nextScale, null, center);
+
+      this._svgSelection.call(
+        this.zoom.transform,
+        zoomIdentity
+          .translate(x, y)
+          .scale(nextScale)
+      );
     };
   }
 
   zoomReset() {
-    this.zoom.scale(this.state.scaleBase);
-    this.zoom.translate(calcTranslate(this.props.width, this.props.height,
-                                      this.state.scaleBase, this.state.bounds, null));
-    this.zoom.event(this._svg);
+    const [x, y] = calcTranslate(this.props.width, this.props.height,
+                                this.state.scaleBase, this.state.bounds, null);
+
+    this._svgSelection.call(
+      this.zoom.transform,
+      zoomIdentity
+        .translate(x, y)
+        .scale(this.state.scaleBase)
+    );
+  }
+
+  /**
+   * return current zoom transform or identity transform if
+   * svgNode does not exist or does not have a zoom transform
+   */
+  currentZoomTransform() {
+    if (!this._svgNode) return zoomIdentity;
+    return zoomTransform(this._svgNode);
   }
 
   saveSvgRef(ref) {
-    this._svg = ref && d3.select(ref);
+    this._svgNode = ref;
+    this._svgSelection = ref && select(ref);
   }
 
   renderLayers() {
@@ -284,6 +337,7 @@ export default class Choropleth extends React.Component {
 
   render() {
     const { width, height } = this.props;
+    const { k: scale } = this.currentZoomTransform();
 
     return (
       <div
@@ -295,8 +349,8 @@ export default class Choropleth extends React.Component {
           style={this.props.controlsStyle}
           buttonClassName={this.props.controlsButtonClassName}
           buttonStyle={this.props.controlsButtonStyle}
-          onZoomIn={this.zoomTo(this.zoom.scale() * this.props.zoomStep)}
-          onZoomOut={this.zoomTo(this.zoom.scale() / this.props.zoomStep)}
+          onZoomIn={this.zoomTo(scale * this.props.zoomStep)}
+          onZoomOut={this.zoomTo(scale / this.props.zoomStep)}
           onZoomReset={this.zoomReset}
         />}
         <svg

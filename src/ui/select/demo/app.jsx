@@ -1,13 +1,13 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { bindAll } from 'lodash';
-import d3Random from 'd3-random';
+import { randomUniform } from 'd3';
 
 import { MultiSelect, SingleSelect } from '../';
 import { default as cities } from './cities';
 import style from './app.css';
 
-const randomizer = d3Random.randomUniform(0, 4);
+const randomizer = randomUniform(0, 4);
 
 const hierarchicalCities = cities.map((city) => {
   const level = Math.floor(randomizer());

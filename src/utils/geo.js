@@ -1,6 +1,6 @@
-import topojson from 'topojson';
+import * as topojson from 'topojson';
 import { reduce } from 'lodash';
-import d3 from 'd3';
+import { geoPath } from 'd3';
 
 const defaultMeshFilter = () => { return true; };
 
@@ -75,7 +75,7 @@ export function concatGeoJSON(extractedGeoJSON) {
  * @returns {Array} [[left, top], [right, bottom]]
  */
 export function computeBounds(featureCollection) {
-  return d3.geo.path().projection(null).bounds(featureCollection);
+  return geoPath().projection(null).bounds(featureCollection);
 }
 
 /**

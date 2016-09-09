@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import d3Shape from 'd3-shape';
+import { symbolSquare, symbolCircle } from 'd3';
 
 import { getSymbol, symbolTypes } from '../symbol';
 
@@ -15,11 +15,11 @@ describe('getSymbolTypes()', () => {
 
 describe('getSymbol()', () => {
   it('returns specified type of symbol', () => {
-    expect(getSymbol('square')).to.be.equal(d3Shape.symbolSquare);
+    expect(getSymbol('square')).to.be.equal(symbolSquare);
   });
 
   it('provides a default of `circle`', () => {
-    expect(getSymbol()).to.be.equal(d3Shape.symbolCircle);
+    expect(getSymbol()).to.be.equal(symbolCircle);
   });
 });
 

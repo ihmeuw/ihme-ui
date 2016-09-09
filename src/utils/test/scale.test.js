@@ -1,5 +1,5 @@
 import chai from 'chai';
-import d3Scale from 'd3-scale';
+import { scaleOrdinal, scaleLinear, scaleLog } from 'd3';
 
 const expect = chai.expect;
 
@@ -27,17 +27,17 @@ describe('scale utilities', () => {
 
   describe('getScale()', () => {
     it('returns specified type of scale', () => {
-      expect(getScale('ordinal')).to.be.equal(d3Scale.scaleOrdinal);
+      expect(getScale('ordinal')).to.be.equal(scaleOrdinal);
     });
 
     it('provides a default of `linear`', () => {
-      expect(getScale()).to.be.equal(d3Scale.scaleLinear);
+      expect(getScale()).to.be.equal(scaleLinear);
     });
   });
 
   describe('domainToRange()', () => {
     it('inverts two points on the domain', () => {
-      const scale = d3Scale.scaleLinear().range([0, 100]);
+      const scale = scaleLinear().range([0, 100]);
 
       expect(domainToRange(scale, scale.domain())).to.deep.equal([0, 100]);
       expect(domainToRange(scale, [0.1, 0.9])).to.deep.equal([10, 90]);
@@ -46,7 +46,7 @@ describe('scale utilities', () => {
 
   describe('rangeToDomain()', () => {
     it('inverts two points on the range', () => {
-      const scale = d3Scale.scaleLinear().range([0, 100]);
+      const scale = scaleLinear().range([0, 100]);
 
       expect(rangeToDomain(scale, scale.range())).to.deep.equal([0, 1]);
       expect(rangeToDomain(scale, [10, 90])).to.deep.equal([0.1, 0.9]);
@@ -56,7 +56,7 @@ describe('scale utilities', () => {
   describe('clampedScale', () => {
     it('sets the base scale', () => {
       const scale = clampedScale()
-        .base(d3Scale.scaleLinear())
+        .base(scaleLinear())
         .domain([0, 1])
         .range([0, 1]);
       expect(scale(0)).to.equal(0);
@@ -66,12 +66,12 @@ describe('scale utilities', () => {
 
     it('can update its base scale', () => {
       const initialScale = clampedScale()
-        .base(d3Scale.scaleLinear())
+        .base(scaleLinear())
         .domain([1, 10])
         .range([0, 1]);
       expect(initialScale(5.5)).to.equal(0.5);
 
-      const logScale = d3Scale.scaleLog().base(Math.E);
+      const logScale = scaleLog().base(Math.E);
       const updatedScale = initialScale
         .base(logScale);
       expect(updatedScale(1)).to.equal(0);
@@ -83,7 +83,7 @@ describe('scale utilities', () => {
     });
 
     it('sets the domain of the scale', () => {
-      const scale = clampedScale().base(d3Scale.scaleLinear());
+      const scale = clampedScale().base(scaleLinear());
       const cachedDomain = scale.domain();
       scale.domain([100, 200]);
       const newDomain = scale.domain();
@@ -92,7 +92,7 @@ describe('scale utilities', () => {
     });
 
     it('sets the range of the scale', () => {
-      const scale = clampedScale().base(d3Scale.scaleLinear());
+      const scale = clampedScale().base(scaleLinear());
       const cachedRange = scale.range();
       scale.range([100, 200]);
       const newRange = scale.range();
@@ -102,7 +102,7 @@ describe('scale utilities', () => {
 
     it('returns a copy of the scale', () => {
       const scale = clampedScale()
-        .base(d3Scale.scaleLinear())
+        .base(scaleLinear())
         .domain([0, 100])
         .range([0, 1000]);
       expect(scale).to.equal(scale);
@@ -113,7 +113,7 @@ describe('scale utilities', () => {
     });
 
     it('is clamped, and returns a specified value for anything outside of its clamps', () => {
-      const scale = clampedScale('foo').base(d3Scale.scaleLinear())
+      const scale = clampedScale('foo').base(scaleLinear())
         .domain([0, 1])
         .range([0, 1])
         .clamps([0.25, 0.75]);

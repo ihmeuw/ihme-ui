@@ -4,8 +4,7 @@ import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import { maxBy, minBy } from 'lodash';
-import d3Scale from 'd3-scale';
-import { line } from 'd3-shape';
+import { line, scalePoint, scaleLinear } from 'd3';
 
 import { dataGenerator } from '../../../test-utils';
 import { Line } from '../';
@@ -31,8 +30,8 @@ describe('<Line />', () => {
   const range = [minBy(data, valueField)[valueField], maxBy(data, valueField)[valueField]];
   const domain = [minBy(data, keyField)[keyField], maxBy(data, keyField)[keyField]];
 
-  const xScale = d3Scale.scalePoint().domain(domain).range([0, chartDimensions.width]);
-  const yScale = d3Scale.scaleLinear().domain(range).range([chartDimensions.height, 0]);
+  const xScale = scalePoint().domain(domain).range([0, chartDimensions.width]);
+  const yScale = scaleLinear().domain(range).range([chartDimensions.height, 0]);
 
   const eventHandler = sinon.spy();
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { maxBy, minBy, map, uniqBy } from 'lodash';
-import d3Scale from 'd3-scale';
+import { scaleOrdinal } from 'd3';
 
 import { dataGenerator } from '../../../test-utils';
 import AxisChart from '../';
@@ -53,7 +53,7 @@ const lineData = [
 
 const yDomain = [minBy(data, 'value_lb').value_lb, maxBy(data, 'value_ub').value_ub];
 const xDomain = map(uniqBy(data, keyField), (obj) => { return (obj[keyField]); });
-const colorScale = d3Scale.scaleOrdinal().domain(['A', 'B', 'C', 'D', 'E', 'F'])
+const colorScale = scaleOrdinal().domain(['A', 'B', 'C', 'D', 'E', 'F'])
   .range(['red', 'blue', 'orange', 'green', 'salmon', 'violet']);
 
 const dims = {

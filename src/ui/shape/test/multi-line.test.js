@@ -1,12 +1,9 @@
 import React from 'react';
-
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
-
 import { maxBy, minBy, map, uniqBy } from 'lodash';
-
-import d3Scale from 'd3-scale';
+import { scalePoint, scaleLinear, scaleOrdinal } from 'd3';
 
 import { dataGenerator } from '../../../test-utils';
 import { MultiLine } from '../';
@@ -27,11 +24,11 @@ describe('<MultiLine />', () => {
   const xDomain = map(uniqBy(data, keyField), (obj) => { return (obj[keyField]); });
 
   const scales = {
-    x: d3Scale.scalePoint().domain(xDomain).range([0, 100]),
-    y: d3Scale.scaleLinear().domain(yDomain).range([100, 0])
+    x: scalePoint().domain(xDomain).range([0, 100]),
+    y: scaleLinear().domain(yDomain).range([100, 0])
   };
 
-  const colorScale = d3Scale.scaleOrdinal().domain(['USA', 'Canada']).range(['red', 'blue']);
+  const colorScale = scaleOrdinal().domain(['USA', 'Canada']).range(['red', 'blue']);
 
   const lineData = [{ location: 'USA', values: data }, { location: 'Canada', values: data }];
 

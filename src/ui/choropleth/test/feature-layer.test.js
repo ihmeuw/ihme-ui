@@ -2,7 +2,7 @@ import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
-import d3 from 'd3';
+import { geoPath } from 'd3';
 import { drop, find, omit } from 'lodash';
 import { getGeoJSON, getLocationIds } from '../../../test-utils';
 import { baseColorScale } from '../../../utils';
@@ -26,7 +26,7 @@ describe('Choropleth <FeatureLayer />', () => {
     /* eslint-enable no-param-reassign */
   }, {});
 
-  const pathGenerator = d3.geo.path();
+  const pathGenerator = geoPath();
   const colorScale = baseColorScale();
 
   describe('geometryKeyField', () => {

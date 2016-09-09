@@ -2,8 +2,7 @@ import React from 'react';
 import { render } from 'react-dom';
 
 import { bindAll, filter, find, flatMap, forEach, includes, values, xor } from 'lodash';
-import { json } from 'd3-request';
-import { scaleLinear } from 'd3-scale';
+import { json, scaleLinear } from 'd3';
 
 import { dataGenerator } from '../../../test-utils';
 import { colorSteps } from '../../../utils';
@@ -110,6 +109,8 @@ class App extends React.Component {
               geometryKeyField="properties.loc_id"
               keyField={keyField}
               layers={layers}
+              maxZoom={3}
+              minZoom={1}
               onClick={this.selectLocation}
               topology={this.props.topology}
               valueField={valueField}

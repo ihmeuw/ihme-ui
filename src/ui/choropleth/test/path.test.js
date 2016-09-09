@@ -4,7 +4,7 @@ import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
-import d3 from 'd3';
+import { geoPath } from 'd3';
 import { getGeoJSON } from '../../../test-utils';
 
 import Path from '../src/path';
@@ -12,7 +12,7 @@ import Path from '../src/path';
 chai.use(chaiEnzyme());
 
 describe('Choropleth <Path />', () => {
-  const pathGenerator = d3.geo.path();
+  const pathGenerator = geoPath();
   const feature = getGeoJSON('states', 'feature').features[0];
   const eventHandler = sinon.spy();
 

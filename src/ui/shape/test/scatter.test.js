@@ -4,7 +4,7 @@ import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 import { drop, forEach, minBy, maxBy, uniqBy, map } from 'lodash';
-import d3Scale from 'd3-scale';
+import { scaleLinear, scalePoint } from 'd3';
 import sinon from 'sinon';
 import { dataGenerator } from '../../../test-utils';
 
@@ -33,9 +33,9 @@ describe('<Scatter />', () => {
   const yDomain = [minBy(data, 'population').population, maxBy(data, 'population').population];
   const xDomain = map(uniqBy(data, 'year_id'), (obj) => obj.year_id);
 
-  const xScale = d3Scale.scalePoint().domain(xDomain).range([0, chartDimensions.width]);
-  const yScale = d3Scale.scaleLinear().domain(yDomain).range([chartDimensions.height, 0]);
-  const colorScale = d3Scale.scaleLinear().domain(yDomain).range(['#fc8d59', '#ffffbf', '#91bfdb']);
+  const xScale = scalePoint().domain(xDomain).range([0, chartDimensions.width]);
+  const yScale = scaleLinear().domain(yDomain).range([chartDimensions.height, 0]);
+  const colorScale = scaleLinear().domain(yDomain).range(['#fc8d59', '#ffffbf', '#91bfdb']);
 
   const component = (
     <Scatter

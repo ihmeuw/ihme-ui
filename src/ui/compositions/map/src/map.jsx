@@ -13,7 +13,7 @@ import {
   isEqual,
   toString,
 } from 'lodash';
-import d3Scale from 'd3-scale';
+import { scaleLinear } from 'd3';
 import Button from '../../../button';
 import Choropleth from '../../../choropleth';
 import ChoroplethLegend from '../../../choropleth-legend';
@@ -161,7 +161,7 @@ export default class Map extends React.Component {
 
     const state = {
       colorScale: clampedScale('#ccc')
-        .base(d3Scale.scaleLinear())
+        .base(scaleLinear())
         .domain(generateColorDomain(colorSteps, rangeExtent))
         .range(colorSteps),
       layers,

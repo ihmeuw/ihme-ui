@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
-import d3Random from 'd3-random';
+import { randomUniform } from 'd3';
 import bindAll from 'lodash/bindAll';
 
 import Slider from '../';
@@ -44,7 +44,7 @@ class App extends React.Component {
     };
 
     this.randomGenerator = (range) => {
-      return Math.floor(d3Random.randomUniform(...range)());
+      return Math.floor(randomUniform(...range)());
     };
 
     this.nextExtent = [this.randomGenerator([1900, 2016]), this.randomGenerator([1900, 2016])];

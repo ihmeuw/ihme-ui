@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { area } from 'd3-shape';
+import { area } from 'd3';
 
 import { eventHandleWrapper } from '../../../utils/events';
 import {

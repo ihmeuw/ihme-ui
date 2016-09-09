@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { assign } from 'lodash';
-import d3Scale from 'd3-scale';
+import { scaleLinear } from 'd3';
 
 import {
   numberFormat,
@@ -27,7 +27,7 @@ export default class ChoroplethLegend extends PureComponent {
     // e.g., distribute density points in log-space while maintaining linear slider movement
     // the slider scale should always be linear
     const state = {
-      sliderScale: d3Scale.scaleLinear().clamp(true),
+      sliderScale: scaleLinear().clamp(true),
     };
 
     this.state = stateFromPropUpdates(ChoroplethLegend.propUpdates, {}, props, state);
@@ -264,7 +264,7 @@ ChoroplethLegend.defaultProps = {
   sliderHandleFormat: numberFormat,
   x1: 0,
   x2: 100,
-  xScale: d3Scale.scaleLinear(),
+  xScale: scaleLinear(),
   zoom: 1
 };
 
