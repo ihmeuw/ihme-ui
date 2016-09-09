@@ -11,7 +11,7 @@ import { scaleLinear } from 'd3';
 import { maxBy, minBy, range } from 'lodash';
 import { dataGenerator } from '../../../test-utils';
 import { colorSteps } from '../../../utils';
-import { linspace, isWithinRange, numFromPercent } from '../../../utils/domain';
+import { linspace, isWithinRange, numFromPercent } from '../../../utils';
 
 const valueField = 'value';
 const keyField = 'loc_id';

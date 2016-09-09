@@ -1,5 +1,6 @@
 export {
   hasCrappyValues,
+  linspace,
 } from './array';
 
 export {
@@ -11,7 +12,6 @@ export {
   percentOfRange,
   numFromPercent,
   domainFromPercent,
-  linspace,
   isWithinRange,
   ensureWithinRange,
 } from './domain';

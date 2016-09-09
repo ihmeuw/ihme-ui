@@ -4,7 +4,6 @@ import {
   percentOfRange,
   numFromPercent,
   domainFromPercent,
-  linspace,
   isWithinRange,
   ensureWithinRange,
 } from '../domain';
@@ -62,45 +61,6 @@ describe('domain helpers', () => {
       const { oldDomain, newDomain, rangeExtent, expected } = spec;
       expect(domainFromPercent(newDomain, oldDomain, rangeExtent)).to.deep.equal(expected);
     });
-  });
-
-  describe('linspace', () => {
-    it(`turns [min, max] domain into multi-step domain
-    that matches cardinality of colors array`, () => {
-      expect(linspace([0, 100], 5)).to.be.an('array')
-        .of.length(5)
-        .and.to.deep.equal([0, 25, 50, 75, 100]);
-    });
-
-    it('is capable of starting at a number other than 0', () => {
-      expect(linspace([0.05, 0.5], 11)).to.be.an('array')
-        .of.length(11)
-        .and.to.deep.equal([
-          0.05,
-          0.095,
-          0.14,
-          0.185,
-          0.22999999999999998,
-          0.27499999999999997,
-          0.32,
-          0.365,
-          0.41,
-          0.45499999999999996,
-          0.5,
-        ]);
-    });
-  });
-
-  it('is exactly bounded by domain', () => {
-    const domain = linspace([1, 5], 15);
-    expect(domain[0]).to.equal(1);
-    expect(domain[14]).to.equal(5);
-  });
-
-  it('returns [min, max] as color domain when min === max', () => {
-    expect(linspace([0, 0], 5)).to.be.an('array')
-      .of.length(2)
-      .and.to.deep.equal([0, 0]);
   });
 
   it('validates that a number is within a specified range, up to and including bounding', () => {

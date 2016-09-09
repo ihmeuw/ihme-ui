@@ -1,6 +1,6 @@
 import { scaleLinear } from 'd3';
 
-import { linspace } from './domain';
+import { linspace } from './array';
 
 /**
  * 11 step diverging color scale

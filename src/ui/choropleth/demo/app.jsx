@@ -5,8 +5,7 @@ import { bindAll, filter, find, flatMap, forEach, includes, values, xor } from '
 import { json, scaleLinear } from 'd3';
 
 import { dataGenerator } from '../../../test-utils';
-import { colorSteps } from '../../../utils';
-import { linspace } from '../../../utils/domain';
+import { colorSteps, linspace } from '../../../utils';
 
 import ResponsiveContainer from '../../responsive-container';
 import Choropleth from '../';
