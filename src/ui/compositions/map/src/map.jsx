@@ -21,7 +21,7 @@ import ResponsiveContainer from '../../../responsive-container';
 import {
   clampedScale,
   CommonPropTypes,
-  generateColorDomain,
+  linspace,
   numFromPercent,
   propResolver,
   stateFromPropUpdates,
@@ -162,7 +162,7 @@ export default class Map extends React.Component {
     const state = {
       colorScale: clampedScale('#ccc')
         .base(scaleLinear())
-        .domain(generateColorDomain(colorSteps, rangeExtent))
+        .domain(linspace(rangeExtent, colorSteps.length))
         .range(colorSteps),
       layers,
     };
@@ -187,7 +187,7 @@ export default class Map extends React.Component {
     this.setState({
       colorScale: this.state.colorScale
         .clamps(rangeExtent)
-        .domain(generateColorDomain(colorSteps, rangeExtent))
+        .domain(linspace(rangeExtent, colorSteps.length))
         .copy(),
       setScaleExtentPct: extentPct,
     }, () => {
@@ -200,7 +200,7 @@ export default class Map extends React.Component {
     this.setState({
       colorScale: this.state.colorScale
         .clamps(domain)
-        .domain(generateColorDomain(colorSteps, domain))
+        .domain(linspace(domain, colorSteps.length))
         .copy(),
       setScaleExtentPct: null,
     }, () => {
@@ -571,7 +571,7 @@ Map.propUpdates = {
     return assign({}, state, {
       colorScale: state.colorScale
         .clamps(clamp)
-        .domain(generateColorDomain(nextProps.colorSteps, domain))
+        .domain(linspace(domain, nextProps.colorSteps.length))
         .copy(),
     });
   },

@@ -35,14 +35,13 @@ export function domainFromPercent(newDomain, oldDomain, rangeExtent) {
 }
 
 /**
- * Turn [min, max] domain into multi-step domain
+ * turn [min, max] domain into domain of length
  * that matches cardinality of colors array
- * @param {Array} colors -> array of colors to be used as range of scale
- * @param {Array} domain -> [min, max] of x-scale domain
- * @returns {Array}
+ * @param {array} domain - [min, max] of x-scale domain
+ * @param {number} length - intended length of returned array
+ * @returns {array}
  */
-export function generateColorDomain(colors, domain) {
-  const length = colors.length;
+export function linspace(domain, length) {
   if (length < 2 || domain.length < 2 || domain[0] === domain[1]) return domain;
 
   const step = Math.abs(domain[1] - domain[0]) / (length - 1);

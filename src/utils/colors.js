@@ -1,6 +1,6 @@
 import { scaleLinear } from 'd3';
 
-import { generateColorDomain } from './domain';
+import { linspace } from './domain';
 
 /**
  * 11 step diverging color scale
@@ -27,6 +27,6 @@ export const colorSteps = [
  */
 export const baseColorScale = (domain = [0, 1]) => {
   return scaleLinear()
-    .domain(generateColorDomain(colorSteps, domain))
+    .domain(linspace(domain, colorSteps.length))
     .range(colorSteps);
 };

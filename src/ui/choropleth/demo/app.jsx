@@ -6,7 +6,7 @@ import { json, scaleLinear } from 'd3';
 
 import { dataGenerator } from '../../../test-utils';
 import { colorSteps } from '../../../utils';
-import { generateColorDomain } from '../../../utils/domain';
+import { linspace } from '../../../utils/domain';
 
 import ResponsiveContainer from '../../responsive-container';
 import Choropleth from '../';
@@ -29,7 +29,7 @@ const valueField = 'mean';
 const dataRange = [0, 100];
 
 const colorScale = scaleLinear()
-  .domain(generateColorDomain(colorSteps, dataRange))
+  .domain(linspace(dataRange, colorSteps.length))
   .range(colorSteps)
   .clamp(true);
 

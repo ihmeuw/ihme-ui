@@ -4,7 +4,7 @@ import {
   percentOfRange,
   numFromPercent,
   domainFromPercent,
-  generateColorDomain,
+  linspace,
   isWithinRange,
   ensureWithinRange,
 } from '../domain';
@@ -64,20 +64,16 @@ describe('domain helpers', () => {
     });
   });
 
-  describe('generateColorDomain', () => {
+  describe('linspace', () => {
     it(`turns [min, max] domain into multi-step domain
     that matches cardinality of colors array`, () => {
-      const origDomain = [0, 100];
-      const colors = Array(5);
-      expect(generateColorDomain(colors, origDomain)).to.be.an('array')
+      expect(linspace([0, 100], 5)).to.be.an('array')
         .of.length(5)
         .and.to.deep.equal([0, 25, 50, 75, 100]);
     });
 
     it('is capable of starting at a number other than 0', () => {
-      const origDomain = [0.05, 0.5];
-      const colors = Array(11);
-      expect(generateColorDomain(colors, origDomain)).to.be.an('array')
+      expect(linspace([0.05, 0.5], 11)).to.be.an('array')
         .of.length(11)
         .and.to.deep.equal([
           0.05,
@@ -96,16 +92,13 @@ describe('domain helpers', () => {
   });
 
   it('is exactly bounded by domain', () => {
-    const linspace = generateColorDomain(Array(15), [1, 5]);
-    expect(linspace).to.have.length(15);
-    expect(linspace[0]).to.equal(1);
-    expect(linspace[14]).to.equal(5);
+    const domain = linspace([1, 5], 15);
+    expect(domain[0]).to.equal(1);
+    expect(domain[14]).to.equal(5);
   });
 
   it('returns [min, max] as color domain when min === max', () => {
-    const origDomain = [0, 0];
-    const colors = Array(5);
-    expect(generateColorDomain(colors, origDomain)).to.be.an('array')
+    expect(linspace([0, 0], 5)).to.be.an('array')
       .of.length(2)
       .and.to.deep.equal([0, 0]);
   });

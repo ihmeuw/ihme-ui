@@ -11,7 +11,7 @@ import { scaleLinear } from 'd3';
 import { maxBy, minBy, range } from 'lodash';
 import { dataGenerator } from '../../../test-utils';
 import { colorSteps } from '../../../utils';
-import { generateColorDomain, isWithinRange, numFromPercent } from '../../../utils/domain';
+import { linspace, isWithinRange, numFromPercent } from '../../../utils/domain';
 
 const valueField = 'value';
 const keyField = 'loc_id';
@@ -82,7 +82,7 @@ class App extends React.Component {
   baseColorScale(rangeExtent, generateNewBaseScale) {
     const createBaseScale = (colorDomain = this.state.colorDomain) => {
       return scaleLinear()
-        .domain(generateColorDomain(colorSteps, colorDomain))
+        .domain(linspace(colorDomain, colorSteps.length))
         .range(colorSteps)
         .clamp(true);
     };

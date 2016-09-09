@@ -11,7 +11,7 @@ export {
   percentOfRange,
   numFromPercent,
   domainFromPercent,
-  generateColorDomain,
+  linspace,
   isWithinRange,
   ensureWithinRange,
 } from './domain';
