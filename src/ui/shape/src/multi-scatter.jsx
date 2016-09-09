@@ -29,6 +29,7 @@ export default class MultiScatter extends PureComponent {
     } = fieldAccessors;
 
     const childProps = pick(this.props, [
+      'colorScale',
       'dataAccessors',
       'focus',
       'focusedClassName',
