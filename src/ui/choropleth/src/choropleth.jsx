@@ -91,7 +91,8 @@ export default class Choropleth extends React.Component {
       'currentZoomTransform',
       'saveSvgRef',
       'zoomEvent',
-      'zoomTo',
+      'zoomIn',
+      'zoomOut',
       'zoomReset',
     ]);
   }
@@ -260,23 +261,12 @@ export default class Choropleth extends React.Component {
     });
   }
 
-  zoomTo(nextScale) {
-    return () => {
-      const transform = this.currentZoomTransform();
-      const scale = transform.k;
-      const translate = [transform.x, transform.y];
-      const center = calcCenterPoint(this.props.width, this.props.height,
-                                      scale, translate);
-      const [x, y] = calcTranslate(this.props.width, this.props.height,
-                                  nextScale, null, center);
+  zoomIn() {
+    this._svgSelection.call(this.zoom.scaleBy, this.props.zoomStep);
+  }
 
-      this._svgSelection.call(
-        this.zoom.transform,
-        zoomIdentity
-          .translate(x, y)
-          .scale(nextScale)
-      );
-    };
+  zoomOut() {
+    this._svgSelection.call(this.zoom.scaleBy, 1 / this.props.zoomStep);
   }
 
   zoomReset() {
@@ -353,7 +343,6 @@ export default class Choropleth extends React.Component {
 
   render() {
     const { width, height } = this.props;
-    const { k: scale } = this.currentZoomTransform();
 
     return (
       <div
@@ -365,8 +354,8 @@ export default class Choropleth extends React.Component {
           style={this.props.controlsStyle}
           buttonClassName={this.props.controlsButtonClassName}
           buttonStyle={this.props.controlsButtonStyle}
-          onZoomIn={this.zoomTo(scale * this.props.zoomStep)}
-          onZoomOut={this.zoomTo(scale / this.props.zoomStep)}
+          onZoomIn={this.zoomIn}
+          onZoomOut={this.zoomOut}
           onZoomReset={this.zoomReset}
         />}
         <svg
