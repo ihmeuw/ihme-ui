@@ -21,7 +21,7 @@ describe('Choropleth <Path />', () => {
   });
 
   describe('events', () => {
-    it(`calls onClick, mouseDown, mouseMove, mouseLeave, and mouseOver 
+    it(`calls onClick, mouseMove, mouseLeave, and mouseOver 
     with event, datum, and the React element`, () => {
       const datum = { location_id: 5, mean: 7 };
       const wrapper = shallow(
@@ -30,7 +30,6 @@ describe('Choropleth <Path />', () => {
           pathGenerator={pathGenerator}
           feature={feature}
           onClick={eventHandler}
-          onMouseDown={eventHandler}
           onMouseMove={eventHandler}
           onMouseLeave={eventHandler}
           onMouseOver={eventHandler}
@@ -42,34 +41,12 @@ describe('Choropleth <Path />', () => {
       };
 
       const inst = wrapper.instance();
-      ['click', 'mouseDown', 'mouseMove', 'mouseLeave', 'mouseOver'].forEach((evtName) => {
+      ['click', 'mouseMove', 'mouseLeave', 'mouseOver'].forEach((evtName) => {
         eventHandler.reset();
         wrapper.simulate(evtName, event);
         expect(eventHandler.calledOnce).to.be.true;
         expect(eventHandler.calledWith(event, datum, inst)).to.be.true;
       });
-    });
-
-    it('does not call eventHandler if being dragged', () => {
-      const wrapper = shallow(
-        <Path
-          pathGenerator={pathGenerator}
-          feature={feature}
-          onClick={eventHandler}
-        />
-      );
-
-      const event = {
-        preventDefault() {}
-      };
-
-      wrapper.simulate('mouseMove', event);
-      wrapper.simulate('click', event);
-      expect(eventHandler.called).to.be.false;
-
-      wrapper.simulate('mouseDown', event);
-      wrapper.simulate('click', event);
-      expect(eventHandler.called).to.be.true;
     });
   });
 

@@ -305,7 +305,6 @@ export default class Choropleth extends React.Component {
               key={key}
               keyField={this.props.keyField}
               onClick={this.props.onClick}
-              onMouseDown={this.props.onMouseDown}
               onMouseLeave={this.props.onMouseLeave}
               onMouseMove={this.props.onMouseMove}
               onMouseOver={this.props.onMouseOver}
@@ -472,9 +471,6 @@ Choropleth.propTypes = {
 
   /* passed to each path; signature: function(event, datum, Path) {...} */
   onClick: PropTypes.func,
-
-  /* passed to each path; signature: function(event, datum, Path) {...} */
-  onMouseDown: PropTypes.func,
 
   /* passed to each path; signature: function(event, datum, Path) {...} */
   onMouseLeave: PropTypes.func,

@@ -40,7 +40,6 @@ export default class Path extends PureComponent {
 
     bindAll(this, [
       'onClick',
-      'onMouseDown',
       'onMouseMove',
       'onMouseLeave',
       'onMouseOver'
@@ -55,18 +54,7 @@ export default class Path extends PureComponent {
   onClick(e) {
     e.preventDefault();
 
-    // if being dragged, don't fire onClick
-    if (this.dragging) return;
-
     this.props.onClick(e, this.props.datum, this);
-  }
-
-  onMouseDown(e) {
-    e.preventDefault();
-
-    // clear mouseMove flag
-    this.dragging = false;
-    this.props.onMouseDown(e, this.props.datum, this);
   }
 
   // e.g., destroy tooltip
@@ -80,8 +68,6 @@ export default class Path extends PureComponent {
   onMouseMove(e) {
     e.preventDefault();
 
-    // set flag to prevent onClick handler from firing when map is being dragged
-    this.dragging = true;
     this.props.onMouseMove(e, this.props.datum, this);
   }
 
@@ -104,7 +90,6 @@ export default class Path extends PureComponent {
         }) || (void 0)}
         style={style}
         onClick={this.onClick}
-        onMouseDown={this.onMouseDown}
         onMouseLeave={this.onMouseLeave}
         onMouseMove={this.onMouseMove}
         onMouseOver={this.onMouseOver}
@@ -132,9 +117,6 @@ Path.propTypes = {
 
   /* signature: function(event, datum, Path) {...} */
   onClick: PropTypes.func,
-
-  /* signature: function(event, datum, Path) {...} */
-  onMouseDown: PropTypes.func,
 
   /* signature: function(event, datum, Path) {...} */
   onMouseLeave: PropTypes.func,
