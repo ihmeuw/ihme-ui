@@ -100,12 +100,13 @@ export default class Choropleth extends React.Component {
   }
 
   componentDidMount() {
+    const [x, y] = this.state.translate;
+
     this._svgSelection.call(
       this.zoom
         .on('zoom.ihme-ui-choropleth', this.zoomEvent)
     );
 
-    const [x, y] = this.state.translate;
     this._svgSelection.call(
       this.zoom.transform,
       zoomIdentity
