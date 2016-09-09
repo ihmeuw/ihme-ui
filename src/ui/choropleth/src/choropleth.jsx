@@ -82,7 +82,6 @@ export default class Choropleth extends React.Component {
       bounds,
       scale,
       scaleBase: scale,
-      scaleFactor: 1,
       translate,
       pathGenerator: this.createPathGenerator(scale, translate, this.clipExtent),
       cache: { ...extractedGeoJSON, },
@@ -258,7 +257,6 @@ export default class Choropleth extends React.Component {
 
     this.setState({
       scale,
-      scaleFactor: scale / this.state.scaleBase,
       translate,
       pathGenerator,
     });
