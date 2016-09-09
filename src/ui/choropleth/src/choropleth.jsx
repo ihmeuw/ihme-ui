@@ -73,7 +73,9 @@ export default class Choropleth extends React.Component {
         [-CLIP_EXTENT_PADDING, -CLIP_EXTENT_PADDING],
         [props.width + CLIP_EXTENT_PADDING, props.height + CLIP_EXTENT_PADDING]
       ]);
-    this.zoom = zoom();
+    this.zoom = zoom()
+      .scaleExtent([Math.max(scale, props.minZoom), Math.max(scale, props.maxZoom)]);
+
     this.calcMeshLayerStyle = memoize(this.calcMeshLayerStyle);
 
     this.state = {
