@@ -524,7 +524,7 @@ Choropleth.defaultProps = {
   height: 400,
   layers: [],
   maxZoom: Infinity,
-  minZoom: -Infinity,
+  minZoom: 0,
   selectedLocations: [],
   width: 600,
   zoomStep: 1.1,
