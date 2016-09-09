@@ -7,9 +7,7 @@ import { isArray, isNaN as _isNaN, isNull, isUndefined, map, range as range_ } f
  */
 export function hasCrappyValues(arr) {
   if (!arr || !isArray(arr) || !arr.length) return true;
-  return arr.some((val) => {
-    return _isNaN(val) || isNull(val) || isUndefined(val);
-  });
+  return arr.some((val) => _isNaN(val) || isNull(val) || isUndefined(val));
 }
 
 /**

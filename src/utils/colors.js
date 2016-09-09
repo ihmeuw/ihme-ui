@@ -25,8 +25,7 @@ export const colorSteps = [
  * @param {Array} domain -> [min, max]
  * @returns {*}
  */
-export const baseColorScale = (domain = [0, 1]) => {
-  return scaleLinear()
+export const baseColorScale = (domain = [0, 1]) =>
+  scaleLinear()
     .domain(linspace(domain, colorSteps.length))
     .range(colorSteps);
-};
