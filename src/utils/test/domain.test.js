@@ -73,6 +73,7 @@ describe('domain helpers', () => {
         .of.length(5)
         .and.to.deep.equal([0, 25, 50, 75, 100]);
     });
+
     it('is capable of starting at a number other than 0', () => {
       const origDomain = [0.05, 0.5];
       const colors = Array(11);
@@ -89,9 +90,16 @@ describe('domain helpers', () => {
           0.365,
           0.41,
           0.45499999999999996,
-          0.49999999999999994,
+          0.5,
         ]);
     });
+  });
+
+  it('is exactly bounded by domain', () => {
+    const linspace = generateColorDomain(Array(15), [1, 5]);
+    expect(linspace).to.have.length(15);
+    expect(linspace[0]).to.equal(1);
+    expect(linspace[14]).to.equal(5);
   });
 
   it('returns [min, max] as color domain when min === max', () => {
