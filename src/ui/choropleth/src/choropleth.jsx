@@ -160,24 +160,24 @@ export default class Choropleth extends React.Component {
         ]);
       const bounds = state.bounds || this.state.bounds;
 
-      // get current zoom transform (scale and translate)
-      const transform = this.currentZoomTransform();
-      const scale = transform.k;
-      const translate = [transform.x, transform.y];
-
       state.scaleBase = calcScale(nextProps.width, nextProps.height, bounds);
-      state.scale = state.scaleBase * this.state.scaleFactor;
+      // new scale equals scale at which bounds fit perfectly within new width and height
+      // transformed by how zoomed the current scale is (how much scaleFactor has been applied)
+      state.scale = state.scaleBase * (this.state.scale / this.state.scaleBase);
 
       if (state.bounds) {
         // if state.bounds is set when topology or layers change drastically, reset calculations
         state.translate = calcTranslate(nextProps.width, nextProps.height,
                                         state.scaleBase, bounds);
       } else {
+        // get current zoom transform (scale and translate)
+        const transform = this.currentZoomTransform();
+
         // else calculate new translate from previous center point
         const center = calcCenterPoint(this.props.width, this.props.height,
-                                       scale, translate);
+                                        transform.k, [transform.x, transform.y]);
         state.translate = calcTranslate(nextProps.width, nextProps.height,
-                                        state.scale, null, center);
+                                        state.scale, bounds, center);
       }
 
       state.pathGenerator = this.createPathGenerator(
