@@ -120,5 +120,22 @@ describe('scale utilities', () => {
       expect(scale(0.3)).to.equal(0.3);
       expect(scale(0.1)).to.equal('foo');
     });
+
+    it('can have it\'s tolerance adjusted for whether a value is within its domain', () => {
+      const scale = clampedScale('foo', 0.001)
+        .base(scaleLinear())
+        .domain([0, 1])
+        .range([0, 1])
+        .clamps([0.25, 0.75]);
+
+      expect(scale(0.3)).to.equal(0.3);
+      expect(scale(0.24)).to.equal('foo');
+      expect(scale(0.249)).to.equal(0.249);
+      expect(scale(0.2408)).to.equal('foo');
+      expect(scale(0.7)).to.equal(0.7);
+      expect(scale(0.751)).to.equal(0.751);
+      expect(scale(0.7509)).to.equal(0.7509);
+      expect(scale(0.752)).to.equal('foo');
+    });
   });
 });
