@@ -1,4 +1,5 @@
 import { isNaN, isUndefined } from 'lodash';
+import { Float } from './numbers';
 
 /**
  * @param {Number} num
@@ -36,12 +37,14 @@ export function domainFromPercent(newDomain, oldDomain, rangeExtent) {
 
 /**
  * Base check that value is within the range of extent (up to and including start and end)
- * @param {Number} value -> e.g., 1993
- * @param {Array} extent -> e.g., [1990, 1994]
+ * @param {number} value - e.g., 1993
+ * @param {array} extent - e.g., [1990, 1994]
+ * @param {number} [tolerance] - tolerance within which to consider value within extent (default: 0)
  * @return {Boolean}
  */
-export function isWithinRange(value, extent) {
-  return !!(value >= extent[0] && value <= extent[1]);
+export function isWithinRange(value, extent, tolerance = 0) {
+  return !!((value > extent[0] || Math.abs(Float.subtract(value, extent[0])) <= tolerance) &&
+  (value < extent[1] || Math.abs(Float.subtract(value, extent[1])) <= tolerance));
 }
 
 
