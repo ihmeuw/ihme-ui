@@ -1,4 +1,5 @@
 import { isArray, isNaN as _isNaN, isNull, isUndefined, map, range as range_ } from 'lodash';
+import { Float } from './numbers';
 
 /**
  * Check if array contains crappy values (NaN, undefined, null)
@@ -20,11 +21,11 @@ export function hasCrappyValues(arr) {
 export function linspace(domain, length) {
   if (length < 2 || domain.length < 2 || domain[0] === domain[1]) return domain;
 
-  const step = Math.abs(domain[1] - domain[0]) / (length - 1);
+  const step = Float.divide(Math.abs(Float.subtract(domain[1], domain[0])), length - 1);
   const [min, max] = domain.sort((a, b) => a - b);
 
   return map(range_(length), (i) => {
     if (i === length - 1) return max;
-    return i * step + min;
+    return Float.add(Float.multiply(i, step), min);
   });
 }

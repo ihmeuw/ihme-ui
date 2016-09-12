@@ -160,7 +160,7 @@ export default class Map extends React.Component {
     ];
 
     const state = {
-      colorScale: clampedScale('#ccc')
+      colorScale: clampedScale('#ccc', 0.000001)
         .base(scaleLinear())
         .domain(linspace(rangeExtent, colorSteps.length))
         .range(colorSteps),

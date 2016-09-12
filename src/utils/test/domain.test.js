@@ -63,7 +63,7 @@ describe('domain helpers', () => {
     });
   });
 
-  it('validates that a number is within a specified range, up to and including bounding', () => {
+  it('validates that a number is within a specified range, up to and including bounds', () => {
     const specs = [
       { value: 1990, extent: [1990, 1994], expectation: true },
       { value: 1994, extent: [1990, 1994], expectation: true },
@@ -75,6 +75,21 @@ describe('domain helpers', () => {
     specs.forEach((spec) => {
       const { value, extent, expectation } = spec;
       expect(isWithinRange(value, extent)).to.equal(expectation);
+    });
+  });
+
+  it('accepts a tolerance within which to consider a number within a set of bounds', () => {
+    const specs = [
+      { value: 5, extent: [1, 4.9], tolerance: 0.1, expectation: true },
+      { value: 5, extent: [1, 4.9], tolerance: (void 0), expectation: false },
+      { value: 5, extent: [1, 5], tolerance: (void 0), expectation: true },
+      { value: 5.00000000000001, extent: [1, 5], tolerance: 0.00000000000002, expectation: true },
+      { value: 5.00001, extent: [1, 5], tolerance: 0.000000001, expectation: false },
+    ];
+
+    specs.forEach((spec) => {
+      const { value, extent, tolerance, expectation } = spec;
+      expect(isWithinRange(value, extent, tolerance)).to.equal(expectation);
     });
   });
 

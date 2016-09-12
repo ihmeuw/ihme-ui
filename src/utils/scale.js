@@ -51,14 +51,15 @@ export const domainToRange = function domainToRange(scale, values) {
  * This is a simple wrapper for a clamped d3Scale continuous scale
  * it returns a `clampedValue` for any value outside of the scale's clamp
  * @param {string|number} [clampedValue]
+ * @param {number} [tolerance]
  * @return {function} scale
  */
-export function clampedScale(clampedValue = '#ccc') {
+export function clampedScale(clampedValue = '#ccc', tolerance) {
   let clamps;
   let baseScale;
 
   function scale(value) {
-    if (clamps && !isWithinRange(value, clamps)) return clampedValue;
+    if (clamps && !isWithinRange(value, clamps, tolerance)) return clampedValue;
     if (!baseScale) {
       throw new Error('clampedScale must be initialized with a base scale; see scale.base()');
     }
@@ -118,7 +119,7 @@ export function clampedScale(clampedValue = '#ccc') {
    */
   scale.copy = () => {
     const target = (value) => {
-      if (clamps && !isWithinRange(value, clamps)) return clampedValue;
+      if (clamps && !isWithinRange(value, clamps, tolerance)) return clampedValue;
       if (!baseScale) {
         throw new Error('clampedScale must be initialized with a base scale; see scale.base()');
       }
