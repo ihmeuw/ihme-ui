@@ -562,6 +562,14 @@ Map.defaultProps = {
 };
 
 Map.propUpdates = {
+  colorSteps: (state, _, prevProps, nextProps) => {
+    if (nextProps.colorSteps === prevProps.colorSteps) return state;
+    return assign({}, state, {
+      colorScale: state.colorScale
+        .range(nextProps.colorSteps)
+        .copy(),
+    });
+  },
   domain: (state, _, prevProps, nextProps) => {
     if (isEqual(nextProps.domain, prevProps.domain)) return state;
     const domain = state.setScaleExtentPct
