@@ -268,10 +268,9 @@ export default class Map extends React.Component {
           || includes(keysOfSelectedLocations, neighborGeometryKey)
 
           // or one of the selections disputed by geometry or neighborGeometry
-          || keysOfSelectedLocations.some(locId => {
-            return includes(geometryDisputes, locId) ||
-              includes(neighborGeometryDisputes, locId);
-          })
+          || keysOfSelectedLocations.some(locId =>
+            includes(geometryDisputes, locId) || includes(neighborGeometryDisputes, locId)
+          )
         )
 
         && !(
