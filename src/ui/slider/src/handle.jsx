@@ -57,7 +57,8 @@ export default class Handle extends PureComponent {
         },
       })
       .styleCursor(false)
-      .on('dragmove', this.props.onMove(this.props.name, -offset))
+      .on('dragmove', this.props.onDrag(this.props.name, -offset))
+      .on('dragend', this.props.onDragEnd)
       .on('tap', (event) => { event.target.focus(); });
   }
 
@@ -73,6 +74,7 @@ export default class Handle extends PureComponent {
         style={this.state.style}
         ref={this.handleRef}
         onKeyDown={this.props.onKeyDown(this.props.name)}
+        onKeyUp={this.props.onKeyUp}
       >
         {this.props.labelFunc(this.props.label)}
       </button>
@@ -90,7 +92,9 @@ Handle.propTypes = {
   labelFunc: PropTypes.func,
   name: PropTypes.string.isRequired,
   onKeyDown: PropTypes.func,
-  onMove: PropTypes.func.isRequired,
+  onKeyUp: PropTypes.func,
+  onDrag: PropTypes.func.isRequired,
+  onDragEnd: PropTypes.func.isRequired,
   position: PropTypes.number.isRequired,
   snapTarget: PropTypes.oneOfType([
     PropTypes.func,
@@ -102,7 +106,10 @@ Handle.propTypes = {
 Handle.defaultProps = {
   direction: 'middle',
   labelFunc: identity,
+  onDrag: noop,
+  onDragEnd: noop,
   onKeyDown: noop,
+  onKeyUp: noop,
 };
 
 Handle.propUpdates = {

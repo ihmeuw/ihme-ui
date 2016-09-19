@@ -6,6 +6,7 @@ import difference from 'lodash/difference';
 import identity from 'lodash/identity';
 import inRange from 'lodash/inRange';
 import map from 'lodash/map';
+import noop from 'lodash/noop';
 import range from 'lodash/range';
 import reduce from 'lodash/reduce';
 import round from 'lodash/round';
@@ -86,7 +87,8 @@ export default class Slider extends PureComponent {
     this.handleCount = Object.keys(this.state.indexes).length;
 
     bindAll(this, [
-      'onHandleMove',
+      'onHandleEnd',
+      'onHandleDrag',
       'onHandleKeyDown',
       'onTrackClick',
       'trackRef',
@@ -120,7 +122,7 @@ export default class Slider extends PureComponent {
     }
   }
 
-  onHandleMove(key, offset) {
+  onHandleDrag(key, offset) {
     return (event) => {
       if (!event.dx) return;
 
@@ -137,7 +139,7 @@ export default class Slider extends PureComponent {
       if (!inRange(pageX - handleExtent, nextPos - handleExtent) ||
             !this.state.range[index]) return;
 
-      this.updateValueFromEvent(event, index, key);
+      this.updateValueFromEvent(event, index, key, this.props.onDrag);
     };
   }
 
@@ -160,7 +162,13 @@ export default class Slider extends PureComponent {
 
       const index = this.state.indexes[key] + step;
 
-      this.updateValueFromEvent(event, index, key);
+      this.updateValueFromEvent(event, index, key, this.props.onKey);
+    };
+  }
+
+  onHandleEnd(callback) {
+    return (event) => {
+      callback(event, getValuesForIndexes(this.state.indexes, this.state.range), this);
     };
   }
 
@@ -175,10 +183,10 @@ export default class Slider extends PureComponent {
 
     const key = comp ? 'low' : 'high';
 
-    this.updateValueFromEvent(event, index, key);
+    this.updateValueFromEvent(event, index, key, this.props.onTrackClick);
   }
 
-  updateValueFromEvent(event, index, key) {
+  updateValueFromEvent(event, index, key, callback) {
     if (index !== this.state.indexes[key] && this.state.range[index]) {
       const indexes = { ...this.state.indexes, [key]: index };
       const values = getValuesForIndexes(indexes, this.state.range);
@@ -186,7 +194,7 @@ export default class Slider extends PureComponent {
       if (indexes.low === undefined ||
             indexes.high === undefined ||
             indexes.low <= indexes.high) {
-        this.props.onChange(event, values, this);
+        callback(event, values, this);
       }
     }
   }
@@ -249,8 +257,10 @@ export default class Slider extends PureComponent {
                 className={classNames(handleClassName,
                                       { [style.connected]: indexes.low === indexes.high })}
                 style={handleStyle}
-                onMove={this.onHandleMove}
+                onDrag={this.onHandleDrag}
+                onDragEnd={this.onHandleEnd(this.props.onDragEnd)}
                 onKeyDown={this.onHandleKeyDown}
+                onKeyUp={this.onHandleEnd(this.props.onKeyEnd)}
                 name={key}
                 direction={direction}
                 position={position}
@@ -325,12 +335,18 @@ Slider.propTypes = {
   labelFunc: PropTypes.func,
 
   /*
-   * callback function when value is changed.
+   * callback functions when value is changed.
    * @param {Object} event - triggered the action
    * @param {Object} value - low and high values
    * @param {Object} Slider - the slider object itself
    */
-  onChange: PropTypes.func.isRequired,
+  onDrag: PropTypes.func.isRequired,
+  onDragEnd: PropTypes.func,
+
+  onKey: PropTypes.func,
+  onKeyEnd: PropTypes.func,
+
+  onTrackClick: PropTypes.func,
 
   /* extents of slider values. */
   range: PropTypes.oneOfType([
@@ -380,6 +396,11 @@ Slider.propTypes = {
 
 Slider.defaultProps = {
   labelFunc: identity,
+  onDrag: noop,
+  onDragEnd: noop,
+  onKey: noop,
+  onKeyEnd: noop,
+  onTrackClick: noop,
   width: 200,
 };
 
