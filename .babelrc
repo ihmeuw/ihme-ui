@@ -52,7 +52,6 @@
     }
   },
   "ignore": [
-    "node_modules/",
-    "src/test-utils/assets/"
+    "node_modules/"
   ]
 }
