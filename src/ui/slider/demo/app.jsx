@@ -53,6 +53,7 @@ class App extends React.Component {
 
     bindAll(this, [
       'onChange',
+      'onEnd',
       'onSingleValueChange',
       'onListValueChange',
       'setNewMinMax',
@@ -64,7 +65,12 @@ class App extends React.Component {
 
 
   onChange(event, value) {
-    console.log(value);
+    console.log('drag', value);
+    this.setState({ rangeValue: value });
+  }
+
+  onEnd(event, value) {
+    console.log('dragEnd', value);
     this.setState({ rangeValue: value });
   }
 
@@ -194,7 +200,11 @@ class App extends React.Component {
               fontSize={this.state.fontSize}
               width={this.state.width}
               range={this.state.range}
-              onChange={this.onChange}
+              onDrag={this.onChange}
+              onDragEnd={this.onEnd}
+              onKey={this.onChange}
+              onKeyEnd={this.onEnd}
+              onTrackClick={this.onEnd}
               value={this.state.rangeValue}
               fill
               ticks
@@ -222,7 +232,9 @@ class App extends React.Component {
               fontSize={this.state.fontSize}
               width={this.state.width}
               range={this.state.range}
-              onChange={this.onSingleValueChange}
+              onDrag={this.onSingleValueChange}
+              onKey={this.onSingleValueChange}
+              onTrackClick={this.onSingleValueChange}
               value={this.state.singleValue}
               fill
               fillStyle={this.state.singleFillStyle}
@@ -247,7 +259,9 @@ class App extends React.Component {
               fontSize={this.state.fontSize}
               width={this.state.width}
               range={this.items}
-              onChange={this.onListValueChange}
+              onDrag={this.onListValueChange}
+              onKey={this.onListValueChange}
+              onTrackClick={this.onListValueChange}
               value={this.state.listValue}
               fill
               fillStyle={this.state.fillStyle}
