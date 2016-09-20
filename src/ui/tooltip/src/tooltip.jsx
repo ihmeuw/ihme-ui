@@ -5,22 +5,33 @@ import { CommonPropTypes, propsChanged, PureComponent } from '../../../utils';
 
 import styles from './tooltip.css';
 
-export default class Tooltip extends PureComponent {
-  /**
-   * Return bounds passed through props or default
-   * to { x: [0, window.innerWidth], y: [0, window.innerHeight] }
-   * @param {Object} [bounds]
-   * @param {Array} [bounds.x]
-   * @param {Array} [bounds.y]
-   * @return {{ x: Number[], y: Number[] }} Bounds object with keys x and y
-   */
-  static getBounds(bounds) {
-    return {
-      x: getValue(bounds, 'x', [0, getValue(window, 'innerWidth', 0)]),
-      y: getValue(bounds, 'y', [0, getValue(window, 'innerHeight', 0)]),
-    };
-  }
+/**
+ * Calculate style given base style and absolute position
+ * @param {Object} position
+ * @param {String} position.transform
+ * @param {Object} style
+ * @return {Object}
+ */
+function concatStyles(position, style) {
+  return assign({}, position, style);
+}
 
+/**
+ * Return bounds passed through props or default
+ * to { x: [0, window.innerWidth], y: [0, window.innerHeight] }
+ * @param {Object} [bounds]
+ * @param {Array} [bounds.x]
+ * @param {Array} [bounds.y]
+ * @return {{ x: Number[], y: Number[] }} Bounds object with keys x and y
+ */
+function getBounds(bounds) {
+  return {
+    x: getValue(bounds, 'x', [0, getValue(window, 'innerWidth', 0)]),
+    y: getValue(bounds, 'y', [0, getValue(window, 'innerHeight', 0)]),
+  };
+}
+
+export default class Tooltip extends PureComponent {
   /**
    * Calculate the translation of the tooltip with respect to the top-left corner of the screen
    * @param {Object} params
@@ -85,22 +96,11 @@ export default class Tooltip extends PureComponent {
     return [x, y];
   }
 
-  /**
-   * Calculate style given base style and absolute position
-   * @param {Object} position
-   * @param {String} position.transform
-   * @param {Object} style
-   * @return {Object}
-   */
-  static getStyle(position, style) {
-    return assign({}, position, style);
-  }
-
   constructor(props) {
     super(props);
 
     this.state = {
-      style: Tooltip.getStyle({}, props.style),
+      style: concatStyles({ display: 'none' }, props.style),
     };
 
     bindAll(this, [
@@ -120,7 +120,7 @@ export default class Tooltip extends PureComponent {
       'style',
     ]) || !this._wrapper) return;
     const { width, height } = this._wrapper.getBoundingClientRect();
-    const bounds = Tooltip.getBounds(nextProps.bounds);
+    const bounds = getBounds(props.bounds);
     const [x, y] = Tooltip.getPosition({
       bounds,
       height,
@@ -134,7 +134,7 @@ export default class Tooltip extends PureComponent {
     });
 
     this.setState({
-      style: Tooltip.getStyle({ transform: `translate(${x}px, ${y}px)` }, nextProps.style)
+      style: concatStyles({ transform: `translate(${x}px, ${y}px)` }, props.style)
     });
   }
 
