@@ -70,6 +70,8 @@ describe('domain helpers', () => {
       { value: 1992, extent: [1990, 1994], expectation: true },
       { value: 1989, extent: [1990, 1994], expectation: false },
       { value: 1995, extent: [1990, 1994], expectation: false },
+      { value: 1995, extent: undefined, expectation: true },
+      { value: 1995, extent: [1990], expectation: true },
     ];
 
     specs.forEach((spec) => {

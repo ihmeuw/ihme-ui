@@ -37,12 +37,15 @@ export function domainFromPercent(newDomain, oldDomain, rangeExtent) {
 
 /**
  * Base check that value is within the range of extent (up to and including start and end)
+ * if no extent is given, returns true
  * @param {number} value - e.g., 1993
  * @param {array} extent - e.g., [1990, 1994]
  * @param {number} [tolerance] - tolerance within which to consider value within extent (default: 0)
  * @return {Boolean}
  */
 export function isWithinRange(value, extent, tolerance = 0) {
+  // guard against no extents or malformed extents
+  if (!extent || extent.length !== 2) return true;
   return !!((value > extent[0] || Math.abs(Float.subtract(value, extent[0])) <= tolerance) &&
   (value < extent[1] || Math.abs(Float.subtract(value, extent[1])) <= tolerance));
 }
