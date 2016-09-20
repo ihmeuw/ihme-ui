@@ -4,6 +4,7 @@ import Button from './button';
 import Choropleth from './choropleth';
 import ChoroplethLegend from './choropleth-legend';
 import { Map } from './compositions';
+import ExpansionContainer, { Expandable } from './expansion-container';
 import Group, { Option } from './group';
 import HtmlLabel from './html-label';
 import Legend from './legend';
@@ -28,6 +29,8 @@ export default {
   Button,
   Choropleth,
   ChoroplethLegend,
+  Expandable,
+  ExpansionContainer,
   Group,
   HtmlLabel,
   Legend,
