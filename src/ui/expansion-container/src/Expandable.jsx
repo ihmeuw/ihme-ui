@@ -70,6 +70,9 @@ export default class Expandable extends PureComponent {
   }
 
   componentDidMount() {
+    // The container styles are calculated on component mount and content render is delayed.
+    // In order to allow the react render cycle to settle, the styles are set to state using
+    // a setTimeout.
     this.backgroundColor = getBackgroundColor(this._container);
     this.defaultState = {
       ...this.state,
