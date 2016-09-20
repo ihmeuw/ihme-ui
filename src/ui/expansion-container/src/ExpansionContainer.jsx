@@ -87,10 +87,6 @@ export default class ExpansionContainer extends PureComponent {
     });
   }
 
-  update() {
-    this.forceUpdate();
-  }
-
   render() {
     const {
       children,
