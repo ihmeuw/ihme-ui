@@ -1,12 +1,10 @@
 import React from 'react';
 import { render } from 'react-dom';
-import d3Random from 'd3-random';
+import { randomUniform } from 'd3';
 import bindAll from 'lodash/bindAll';
-import { percentOfRange, numFromPercent } from '../../../utils/';
 
 import Slider from '../';
 import Button from '../../button';
-import { getFloatPrecision, valueWithPrecision } from '../src/util';
 
 function getValueOrPlaceholder(el) {
   return el.value || el.placeholder;
@@ -21,21 +19,32 @@ class App extends React.Component {
     this.state = {
       fontSize: '9pt',
       width: 200,
-      minValue: 2001,
-      maxValue: 2025,
-      rangeSliderValues: {
-        min: 2001,
-        max: 2005,
+      range: {
+        low: 2001,
+        high: 2025,
+        steps: 25,
+        precision: 5,
+      },
+      rangeValue: {
+        low: undefined,
+        high: undefined,
       },
       singleValue: 2015,
-      listValue: 0,
+      singleFillStyle: {
+        backgroundColor: '#ccc',
+        transition: 'width 0.3s ease-out',
+      },
+      singleHandleStyle: {
+        transition: 'all 0.3s ease-out',
+      },
+      listValue: this.items[0],
       fillStyle: {
         backgroundColor: this.items[0],
       },
     };
 
     this.randomGenerator = (range) => {
-      return Math.floor(d3Random.randomUniform(...range)());
+      return Math.floor(randomUniform(...range)());
     };
 
     this.nextExtent = [this.randomGenerator([1900, 2016]), this.randomGenerator([1900, 2016])];
@@ -44,6 +53,7 @@ class App extends React.Component {
 
     bindAll(this, [
       'onChange',
+      'onEnd',
       'onSingleValueChange',
       'onListValueChange',
       'setNewMinMax',
@@ -54,22 +64,27 @@ class App extends React.Component {
   }
 
 
-  onChange(value, key) {
-    console.log(key, value);
-    this.setState({ rangeSliderValues: value });
+  onChange(event, value) {
+    console.log('drag', value);
+    this.setState({ rangeValue: value });
   }
 
-  onSingleValueChange(value) {
+  onEnd(event, value) {
+    console.log('dragEnd', value);
+    this.setState({ rangeValue: value });
+  }
+
+  onSingleValueChange(event, value) {
     console.log(value);
     this.setState({ singleValue: value });
   }
 
-  onListValueChange(value) {
-    console.log(this.items[value]);
+  onListValueChange(event, value) {
+    console.log(value);
     this.setState({
       listValue: value,
       fillStyle: {
-        backgroundColor: this.items[value],
+        backgroundColor: value.low,
       },
     });
   }
@@ -77,25 +92,25 @@ class App extends React.Component {
   setNewMinMax() {
     const minExtent = +getValueOrPlaceholder(document.getElementById('newMinExtent'));
     const maxExtent = +getValueOrPlaceholder(document.getElementById('newMaxExtent'));
-    const newStep = +getValueOrPlaceholder(document.getElementById('newStep'));
+    const precision = +getValueOrPlaceholder(document.getElementById('newPrecision'));
 
     const newExtent = [minExtent, maxExtent].sort((a, b) => { return a - b; });
-    const oldExtent = [this.state.minValue, this.state.maxValue];
 
-    const valueSetter = (value, step) => {
-      return valueWithPrecision(numFromPercent(percentOfRange(value, oldExtent), newExtent),
-                                getFloatPrecision(step));
-    };
+    const newSteps = +document.getElementById('newSteps').value ||
+                       (newExtent[1] - newExtent[0] + 1);
 
     this.setState({
-      minValue: Math.min(...newExtent),
-      maxValue: Math.max(...newExtent),
-      step: newStep,
-      rangeSliderValues: {
-        min: valueSetter(this.state.rangeSliderValues.min, newStep),
-        max: valueSetter(this.state.rangeSliderValues.max, newStep),
+      range: {
+        precision,
+        low: Math.min(...newExtent),
+        high: Math.max(...newExtent),
+        steps: newSteps,
       },
-      singleValue: valueSetter(this.state.singleValue, newStep),
+      rangeValue: {
+        low: Math.min(...newExtent),
+        high: Math.max(...newExtent),
+      },
+      singleValue: Math.min(...newExtent),
     });
 
     this.nextExtent = [this.randomGenerator([1900, 2016]), this.randomGenerator([1900, 2016])];
@@ -131,7 +146,7 @@ class App extends React.Component {
           <div>
             <Button
               text="Set new min/max"
-              clickHandler={this.setNewMinMax}
+              onClick={this.setNewMinMax}
             />
           </div>
           <div>
@@ -139,12 +154,17 @@ class App extends React.Component {
             <br />
             <input id="newMaxExtent" type="text" placeholder={`${Math.max(...this.nextExtent)}`} />
             <br />
-            <input id="newStep" type="text" placeholder="1" />
+            <input
+              id="newSteps" type="text"
+              placeholder={`${Math.abs(this.nextExtent[1] - this.nextExtent[0]) + 1}`}
+            />
+            <br />
+            <input id="newPrecision" type="text" placeholder={`${this.state.range.precision}`} />
           </div>
           <div>
             <Button
               text="Set new width"
-              clickHandler={this.setNewWidth}
+              onClick={this.setNewWidth}
             />
           </div>
           <div>
@@ -153,7 +173,7 @@ class App extends React.Component {
           <div>
             <Button
               text="Set new font size"
-              clickHandler={this.setNewFontSize}
+              onClick={this.setNewFontSize}
             />
           </div>
           <div>
@@ -166,12 +186,11 @@ class App extends React.Component {
 {/* <pre><code>
     <Slider
       width={200}
-      minValue={2001}
-      maxValue={2025}
+      range={{ low: 2001, high: 2005 }}
       onChange={function (value, key) {...}}
       value={{
-        min: 2001, //(initially)
-        max: 2005, //(initially)
+        low: 2001,  // (initially)
+        high: 2025, // (initially)
       }}
       fill
       ticks
@@ -180,12 +199,13 @@ class App extends React.Component {
             <Slider
               fontSize={this.state.fontSize}
               width={this.state.width}
-              height={24}
-              minValue={this.state.minValue}
-              maxValue={this.state.maxValue}
-              onChange={this.onChange}
-              value={this.state.rangeSliderValues}
-              step={this.state.step}
+              range={this.state.range}
+              onDrag={this.onChange}
+              onDragEnd={this.onEnd}
+              onKey={this.onChange}
+              onKeyEnd={this.onEnd}
+              onTrackClick={this.onEnd}
+              value={this.state.rangeValue}
               fill
               ticks
             />
@@ -195,8 +215,7 @@ class App extends React.Component {
 {/* <pre><code>
     <Slider
       width={200}
-      minValue={2001}
-      maxValue={2025}
+      range={{ low: 2001, high: 2005 }}
       onChange={function (value, key) {...}}
       value={2015} // (initially)
       fill
@@ -212,19 +231,14 @@ class App extends React.Component {
             <Slider
               fontSize={this.state.fontSize}
               width={this.state.width}
-              minValue={this.state.minValue}
-              maxValue={this.state.maxValue}
-              onChange={this.onSingleValueChange}
+              range={this.state.range}
+              onDrag={this.onSingleValueChange}
+              onKey={this.onSingleValueChange}
+              onTrackClick={this.onSingleValueChange}
               value={this.state.singleValue}
-              step={this.state.step}
               fill
-              fillStyle={{
-                backgroundColor: '#ccc',
-                transition: 'width 0.3s ease-out',
-              }}
-              handleStyle={{
-                transition: 'all 0.3s ease-out',
-              }}
+              fillStyle={this.state.singleFillStyle}
+              handleStyle={this.state.singleHandleStyle}
             />
           </section>
           <section>
@@ -233,8 +247,7 @@ class App extends React.Component {
     items = ['red', 'orange', 'yellow', ...];
     <Slider
       width={200}
-      minValue={0}
-      maxValue={items.length - 1}
+      range={items}
       onChange={function (value, key) {...}}
       value={this.state.value}
       labelFunc={function (value) {...}}
@@ -245,11 +258,11 @@ class App extends React.Component {
             <Slider
               fontSize={this.state.fontSize}
               width={this.state.width}
-              minValue={0}
-              maxValue={this.items.length - 1}
-              onChange={this.onListValueChange}
+              range={this.items}
+              onDrag={this.onListValueChange}
+              onKey={this.onListValueChange}
+              onTrackClick={this.onListValueChange}
               value={this.state.listValue}
-              labelFunc={this.listLabelFunc}
               fill
               fillStyle={this.state.fillStyle}
             />

@@ -3,12 +3,12 @@ import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 
-import { colorSteps } from '../../../test-utils';
+import { colorSteps } from '../../../utils';
 import LinearGradient from '../src/linear-gradient';
 
 chai.use(chaiEnzyme());
 
-describe('<LinearGradient />', () => {
+describe('ChoroplethLegend <LinearGradient />', () => {
   it('renders a linearGradient node as HTML text', () => {
     const wrapper = shallow(
       <LinearGradient

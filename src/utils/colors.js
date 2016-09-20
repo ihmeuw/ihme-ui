@@ -1,6 +1,6 @@
-import { scaleLinear } from 'd3-scale';
+import { scaleLinear } from 'd3';
 
-import { generateColorDomain } from '../utils/domain';
+import { linspace } from './array';
 
 /**
  * 11 step diverging color scale
@@ -17,7 +17,7 @@ export const colorSteps = [
   '#abd9e9',
   '#74add1',
   '#4575b4',
-  '#313695' // dark blue
+  '#313695',  // dark blue
 ];
 
 /**
@@ -25,8 +25,7 @@ export const colorSteps = [
  * @param {Array} domain -> [min, max]
  * @returns {*}
  */
-export const baseColorScale = (domain = [0, 1]) => {
-  return scaleLinear()
-    .domain(generateColorDomain(colorSteps, domain))
+export const baseColorScale = (domain = [0, 1]) =>
+  scaleLinear()
+    .domain(linspace(domain, colorSteps.length))
     .range(colorSteps);
-};

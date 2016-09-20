@@ -57,7 +57,8 @@ export default class Handle extends PureComponent {
         },
       })
       .styleCursor(false)
-      .on('dragmove', this.props.onMove(this.props.name, -offset))
+      .on('dragmove', this.props.onDrag(this.props.name, -offset))
+      .on('dragend', this.props.onDragEnd)
       .on('tap', (event) => { event.target.focus(); });
   }
 
@@ -73,6 +74,7 @@ export default class Handle extends PureComponent {
         style={this.state.style}
         ref={this.handleRef}
         onKeyDown={this.props.onKeyDown(this.props.name)}
+        onKeyUp={this.props.onKeyUp}
       >
         {this.props.labelFunc(this.props.label)}
       </button>
@@ -82,33 +84,32 @@ export default class Handle extends PureComponent {
 
 Handle.propTypes = {
   className: CommonPropTypes.className,
-  style: PropTypes.object,
-  snapTarget: PropTypes.oneOfType([
-    PropTypes.func,
-    PropTypes.object,
-  ]).isRequired,
   direction: PropTypes.oneOf(['left', 'right', 'middle']),
-  position: PropTypes.number.isRequired,
-
-  /* label and labelFunc control what is displayed on the handle */
   label: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,
   ]).isRequired,
   labelFunc: PropTypes.func,
-
-  /* value key name */
   name: PropTypes.string.isRequired,
-
-  /* events */
-  onMove: PropTypes.func.isRequired,
   onKeyDown: PropTypes.func,
+  onKeyUp: PropTypes.func,
+  onDrag: PropTypes.func.isRequired,
+  onDragEnd: PropTypes.func.isRequired,
+  position: PropTypes.number.isRequired,
+  snapTarget: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.object,
+  ]).isRequired,
+  style: PropTypes.object,
 };
 
 Handle.defaultProps = {
   direction: 'middle',
   labelFunc: identity,
+  onDrag: noop,
+  onDragEnd: noop,
   onKeyDown: noop,
+  onKeyUp: noop,
 };
 
 Handle.propUpdates = {

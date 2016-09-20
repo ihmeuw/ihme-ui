@@ -1,19 +1,17 @@
 import React from 'react';
-import { render } from 'react-dom';
+import ReactDOM from 'react-dom';
+import concat from 'lodash/concat';
+import { PureComponent } from '../../../utils';
 
-import { concat } from 'lodash';
-
-import Group from '../';
-import { Option } from '../';
-
+import Group, { Option } from '../';
 
 const data = [
   { name: 'males', value: '1' },
   { name: 'females', value: '2' },
-  { name: 'both', value: '3' }
+  { name: 'both', value: '3' },
 ];
 
-class App extends React.Component {
+class App extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -23,7 +21,7 @@ class App extends React.Component {
     this.isDisabled = this.isDisabled.bind(this);
   }
 
-  setSelection({ value }) {
+  setSelection(_, value) {
     this.setState({ selectedItems: value });
   }
 
@@ -34,7 +32,7 @@ class App extends React.Component {
   render() {
     return (
       <Group
-        clickHandler={this.setSelection}
+        onClick={this.setSelection}
       >
         {
           data.map((datum, index) => {
@@ -54,4 +52,4 @@ class App extends React.Component {
   }
 }
 
-render(<App />, document.getElementById('app'));
+ReactDOM.render(<App />, document.getElementById('app'));

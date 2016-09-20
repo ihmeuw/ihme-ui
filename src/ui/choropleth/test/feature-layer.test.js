@@ -2,8 +2,10 @@ import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
-import d3 from 'd3';
-import { getGeoJSON, getLocationIds, baseColorScale } from '../../../test-utils';
+import { geoPath } from 'd3';
+import { drop, find, omit } from 'lodash';
+import { getGeoJSON, getLocationIds } from '../../../test-utils';
+import { baseColorScale } from '../../../utils';
 
 import FeatureLayer from '../src/feature-layer';
 import Path from '../src/path';
@@ -13,37 +15,239 @@ chai.use(chaiEnzyme());
 describe('Choropleth <FeatureLayer />', () => {
   const features = getGeoJSON('states', 'feature').features;
 
-  // keyField references the id field on the returned geoJSON
-  const keyField = 'id';
-
-  // valueField references the key on the data built up below
-  // which holds the value to map to the location
-  const valueField = 'mean';
-
   const data = getLocationIds(features).reduce((map, locationId) => {
     /* eslint-disable no-param-reassign */
     map[locationId] = {
-      [valueField]: Math.floor(Math.random() * 100)
+      id: locationId,
+      mean: Math.floor(Math.random() * 100)
     };
 
     return map;
     /* eslint-enable no-param-reassign */
   }, {});
 
-  const pathGenerator = d3.geo.path();
+  const pathGenerator = geoPath();
+  const colorScale = baseColorScale();
 
-  it('creates a path for each feature given a collection of features', () => {
-    const wrapper = shallow(
-      <FeatureLayer
-        features={features}
-        data={data}
-        keyField={keyField}
-        valueField={valueField}
-        pathGenerator={pathGenerator}
-        colorScale={baseColorScale()}
-      />
-    );
+  describe('geometryKeyField', () => {
+    const expectedNumberofPaths = Object.keys(data).length;
 
-    expect(wrapper.find('g')).to.have.exactly(Object.keys(data).length).descendants(Path);
+    it('pulls the geometryKeyField off feature if it exists', () => {
+      const wrapper = shallow(
+        <FeatureLayer
+          features={features}
+          data={data}
+          geometryKeyField="id"
+          keyField="id"
+          valueField="mean"
+          pathGenerator={pathGenerator}
+          colorScale={colorScale}
+        />
+      );
+
+      expect(wrapper.find('g')).to.have.exactly(expectedNumberofPaths).descendants(Path);
+    });
+
+    it('pulls the geometryKeyField off feature.properties', () => {
+      const featuresWithProperties = features.map(feature => {
+        const id = feature.id;
+        return {
+          ...omit(feature, 'id'),
+          properties: {
+            id,
+          },
+        };
+      });
+
+      const wrapper = shallow(
+        <FeatureLayer
+          features={featuresWithProperties}
+          data={data}
+          geometryKeyField="properties.id"
+          keyField="id"
+          valueField="mean"
+          pathGenerator={pathGenerator}
+          colorScale={colorScale}
+        />
+      );
+
+      expect(wrapper.find('g')).to.have.exactly(expectedNumberofPaths).descendants(Path);
+    });
+
+    it('accepts a function as a geometryKeyField', () => {
+      const wrapper = shallow(
+        <FeatureLayer
+          features={features}
+          data={data}
+          geometryKeyField={(feature) => feature.id}
+          keyField="id"
+          valueField="mean"
+          pathGenerator={pathGenerator}
+          colorScale={colorScale}
+        />
+      );
+
+      expect(wrapper.find('g')).to.have.exactly(expectedNumberofPaths).descendants(Path);
+    });
+  });
+
+  describe('valueField', () => {
+    const featureToTest = features[0];
+
+    it('accepts a string as valueField', () => {
+      const wrapper = shallow(
+        <FeatureLayer
+          features={features}
+          data={data}
+          geometryKeyField="id"
+          keyField="id"
+          valueField="mean"
+          pathGenerator={pathGenerator}
+          colorScale={colorScale}
+        />
+      );
+
+      expect(wrapper
+        .find('g')
+        .find(Path)
+        .filterWhere(n => n.prop('datum').id === featureToTest.id)
+        .first()
+      ).to.have.prop('fill', colorScale(featureToTest.mean));
+    });
+
+    it('accepts a function as valueField', () => {
+      const wrapper = shallow(
+        <FeatureLayer
+          features={features}
+          data={data}
+          geometryKeyField="id"
+          keyField="id"
+          valueField={(dataMappedToKeys, feature) => dataMappedToKeys[feature.id].mean}
+          pathGenerator={pathGenerator}
+          colorScale={colorScale}
+        />
+      );
+
+      expect(wrapper
+        .find('g')
+        .find(Path)
+        .filterWhere(n => n.prop('datum').id === featureToTest.id)
+        .first()
+      ).to.have.prop('fill', colorScale(featureToTest.mean));
+    });
+  });
+
+  describe('selected', () => {
+    it('marks the correct path as selected', () => {
+      const selectedFeature = features[0];
+
+      const wrapper = shallow(
+        <FeatureLayer
+          features={features}
+          data={data}
+          geometryKeyField="id"
+          keyField="id"
+          valueField="mean"
+          pathGenerator={pathGenerator}
+          colorScale={colorScale}
+          selectedLocations={[find(data, { id: selectedFeature.id })]}
+        />
+      );
+
+      wrapper.find('g').find(Path).forEach(n => {
+        if (n.prop('feature').id === selectedFeature.id) {
+          return expect(n.prop('selected')).to.be.true;
+        }
+        return expect(n.prop('selected')).to.be.false;
+      });
+    });
+
+    it('renders selected features last', () => {
+      const firstFeature = features[0];
+
+      const wrapper = shallow(
+        <FeatureLayer
+          features={features}
+          data={data}
+          geometryKeyField="id"
+          keyField="id"
+          valueField="mean"
+          pathGenerator={pathGenerator}
+          colorScale={colorScale}
+        />
+      );
+
+      expect(wrapper
+        .find('g')
+        .find(Path)
+        .first()
+        .props().feature
+      ).to.equal(firstFeature);
+      wrapper.setProps({ selectedLocations: [find(data, { id: firstFeature.id })] });
+      expect(wrapper
+        .find('g')
+        .find(Path)
+        .first()
+        .props().feature
+      ).to.not.equal(firstFeature);
+      expect(wrapper
+        .find('g')
+        .find(Path)
+        .last()
+        .props().feature
+      ).to.equal(firstFeature);
+    });
+
+    it('does a stable sort of the features', () => {
+      const wrapper = shallow(
+        <FeatureLayer
+          features={features}
+          data={data}
+          geometryKeyField="id"
+          keyField="id"
+          valueField="mean"
+          pathGenerator={pathGenerator}
+          colorScale={colorScale}
+        />
+      );
+
+      wrapper.find('g').find(Path).forEach((node, idx) => {
+        expect(node.props().feature).to.equal(features[idx]);
+      });
+
+      // selecting the first feature should result in the following order:
+      // newIndex :|: oldIndex
+      //        0 -> 1
+      //        1 -> 2
+      //        2 -> 0
+      const selectedFeature = features[0];
+      wrapper.setProps({ selectedLocations: [find(data, { id: selectedFeature.id })] });
+      const expectedFeatureOrder = drop(features);
+      expectedFeatureOrder.push(selectedFeature);
+
+      wrapper.find('g').find(Path).forEach((node, idx) => {
+        expect(node.props().feature).to.equal(expectedFeatureOrder[idx]);
+      });
+    });
+
+    it(`does not update state.sortedFeatures 
+        if neither selectedLocations nor features have changed`, () => {
+      const wrapper = shallow(
+        <FeatureLayer
+          features={features}
+          data={data}
+          geometryKeyField="id"
+          keyField="id"
+          valueField="mean"
+          pathGenerator={pathGenerator}
+          colorScale={colorScale}
+        />
+      );
+
+      const initialState = wrapper.state('sortedFeatures');
+      expect(initialState).to.deep.equal(features);
+      wrapper.update();
+      expect(initialState).to.equal(wrapper.state('sortedFeatures'));
+    });
   });
 });

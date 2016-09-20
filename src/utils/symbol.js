@@ -1,9 +1,9 @@
-import d3Shape from 'd3-shape';
+import * as d3 from 'd3';
 
 const SHAPES = {
-  ...Object.keys(d3Shape).reduce((acc, key) => {
+  ...Object.keys(d3).reduce((acc, key) => {
     if (key.match(/symbol[A-Z]/)) {
-      return { ...acc, [key.toLowerCase().replace('symbol', '')]: d3Shape[key] };
+      return { ...acc, [key.toLowerCase().replace('symbol', '')]: d3[key] };
     }
     return acc;
   }, {}),
@@ -20,16 +20,17 @@ const SHAPES = {
  * Get a list of shortened d3 symbol names.
  * @returns {Array} list of shortened scale names.
  */
-export function getSymbolTypes() {
+export function symbolTypes() {
   return Object.keys(SHAPES);
 }
 
 /**
  * Get a d3 symbol by shortened name.
  * @param type
+ * @param default_
  * @returns {symbol|circle} specified symbol type. Defaults to `circle`.
  */
-export function getSymbol(type) {
-  return SHAPES[type] || SHAPES.circle;
+export function getSymbol(type, default_ = SHAPES.circle) {
+  return SHAPES[type] || default_;
 }
 

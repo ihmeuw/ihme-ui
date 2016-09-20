@@ -3,7 +3,7 @@
 src/**/demo*
 **/coverage/*
 src/test-utils/assets/usaTopoJSON.js
-./ui/
-./test-utils/
-./utils/
-./index.js
+webpack
+dist
+lib
+es

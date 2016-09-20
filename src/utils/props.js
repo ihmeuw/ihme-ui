@@ -12,7 +12,10 @@ export const CommonPropTypes = {
     PropTypes.array,
     PropTypes.object,
   ]),
-  style: PropTypes.object,
+  style: PropTypes.oneOfType([
+    PropTypes.object, // e.g., inline styles
+    PropTypes.func, // function to be passed some datum, required to return an object
+  ]),
   width: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,
@@ -20,6 +23,10 @@ export const CommonPropTypes = {
   height: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,
+  ]),
+  dataAccessor: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
   ]),
 };
 
@@ -81,11 +88,12 @@ export function propsChanged(prevProps, nextProps, propsToCompare, propsToOmit) 
  * @param {Object} prevProps
  * @param {Object} nextProps
  * @param {Object} state
+ * @param {Object} [context] - optional `this` context with which to call propUpdate functions
  * @returns {Object} accumulated state.
  */
-export function stateFromPropUpdates(propUpdates, prevProps, nextProps, state) {
+export function stateFromPropUpdates(propUpdates, prevProps, nextProps, state, context) {
   return reduce(propUpdates, (acc, value, key) => {
-    return value(acc, key, prevProps, nextProps);
+    return value(acc, key, prevProps, nextProps, context);
   }, state);
 }
 
@@ -101,9 +109,9 @@ export function stateFromPropUpdates(propUpdates, prevProps, nextProps, state) {
  * @returns {comparisonActionCallback} comparison action callback.
  */
 export function updateFunc(func) {
-  return (acc, key, prevProps = {}, nextProps) => {
+  return (acc, key, prevProps = {}, nextProps, context) => {
     return prevProps[key] !== nextProps[key] ?
-      { ...acc, ...func(nextProps[key], key, nextProps) } :
+      { ...acc, ...func(nextProps[key], key, nextProps, acc, context) } :
       acc;
   };
 }
@@ -147,6 +155,7 @@ export function applyFuncToProps(prevProps, nextProps, propNames, firstFunc, ...
  * @param {string} propName
  * @param {Object} prevProps
  * @param {Object} nextProps
+ * @param {Object} [context] - optional `this` context with which to call updateFuncCallback
  * @returns {Object} state property
  */
 
@@ -155,5 +164,6 @@ export function applyFuncToProps(prevProps, nextProps, propNames, firstFunc, ...
  * @param {any} nextProp
  * @param {string} propName
  * @param {Object} nextProps
- * @returns {Object} accumulated state
+ * @param {Object} state accumulator
+ * @returns {Object} accumulated state.
  */

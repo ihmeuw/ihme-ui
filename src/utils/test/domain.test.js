@@ -4,7 +4,6 @@ import {
   percentOfRange,
   numFromPercent,
   domainFromPercent,
-  generateColorDomain,
   isWithinRange,
   ensureWithinRange,
 } from '../domain';
@@ -64,56 +63,35 @@ describe('domain helpers', () => {
     });
   });
 
-  describe('generateColorDomain', () => {
-    it(`turns [min, max] domain into multi-step domain
-    that matches cardinality of colors array`, () => {
-      const origDomain = [0, 100];
-      const colors = Array(5);
-      expect(generateColorDomain(colors, origDomain)).to.be.an('array')
-        .of.length(5)
-        .and.to.deep.equal([0, 25, 50, 75, 100]);
-    });
-    it('is capable of starting at a number other than 0', () => {
-      const origDomain = [0.05, 0.5];
-      const colors = Array(11);
-      expect(generateColorDomain(colors, origDomain)).to.be.an('array')
-        .of.length(11)
-        .and.to.deep.equal([
-          0.05,
-          0.095,
-          0.14,
-          0.185,
-          0.22999999999999998,
-          0.27499999999999997,
-          0.32,
-          0.365,
-          0.41,
-          0.45499999999999996,
-          0.49999999999999994,
-        ]);
-    });
-  });
-
-  it('returns [min, max] as color domain when min === max', () => {
-    const origDomain = [0, 0];
-    const colors = Array(5);
-    expect(generateColorDomain(colors, origDomain)).to.be.an('array')
-      .of.length(2)
-      .and.to.deep.equal([0, 0]);
-  });
-
-  it('validates that a number is within a specified range, up to and including bounding', () => {
+  it('validates that a number is within a specified range, up to and including bounds', () => {
     const specs = [
       { value: 1990, extent: [1990, 1994], expectation: true },
       { value: 1994, extent: [1990, 1994], expectation: true },
       { value: 1992, extent: [1990, 1994], expectation: true },
       { value: 1989, extent: [1990, 1994], expectation: false },
       { value: 1995, extent: [1990, 1994], expectation: false },
+      { value: 1995, extent: undefined, expectation: true },
+      { value: 1995, extent: [1990], expectation: true },
     ];
 
     specs.forEach((spec) => {
       const { value, extent, expectation } = spec;
       expect(isWithinRange(value, extent)).to.equal(expectation);
+    });
+  });
+
+  it('accepts a tolerance within which to consider a number within a set of bounds', () => {
+    const specs = [
+      { value: 5, extent: [1, 4.9], tolerance: 0.1, expectation: true },
+      { value: 5, extent: [1, 4.9], tolerance: (void 0), expectation: false },
+      { value: 5, extent: [1, 5], tolerance: (void 0), expectation: true },
+      { value: 5.00000000000001, extent: [1, 5], tolerance: 0.00000000000002, expectation: true },
+      { value: 5.00001, extent: [1, 5], tolerance: 0.000000001, expectation: false },
+    ];
+
+    specs.forEach((spec) => {
+      const { value, extent, tolerance, expectation } = spec;
+      expect(isWithinRange(value, extent, tolerance)).to.equal(expectation);
     });
   });
 

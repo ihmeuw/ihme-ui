@@ -13,7 +13,7 @@ describe('<Spinner />', () => {
     const wrapper = shallow(<Spinner />);
     expect(wrapper).to.have.length(1);
     expect(wrapper).to.have.tagName('div');
-    expect(wrapper).to.have.exactly(3).descendants('span');
+    expect(wrapper).to.have.exactly(3).descendants('svg');
   });
 
   it('renders inline', () => {

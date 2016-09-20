@@ -51,6 +51,23 @@ describe('utils.props', () => {
       expect(newState).to.deep.equal(expected);
     });
 
+    it('is called with the proper context', () => {
+      const propUpdates = {
+        value(accum, key, prevProps, nextProps, context) {
+          /* eslint-disable no-param-reassign */
+          context.a = 2;
+        },
+      };
+
+      const obj = {
+        a: 1,
+      };
+
+      expect(obj.a).to.equal(1);
+      props.stateFromPropUpdates(propUpdates, {}, { foo: 1 }, {}, obj);
+      expect(obj.a).to.equal(2);
+    });
+
     describe('updateFunc', () => {
       it('helps update a state object based on new props', () => {
         const propUpdates = {
@@ -85,6 +102,21 @@ describe('utils.props', () => {
 
         state = props.stateFromPropUpdates(propUpdates, nextProps, nextProps, state);
         expect(state).to.deep.equal(expected);
+      });
+
+      it('is called with the proper context', () => {
+        const obj = {
+          a: 1,
+        };
+
+        const updater = props.updateFunc((prop, key, nextProps, state, context) => {
+          /* eslint-disable no-param-reassign */
+          context.a = 2;
+        });
+
+        expect(obj.a).to.equal(1);
+        updater({}, 'foo', { }, { foo: 1 }, obj);
+        expect(obj.a).to.equal(2);
       });
     });
   });

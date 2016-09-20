@@ -1,79 +1,114 @@
 import React, { PropTypes } from 'react';
-import { area } from 'd3-shape';
-import { noop } from 'lodash';
+import classNames from 'classnames';
+import { area } from 'd3';
 
-const propTypes = {
-  /* array of objects
-   e.g. [ {}, {}, {} ]
-   */
+import { eventHandleWrapper } from '../../../utils/events';
+import {
+  CommonPropTypes,
+  CommonDefaultProps,
+  propsChanged,
+  propResolver,
+  PureComponent,
+  stateFromPropUpdates,
+} from '../../../utils';
+
+export default class Area extends PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.state = stateFromPropUpdates(Area.propUpdates, {}, props, {});
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState(stateFromPropUpdates(Area.propUpdates, this.props, nextProps, {}));
+  }
+
+  render() {
+    const {
+      className,
+      clipPathId,
+      data,
+      onClick,
+      onMouseLeave,
+      onMouseMove,
+      onMouseOver,
+      style,
+    } = this.props;
+
+    const {
+      path,
+    } = this.state;
+
+    return (
+      <path
+        className={className && classNames(className)}
+        clipPath={clipPathId && `url(#${clipPathId})`}
+        d={path}
+        onClick={eventHandleWrapper(onClick, data, this)}
+        onMouseLeave={eventHandleWrapper(onMouseLeave, data, this)}
+        onMouseMove={eventHandleWrapper(onMouseMove, data, this)}
+        onMouseOver={eventHandleWrapper(onMouseOver, data, this)}
+        style={style}
+      />
+    );
+  }
+}
+
+Area.propTypes = {
+  className: CommonPropTypes.className,
+
+  /* string id url for clip path */
+  clipPathId: PropTypes.string,
+
+  /* array of objects. e.g. [ {}, {}, {} ] */
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
+
+  dataAccessors: PropTypes.shape({
+    x: CommonPropTypes.dataAccessor.isRequired,
+    y0: CommonPropTypes.dataAccessor.isRequired,
+    y1: CommonPropTypes.dataAccessor.isRequired,
+  }).isRequired,
+
+  /* mouse events signature: function(event, data, instance) {...} */
+  onClick: PropTypes.func,
+  onMouseLeave: PropTypes.func,
+  onMouseMove: PropTypes.func,
+  onMouseOver: PropTypes.func,
 
   /* scales from d3Scale */
   scales: PropTypes.shape({
     x: PropTypes.func,
-    y: PropTypes.func
+    y: PropTypes.func,
   }).isRequired,
 
-  color: PropTypes.string,
-
-  strokeWidth: PropTypes.number,
-
-  dataAccessors: PropTypes.shape({
-    x: PropTypes.string,
-    y0: PropTypes.string,
-    y1: PropTypes.string
-  }).isRequired,
-
-  clickHandler: PropTypes.func,
-
-  hoverHandler: PropTypes.func
+  style: CommonPropTypes.style,
 };
 
-const defaultProps = {
-  color: 'steelblue',
-  strokeWidth: 2.5,
+Area.defaultProps = {
   dataAccessors: { x: 'x', y0: 'y0', y1: 'y1' },
-  clickHandler: noop,
-  hoverHandler: noop
+  onClick: CommonDefaultProps.noop,
+  onMouseLeave: CommonDefaultProps.noop,
+  onMouseMove: CommonDefaultProps.noop,
+  onMouseOver: CommonDefaultProps.noop,
+  style: {
+    fill: 'steelblue',
+    stroke: 'steelblue',
+    strokeWidth: 1,
+  },
 };
 
-const Area = (props) => {
-  const {
-    data,
-    scales,
-    color,
-    strokeWidth,
-    dataAccessors: { x: xAccessor, y0: y0Accessor, y1: y1Accessor },
-    clickHandler,
-    hoverHandler
-  } = props;
-
-  const path = area()
-    .x((datum) => {
-      return scales.x(datum[xAccessor]);
-    })
-    .y0((datum) => {
-      return scales.y(datum[y0Accessor]);
-    })
-    .y1((datum) => {
-      return scales.y(datum[y1Accessor]);
-    });
-
-  return (
-    <path
-      className="area"
-      fill={color}
-      stroke={color}
-      strokeWidth={`${strokeWidth}px`}
-      d={path(data)}
-      onClick={clickHandler(data)}
-      onMouseOver={hoverHandler(data)}
-    />
-  );
+Area.propUpdates = {
+  path: (acc, propName, prevProps, nextProps) => {
+    if (propsChanged(prevProps, nextProps, ['data', 'dataAccessors', 'scales'])) {
+      const pathGenerator = area()
+        .x((datum) => nextProps.scales.x(propResolver(datum, nextProps.dataAccessors.x)))
+        .y0((datum) => nextProps.scales.y(propResolver(datum, nextProps.dataAccessors.y0)))
+        .y1((datum) => nextProps.scales.y(propResolver(datum, nextProps.dataAccessors.y1)));
+      return {
+        ...acc,
+        path: pathGenerator(nextProps.data),
+      };
+    }
+    return acc;
+  },
 };
-
-Area.propTypes = propTypes;
-
-Area.defaultProps = defaultProps;
-
-export default Area;

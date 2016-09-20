@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
-import d3Scale from 'd3-scale';
+import { scaleLinear } from 'd3';
 
 import { XAxis, YAxis } from '../';
 
@@ -19,7 +19,7 @@ function App() {
     <svg width={`${width}px`} height={`${height}px`}>
       <g transform={`translate(${padding.left}, ${padding.top})`}>
         <XAxis
-          scale={d3Scale.scaleLinear().domain([1970, 2010]).range([0, width - (padding.right + padding.left)])}
+          scale={scaleLinear().domain([1970, 2010]).range([0, width - (padding.right + padding.left)])}
           width={width - (padding.right + padding.left)}
           height={height - (padding.bottom + padding.top)}
           orientation="top"
@@ -27,7 +27,7 @@ function App() {
           padding={padding}
         />
         <XAxis
-          scale={d3Scale.scaleLinear().domain([1970, 2010]).range([0, width - (padding.right + padding.left)])}
+          scale={scaleLinear().domain([1970, 2010]).range([0, width - (padding.right + padding.left)])}
           // translate={{ x: 0, y: 600 - (padding.bottom + padding.top) }}
           width={width - (padding.right + padding.left)}
           height={height - (padding.bottom + padding.top)}
@@ -36,7 +36,7 @@ function App() {
           padding={padding}
         />
         <YAxis
-          scale={d3Scale.scaleLinear().range([height - (padding.bottom + padding.top), 0])}
+          scale={scaleLinear().range([height - (padding.bottom + padding.top), 0])}
           width={width - (padding.right + padding.left)}
           height={height - (padding.bottom + padding.top)}
           orientation="left"
@@ -44,7 +44,7 @@ function App() {
           padding={padding}
         />
         <YAxis
-          scale={d3Scale.scaleLinear().domain([0, 100]).range([height - (padding.bottom + padding.top), 0])}
+          scale={scaleLinear().domain([0, 100]).range([height - (padding.bottom + padding.top), 0])}
           width={width - (padding.right + padding.left)}
           height={height - (padding.bottom + padding.top)}
           orientation="right"

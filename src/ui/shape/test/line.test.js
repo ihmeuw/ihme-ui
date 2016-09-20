@@ -4,27 +4,25 @@ import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import { maxBy, minBy } from 'lodash';
-import d3Scale from 'd3-scale';
-import { line } from 'd3-shape';
+import { line, scalePoint, scaleLinear } from 'd3';
 
 import { dataGenerator } from '../../../test-utils';
 import { Line } from '../';
 
 chai.use(chaiEnzyme());
 
-
 describe('<Line />', () => {
   const keyField = 'year_id';
   const valueField = 'value';
   const chartDimensions = {
     width: 600,
-    height: 400
+    height: 400,
   };
 
   const data = dataGenerator({
     primaryKeys: [{ name: keyField, values: [keyField] }],
     valueKeys: [{ name: valueField, range: [100, 200], uncertainty: true }],
-    length: 10
+    length: 10,
   });
 
   let component;
@@ -32,24 +30,14 @@ describe('<Line />', () => {
   const range = [minBy(data, valueField)[valueField], maxBy(data, valueField)[valueField]];
   const domain = [minBy(data, keyField)[keyField], maxBy(data, keyField)[keyField]];
 
-  const xScale = d3Scale.scalePoint().domain(domain).range([0, chartDimensions.width]);
-  const yScale = d3Scale.scaleLinear().domain(range).range([chartDimensions.height, 0]);
+  const xScale = scalePoint().domain(domain).range([0, chartDimensions.width]);
+  const yScale = scaleLinear().domain(range).range([chartDimensions.height, 0]);
 
-  const clickCallback = sinon.spy((datum) => {
-    return sinon.spy(() => {
-      return datum;
-    });
-  });
-
-  const hoverCallback = sinon.spy((datum) => {
-    return sinon.spy(() => {
-      return datum;
-    });
-  });
+  const eventHandler = sinon.spy();
 
   const lineFunction = line()
-    .x((datum) => { return xScale(datum[keyField]); })
-    .y((datum) => { return yScale(datum[valueField]); });
+    .x((datum) => xScale(datum[keyField]))
+    .y((datum) => yScale(datum[valueField]));
 
   const expectedPath = lineFunction(data);
 
@@ -59,15 +47,12 @@ describe('<Line />', () => {
         data={data}
         scales={{ x: xScale, y: yScale }}
         dataAccessors={{ x: keyField, y: valueField }}
-        clickHandler={clickCallback}
-        hoverHandler={hoverCallback}
+        onClick={eventHandler}
+        onMouseLeave={eventHandler}
+        onMouseMove={eventHandler}
+        onMouseOver={eventHandler}
       />
     );
-  });
-
-  afterEach(() => {
-    clickCallback.reset();
-    hoverCallback.reset();
   });
 
   it('renders an SVG path node with a d attribute', () => {
@@ -78,21 +63,57 @@ describe('<Line />', () => {
     expect(path).to.have.attr('d', expectedPath);
   });
 
-  it('responds to a click event', () => {
-    const wrapper = shallow(component);
-    wrapper.find('path').first().simulate('click');
-    expect(clickCallback.called).to.be.true;
+  describe('styling', () => {
+    const baseStyle = {
+      stroke: 'red',
+      strokeWidth: 10,
+    };
 
-    const curriedSpy = clickCallback.getCall(0).returnValue.getCall(0);
-    expect(curriedSpy.returnValue).to.be.an('array');
+    it('applies style as an object', () => {
+      const wrapper = shallow(
+        <Line
+          data={data}
+          scales={{ x: xScale, y: yScale }}
+          dataAccessors={{ x: keyField, y: valueField }}
+          style={baseStyle}
+        />
+      );
+
+      expect(wrapper).to.have.style('stroke', 'red');
+      expect(wrapper).to.have.style('stroke-width', '10');
+    });
   });
 
-  it('responds to a mouseover event', () => {
-    const wrapper = shallow(component);
-    wrapper.find('path').first().simulate('mouseOver');
-    expect(hoverCallback.called).to.be.true;
+  describe('classnames', () => {
+    const wrapper = shallow(
+      <Line
+        className="base-classname"
+        data={data}
+        scales={{ x: xScale, y: yScale }}
+        dataAccessors={{ x: keyField, y: valueField }}
+      />
+    );
 
-    const curriedSpy = hoverCallback.getCall(0).returnValue.getCall(0);
-    expect(curriedSpy.returnValue).to.be.an('array');
+    it('applies a base classname', () => {
+      expect(wrapper).to.have.className('base-classname');
+    });
+  });
+
+  describe('events', () => {
+    it(`calls onClick, mouseLeave, mouseMove, and mouseOver with
+    the browser event, the data prop, and the React element`, () => {
+      const wrapper = shallow(component);
+      const event = {
+        preventDefault() {},
+      };
+      const inst = wrapper.instance();
+
+      ['click', 'mouseLeave', 'mouseMove', 'mouseOver'].forEach((evtName) => {
+        eventHandler.reset();
+        wrapper.simulate(evtName, event);
+        expect(eventHandler.calledOnce).to.be.true;
+        expect(eventHandler.calledWith(event, data, inst)).to.be.true;
+      });
+    });
   });
 });

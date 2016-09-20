@@ -1,12 +1,17 @@
 export {
   hasCrappyValues,
+  linspace,
 } from './array';
+
+export {
+  colorSteps,
+  baseColorScale,
+} from './colors';
 
 export {
   percentOfRange,
   numFromPercent,
   domainFromPercent,
-  generateColorDomain,
   isWithinRange,
   ensureWithinRange,
 } from './domain';
@@ -26,6 +31,10 @@ export {
 } from './geo';
 
 export {
+  numberFormat,
+} from './numbers';
+
+export {
   propResolver,
   quickMerge,
 } from './objects';
@@ -35,10 +44,11 @@ export {
 } from './react';
 
 export {
+  clampedScale,
+  domainToRange,
   getScale,
   getScaleTypes,
   rangeToDomain,
-  domainToRange,
 } from './scale';
 
 export {
@@ -55,6 +65,11 @@ export {
   updateFunc,
   applyFuncToProps,
 } from './props';
+
+export {
+  getSymbol,
+  symbolTypes,
+} from './symbol';
 
 export {
   getBackgroundColor,

@@ -1,12 +1,9 @@
 import React from 'react';
-
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
-
-import { minBy, maxBy, uniqBy, map } from 'lodash';
-
-import d3Scale from 'd3-scale';
+import { minBy, maxBy, noop, uniqBy, map } from 'lodash';
+import { scalePoint, scaleLinear, scaleOrdinal } from 'd3';
 
 import { dataGenerator } from '../../../test-utils';
 
@@ -50,13 +47,13 @@ describe('<MultiScatter />', () => {
     const yDomain = [minBy(data, 'population').population, maxBy(data, 'population').population];
     const xDomain = map(uniqBy(data, 'year_id'), (obj) => { return (obj.year_id); });
 
-    const xScale = d3Scale.scalePoint().domain(xDomain).range([0, chartDimensions.width]);
-    const yScale = d3Scale.scaleLinear().domain(yDomain).range([chartDimensions.height, 0]);
+    const xScale = scalePoint().domain(xDomain).range([0, chartDimensions.width]);
+    const yScale = scaleLinear().domain(yDomain).range([chartDimensions.height, 0]);
 
-    const symbolScale = d3Scale.scaleOrdinal()
+    const symbolScale = scaleOrdinal()
         .domain(['USA', 'Canada', 'Mexico'])
         .range(['circle', 'star', 'square']);
-    const colorScale = d3Scale.scaleOrdinal()
+    const colorScale = scaleOrdinal()
         .domain(['USA', 'Canada', 'Mexico'])
         .range(['red', 'blue', 'green']);
 
@@ -66,13 +63,30 @@ describe('<MultiScatter />', () => {
       component = (
         <MultiScatter
           data={scatterData}
-          keyField={'location'}
-          dataField={'values'}
-          symbolField={'location'}
+          dataAccessors={dataAccessors}
+          fieldAccessors={{
+            key: 'location',
+            data: 'values',
+            symbol: 'location',
+          }}
+          focus={data[0]}
+          focusedClassName="focused"
+          focusedStyle={{ stroke: 'yellow' }}
+          onClick={noop}
+          onMouseLeave={noop}
+          onMouseMove={noop}
+          onMouseOver={noop}
+          selection={[]}
+          selectedClassName="selected"
+          selectedStyle={{ stroke: 'red' }}
+          scatterClassName="scatter"
+          size={128}
           symbolScale={symbolScale}
+          symbolStyle={{ fill: 'red' }}
           colorScale={colorScale}
           scales={{ x: xScale, y: yScale }}
-          dataAccessors={dataAccessors}
+          style={{ strokeWeight: 2 }}
+          symbolClassName="symbol"
         />
       );
     });
@@ -82,22 +96,47 @@ describe('<MultiScatter />', () => {
       expect(wrapper.find(Scatter)).to.have.length(3);
     });
 
-    it('does not pass specific properties to its children', () => {
-      const scatter = shallow(component).find(Scatter).first();
-      const assertion = (prop) => {
-        expect(scatter).to.not.have.prop(prop);
+    it('passes specified properties to its children', () => {
+      const nonInheritedProps = [
+        'scatterClassName',
+      ];
+      const assertion = (symbol) => {
+        nonInheritedProps.forEach(prop => {
+          expect(symbol).to.not.have.prop(prop);
+        });
       };
-
-      ['keyField', 'dataField', 'symbolField', 'symbolScale', 'colorScale'].forEach(assertion);
+      shallow(component).find(Scatter).forEach(assertion);
     });
 
-    it('does pass some properties to its children', () => {
-      const scatter = shallow(component).find(Scatter).first();
-      const assertion = (prop) => {
-        expect(scatter).to.have.prop(prop);
+    it('does not pass specified properties to its children', () => {
+      const inheritedProps = [
+        'className',
+        'data',
+        'dataAccessors',
+        'fill',
+        'focus',
+        'focusedClassName',
+        'focusedStyle',
+        'onClick',
+        'onMouseLeave',
+        'onMouseMove',
+        'onMouseOver',
+        'selectedClassName',
+        'selectedStyle',
+        'selection',
+        'scales',
+        'size',
+        'style',
+        'symbolClassName',
+        'symbolScale',
+        'symbolType',
+      ];
+      const assertion = (symbol) => {
+        inheritedProps.forEach(prop => {
+          expect(symbol).to.have.prop(prop);
+        });
       };
-
-      ['data', 'scales', 'dataAccessors'].forEach(assertion);
+      shallow(component).find(Scatter).forEach(assertion);
     });
   });
 });

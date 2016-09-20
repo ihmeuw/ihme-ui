@@ -7,10 +7,11 @@ import ChoroplethLegend from '../';
 import Button from '../../button';
 
 // utils
-import { scaleLinear } from 'd3-scale';
+import { scaleLinear } from 'd3';
 import { maxBy, minBy, range } from 'lodash';
-import { dataGenerator, colorSteps } from '../../../test-utils';
-import { generateColorDomain, isWithinRange, numFromPercent } from '../../../utils/domain';
+import { dataGenerator } from '../../../test-utils';
+import { colorSteps } from '../../../utils';
+import { linspace, isWithinRange, numFromPercent } from '../../../utils';
 
 const valueField = 'value';
 const keyField = 'loc_id';
@@ -81,7 +82,7 @@ class App extends React.Component {
   baseColorScale(rangeExtent, generateNewBaseScale) {
     const createBaseScale = (colorDomain = this.state.colorDomain) => {
       return scaleLinear()
-        .domain(generateColorDomain(colorSteps, colorDomain))
+        .domain(linspace(colorDomain, colorSteps.length))
         .range(colorSteps)
         .clamp(true);
     };
@@ -156,12 +157,12 @@ class App extends React.Component {
         />
         <Button
           text="Set color scale"
-          clickHandler={this.setScale}
+          onClick={this.setScale}
         />
         <span style={{ marginBottom: '5px' }} />
         <Button
           text="Generate new data"
-          clickHandler={this.setNewData}
+          onClick={this.setNewData}
         />
       </div>
     );

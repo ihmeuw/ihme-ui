@@ -1,24 +1,57 @@
 {
+  "presets": ["react"],
+  "plugins": ["lodash", "transform-object-rest-spread", "transform-runtime"],
   "env": {
-    "webpack": {
-      "presets": ["es2015-webpack", "react"]
-    },
-    "cli": {
-      "presets": ["es2015", "react"],
+    "demo": {
       "plugins": [
-        [
-          "babel-plugin-webpack-loaders",
-          {
-            "config": "./webpack.config.js",
-            "verbose": false
+        ["transform-es2015-template-literals", { "loose": true }],
+        "transform-es2015-literals",
+        "transform-es2015-function-name",
+        "transform-es2015-arrow-functions",
+        "transform-es2015-block-scoped-functions",
+        ["transform-es2015-classes", { "loose": true }],
+        "transform-es2015-object-super",
+        "transform-es2015-shorthand-properties",
+        "transform-es2015-duplicate-keys",
+        ["transform-es2015-computed-properties", { "loose": true }],
+        ["transform-es2015-for-of", { "loose": true }],
+        "transform-es2015-sticky-regex",
+        "transform-es2015-unicode-regex",
+        "check-es2015-constants",
+        ["transform-es2015-spread", { "loose": true }],
+        "transform-es2015-parameters",
+        ["transform-es2015-destructuring", { "loose": true }],
+        "transform-es2015-block-scoping",
+        "transform-es2015-typeof-symbol",
+        ["transform-regenerator", { "async": false, "asyncGenerators": false }]
+      ],
+    },
+    "test": {
+      "presets": ["es2015"],
+      "plugins": ["css-modules-transform"]
+    },
+    "commonjs:babel": {
+      "presets": ["es2015"],
+      "plugins": [[
+        "css-modules-transform",
+        {
+          "processCss": "./scripts/postCSSProcesser.js",
+          "extractCss": {
+            "dir": "./style/",
+            "relativeRoot": "./src/",
+            "filename": "[name].css"
           }
-        ]
+        }]
+      ]
+    },
+    "commonjs:webpack": {
+      "presets": ["es2015"],
+      "plugins": [
+        ["css-modules-transform", { "processCss": "./scripts/postCSSProcesser.js", "extractCss": "./dist/ihme-ui.css"}]
       ]
     }
   },
-  "plugins": ["transform-object-rest-spread", "transform-runtime"],
   "ignore": [
-    "node_modules/",
-    "src/test-utils/assets/"
+    "node_modules/"
   ]
 }

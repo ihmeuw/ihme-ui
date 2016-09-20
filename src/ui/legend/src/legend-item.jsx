@@ -100,7 +100,7 @@ export default function LegendItem(props) {
     symbolColorKey,
     symbolTypeKey
   } = props;
-  const color = propResolver(item, symbolColorKey);
+  const fill = propResolver(item, symbolColorKey);
   const type = propResolver(item, symbolTypeKey);
 
   const inlineStyles = typeof itemStyles === 'function' ? itemStyles(item) : itemStyles;
@@ -131,7 +131,7 @@ export default function LegendItem(props) {
           width="1em" height="1em"
           className={styles.svg}
         >
-          <Symbol type={type} color={color} />
+          <Symbol symbolType={type} fill={fill} />
         </svg>
         <span className={styles.label}>
           {renderLabel(props)}

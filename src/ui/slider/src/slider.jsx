@@ -1,42 +1,77 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import d3Scale from 'd3-scale';
-import { bindAll, identity, map, zipObject } from 'lodash';
-import { CommonPropTypes, PureComponent, ensureWithinRange } from '../../../utils';
+import { scaleLinear } from 'd3';
+import bindAll from 'lodash/bindAll';
+import difference from 'lodash/difference';
+import identity from 'lodash/identity';
+import inRange from 'lodash/inRange';
+import map from 'lodash/map';
+import noop from 'lodash/noop';
+import range from 'lodash/range';
+import reduce from 'lodash/reduce';
+import round from 'lodash/round';
+import zipObject from 'lodash/zipObject';
+import { CommonPropTypes, PureComponent } from '../../../utils';
 import { stateFromPropUpdates, updateFunc } from '../../../utils/props';
 
 import Track from './track';
 import Fill from './fill';
 import Handle from './handle';
 import ResponsiveContainer from '../../responsive-container';
-import { getFloatPrecision, valueWithPrecision } from './util';
 import style from './style.css';
 
+const VALUE_KEYS = ['low', 'high'];
+
 /**
- * Evaluate value and return a compatible object with keys 'min' and 'max'.
- * @param value
- * @returns {Object}
+ * Return object of indexes for 'low' and 'high' values
+ * @param values
+ * @param rangeList
+ * @return {Object}
  */
-function getMinMaxValues(value) {
-  if (typeof value === 'number') {
-    return { min: value };
-  } else if (Array.isArray(value)) {
-    return zipObject(['min', 'max'], value);
-  }
-  return value;
+function getIndexesForValues(values, rangeList) {
+  return reduce(values, (acc, value, key) => {
+    /* eslint-disable no-nested-ternary */
+    // if value is not in the range list, assign either first or last element, depending on key
+    const index = rangeList.indexOf(value);
+    return {
+      ...acc,
+      [key]: index !== -1 ?
+               index : key === 'low' ? 0 : rangeList.length - 1,
+    };
+    /* eslint-enable no-nested-ternary */
+  }, {});
 }
 
 /**
- * Return value more similar to the input value. If one handle, only return number value.
- * @param value
- * @param handleCount
- * @returns {*}
+ * Return object of values for 'low' and 'high' indexes
+ * @param indexes
+ * @param rangeList
+ * @return {Object}
  */
-function valueByHandleCount(value, handleCount) {
-  if (handleCount === 1) {
-    return value.min;
+function getValuesForIndexes(indexes, rangeList) {
+  return reduce(indexes, (acc, value, key) => {
+    return {
+      ...acc,
+      [key]: rangeList[value],
+    };
+  }, {});
+}
+
+/**
+ * Evaluate value param and return a compatible object with keys 'low' and 'high'.
+ * @param value
+ * @returns {Object}
+ */
+function getLowHighValues(value) {
+  if (Array.isArray(value)) {
+    return zipObject(VALUE_KEYS, value);
+  } else if (typeof value === 'object') {
+    if (difference(Object.keys(value), VALUE_KEYS).length) {
+      throw new TypeError(`Unexpected value keys: [${difference(Object.keys(value), VALUE_KEYS)}]`);
+    }
+    return value;
   }
-  return value;
+  return { low: value };
 }
 
 export default class Slider extends PureComponent {
@@ -44,61 +79,67 @@ export default class Slider extends PureComponent {
     super(props);
 
     this.state = {
+      ...stateFromPropUpdates(Slider.propUpdates, {}, props, { scale: scaleLinear() }),
       render: false,
-      values: getMinMaxValues(props.value),
-      scale: d3Scale.scaleLinear()
-        .clamp(true)
-        .domain([props.minValue, props.maxValue]),
       snapTarget: {},
     };
 
-    this.handleCount = Object.keys(this.state.values).length;
+    this.handleCount = Object.keys(this.state.indexes).length;
 
     bindAll(this, [
-      'onHandleMove',
+      'onHandleEnd',
+      'onHandleDrag',
       'onHandleKeyDown',
       'onTrackClick',
       'trackRef',
+      'doSetState',
     ]);
   }
 
   componentDidMount() {
-    this.receiveTrackWidth(this.props);
+    this.doSetState(this.receiveTrackWidth(this.state));
   }
 
-  componentWillReceiveProps(newProps) {
-    const state = {};
+  componentWillReceiveProps(nextProps) {
+    let state = {
+      range: this.state.range,
+      scale: this.state.scale,
+    };
+
+    state = stateFromPropUpdates(Slider.propUpdates, this.props, nextProps, state);
 
     // If the extents or width changes, the scale and snapTarget must be recalculated.
-    if ((this.props.minValue !== newProps.minValue) ||
-        (this.props.maxValue !== newProps.maxValue) ||
-        (this.props.step !== newProps.step)) {
-      this.state.scale.domain([newProps.minValue, newProps.maxValue]);
-      this.receiveTrackWidth(newProps);
+    if (this.props.range !== nextProps.range) {
+      state = this.receiveTrackWidth(state);
     }
 
-    this.setState(stateFromPropUpdates(Slider.propUpdates, this.props, newProps, state));
+    this.setState(state);
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.width !== prevProps.width) {
-      this.receiveTrackWidth(this.props);
+      this.doSetState(this.receiveTrackWidth(this.state));
     }
   }
 
-  onHandleMove(key, offset) {
+  onHandleDrag(key, offset) {
     return (event) => {
       if (!event.dx) return;
 
       const { pageX, dx } = event;
-      const { scale, values } = this.state;
+      const { scale, indexes } = this.state;
 
-      const nextPos = scale(values[key]) + dx;
-      if (!(ensureWithinRange(pageX, [nextPos - (offset * 2), nextPos]) === pageX)) return;
+      // Calculate next position, handle extent, and index value
+      const nextPos = scale(indexes[key]) + dx;
+      const handleExtent = nextPos - (offset * 2);
+      const index = round(scale.invert(nextPos));
 
-      const value = valueWithPrecision(scale.invert(nextPos), this.precision);
+      // Check that the mouse X pos is within the handle extent,
+      // and that the computed value is in the range list
+      if (!inRange(pageX - handleExtent, nextPos - handleExtent) ||
+            !this.state.range[index]) return;
 
-      this.updateValueFromEvent(value, key);
+      this.updateValueFromEvent(event, index, key, this.props.onDrag);
     };
   }
 
@@ -107,10 +148,10 @@ export default class Slider extends PureComponent {
       let step;
       switch (event.keyCode) {
         case 37:
-          step = -this.props.step;
+          step = -1;
           break;
         case 39:
-          step = this.props.step;
+          step = 1;
           break;
         default:
           return;
@@ -119,45 +160,56 @@ export default class Slider extends PureComponent {
       event.stopPropagation();
       event.preventDefault();
 
-      const value = valueWithPrecision(this.state.values[key] + step, this.precision);
+      const index = this.state.indexes[key] + step;
 
-      this.updateValueFromEvent(value, key);
+      this.updateValueFromEvent(event, index, key, this.props.onKey);
+    };
+  }
+
+  onHandleEnd(callback) {
+    return (event) => {
+      callback(event, getValuesForIndexes(this.state.indexes, this.state.range), this);
     };
   }
 
   onTrackClick(event) {
-    const { values } = this.state;
+    const { scale, indexes } = this.state;
 
-    const value = valueWithPrecision(this.state.scale.invert(event.snap.x), this.precision);
+    const index = round(scale.invert(event.snap.x));
 
-    /* Determine which handle is closer. 'min' == true, 'max' == false */
-    const comp = values.max === undefined ||
-      (Math.abs(values.min - value) < Math.abs(values.max - value) || values.min > value);
+    /* Determine which handle is closer. 'low' == true, 'high' == false */
+    const comp = indexes.high === undefined ||
+      (Math.abs(indexes.low - index) < Math.abs(indexes.high - index) || indexes.low > index);
 
-    const key = comp ? 'min' : 'max';
+    const key = comp ? 'low' : 'high';
 
-    this.updateValueFromEvent(value, key);
+    this.updateValueFromEvent(event, index, key, this.props.onTrackClick);
   }
 
-  updateValueFromEvent(value, key) {
-    if (value !== this.state.values[key] &&
-        value >= this.props.minValue &&
-        value <= this.props.maxValue) {
-      const values = { ...this.state.values, [key]: value };
+  updateValueFromEvent(event, index, key, callback) {
+    if (index !== this.state.indexes[key] && this.state.range[index]) {
+      const indexes = { ...this.state.indexes, [key]: index };
+      const values = getValuesForIndexes(indexes, this.state.range);
 
-      if (values.max === undefined || values.min <= values.max) {
-        this.props.onChange(valueByHandleCount({ ...values }, this.handleCount), key);
+      if (indexes.low === undefined ||
+            indexes.high === undefined ||
+            indexes.low <= indexes.high) {
+        callback(event, values, this);
       }
     }
   }
 
-  receiveTrackWidth(props) {
-    this.precision = getFloatPrecision(props.step);
-    this.setState({
+  receiveTrackWidth(state) {
+    return {
+      ...state,
       render: true,
-      scale: this.state.scale.range([0, this._track.width]),
-      snapTarget: { x: this._track.width / ((props.maxValue - props.minValue) / props.step) },
-    });
+      scale: state.scale.range([0, this._track.width]),
+      snapTarget: { x: this._track.width / (state.range.length - 1) },
+    };
+  }
+
+  doSetState(state) {
+    this.setState(state);
   }
 
   trackRef(ref) {
@@ -167,12 +219,12 @@ export default class Slider extends PureComponent {
   renderFill() {
     if (!this.state.render || !this.props.fill) return null;
 
-    const { values, scale } = this.state;
+    const { indexes, scale } = this.state;
     const { fillStyle, fillClassName } = this.props;
 
-    return map(values, (value, key) => {
-      const direction = key === 'min' ? 'left' : 'right';
-      const position = scale(value);
+    return map(indexes, (index, key) => {
+      const direction = key === 'low' ? 'left' : 'right';
+      const position = scale(index);
       return (
         <Fill
           key={`fill:${key}`}
@@ -188,29 +240,31 @@ export default class Slider extends PureComponent {
   renderHandles() {
     if (!this.state.render) return null;
 
-    const { values, scale, snapTarget } = this.state;
+    const { indexes, scale, snapTarget } = this.state;
     const { labelFunc, handleClassName, handleStyle } = this.props;
 
     return (
       <div className={style['handle-track']}>
         <div className={style['flag-base']}></div>
-        {map(values, (value, key) => {
-          const direction = key === 'min' ? 'left' : 'right';
-          const position = scale(value);
+        {map(indexes, (index, key) => {
+          const direction = key === 'low' ? 'left' : 'right';
+          const position = scale(index);
           return (
             <ResponsiveContainer
               key={`handle:${key}`}
             >
               <Handle
                 className={classNames(handleClassName,
-                                      { [style.connected]: values.min === values.max })}
+                                      { [style.connected]: indexes.low === indexes.high })}
                 style={handleStyle}
-                onMove={this.onHandleMove}
+                onDrag={this.onHandleDrag}
+                onDragEnd={this.onHandleEnd(this.props.onDragEnd)}
                 onKeyDown={this.onHandleKeyDown}
+                onKeyUp={this.onHandleEnd(this.props.onKeyEnd)}
                 name={key}
                 direction={direction}
                 position={position}
-                label={value}
+                label={this.state.range[index]}
                 labelFunc={labelFunc}
                 snapTarget={snapTarget}
               />
@@ -257,35 +311,15 @@ export default class Slider extends PureComponent {
 }
 
 Slider.propTypes = {
+  /* include fill in the track to indicate value. */
+  fill: PropTypes.bool,
+  fillClassName: CommonPropTypes.className,
+  fillStyle: PropTypes.object,
+
   fontSize: PropTypes.string,
 
-  /* width and height of Slider component. */
-  width: PropTypes.number,
-
-  /* extents of slider values. */
-  minValue: PropTypes.number.isRequired,
-  maxValue: PropTypes.number.isRequired,
-
-  /* step between slider values. */
-  step: PropTypes.number,
-
-  /* class name styles applied to outermost wrapper */
-  wrapperClassName: CommonPropTypes.className,
-  wrapperStyle: PropTypes.object,
-
-  /*
-   * Initial selected value.
-   * If number, a single slider handle will be rendered.
-   * If object with keys 'min' and 'max', two slider handles will be rendered.
-   */
-  value: PropTypes.oneOfType([
-    PropTypes.number,
-    PropTypes.array,
-    PropTypes.shape({
-      min: PropTypes.number,
-      max: PropTypes.number,
-    }),
-  ]).isRequired,
+  handleClassName: CommonPropTypes.className,
+  handleStyle: PropTypes.object,
 
   /*
    * function applied to the selected value prior to rendering.
@@ -300,42 +334,99 @@ Slider.propTypes = {
    */
   labelFunc: PropTypes.func,
 
-  handleClassName: CommonPropTypes.className,
-  handleStyle: PropTypes.object,
+  /*
+   * callback functions when value is changed.
+   * @param {Object} event - triggered the action
+   * @param {Object} value - low and high values
+   * @param {Object} Slider - the slider object itself
+   */
+  onDrag: PropTypes.func.isRequired,
+  onDragEnd: PropTypes.func,
 
-  trackClassName: CommonPropTypes.className,
-  trackStyle: PropTypes.object,
+  onKey: PropTypes.func,
+  onKeyEnd: PropTypes.func,
 
-  /* include fill in the track to indicate value. */
-  fill: PropTypes.bool,
-  fillClassName: CommonPropTypes.className,
-  fillStyle: PropTypes.object,
+  onTrackClick: PropTypes.func,
+
+  /* extents of slider values. */
+  range: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.shape({
+      low: PropTypes.number.isRequired,
+      high: PropTypes.number.isRequired,
+      steps: PropTypes.number,
+      precision: PropTypes.number,
+    }),
+  ]).isRequired,
+
+  /* class name and style for each tick */
+  tickClassName: CommonPropTypes.className,
+  tickStyle: PropTypes.object,
 
   /* show ticks in track */
   ticks: PropTypes.bool,
   ticksClassName: CommonPropTypes.className,
   ticksStyle: PropTypes.object,
-  /* class name and style for each tick */
-  tickClassName: CommonPropTypes.className,
-  tickStyle: PropTypes.object,
+
+  trackClassName: CommonPropTypes.className,
+  trackStyle: PropTypes.object,
 
   /*
-   * callback function when value is changed.
-   * Params:
-   *   value - object with keys ['min'] and 'max'
-   *   key - key of most recent value change.
+   * Initial selected value.
+   * If number, a single slider handle will be rendered.
+   * If object with keys 'low' and 'high', two slider handles will be rendered.
    */
-  onChange: PropTypes.func.isRequired,
+  value: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string,
+    PropTypes.array,
+    PropTypes.shape({
+      low: PropTypes.any,
+      high: PropTypes.any,
+    }),
+  ]).isRequired,
+
+  /* width and height of Slider component. */
+  width: PropTypes.number,
+
+  /* class name styles applied to outermost wrapper */
+  wrapperClassName: CommonPropTypes.className,
+  wrapperStyle: PropTypes.object,
 };
 
 Slider.defaultProps = {
-  width: 200,
-  step: 1,
   labelFunc: identity,
+  onDrag: noop,
+  onDragEnd: noop,
+  onKey: noop,
+  onKeyEnd: noop,
+  onTrackClick: noop,
+  width: 200,
 };
 
+/* Order is important here. */
 Slider.propUpdates = {
-  value: updateFunc((nextProp) => {
-    return { values: getMinMaxValues(nextProp) };
+  range: updateFunc((nextProp, propName, nextProps, state) => {
+    let nextRange = nextProp;
+
+    if (!Array.isArray(nextProp)) {
+      const delta = nextProp.high - nextProp.low;
+      const steps = nextProp.steps || delta + 1;
+      nextRange = range(steps).map(
+        (d) => round(d * delta / (steps - 1) + nextProp.low, nextProp.precision)
+      );
+    }
+
+    return {
+      range: nextRange,
+      scale: state.scale.domain([0, nextRange.length - 1]),
+    };
+  }),
+  value: updateFunc((nextProp, propName, nextProps, state) => {
+    return { indexes: getIndexesForValues(getLowHighValues(nextProp), state.range) };
+  }),
+  width: updateFunc(() => {
+    // Track needs to be rendered with new width before Handles and Fill can be rendered
+    return { render: false };
   }),
 };

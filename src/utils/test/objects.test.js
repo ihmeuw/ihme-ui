@@ -7,6 +7,11 @@ describe('object utilities', () => {
   describe('propResolver', () => {
     const obj = {
       foo: 'bar',
+      baz: {
+        bam: {
+          bat: 5,
+        },
+      },
     };
 
     it('calls a function with the given object', () => {
@@ -14,8 +19,12 @@ describe('object utilities', () => {
       expect(propResolver(obj, resolver)).to.equal('bar');
     });
 
-    it('performs basic object access if not given a string', () => {
+    it('performs basic object access if given a non-function', () => {
       expect(propResolver(obj, 'foo')).to.equal('bar');
+    });
+
+    it('can index further than one level into the object with a string', () => {
+      expect(propResolver(obj, 'baz.bam.bat')).to.equal(5);
     });
   });
 

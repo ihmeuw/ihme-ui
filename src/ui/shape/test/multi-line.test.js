@@ -1,12 +1,9 @@
 import React from 'react';
-
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
-
 import { maxBy, minBy, map, uniqBy } from 'lodash';
-
-import d3Scale from 'd3-scale';
+import { scalePoint, scaleLinear, scaleOrdinal } from 'd3';
 
 import { dataGenerator } from '../../../test-utils';
 import { MultiLine } from '../';
@@ -27,11 +24,11 @@ describe('<MultiLine />', () => {
   const xDomain = map(uniqBy(data, keyField), (obj) => { return (obj[keyField]); });
 
   const scales = {
-    x: d3Scale.scalePoint().domain(xDomain).range([0, 100]),
-    y: d3Scale.scaleLinear().domain(yDomain).range([100, 0])
+    x: scalePoint().domain(xDomain).range([0, 100]),
+    y: scaleLinear().domain(yDomain).range([100, 0])
   };
 
-  const colorScale = d3Scale.scaleOrdinal().domain(['USA', 'Canada']).range(['red', 'blue']);
+  const colorScale = scaleOrdinal().domain(['USA', 'Canada']).range(['red', 'blue']);
 
   const lineData = [{ location: 'USA', values: data }, { location: 'Canada', values: data }];
 
@@ -42,8 +39,10 @@ describe('<MultiLine />', () => {
       component = (
         <MultiLine
           data={lineData}
-          keyField={'location'}
-          dataField={'values'}
+          fieldAccessors={{
+            key: 'location',
+            data: 'values',
+          }}
           scales={scales}
           colorScale={colorScale}
           dataAccessors={{ x: keyField, y: valueField }}
@@ -79,10 +78,10 @@ describe('<MultiLine />', () => {
       const caLine = wrapper.find('Line').last();
 
       expect(usaLine)
-        .to.have.prop('stroke', colorScale('USA'));
+        .to.have.style('stroke', colorScale('USA'));
 
       expect(caLine)
-        .to.have.prop('stroke', colorScale('Canada'));
+        .to.have.style('stroke', colorScale('Canada'));
     });
   });
 
@@ -93,13 +92,13 @@ describe('<MultiLine />', () => {
       component = (
         <MultiLine
           data={lineData}
-          keyField={'location'}
-          dataField={'values'}
+          fieldAccessors={{
+            key: 'location',
+            data: 'values',
+          }}
           scales={scales}
           colorScale={colorScale}
-          showUncertainty
-          showLine={false}
-          dataAccessors={{ x: keyField, y: valueField, y0: 'value_lb', y1: 'value_ub' }}
+          dataAccessors={{ x: keyField, y0: 'value_lb', y1: 'value_ub' }}
         />
       );
     });
@@ -117,12 +116,12 @@ describe('<MultiLine />', () => {
       component = (
         <MultiLine
           data={lineData}
-          keyField={'location'}
-          dataField={'values'}
+          fieldAccessors={{
+            key: 'location',
+            data: 'values',
+          }}
           scales={scales}
           colorScale={colorScale}
-          showUncertainty
-          showLine
           dataAccessors={{ x: keyField, y: valueField, y0: 'value_lb', y1: 'value_ub' }}
         />
       );
@@ -142,13 +141,13 @@ describe('<MultiLine />', () => {
       component = (
         <MultiLine
           data={lineData}
-          keyField={'location'}
-          dataField={'values'}
+          fieldAccessors={{
+            key: 'location',
+            data: 'values',
+          }}
           scales={scales}
           colorScale={colorScale}
-          showUncertainty={false}
-          showLine={false}
-          dataAccessors={{ x: keyField, y: valueField, y0: 'value_lb', y1: 'value_ub' }}
+          dataAccessors={{ x: keyField }}
         />
       );
     });

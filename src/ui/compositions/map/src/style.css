@@ -1,0 +1,52 @@
+.button {
+    height: initial;
+    min-height: 27px;
+    max-height: 50%;
+}
+
+.button-wrapper {
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    align-self: center;
+}
+
+.button-wrapper button:first-child {
+    margin: 0 5px 5px 0;
+}
+
+.legend {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 100px;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.6);
+
+    display: flex;
+}
+
+.legend-wrapper {
+    flex: 2 0 90%;
+}
+
+.map {
+    flex: 1 0 auto;
+    width: 100%;
+}
+
+.map-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    position: relative;
+}
+
+.title {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.6);
+
+    display: flex;
+}

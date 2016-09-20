@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
+import { uniqueId } from 'lodash';
 import classNames from 'classnames';
 import { CommonPropTypes, getScale, getScaleTypes, propsChanged } from '../../../utils';
 
@@ -62,6 +63,7 @@ export default class AxisChart extends React.Component {
   render() {
     const { props } = this;
     const { chartDimensions, scales } = this.state;
+    const clipPathId = uniqueId('chartClip_');
 
     return (
       <svg
@@ -69,12 +71,24 @@ export default class AxisChart extends React.Component {
         height={`${chartDimensions.height + props.padding.bottom + props.padding.top}px`}
         className={classNames(props.className)}
       >
+        {props.clipPath ? (<defs>
+          <clipPath id={clipPathId}>
+            <rect
+              width={`${chartDimensions.width}px`}
+              height={`${chartDimensions.height}px`}
+            >
+            </rect>
+          </clipPath>
+        </defs>)
+        : null
+      }
         <g transform={`translate(${props.padding.left}, ${props.padding.top})`}>
            {
              React.Children.map(props.children, (child) => {
                return child && React.cloneElement(child, {
                  scales,
                  padding: props.padding,
+                 clipPathId: props.clipPath ? clipPathId : (void 0),
                  ...chartDimensions,
                });
              })
@@ -88,6 +102,9 @@ export default class AxisChart extends React.Component {
 AxisChart.propTypes = {
   /* class names to appended to the element */
   className: CommonPropTypes.className,
+
+  /* use clip path in children */
+  clipPath: PropTypes.bool,
 
   /* [min, max] for xScale (i.e., the domain of the data) */
   xDomain: PropTypes.array,

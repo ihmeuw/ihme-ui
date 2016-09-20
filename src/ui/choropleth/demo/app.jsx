@@ -2,11 +2,10 @@ import React from 'react';
 import { render } from 'react-dom';
 
 import { bindAll, filter, find, flatMap, forEach, includes, values, xor } from 'lodash';
-import { json } from 'd3-request';
-import { scaleLinear } from 'd3-scale';
+import { json, scaleLinear } from 'd3';
 
-import { colorSteps, dataGenerator } from '../../../test-utils';
-import { generateColorDomain } from '../../../utils/domain';
+import { dataGenerator } from '../../../test-utils';
+import { colorSteps, linspace } from '../../../utils';
 
 import ResponsiveContainer from '../../responsive-container';
 import Choropleth from '../';
@@ -14,15 +13,14 @@ import Button from '../../button';
 
 // Array is used to maintain layer order.
 const LAYERS = [
-  { name: 'global', object: 'global', type: 'feature', visible: true, },
+  { name: 'national', object: 'national', type: 'feature', visible: true, },
   { name: 'subnational', object: 'subnational', type: 'feature', visible: false, },
-  { name: 'boundary', object: 'global', type: 'mesh', visible: false, style: { stroke: 'red', strokeWidth: '1px' }, filterFn: boundaryFilterFn([101, 102, 130])},
+  { name: 'boundary', object: 'national', type: 'mesh', visible: false, style: { stroke: 'white', strokeWidth: '5px' }, filterFn: boundaryFilterFn(['101', '102', '130'])},
 ];
 
 function boundaryFilterFn(selections) {
-  return (a) => {
-    return includes(selections, a.id);
-  }
+  const setOfSelections = new Set(selections);
+  return (a) => setOfSelections.has(a.properties.loc_id);
 }
 
 const keyField = 'location_id';
@@ -30,7 +28,7 @@ const valueField = 'mean';
 const dataRange = [0, 100];
 
 const colorScale = scaleLinear()
-  .domain(generateColorDomain(colorSteps, dataRange))
+  .domain(linspace(dataRange, colorSteps.length))
   .range(colorSteps)
   .clamp(true);
 
@@ -62,7 +60,7 @@ class App extends React.Component {
       return includes(layerNames, name);
     });
     const locIds = flatMap(collections, (collection) => {
-      return collection.geometries.map((geometry) => geometry.id);
+      return collection.geometries.map((geometry) => geometry.properties.loc_id);
     });
 
     const data = dataGenerator({
@@ -104,27 +102,29 @@ class App extends React.Component {
         <div style={{ flex: '1 0 auto', maxWidth: '70%' }}>
           <ResponsiveContainer>
             <Choropleth
-              layers={layers}
-              topology={this.props.topology}
-              data={data}
-              keyField={keyField}
-              valueField={valueField}
               colorScale={colorScale}
-              selectedLocations={selections}
-              onClick={this.selectLocation}
               controls
-              zoomStep={1.1}
+              data={data}
+              geometryKeyField="properties.loc_id"
+              keyField={keyField}
+              layers={layers}
+              maxZoom={3}
+              minZoom={1}
+              onClick={this.selectLocation}
+              topology={this.props.topology}
+              valueField={valueField}
+              selectedLocations={selections}
             />
           </ResponsiveContainer>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <Button style={{ margin: '0.2em' }}
                   text="Toggle subnational"
-                  clickHandler={this.toggleVisibility({ name: 'subnational' })}
+                  onClick={this.toggleVisibility({ name: 'subnational' })}
           />
           <Button style={{ margin: '0.2em' }}
                   text="Toggle boundaries"
-                  clickHandler={this.toggleVisibility({ type: 'mesh' })}
+                  onClick={this.toggleVisibility({ type: 'mesh' })}
           />
         </div>
       </div>
@@ -132,7 +132,7 @@ class App extends React.Component {
   }
 }
 
-json("https://gist.githubusercontent.com/GabeMedrash/1dce23941015acc17d3fa2a670083d8f/raw/b0ae443ac0ad6d3a2425e12382680e5829345b60/world.topo.json", function(error, topology) {
+json("world.topo.json", function(error, topology) {
   if (error) throw error;
   render(<App topology={topology} />, document.getElementById('app'));
 });

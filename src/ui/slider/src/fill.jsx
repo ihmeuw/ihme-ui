@@ -26,24 +26,24 @@ export default class Fill extends PureComponent {
 }
 
 Fill.propTypes = {
+  className: CommonPropTypes.className,
   direction: PropTypes.oneOf(['left', 'right']),
   height: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,
   ]),
+  style: PropTypes.object,
   width: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,
   ]),
-  style: PropTypes.object,
-  className: CommonPropTypes.className,
 };
 
 Fill.defaultProps = {
   direction: 'left',
   height: '100%',
-  width: 200,
   style: {
     backgroundColor: '#ccc',
   },
+  width: 200,
 };

@@ -34,7 +34,7 @@ const SvgText = (props) => {
       x={x}
       dx={dx}
     >
-      {(typeof value === 'number') ? value.toFixed(1) : value}
+      {value}
     </text>
   );
 };

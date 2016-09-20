@@ -4,8 +4,7 @@ import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import { maxBy, minBy } from 'lodash';
-import d3Scale from 'd3-scale';
-import { area } from 'd3-shape';
+import { area, scaleLinear, scalePoint } from 'd3';
 
 import { dataGenerator } from '../../../test-utils';
 import { Area } from '../';
@@ -17,81 +16,70 @@ describe('<Area />', () => {
   const valueField = 'value';
   const chartDimensions = {
     width: 600,
-    height: 400
+    height: 400,
   };
 
   const data = dataGenerator({
     primaryKeys: [{ name: keyField, values: [keyField] }],
     valueKeys: [{ name: valueField, range: [100, 200], uncertainty: true }],
-    length: 10
+    length: 10,
   });
 
   const range = [minBy(data, 'value_lb')[valueField], maxBy(data, 'value_ub')[valueField]];
   const domain = [minBy(data, keyField)[keyField], maxBy(data, keyField)[keyField]];
 
-  const xScale = d3Scale.scalePoint().domain(domain).range([0, chartDimensions.width]);
-  const yScale = d3Scale.scaleLinear().domain(range).range([chartDimensions.height, 0]);
-
-  const clickCallback = sinon.spy((datum) => {
-    return sinon.spy(() => {
-      return datum;
-    });
-  });
-
-  const hoverCallback = sinon.spy((datum) => {
-    return sinon.spy(() => {
-      return datum;
-    });
-  });
+  const xScale = scalePoint().domain(domain).range([0, chartDimensions.width]);
+  const yScale = scaleLinear().domain(range).range([chartDimensions.height, 0]);
 
   const areaFunction = area()
-    .x((datum) => { return xScale(datum[keyField]); })
-    .y0((datum) => { return yScale(datum.value_lb); })
-    .y1((datum) => { return yScale(datum.value_ub); });
+    .x((datum) => xScale(datum[keyField]))
+    .y0((datum) => yScale(datum.value_lb))
+    .y1((datum) => yScale(datum.value_ub));
 
   const expectedPath = areaFunction(data);
-  let component;
 
-  before(() => {
-    component = (
+  it('renders an SVG path node with a d attribute', () => {
+    const wrapper = shallow(
       <Area
         data={data}
         scales={{ x: xScale, y: yScale }}
         dataAccessors={{ x: keyField, y0: 'value_lb', y1: 'value_ub' }}
-        clickHandler={clickCallback}
-        hoverHandler={hoverCallback}
       />
     );
-  });
-
-  afterEach(() => {
-    clickCallback.reset();
-    hoverCallback.reset();
-  });
-
-  it('renders an SVG path node with a d attribute', () => {
-    const wrapper = shallow(component);
     const path = wrapper.find('path');
 
     expect(path).to.have.length(1);
     expect(path).to.have.attr('d', expectedPath);
   });
 
-  it('responds to a click event', () => {
-    const wrapper = shallow(component);
-    wrapper.find('path').first().simulate('click');
-    expect(clickCallback.called).to.be.true;
+  describe('events', () => {
+    const eventHandler = sinon.spy();
 
-    const curriedSpy = clickCallback.getCall(0).returnValue.getCall(0);
-    expect(curriedSpy.returnValue).to.be.an('array');
-  });
+    it(`calls onClick, mouseDown, mouseMove, mouseOut, and mouseOver 
+    with event, data, and the React element`, () => {
+      const wrapper = shallow(
+        <Area
+          data={data}
+          dataAccessors={{ x: keyField, y0: 'value_lb', y1: 'value_ub' }}
+          onClick={eventHandler}
+          onMouseLeave={eventHandler}
+          onMouseMove={eventHandler}
+          onMouseOver={eventHandler}
+          scales={{ x: xScale, y: yScale }}
+        />
+      );
 
-  it('responds to a mouseover event', () => {
-    const wrapper = shallow(component);
-    wrapper.find('path').first().simulate('mouseOver');
-    expect(hoverCallback.called).to.be.true;
+      const event = {
+        preventDefault() {},
+      };
 
-    const curriedSpy = hoverCallback.getCall(0).returnValue.getCall(0);
-    expect(curriedSpy.returnValue).to.be.an('array');
+      const inst = wrapper.instance();
+      ['click', 'mouseLeave', 'mouseMove', 'mouseOver'].forEach((evtName) => {
+        eventHandler.reset();
+        wrapper.simulate(evtName, event);
+        expect(eventHandler.calledOnce).to.be.true;
+        expect(eventHandler.calledWith(event, data, inst)).to.be.true;
+      });
+    });
   });
 });

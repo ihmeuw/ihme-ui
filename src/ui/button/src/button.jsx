@@ -1,24 +1,83 @@
 import React, { PropTypes } from 'react';
-
 import classNames from 'classnames';
+import { CommonPropTypes, PureComponent, propsChanged, stateFromPropUpdates } from '../../../utils';
 
 import styles from './button.css';
 import Spinner from '../../spinner';
 
-const propTypes = {
-  /* additional class names to add to button */
-  className: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.object,
-    PropTypes.array
-  ]),
+export default class Button extends PureComponent {
+  static calculateStyle(props) {
+    return {
+      ...props.style,
+      ...(props.disabled ? props.disabledStyle : {}),
+    };
+  }
 
-  /* additional style to add to button */
-  style: PropTypes.object,
+  constructor(props) {
+    super(props);
 
-  clickHandler: PropTypes.func,
+    this.state = stateFromPropUpdates(Button.propUpdates, {}, props, {});
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState(stateFromPropUpdates(Button.propUpdates, this.props, nextProps, {}));
+  }
+
+  render() {
+    const {
+      children,
+      className,
+      disabled,
+      disabledClassName,
+      icon,
+      id,
+      name,
+      onClick,
+      showSpinner,
+      text,
+      theme,
+    } = this.props;
+    const {
+      style,
+    } = this.state;
+
+    return (
+      <button
+        style={style}
+        className={classNames(
+          styles.common,
+          styles[theme],
+          className,
+          {
+            [disabledClassName]: disabled,
+          }
+        )}
+        disabled={disabled}
+        id={id}
+        name={name}
+        onClick={showSpinner ? null : onClick}
+        type="button"
+      >
+        {showSpinner && <Spinner inline size="small" />}
+        {!showSpinner && icon && <img className={styles.icon} alt="" src={icon} />}
+        {!showSpinner && (children || text)}
+      </button>
+    );
+  }
+}
+
+Button.propTypes = {
+  children: PropTypes.node,
+
+  className: CommonPropTypes.className,
 
   disabled: PropTypes.bool,
+
+  /* className to apply when disabled */
+  disabledClassName: CommonPropTypes.className,
+
+  /* inline styles to apply when disabled */
+  disabledStyle: CommonPropTypes.style,
 
   /* path to image to render within button tag */
   icon: PropTypes.string,
@@ -27,8 +86,12 @@ const propTypes = {
 
   name: PropTypes.string,
 
-  /* if true, will contain spinner */
+  onClick: PropTypes.func,
+
+  /* if true, will contain spinner and not render additional content */
   showSpinner: PropTypes.bool,
+
+  style: CommonPropTypes.style,
 
   /* text to render within button tag */
   text: PropTypes.string,
@@ -37,39 +100,15 @@ const propTypes = {
   theme: PropTypes.oneOf(['green']),
 };
 
-const defaultProps = {
-  disabled: false
+Button.defaultProps = {
+  disabledClassName: styles.disabled,
 };
 
-const getContent = (showSpinner, iconPath) => {
-  if (showSpinner) return <Spinner inline size="small" />;
-  if (iconPath) return <img className={styles.icon} alt="" src={iconPath} />;
-  return null;
+Button.propUpdates = {
+  style: (state, propName, prevProps, nextProps) => {
+    if (propsChanged(prevProps, nextProps, ['style', 'disabled'])) {
+      return { ...state, style: Button.calculateStyle(nextProps) };
+    }
+    return state;
+  },
 };
-
-const Button = (props) => {
-  const clickHandler = props.showSpinner ? null : props.clickHandler;
-  return (
-    <button
-      style={props.style}
-      className={classNames(styles.common,
-                            styles[props.theme],
-                            { [styles.disabled]: props.disabled },
-                            props.className)}
-      disabled={props.disabled}
-      id={props.id}
-      name={props.name}
-      onClick={clickHandler}
-      type="button"
-    >
-      {getContent(props.showSpinner, props.icon)}
-      {!props.showSpinner ? <span>{props.text}</span> : null}
-    </button>
-  );
-};
-
-Button.propTypes = propTypes;
-
-Button.defaultProps = defaultProps;
-
-export default Button;

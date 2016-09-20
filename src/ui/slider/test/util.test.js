@@ -2,32 +2,10 @@ import { expect } from 'chai';
 
 import {
   getDimension,
-  getFloatPrecision,
   getSnapTargetFunc,
-  valueWithPrecision,
 } from '../src/util';
 
 describe('slider.utils', () => {
-  describe('getFloatPrecision', () => {
-    it('finds the number of decimal places in a float', () => {
-      expect(getFloatPrecision(1)).to.equal(0);
-      expect(getFloatPrecision(1.0)).to.equal(0); // this is ok
-      expect(getFloatPrecision(0.1)).to.equal(1);
-      expect(getFloatPrecision(0.01)).to.equal(2);
-      expect(getFloatPrecision(0.001)).to.equal(3);
-    });
-  });
-
-  describe('valueWithPrecision', () => {
-    it('returns a number rounded to specified precision', () => {
-      expect(valueWithPrecision(0.123456789, 0)).to.equal(0);
-      expect(valueWithPrecision(0.123456789, 1)).to.equal(0.1);
-      expect(valueWithPrecision(0.123456789, 2)).to.equal(0.12);
-      expect(valueWithPrecision(0.123456789, 3)).to.equal(0.123);
-      expect(valueWithPrecision(0.123456789, 4)).to.equal(0.1235);
-    });
-  });
-
   describe('getSnapTargetFunc', () => {
     it('returns argument if snapTarget argument type is function', () => {
       const snapTarget = { x: 0, y: 0 };

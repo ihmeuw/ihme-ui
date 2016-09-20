@@ -1,109 +1,192 @@
 import React, { PropTypes } from 'react';
-import { map, includes } from 'lodash';
+import {
+  assign,
+  get as getValue,
+  includes,
+  findIndex,
+  map,
+  sortBy,
+} from 'lodash';
+
+import {
+  CommonPropTypes,
+  propResolver,
+  propsChanged,
+  PureComponent,
+  stateFromPropUpdates,
+} from '../../../utils';
 
 import Path from './path';
 
-export default function FeatureLayer(props) {
-  const {
-    features,
-    pathGenerator,
-    colorScale,
-    data,
-    keyField,
-    valueField,
-    selectedLocations,
-    onClick,
-    onMouseOver,
-    onMouseMove,
-    onMouseDown,
-    onMouseOut
-  } = props;
+export default class FeatureLayer extends PureComponent {
+  constructor(props) {
+    super(props);
 
-  return (
-    <g>
-      {
-        map(features, (feature) => {
-          const key = feature[keyField] || feature.properties[keyField];
-          if (!key) return null;
+    this.state = stateFromPropUpdates(FeatureLayer.propUpdates, {}, props, {});
+  }
 
-          const fill = data.hasOwnProperty(key) && data[key].hasOwnProperty(valueField)
-            ? colorScale(data[key][valueField])
-            : '#ccc';
+  componentWillReceiveProps(nextProps) {
+    this.setState(stateFromPropUpdates(FeatureLayer.propUpdates, this.props, nextProps, {}));
+  }
 
-          return (
-            <Path
-              key={key}
-              feature={feature.geometry}
-              pathGenerator={pathGenerator}
-              locationId={key}
-              fill={fill}
-              selected={includes(selectedLocations, key)}
-              onClick={onClick}
-              onMouseOver={onMouseOver}
-              onMouseMove={onMouseMove}
-              onMouseDown={onMouseDown}
-              onMouseOut={onMouseOut}
-              className={props.pathClassName}
-              selectedClassName={props.pathSelectedClassName}
-              style={props.pathStyle}
-              selectedStyle={props.pathSelectedStyle}
-            />
-          );
-        })
-      }
-    </g>
-  );
+  render() {
+    const {
+      colorScale,
+      data,
+      geometryKeyField,
+      onClick,
+      onMouseLeave,
+      onMouseMove,
+      onMouseOver,
+      pathGenerator,
+      pathClassName,
+      pathSelectedClassName,
+      pathSelectedStyle,
+      pathStyle,
+      selectedLocations,
+      valueField,
+    } = this.props;
+
+    return (
+      <g>
+        {
+          map(this.state.sortedFeatures, (feature) => {
+            const geometryKey = propResolver(feature, geometryKeyField);
+
+            // if geometryKey didn't resolve to anything, return null
+            if (!geometryKey) return null;
+
+
+            const datum = getValue(data, [geometryKey]);
+
+            // if valueField is a function, call it with all data as well as current feature
+            // this enables being able to associate datum with features that don't necessarily map to
+            // those features' key.
+            // e.g., associate an administering location's datum with a disputed area feature:
+            //  - geometryKeyField: 'location_id'
+            //  - valueField: (data, feature) => data[feature.properties.admin_id]
+            // if valueField is a string, assume we just want to index into whatever datum resolves from data[geometryKey]
+            // TODO make difference in how valueField is applied more transparent
+            const value = typeof valueField === 'function'
+              ? valueField(data, feature)
+              : getValue(datum, valueField);
+
+            const fill = value ? colorScale(value) : '#ccc';
+
+            return (
+              <Path
+                className={pathClassName}
+                datum={datum}
+                key={geometryKey}
+                feature={feature}
+                fill={fill}
+                onClick={onClick}
+                onMouseLeave={onMouseLeave}
+                onMouseMove={onMouseMove}
+                onMouseOver={onMouseOver}
+                pathGenerator={pathGenerator}
+                selected={includes(selectedLocations, datum)}
+                selectedClassName={pathSelectedClassName}
+                selectedStyle={pathSelectedStyle}
+                style={pathStyle}
+              />
+            );
+          })
+        }
+      </g>
+    );
+  }
 }
 
 FeatureLayer.propTypes = {
+  /* fn that accepts keyfield, and returns fill color for Path */
+  colorScale: PropTypes.func.isRequired,
+
+  /*
+   unlike in other components, data should be an object keyed by location id
+   this allows quick lookup of a location's value
+   e.g. { 6: { mean: 2, lb: 1, ub: 3, ... }, 570: { mean: 4, lb: 3, ub: 5, ... } }
+   */
+  data: PropTypes.object.isRequired,
+
   /* array of geoJSON feature objects, e.g.: [{ geometry: [Object], properties: [Object] }] */
   features: PropTypes.arrayOf(PropTypes.object).isRequired,
 
   /*
-    unlike in other components, data should be an object keyed by location id
-    this allows quick lookup of a location's value
-    e.g. { 6: { mean: 2, lb: 1, ub: 3, ... }, 570: { mean: 4, lb: 3, ub: 5, ... } }
-  */
-  data: PropTypes.object.isRequired,
+    uniquely identifying field of geometry objects
+    if a function, will be called with the geometry object as first parameter
+    N.B.: the resolved value of this prop should match the resolved value of `keyField`
+   */
+  geometryKeyField: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func, // if a function, is called with current feature as arg
+  ]).isRequired,
 
-  /* mapping of datum key field to geoJSON feature key. default: 'id' */
-  keyField: PropTypes.string,
+  /*
+   unique key of datum
+   if a function, will be called with the datum object as first parameter
+   */
+  keyField: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+  ]).isRequired,
 
-  /* key of datum that holds the value to display */
-  valueField: PropTypes.string,
+  /* passed to each path; signature: function(event, datum, Path) {...} */
+  onClick: PropTypes.func,
+
+  /* passed to each path; signature: function(event, datum, Path) {...} */
+  onMouseLeave: PropTypes.func,
+
+  /* passed to each path; signature: function(event, datum, Path) {...} */
+  onMouseMove: PropTypes.func,
+
+  /* passed to each path; signature: function(event, datum, Path) {...} */
+  onMouseOver: PropTypes.func,
+
+  pathClassName: CommonPropTypes.className,
 
   /* function to generate `d` attribute of <path> elements */
   pathGenerator: PropTypes.func.isRequired,
 
-  /* fn that accepts keyfield, and returns fill color for Path */
-  colorScale: PropTypes.func.isRequired,
+  pathSelectedClassName: CommonPropTypes.className,
 
-  /* array of datum[keyField], e.g., location ids */
-  selectedLocations: PropTypes.arrayOf(PropTypes.number),
+  /* selected style object or function to pass to each path; if a function, receives feature as arg */
+  pathSelectedStyle: CommonPropTypes.style,
 
-  /* passed to each path; signature: function(event, locationId) {...} */
-  onClick: PropTypes.func,
+  /* base style object or function to pass to each path; if a function, receives feature as arg */
+  pathStyle: CommonPropTypes.style,
 
-  /* passed to each path; signature: function(event, locationId) {...} */
-  onMouseOver: PropTypes.func,
+  /* array of data */
+  selectedLocations: PropTypes.arrayOf(PropTypes.object),
 
-  /* passed to each path; signature: function(event, locationId) {...} */
-  onMouseMove: PropTypes.func,
-
-  /* passed to each path; signature: function(event, locationId) {...} */
-  onMouseDown: PropTypes.func,
-
-  /* passed to each path; signature: function(event, locationId) {...} */
-  onMouseOut: PropTypes.func,
-
-  pathClassName: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-  pathSelectedClassName: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-  pathStyle: PropTypes.object,
-  pathSelectedStyle: PropTypes.object,
+  /*
+    key of datum that holds the value to display
+    if a string, used as property access for data[feature[geometryKeyField]][valueField]
+    if a function, passed all data (object keyed by keyField) and current feature
+  */
+  valueField: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+  ]).isRequired,
 };
 
 FeatureLayer.defaultProps = {
-  keyField: 'id',
-  dataField: 'mean',
-  selectedLocations: []
+  selectedLocations: [],
+};
+
+FeatureLayer.propUpdates = {
+  sortedFeatures: (accum, key, prevProps, nextProps) => {
+    /* eslint-disable max-len, eqeqeq */
+    if (!propsChanged(prevProps, nextProps, ['selectedLocations', 'features'])) return accum;
+    return assign(accum, {
+      // sort features by whether or not they are selected
+      // this is a way of ensuring that selected paths are rendered last
+      // similar to, in a path click handler, doing a this.parentNode.appendChild(this)
+      sortedFeatures: sortBy(nextProps.features, (feature) =>
+        findIndex(nextProps.selectedLocations, (locationDatum) =>
+          propResolver(locationDatum, nextProps.keyField) == propResolver(feature, nextProps.geometryKeyField)
+        )
+      ),
+    });
+  },
 };

@@ -1,36 +1,122 @@
 import React, { PropTypes } from 'react';
-import { scaleLinear } from 'd3-scale';
-import { map, omit } from 'lodash';
+import classNames from 'classnames';
+import { scaleLinear } from 'd3';
+import { map, pick } from 'lodash';
 
 import Line from './line';
 import Area from './area';
+import { propResolver, PureComponent, CommonDefaultProps, CommonPropTypes } from '../../../utils';
 
-const propTypes = {
+export default class MultiLine extends PureComponent {
+  render() {
+    const {
+      areaClassName,
+      areaStyle,
+      areaValuesIteratee,
+      className,
+      clipPathId,
+      colorScale,
+      data,
+      dataAccessors,
+      fieldAccessors,
+      lineClassName,
+      lineStyle,
+      lineValuesIteratee,
+      scales,
+      style,
+    } = this.props;
+
+    const {
+      color: colorField,
+      data: dataField,
+      key: keyField,
+    } = fieldAccessors;
+
+    const childProps = pick(this.props, [
+      'onClick',
+      'onMouseLeave',
+      'onMouseMove',
+      'onMouseOver',
+    ]);
+
+    return (
+      <g
+        className={className && classNames(className)}
+        clipPath={clipPathId && `url(#${clipPathId})`}
+        style={style}
+      >
+        {
+          map(data, (datum) => {
+            const key = propResolver(datum, keyField);
+            const values = propResolver(datum, dataField);
+            const color = colorScale(colorField ? propResolver(datum, colorField) : key);
+
+            const areaValues = areaValuesIteratee(values, key);
+            const lineValues = lineValuesIteratee(values, key);
+
+            return (
+              [
+                (!!dataAccessors.x && !!dataAccessors.y0 && !!dataAccessors.y1 && !!areaValues) ?
+                  <Area
+                    className={areaClassName}
+                    dataAccessors={dataAccessors}
+                    data={areaValues}
+                    key={`area:${key}`}
+                    scales={scales}
+                    style={{
+                      fill: color,
+                      stroke: color,
+                      ...areaStyle,
+                    }}
+                    {...childProps}
+                  /> : null,
+                (!!dataAccessors.x && !!dataAccessors.y && !!lineValues) ?
+                  <Line
+                    className={lineClassName}
+                    dataAccessors={dataAccessors}
+                    data={lineValues}
+                    key={`line:${key}`}
+                    scales={scales}
+                    style={{
+                      stroke: color,
+                      ...lineStyle,
+                    }}
+                    {...childProps}
+                  /> : null,
+              ]
+            );
+          })
+        }
+      </g>
+    );
+  }
+}
+
+MultiLine.propTypes = {
+  /* base classname to apply to Areas that are children of MultiLine */
+  areaClassName: CommonPropTypes.className,
+  areaStyle: CommonPropTypes.style,
+
+  /*
+   function to apply to the datum to transform area values. default: _.identity
+   @param values
+   @param key
+   @return transformed data (or undefined)
+   */
+  areaValuesIteratee: PropTypes.func,
+
+  className: CommonPropTypes.className,
+
+  /* string id url for clip path */
+  clipPathId: PropTypes.string,
+
+  /* fn that accepts keyfield, and returns stroke color for line */
+  colorScale: PropTypes.func,
+
   /* array of objects
     e.g. [ {location: 'USA',values: []}, {location: 'Canada', values: []} ]
   */
   data: PropTypes.arrayOf(PropTypes.object),
-
-  /* whether or not to draw uncertainty areas for lines */
-  showUncertainty: PropTypes.bool,
-
-  /* whether or not to draw lines (e.g., mean estimate lines) */
-  showLine: PropTypes.bool,
-
-  /* key that uniquely identifies dataset within array of datasets */
-  keyField: PropTypes.string,
-
-  /* key that holds values to be represented by individual lines */
-  dataField: PropTypes.string,
-
-  /* scales from d3Scale */
-  scales: PropTypes.shape({
-    x: PropTypes.func,
-    y: PropTypes.func
-  }).isRequired,
-
-  /* fn that accepts keyfield, and returns stroke color for line */
-  colorScale: PropTypes.func,
 
   /*
     key names containing x, y data
@@ -38,106 +124,73 @@ const propTypes = {
       y -> accessor for yscale (when there's one, e.g. <Line />)
       y0 -> accessor for yscale (when there're two; e.g., lower bound)
       y1 -> accessor for yscale (when there're two; e.g., upper bound)
+
+    To show only a line, include just x, y.
+    To show only an area, include just x, y0, y1.
+    To show line and area, include all properties.
   */
-  dataAccessors: PropTypes.shape({
-    x: PropTypes.string,
-    y: PropTypes.string,
-    y0: PropTypes.string,
-    y1: PropTypes.string
+  dataAccessors: PropTypes.oneOfType([
+    PropTypes.shape({
+      x: CommonPropTypes.dataAccessor.isRequired,
+      y: CommonPropTypes.dataAccessor.isRequired,
+    }),
+    PropTypes.shape({
+      x: CommonPropTypes.dataAccessor.isRequired,
+      y0: CommonPropTypes.dataAccessor.isRequired,
+      y1: CommonPropTypes.dataAccessor.isRequired,
+    }),
+    PropTypes.shape({
+      x: CommonPropTypes.dataAccessor.isRequired,
+      y: CommonPropTypes.dataAccessor.isRequired,
+      y0: CommonPropTypes.dataAccessor.isRequired,
+      y1: CommonPropTypes.dataAccessor.isRequired,
+    }),
+  ]).isRequired,
+
+  /*
+   key names containing fields for child component configuration
+     color -> (optional) color data as input to color scale.
+     data -> data provided to child components. default: 'values'
+     key -> unique key to apply to child components. used as input to color scale if color field is not specified. default: 'key'
+   */
+  fieldAccessors: PropTypes.shape({
+    color: CommonPropTypes.dataAccessor,
+    data: CommonPropTypes.dataAccessor.isRequired,
+    key: CommonPropTypes.dataAccessor.isRequired,
+  }),
+
+  /* base classname to apply to Lines that are children of MultiLine */
+  lineClassName: CommonPropTypes.className,
+  lineStyle: CommonPropTypes.style,
+
+  /*
+   function to apply to the datum to transform line values. default: _.identity
+   @see areaValuesIteratee
+   */
+  lineValuesIteratee: PropTypes.func,
+
+  /* mouse events signature: function(event, data, instance) {...} */
+  onClick: PropTypes.func,
+  onMouseLeave: PropTypes.func,
+  onMouseMove: PropTypes.func,
+  onMouseOver: PropTypes.func,
+
+  /* scales from d3Scale */
+  scales: PropTypes.shape({
+    x: PropTypes.func,
+    y: PropTypes.func,
   }).isRequired,
 
-  clickHandler: PropTypes.func,
-
-  hoverHandler: PropTypes.func
+  style: CommonPropTypes.style,
 };
 
-const defaultProps = {
-  showUncertainty: false,
-  showLine: true,
-  colorScale: () => { return 'steelblue'; },
+MultiLine.defaultProps = {
+  areaValuesIteratee: CommonDefaultProps.identity,
+  colorScale() { return 'steelblue'; },
+  fieldAccessors: {
+    data: 'values',
+    key: 'key',
+  },
+  lineValuesIteratee: CommonDefaultProps.identity,
   scales: { x: scaleLinear(), y: scaleLinear() },
 };
-
-const MultiLine = (props) => {
-  const {
-    colorScale,
-    keyField,
-    dataField,
-    data,
-    showUncertainty,
-    showLine
-  } = props;
-
-  const childProps = omit(props, [
-    'data',
-    'keyField',
-    'dataField',
-    'style',
-    'showUncertainty',
-    'showLine'
-  ]);
-
-  return (
-    <g>
-      {
-        (!showUncertainty && !showLine)
-          ? null
-          : map(data, (lineData) => {
-            const key = lineData[keyField];
-            const values = lineData[dataField];
-            const color = colorScale(lineData[keyField]);
-            // on each iteration, lineData is an object
-            // e.g., { keyField: STRING, dataField: ARRAY }
-
-            // if uncertainty is turned off, only draw lines
-            if (!showUncertainty) {
-              return (
-                <Line
-                  key={`line:${key}`}
-                  data={values}
-                  stroke={color}
-                  {...childProps}
-                />
-              );
-            }
-
-            // if line is turned off, only show uncertainty
-            if (!showLine) {
-              return (
-                <Area
-                  key={`area:${key}`}
-                  data={values}
-                  color={color}
-                  {...childProps}
-                />
-              );
-            }
-
-            // otherwise, show both
-            return (
-              <g key={`area:line:${lineData[keyField]}`}>
-                <Line
-                  key={`line:${key}`}
-                  data={values}
-                  stroke={color}
-                  {...childProps}
-                />
-                <Area
-                  key={`area:${key}`}
-                  data={values}
-                  color={color}
-                  {...childProps}
-                />
-              </g>
-            );
-          })
-      }
-    </g>
-  );
-};
-
-MultiLine.propTypes = propTypes;
-
-MultiLine.defaultProps = defaultProps;
-
-export default MultiLine;

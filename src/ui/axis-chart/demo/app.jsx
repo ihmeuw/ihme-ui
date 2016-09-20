@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { maxBy, minBy, map, uniqBy } from 'lodash';
-import d3Scale from 'd3-scale';
+import { scaleOrdinal } from 'd3';
 
 import { dataGenerator } from '../../../test-utils';
 import AxisChart from '../';
@@ -53,7 +53,7 @@ const lineData = [
 
 const yDomain = [minBy(data, 'value_lb').value_lb, maxBy(data, 'value_ub').value_ub];
 const xDomain = map(uniqBy(data, keyField), (obj) => { return (obj[keyField]); });
-const colorScale = d3Scale.scaleOrdinal().domain(['A', 'B', 'C', 'D', 'E', 'F'])
+const colorScale = scaleOrdinal().domain(['A', 'B', 'C', 'D', 'E', 'F'])
   .range(['red', 'blue', 'orange', 'green', 'salmon', 'violet']);
 
 const dims = {
@@ -93,7 +93,7 @@ class App extends React.Component {
         <div>
           <Button
             text="Resize and change scale"
-            clickHandler={this.onClick}
+            onClick={this.onClick}
           />
         </div>
 {/* <pre><code>
@@ -129,16 +129,20 @@ class App extends React.Component {
           yScaleType="linear"
           className={chartClassName}
         >
-          <XAxis style={axisStyle} label="Year" />
-          <YAxis style={axisStyle} label="Probability" />
           <MultiLine
+            areaStyle={{ strokeWidth: '1px', fillOpacity: '0.5' }}
             data={lineData}
-            keyField={'location'}
-            dataField={'values'}
+            fieldAccessors={{
+              data: 'values',
+              key: 'location',
+            }}
             colorScale={colorScale}
             showUncertainty
             dataAccessors={dataAccessors}
+            onClick={()=>{console.log('click')}}
           />
+          <XAxis style={axisStyle} label="Year" />
+          <YAxis style={axisStyle} label="Probability" />
         </AxisChart>
       </div>
     );
