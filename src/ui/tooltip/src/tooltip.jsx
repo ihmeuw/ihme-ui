@@ -119,17 +119,21 @@ export default class Tooltip extends PureComponent {
       'paddingY',
       'style',
     ]) || !this._wrapper) return;
+    this.setStyle(nextProps);
+  }
+
+  setStyle(props) {
     const { width, height } = this._wrapper.getBoundingClientRect();
     const bounds = getBounds(props.bounds);
     const [x, y] = Tooltip.getPosition({
       bounds,
       height,
-      mouseX: nextProps.mouseX,
-      mouseY: nextProps.mouseY,
-      offsetX: nextProps.offsetX,
-      offsetY: nextProps.offsetY,
-      paddingX: nextProps.paddingX,
-      paddingY: nextProps.paddingY,
+      mouseX: props.mouseX,
+      mouseY: props.mouseY,
+      offsetX: props.offsetX,
+      offsetY: props.offsetY,
+      paddingX: props.paddingX,
+      paddingY: props.paddingY,
       width,
     });
 
@@ -140,6 +144,7 @@ export default class Tooltip extends PureComponent {
 
   storeRef(el) {
     this._wrapper = el;
+    this.setStyle(this.props);
   }
 
   render() {
