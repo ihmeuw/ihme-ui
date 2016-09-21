@@ -1,20 +1,9 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { assign, bindAll, clamp, get as getValue } from 'lodash';
-import { CommonPropTypes, propsChanged, PureComponent } from '../../../utils';
+import { CommonPropTypes, propsChanged, PureComponent, stateFromPropUpdates } from '../../../utils';
 
 import styles from './tooltip.css';
-
-/**
- * Calculate style given base style and absolute position
- * @param {Object} position
- * @param {String} position.transform
- * @param {Object} style
- * @return {Object}
- */
-function concatStyles(position, style) {
-  return assign({}, position, style);
-}
 
 /**
  * Return bounds passed through props or default
@@ -29,6 +18,17 @@ function getBounds(bounds) {
     x: getValue(bounds, 'x', [0, getValue(window, 'innerWidth', 0)]),
     y: getValue(bounds, 'y', [0, getValue(window, 'innerHeight', 0)]),
   };
+}
+
+/**
+ * maps props.show to css visibility declaration
+ * either 'visible' (if true) or 'hidden' (if false)
+ * @param {boolean} visible
+ * @return {string}
+ */
+function mapShowPropToVisibilityRule(visible) {
+  if (visible) return 'visible';
+  return 'hidden';
 }
 
 export default class Tooltip extends PureComponent {
@@ -100,7 +100,7 @@ export default class Tooltip extends PureComponent {
     super(props);
 
     this.state = {
-      style: concatStyles({ display: 'none' }, props.style),
+      style: stateFromPropUpdates(Tooltip.propUpdates, {}, props, {}, this),
     };
 
     bindAll(this, [
@@ -109,57 +109,27 @@ export default class Tooltip extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!propsChanged(this.props, nextProps, [
-      'bounds',
-      'mouseX',
-      'mouseY',
-      'offsetX',
-      'offsetY',
-      'paddingX',
-      'paddingY',
-      'style',
-    ]) || !this._wrapper) return;
-    this.setStyle(nextProps);
-  }
-
-  setStyle(props) {
-    const { width, height } = this._wrapper.getBoundingClientRect();
-    const bounds = getBounds(props.bounds);
-    const [x, y] = Tooltip.getPosition({
-      bounds,
-      height,
-      mouseX: props.mouseX,
-      mouseY: props.mouseY,
-      offsetX: props.offsetX,
-      offsetY: props.offsetY,
-      paddingX: props.paddingX,
-      paddingY: props.paddingY,
-      width,
-    });
-
     this.setState({
-      style: concatStyles({ transform: `translate(${x}px, ${y}px)` }, props.style)
+      style: stateFromPropUpdates(
+        Tooltip.propUpdates,
+        this.props,
+        nextProps,
+        this.state.style,
+        this
+      ),
     });
   }
 
   storeRef(el) {
     this._wrapper = el;
-    this.setStyle(this.props);
   }
 
   render() {
-    const {
-      className,
-      show,
-    } = this.props;
-
     const { style } = this.state;
-
-    if (!show) return null;
 
     return (
       <div
-        className={classNames(styles.wrapper, className)}
+        className={classNames(styles.wrapper, this.props.className)}
         ref={this.storeRef}
         style={style}
       >
@@ -221,4 +191,42 @@ Tooltip.defaultProps = {
   paddingX: 10,
   paddingY: 10,
   show: false,
+};
+
+Tooltip.propUpdates = {
+  position: (accum, _, prevProps, nextProps, context) => {
+    /* eslint-disable no-underscore-dangle */
+    if (!propsChanged(prevProps, nextProps, [
+      'bounds',
+      'mouseX',
+      'mouseY',
+      'offsetX',
+      'offsetY',
+      'paddingX',
+      'paddingY',
+    ]) || !context._wrapper) return accum;
+    const { width, height } = context._wrapper.getBoundingClientRect();
+    const bounds = getBounds(nextProps.bounds);
+    const [x, y] = Tooltip.getPosition({
+      bounds,
+      height,
+      mouseX: nextProps.mouseX,
+      mouseY: nextProps.mouseY,
+      offsetX: nextProps.offsetX,
+      offsetY: nextProps.offsetY,
+      paddingX: nextProps.paddingX,
+      paddingY: nextProps.paddingY,
+      width,
+    });
+    return assign({}, accum, { transform: `translate(${x}px, ${y}px)` });
+    /* eslint-enable no-underscore-dangle */
+  },
+  display: (accum, _, prevProps, nextProps) => {
+    if (!propsChanged(prevProps, nextProps, ['show'])) return accum;
+    return assign({}, accum, { visibility: mapShowPropToVisibilityRule(nextProps.show) });
+  },
+  externalStyle: (accum, _, prevProps, nextProps) => {
+    if (!propsChanged(prevProps, nextProps, ['style'])) return accum;
+    return assign({}, accum, nextProps.style);
+  }
 };

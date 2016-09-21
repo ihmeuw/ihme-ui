@@ -13,12 +13,12 @@ describe('<Tooltip />', () => {
   describe('basic behavior', () => {
     it('does not render if props.show is false', () => {
       const wrapper = shallow(<Tooltip show={false} />);
-      expect(wrapper.type()).to.equal(null);
+      expect(wrapper).to.have.style('visibility', 'hidden');
     });
 
     it('renders if props.show is true', () => {
       const wrapper = shallow(<Tooltip show />);
-      expect(wrapper.type()).to.equal('div');
+      expect(wrapper).to.have.style('visibility', 'visible');
     });
 
     it('updates position/style if any properties neceessary for calculating position/style is updated', () => {
@@ -66,7 +66,6 @@ describe('<Tooltip />', () => {
       const style = wrapper.state('style');
       Object.entries({
         className: 'new-class-name',
-        show: false,
       }).forEach(([key, value]) => {
         expect(wrapper.state('style')).to.equal(style);
         wrapper.setProps({
