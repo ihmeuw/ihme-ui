@@ -25,6 +25,8 @@ const LAYOUT_STYLES = [
   'justifyContent',
 ];
 
+const EXPANDABLE_PADDING_RIGHT =  20;
+
 /**
  * <Expandable /> is a *mostly* drop in replacement for a layout <div /> that gives its contents
  * expanding powers, and must accompany an <ExpansionContainer /> of the same `group` (default
@@ -47,7 +49,6 @@ export default class Expandable extends PureComponent {
       restored: true,
       transitioning: false,
       containerStyle: props.style,
-      iconStyle: props.iconStyle,
     };
 
     bindAll(this, [
@@ -82,6 +83,7 @@ export default class Expandable extends PureComponent {
         justifyContent: undefined,
       },
       innerStyle: {
+        paddingRight: EXPANDABLE_PADDING_RIGHT,
       },
       contentStyle: {
         ...this.props.expandableStyle,
@@ -180,7 +182,10 @@ export default class Expandable extends PureComponent {
     return {
       ...this.defaultState.innerStyle,
       backgroundColor: this.backgroundColor,
-      left, top, width, height,
+      left,
+      top,
+      width: width - EXPANDABLE_PADDING_RIGHT,
+      height,
       right: undefined,
       bottom: undefined,
       position: 'fixed',
@@ -224,10 +229,10 @@ export default class Expandable extends PureComponent {
     if (hideIcon) return null;
     const {
       iconClassName,
+      iconStyle,
     } = this.props;
     const {
       expanded,
-      iconStyle,
       restored,
       restoring,
     } = this.state;
@@ -326,10 +331,5 @@ Expandable.propTypes = {
 
 Expandable.defaultProps = {
   group: 'default',
-  iconStyle: {
-    position: 'absolute',
-    top: '0.2em',
-    right: '0.2em',
-  },
   transition: 'all 0.5s ease',
 };
