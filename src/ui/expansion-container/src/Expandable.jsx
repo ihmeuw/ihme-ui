@@ -25,7 +25,7 @@ const LAYOUT_STYLES = [
   'justifyContent',
 ];
 
-const EXPANDABLE_PADDING_RIGHT =  20;
+const EXPANDABLE_PADDING_RIGHT = 20;
 
 /**
  * <Expandable /> is a *mostly* drop in replacement for a layout <div /> that gives its contents
