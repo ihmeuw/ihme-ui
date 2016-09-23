@@ -24,6 +24,7 @@
   right: 0;
   top: 0;
   bottom: 0;
+  padding-right: 20px;
 }
 
 .expandable-content {
@@ -46,11 +47,16 @@
   position: relative;
 }
 
-.icon {
-  visibility: hidden;
+.icon-container {
+  position: absolute;
   pointer-events: all;
+  cursor: pointer;
 }
 
-.icon:hover {
-  visibility: visible;
+.icon {
+  fill: #f5f5f5;
+}
+
+.icon-container:hover .icon {
+  fill: #e5e5e5;
 }

@@ -47,12 +47,7 @@ export default class Expandable extends PureComponent {
       restored: true,
       transitioning: false,
       containerStyle: props.style,
-      iconStyle: {
-        position: 'absolute',
-        top: '0.2em',
-        right: '0.2em',
-        ...props.iconStyle,
-      },
+      iconStyle: props.iconStyle,
     };
 
     bindAll(this, [
@@ -239,7 +234,7 @@ export default class Expandable extends PureComponent {
 
     return (
       <svg
-        className={iconClassName}
+        className={classNames(styles['icon-container'], iconClassName)}
         style={iconStyle}
         onClick={this.wrappedEvent((expanded && this.restore) || (restored && this.expand))}
         viewBox="-16 -16 32 32"
@@ -247,10 +242,7 @@ export default class Expandable extends PureComponent {
       >
         <circle
           r="15"
-          style={{
-            fill: 'rgb(51, 199, 72)',
-            stroke: '1.5px solid rgba(0, 255, 0, 0.5)',
-          }}
+          className={styles.icon}
         />
         <g
           style={{
