@@ -238,7 +238,7 @@ export default class Expandable extends PureComponent {
         style={iconStyle}
         onClick={this.wrappedEvent((expanded && this.restore) || (restored && this.expand))}
         viewBox="-16 -16 32 32"
-        width="1em" height="1em"
+        width="20px" height="20px"
       >
         <circle
           r="15"
