@@ -47,12 +47,6 @@ export default class Expandable extends PureComponent {
       restored: true,
       transitioning: false,
       containerStyle: props.style,
-      iconStyle: {
-        position: 'absolute',
-        top: '0.2em',
-        right: '0.2em',
-        ...props.iconStyle,
-      },
     };
 
     bindAll(this, [
@@ -86,9 +80,9 @@ export default class Expandable extends PureComponent {
         flexWrap: undefined,
         justifyContent: undefined,
       },
-      innerStyle: {
-      },
+      innerStyle: {},
       contentStyle: {
+        paddingRight: this.props.iconSize,
         ...this.props.expandableStyle,
         ...pick(this.containerStyle, LAYOUT_STYLES),
       },
@@ -185,7 +179,10 @@ export default class Expandable extends PureComponent {
     return {
       ...this.defaultState.innerStyle,
       backgroundColor: this.backgroundColor,
-      left, top, width, height,
+      left,
+      top,
+      width,
+      height,
       right: undefined,
       bottom: undefined,
       position: 'fixed',
@@ -229,28 +226,26 @@ export default class Expandable extends PureComponent {
     if (hideIcon) return null;
     const {
       iconClassName,
+      iconSize,
+      iconStyle,
     } = this.props;
     const {
       expanded,
-      iconStyle,
       restored,
       restoring,
     } = this.state;
 
     return (
       <svg
-        className={iconClassName}
-        style={iconStyle}
+        className={classNames(styles['icon-container'], iconClassName)}
+        style={{ fontSize: iconSize, ...iconStyle }}
         onClick={this.wrappedEvent((expanded && this.restore) || (restored && this.expand))}
         viewBox="-16 -16 32 32"
         width="1em" height="1em"
       >
         <circle
           r="15"
-          style={{
-            fill: 'rgb(51, 199, 72)',
-            stroke: '1.5px solid rgba(0, 255, 0, 0.5)',
-          }}
+          className={styles.icon}
         />
         <g
           style={{
@@ -325,6 +320,8 @@ Expandable.propTypes = {
   expandableStyle: CommonPropTypes.style,
   iconClassName: CommonPropTypes.className,
   iconStyle: CommonPropTypes.style,
+  /* size of icon in px; applied to contentStyle as paddingRight and iconStyle as fontSize */
+  iconSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   children: PropTypes.node,
   group: PropTypes.string,
   hideIcon: PropTypes.bool,
@@ -334,10 +331,6 @@ Expandable.propTypes = {
 
 Expandable.defaultProps = {
   group: 'default',
-  iconStyle: {
-    position: 'absolute',
-    top: '0.2em',
-    right: '0.2em',
-  },
+  iconSize: '20px',
   transition: 'all 0.5s ease',
 };

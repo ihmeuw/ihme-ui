@@ -5,11 +5,11 @@ import { CommonPropTypes, PureComponent } from '../../../utils';
 
 import Button from '../../button';
 import ExpansionContainer, { Expandable } from '../';
-import styles from '../src/expansion-container.css';
 
 const expansionContainerStyle = {
   flex: '1',
   display: 'flex',
+  flexDirection: 'row',
 };
 
 const chartStyle = {
@@ -25,7 +25,6 @@ const expandableStyle = {
 
 class Chart extends PureComponent {
   render() {
-    // log={props.chartNumber === 3}
     const { props } = this;
     return (
       <Expandable
@@ -82,9 +81,10 @@ class App extends React.Component {
                     style={expansionContainerStyle}
                   >
                     <Expandable
-                      style={{ flex: '3' }}
-                      expandableStyle={{ overflow: 'scroll' }}
-                      iconClassName={styles.icon}
+                      style={{
+                        flex: '1 1 auto',
+                        overflow: 'scroll'
+                      }}
                     >
 {/* <pre><code>
   <ExpansionContainer className="..." style={{ display: 'flex' }}>  // drop in replacement for <div>
@@ -107,8 +107,8 @@ class App extends React.Component {
                     </Expandable>
                     <div
                       style={{
+                        flex: '1 1 auto',
                         display: 'flex',
-                        flex: '2',
                         flexDirection: 'column',
                         backgroundColor: 'lightgreen',
                       }}
