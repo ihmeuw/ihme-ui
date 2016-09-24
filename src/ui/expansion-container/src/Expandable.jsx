@@ -82,6 +82,7 @@ export default class Expandable extends PureComponent {
       },
       innerStyle: {},
       contentStyle: {
+        paddingRight: this.props.iconSize,
         ...this.props.expandableStyle,
         ...pick(this.containerStyle, LAYOUT_STYLES),
       },
@@ -225,6 +226,7 @@ export default class Expandable extends PureComponent {
     if (hideIcon) return null;
     const {
       iconClassName,
+      iconSize,
       iconStyle,
     } = this.props;
     const {
@@ -236,7 +238,7 @@ export default class Expandable extends PureComponent {
     return (
       <svg
         className={classNames(styles['icon-container'], iconClassName)}
-        style={iconStyle}
+        style={{ fontSize: iconSize, ...iconStyle }}
         onClick={this.wrappedEvent((expanded && this.restore) || (restored && this.expand))}
         viewBox="-16 -16 32 32"
         width="1em" height="1em"
@@ -318,6 +320,8 @@ Expandable.propTypes = {
   expandableStyle: CommonPropTypes.style,
   iconClassName: CommonPropTypes.className,
   iconStyle: CommonPropTypes.style,
+  /* size of icon in px; applied to contentStyle as paddingRight and iconStyle as fontSize */
+  iconSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   children: PropTypes.node,
   group: PropTypes.string,
   hideIcon: PropTypes.bool,
@@ -327,5 +331,6 @@ Expandable.propTypes = {
 
 Expandable.defaultProps = {
   group: 'default',
+  iconSize: '20px',
   transition: 'all 0.5s ease',
 };
