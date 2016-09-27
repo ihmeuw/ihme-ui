@@ -122,6 +122,18 @@ export default class Tooltip extends PureComponent {
 
   storeRef(el) {
     this._wrapper = el;
+
+    if (!el) return;
+
+    this.setState({
+      style: stateFromPropUpdates(
+        Tooltip.propUpdates,
+        {},
+        this.props,
+        this.state.style,
+        this
+      ),
+    });
   }
 
   render() {
