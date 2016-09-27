@@ -56,6 +56,7 @@ export default class Scatter extends PureComponent {
       'selectedClassName',
       'selectedStyle',
       'size',
+      'style',
     ]);
 
     return (
@@ -152,6 +153,8 @@ Scatter.propTypes = {
 
   /* size of symbols; see Symbol.propTypes */
   size: PropTypes.number,
+
+  style: CommonPropTypes.style,
 
   /* base classname to apply to symbol */
   symbolClassName: CommonPropTypes.className,
