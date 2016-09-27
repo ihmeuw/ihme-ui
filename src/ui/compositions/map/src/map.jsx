@@ -300,6 +300,7 @@ export default class Map extends React.Component {
       onMouseLeave,
       onMouseMove,
       onMouseOver,
+      selectedLocations,
       topology,
       valueField,
       zoomControlsClassName,
@@ -324,6 +325,7 @@ export default class Map extends React.Component {
             onMouseLeave={onMouseLeave}
             onMouseMove={onMouseMove}
             onMouseOver={onMouseOver}
+            selectedLocations={selectedLocations}
             topology={topology}
             valueField={valueField}
           />
