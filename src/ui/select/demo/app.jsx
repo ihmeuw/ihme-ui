@@ -18,6 +18,12 @@ const hierarchicalCities = cities.map((city) => {
   };
 });
 
+function randomlyDisableOptions(option) {
+  const isEven = Math.floor(randomizer()) % 2 === 0;
+  if (isEven) return { color: '#eee' };
+  return {};
+}
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -131,6 +137,31 @@ class App extends React.Component {
             valueKey="name"
             onChange={this.onSingleSelectChange}
             options={hierarchicalCities}
+            value={singleSelectValue}
+          />
+        </section>
+
+        <section>
+          <h3>Option styling</h3>
+{/* <pre><code>
+       <SingleSelect
+         hierarchical
+         labelKey="name"
+         valueKey="name"
+         onChange={ function (selections <Object>) {...} }
+         options={ [{ name: 'Albany', level: 1, bold: true }, ...] }
+         optionStyle={function(option) {...}}
+         value={null}
+       />
+
+</code></pre> */}
+          <SingleSelect
+            hierarchical
+            labelKey="name"
+            valueKey="name"
+            onChange={this.onSingleSelectChange}
+            options={hierarchicalCities}
+            optionStyle={randomlyDisableOptions}
             value={singleSelectValue}
           />
         </section>

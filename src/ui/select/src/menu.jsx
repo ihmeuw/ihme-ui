@@ -7,13 +7,18 @@ import style from './menu.css';
 const menuPropTypes = {
   focusedOption: PropTypes.object,
   focusOption: PropTypes.func,
+  hierarchical: PropTypes.bool,
   labelKey: PropTypes.string,
+  multi: PropTypes.bool,
   options: PropTypes.array,
+  optionClassName: PropTypes.string,
+  optionRenderer: PropTypes.func,
+  optionStyle: PropTypes.oneOfType([
+    React.PropTypes.object,
+    React.PropTypes.func,
+  ]),
   selectValue: PropTypes.func,
   valueArray: PropTypes.array,
-  multi: PropTypes.bool,
-  hierarchical: PropTypes.bool,
-  optionRenderer: PropTypes.func,
   width: PropTypes.number,
 };
 
@@ -26,7 +31,9 @@ export default function Menu(props) {
     labelKey,
     multi,
     options,
+    optionClassName,
     optionRenderer,
+    optionStyle,
     selectValue,
     valueArray,
     width,
@@ -52,7 +59,9 @@ export default function Menu(props) {
         selectValue={selectValue}
         valueArray={valueArray}
         hierarchical={hierarchical}
+        optionClassName={optionClassName}
         optionRenderer={optionRenderer}
+        optionStyle={optionStyle}
       />
     );
   }

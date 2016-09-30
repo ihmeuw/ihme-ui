@@ -1,5 +1,9 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import { bindAll } from 'lodash';
+
+import { propsChanged } from '../../../utils';
+
 import styles from './select-option.css';
 
 import SelectOptionLabel from './select-option-label';
@@ -32,7 +36,12 @@ const propTypes = {
   labelKey: PropTypes.string,
   multi: PropTypes.bool,
   option: PropTypes.object,
+  optionClassName: PropTypes.string,
   optionRenderer: PropTypes.func,
+  optionStyle: PropTypes.oneOfType([
+    React.PropTypes.object,
+    React.PropTypes.func,
+  ]),
   selectValue: PropTypes.func,
   valueArray: PropTypes.array,
 };
@@ -41,37 +50,75 @@ const defaultProps = {
   hierarchical: false,
 };
 
-export default function SelectOption(props) {
-  const {
-    focusedOption,
-    focusOption,
-    multi,
-    option,
-    selectValue,
-    valueArray,
-  } = props;
-  const isFocused = option === focusedOption;
-  const isSelected = valueArray ? valueArray.includes(option) : false;
-  const onClick = () => { return selectValue(option); };
-  const onMouseOver = () => { return focusOption(option); };
+export default class SelectOption extends React.Component {
+  constructor(props) {
+    super(props);
 
-  return (
-    <div
-      className={classNames(
-        styles.option, {
-          [styles.focused]: isFocused,
-          [styles.selected]: isSelected,
+    this.state = {
+      style: this.computeStyle(props.optionStyle, props.option),
+    };
+
+    bindAll(this, [
+      'onClick',
+      'onMouseOver',
+    ]);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (propsChanged(this.props, nextProps, ['option', 'optionStyle'])) {
+      this.setState({
+        style: this.computeStyle(nextProps.optionStyle, nextProps.option),
+      });
+    }
+  }
+
+  onClick() {
+    return this.props.selectValue(this.props.option);
+  }
+
+  onMouseOver() {
+    return this.props.focusOption(this.props.option);
+  }
+
+  computeStyle(style, option) {
+    if (typeof style === 'function') return style(option);
+    return style;
+  }
+
+  render() {
+    const {
+      focusedOption,
+      multi,
+      option,
+      valueArray,
+    } = this.props;
+
+    const {
+      style,
+    } = this.state;
+
+    const isFocused = option === focusedOption;
+    const isSelected = valueArray ? valueArray.includes(option) : false;
+
+    return (
+      <div
+        className={classNames(
+          styles.option, {
+            [styles.focused]: isFocused,
+            [styles.selected]: isSelected,
+          }
+        )}
+        onClick={this.onClick}
+        onMouseOver={this.onMouseOver}
+        style={style}
+      >
+        {
+          multi ? <Input selected={isSelected} /> : null
         }
-      )}
-      onClick={onClick}
-      onMouseOver={onMouseOver}
-    >
-      {
-        multi ? <Input selected={isSelected} /> : null
-      }
-      <SelectOptionLabel {...props} />
-    </div>
-  );
+        <SelectOptionLabel {...this.props} />
+      </div>
+    );
+  }
 }
 
 SelectOption.propTypes = propTypes;
