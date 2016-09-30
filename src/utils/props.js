@@ -1,4 +1,5 @@
 import { PropTypes } from 'react';
+import eq from 'lodash/eq';
 import identity from 'lodash/identity';
 import includes from 'lodash/includes';
 import intersection from 'lodash/intersection';
@@ -69,9 +70,9 @@ export function atLeastOneOfProp(propTypes) {
   };
 }
 
-export function propsChanged(prevProps, nextProps, propsToCompare, propsToOmit) {
+export function propsChanged(prevProps, nextProps, propsToCompare, propsToOmit, comparator = eq) {
   return !reduce(propsToCompare || Object.keys(nextProps), (acc, prop) => {
-    return acc && (includes(propsToOmit, prop) || prevProps[prop] === nextProps[prop]);
+    return acc && (includes(propsToOmit, prop) || comparator(prevProps[prop], nextProps[prop]));
   }, true);
 }
 
