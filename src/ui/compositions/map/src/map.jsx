@@ -165,6 +165,7 @@ export default class Map extends React.Component {
         .domain(linspace(rangeExtent, colorSteps.length))
         .range(colorSteps),
       layers,
+      render: !props.loading,
     };
 
     this.state = stateFromPropUpdates(Map.propUpdates, {}, props, state, this);
@@ -405,11 +406,13 @@ export default class Map extends React.Component {
   }
 
   render() {
+    const { render } = this.state;
+
     return (
       <div className={classNames(styles['map-container'], this.props.className)}>
-        {this.renderMap()}
-        {this.renderTitle()}
-        {this.renderLegend()}
+        {render && this.renderMap()}
+        {render && this.renderTitle()}
+        {render && this.renderLegend()}
       </div>
     );
   }
@@ -590,6 +593,12 @@ Map.propUpdates = {
     return assign({}, state, {
       colorScale: state.colorScale.clamps(rangeExtent).copy(),
     });
+  },
+  render: (state, _, prevProps, nextProps) => {
+    if (!state.render && !nextProps.loading) {
+      return assign({}, state, { render: true });
+    }
+    return state;
   },
   selections: (state, _, prevProps, nextProps, context) => {
     if (isEqual(nextProps.selectedLocations, prevProps.selectedLocations)) return state;
