@@ -343,7 +343,9 @@ export default class Map extends React.Component {
       domain,
       extentPct,
       keyField,
+      legendClassName,
       legendMargins,
+      legendStyle,
       onClick,
       onMouseLeave,
       onMouseMove,
@@ -354,16 +356,18 @@ export default class Map extends React.Component {
       unit,
       valueField,
     } = this.props;
+
     const {
       colorScale,
       locationIdsOnMap,
       setScaleExtentPct,
     } = this.state;
+
     const linearGradientStops = setScaleExtentPct || [0, 1];
     const rangeExtent = getRangeExtent(extentPct, domain);
 
     return (
-      <div className={styles.legend}>
+      <div className={classNames(styles.legend, legendClassName)} style={legendStyle}>
         <div className={styles['legend-wrapper']}>
           <ResponsiveContainer disableHeight>
             <ChoroplethLegend
@@ -458,6 +462,9 @@ Map.propTypes = {
     PropTypes.func,
   ]).isRequired,
 
+  /* classname applied to div containing choropleth legend */
+  legendClassName: CommonPropTypes.className,
+
   /* margins passed to ChoroplethLegend */
   legendMargins: PropTypes.shape({
     top: PropTypes.number,
@@ -465,6 +472,9 @@ Map.propTypes = {
     bottom: PropTypes.number,
     left: PropTypes.number,
   }),
+
+  /* inline style object applied to div containing choropleth legend */
+  legendStyle: PropTypes.object,
 
   /* is data for this component currently being fetched */
   loading: PropTypes.bool,
