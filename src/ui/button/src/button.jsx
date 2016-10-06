@@ -44,14 +44,9 @@ export default class Button extends PureComponent {
     return (
       <button
         style={style}
-        className={classNames(
-          styles.common,
-          styles[theme],
-          className,
-          {
-            [disabledClassName]: disabled,
-          }
-        )}
+        className={classNames(styles.common, styles[theme], className, {
+          [disabledClassName]: disabled,
+        })}
         disabled={disabled}
         id={id}
         name={name}
