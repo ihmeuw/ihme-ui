@@ -37,12 +37,12 @@ export const CommonDefaultProps = {
 };
 
 export function exactlyOneOfProp(propTypes) {
-  return (props, propName, componentName, location, propFullName) => {
+  return (props, propName, componentName, ...rest) => {
     let error = null;
     const validProps = intersection(Object.keys(props), Object.keys(propTypes));
     if (validProps.length === 1) {
       if (validProps[0] === propName) {
-        error = propTypes[propName](props, propName, componentName, location, propFullName);
+        error = propTypes[propName](props, propName, componentName, ...rest);
       }
     } else {
       /* eslint-disable max-len */
@@ -54,12 +54,12 @@ export function exactlyOneOfProp(propTypes) {
 }
 
 export function atLeastOneOfProp(propTypes) {
-  return (props, propName, componentName, location, propFullName) => {
+  return (props, propName, componentName, ...rest) => {
     let error = null;
     const validProps = intersection(Object.keys(props), Object.keys(propTypes));
     if (validProps.length > 0) {
       if (includes(validProps, propName)) {
-        error = propTypes[propName](props, propName, componentName, location, propFullName);
+        error = propTypes[propName](props, propName, componentName, ...rest);
       }
     } else {
       /* eslint-disable max-len */
