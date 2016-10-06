@@ -4,7 +4,7 @@ import omit from 'lodash/omit';
 import { CommonPropTypes, PureComponent, propsChanged, stateFromPropUpdates } from '../../../utils';
 
 import Button from '../../button';
-import styles from './group.css';
+import styles from './option.css';
 
 export default class Option extends PureComponent {
   static calculateStyle(props) {
@@ -34,6 +34,7 @@ export default class Option extends PureComponent {
       selectedClassName,
       type,
     } = this.props;
+
     const {
       style,
     } = this.state;

@@ -4,7 +4,7 @@ import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 
 import { Option } from '../';
-import styles from '../src/group.css';
+import styles from '../src/option.css';
 
 chai.use(chaiEnzyme());
 

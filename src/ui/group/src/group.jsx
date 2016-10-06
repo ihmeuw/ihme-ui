@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import memoize from 'lodash/memoize';
 import { CommonPropTypes, eventHandleWrapper, PureComponent } from '../../../utils';
 
-import styles from './group.css';
+import styles from './option.css';
 
 export default class Group extends PureComponent {
   static onClickWrapper(optionValue, onClick) {
@@ -18,13 +18,17 @@ export default class Group extends PureComponent {
 
   render() {
     const { children, className, onClick, style } = this.props;
+    const numOptions = React.Children.count(children);
 
     return (
       <div className={classNames(className)} style={style}>
         {
-          React.Children.map(children, (child) => {
+          React.Children.map(children, (child, index) => {
             const childProps = {
-              className: classNames(styles.common, child.props.className),
+              className: classNames(styles.option, {
+                [styles.first]: index === 0,
+                [styles.last]: index === numOptions - 1,
+              }, child.props.className),
               onClick: this.wrappedOnClick(child.props.value, onClick),
             };
 
