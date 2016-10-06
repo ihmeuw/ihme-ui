@@ -287,7 +287,7 @@ ChoroplethLegend.propUpdates = {
     if (xScale.clamp) xScale.clamp(true);
     return assign({}, state, {
       adjustedWidth,
-      scatterScaleMap: { x: xScale },
+      scatterScaleMap: { x: xScale.copy() },
       sliderScale: state.sliderScale.domain(nextProps.domain).range([0, adjustedWidth]),
     });
   },
