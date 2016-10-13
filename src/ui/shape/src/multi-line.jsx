@@ -5,7 +5,12 @@ import { map, pick } from 'lodash';
 
 import Line from './line';
 import Area from './area';
-import { propResolver, PureComponent, CommonDefaultProps, CommonPropTypes } from '../../../utils';
+import {
+  CommonDefaultProps,
+  CommonPropTypes,
+  propResolver,
+  PureComponent,
+} from '../../../utils';
 
 export default class MultiLine extends PureComponent {
   render() {
@@ -54,6 +59,13 @@ export default class MultiLine extends PureComponent {
             const areaValues = areaValuesIteratee(values, key);
             const lineValues = lineValuesIteratee(values, key);
 
+            const computedAreaStyle = typeof areaStyle === 'function'
+              ? areaStyle(areaValues, key)
+              : areaStyle;
+            const computedLineStyle = typeof lineStyle === 'function'
+              ? lineStyle(lineValues, key)
+              : lineStyle;
+
             return (
               [
                 (!!dataAccessors.x && !!dataAccessors.y0 && !!dataAccessors.y1 && !!areaValues) ?
@@ -66,7 +78,7 @@ export default class MultiLine extends PureComponent {
                     style={{
                       fill: color,
                       stroke: color,
-                      ...areaStyle,
+                      ...computedAreaStyle,
                     }}
                     {...childProps}
                   /> : null,
@@ -79,7 +91,7 @@ export default class MultiLine extends PureComponent {
                     scales={scales}
                     style={{
                       stroke: color,
-                      ...lineStyle,
+                      ...computedLineStyle,
                     }}
                     {...childProps}
                   /> : null,
@@ -95,6 +107,12 @@ export default class MultiLine extends PureComponent {
 MultiLine.propTypes = {
   /* base classname to apply to Areas that are children of MultiLine */
   areaClassName: CommonPropTypes.className,
+
+  /*
+   if object, spread directly as inline-style object into <Area />
+   if function, passed areaValues as first arg, area key as second arg
+    return value is spread as inline-style object into <Area />
+   */
   areaStyle: CommonPropTypes.style,
 
   /*
@@ -161,6 +179,12 @@ MultiLine.propTypes = {
 
   /* base classname to apply to Lines that are children of MultiLine */
   lineClassName: CommonPropTypes.className,
+
+  /*
+    if object, spread directly as inline-style object into <Line />
+    if function, passed lineValues as first arg, line key as second arg
+      return value is spread as inline-style object into <Line />
+   */
   lineStyle: CommonPropTypes.style,
 
   /*
