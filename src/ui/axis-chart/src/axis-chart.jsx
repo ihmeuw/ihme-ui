@@ -57,7 +57,7 @@ export default class AxisChart extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return PureRenderMixin.shouldComponentUpdate(this, nextProps, nextState);
+    return !nextProps.loading && PureRenderMixin.shouldComponentUpdate(this, nextProps, nextState);
   }
 
   render() {
@@ -105,6 +105,8 @@ AxisChart.propTypes = {
 
   /* use clip path in children */
   clipPath: PropTypes.bool,
+
+  loading: PropTypes.bool,
 
   /* [min, max] for xScale (i.e., the domain of the data) */
   xDomain: PropTypes.array,
