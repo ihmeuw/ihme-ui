@@ -105,6 +105,7 @@ Handle.propTypes = {
 
 Handle.defaultProps = {
   direction: 'middle',
+  label: '',
   labelFunc: identity,
   onDrag: noop,
   onDragEnd: noop,
