@@ -297,6 +297,8 @@ export default class Map extends React.Component {
       data,
       keyField,
       geometryKeyField,
+      mapClassName,
+      mapStyle,
       onClick,
       onMouseLeave,
       onMouseMove,
@@ -311,7 +313,7 @@ export default class Map extends React.Component {
 
     if (!topology) return null;
     return (
-      <div className={styles.map}>
+      <div className={classNames(styles.map, mapClassName)} style={mapStyle}>
         <ResponsiveContainer>
           <Choropleth
             colorScale={colorScale}
@@ -410,10 +412,11 @@ export default class Map extends React.Component {
   }
 
   render() {
+    const { className, style } = this.props;
     const { render } = this.state;
 
     return (
-      <div className={classNames(styles['map-container'], this.props.className)}>
+      <div className={classNames(styles['map-container'], className)} style={style}>
         {render && this.renderMap()}
         {render && this.renderTitle()}
         {render && this.renderLegend()}
@@ -479,6 +482,10 @@ Map.propTypes = {
   /* is data for this component currently being fetched */
   loading: PropTypes.bool,
 
+  mapClassName: CommonPropTypes.className,
+
+  mapStyle: CommonPropTypes.style,
+
   /*
     event handler passed to both choropleth and choropleth legend;
     signature: function(event, locationId, Path) {...}
@@ -523,6 +530,8 @@ Map.propTypes = {
   selectedLocations: PropTypes.array,
 
   sliderHandleFormat: PropTypes.func,
+
+  style: CommonPropTypes.style,
 
   /* whether to include subnational layer */
   subnational: PropTypes.bool,
