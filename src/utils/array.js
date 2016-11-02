@@ -12,9 +12,8 @@ export function hasCrappyValues(arr) {
 }
 
 /**
- * turn [min, max] domain into domain of length
- * that matches cardinality of colors array
- * @param {array} domain - [min, max] of x-scale domain
+ * turn [min, max] domain into array of length
+ * @param {array} domain - [min, max]
  * @param {number} length - intended length of returned array
  * @returns {array}
  */
