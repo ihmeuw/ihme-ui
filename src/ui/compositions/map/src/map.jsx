@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import {
   assign,
   bindAll,
+  endsWith,
   keyBy,
   flatMap,
   filter,
@@ -11,6 +12,7 @@ import {
   includes,
   intersectionWith,
   isEqual,
+  map,
   toString,
 } from 'lodash';
 import { scaleLinear } from 'd3';
@@ -78,10 +80,11 @@ export default class Map extends React.Component {
   constructor(props) {
     super(props);
 
-    const { colorSteps, domain, extentPct, selectedLocations } = props;
+    const { colorSteps, domain, extentPct, topojsonObjects } = props;
     const rangeExtent = getRangeExtent(extentPct, domain);
 
     bindAll(this, [
+      'createLayers',
       'disputedBordersMeshFilter',
       'getGeometryIds',
       'nonDisputedBordersMeshFilter',
@@ -90,74 +93,7 @@ export default class Map extends React.Component {
       'onResetScale',
     ]);
 
-    const styleReset = { stroke: 'none' };
-    // Array is used to maintain layer order.
-    const layers = [
-      {
-        name: 'national',
-        object: 'national',
-        style: styleReset,
-        selectedStyle: styleReset,
-        type: 'feature',
-        visible: true,
-      },
-      {
-        name: 'subnational',
-        object: 'subnational',
-        style: styleReset,
-        selectedStyle: styleReset,
-        type: 'feature',
-        visible: !!props.subnational,
-      },
-      {
-        name: 'disputed-national-borders',
-        object: 'national',
-        style: { stroke: 'black', strokeWidth: '1px', strokeDasharray: '5, 5' },
-        type: 'mesh',
-        filterFn: this.disputedBordersMeshFilter,
-        visible: true,
-      },
-      {
-        name: 'disputed-subnational-borders',
-        object: 'subnational',
-        style: { stroke: 'black', strokeWidth: '1px', strokeDasharray: '5, 5' },
-        type: 'mesh',
-        filterFn: this.disputedBordersMeshFilter,
-        visible: !!props.subnational,
-      },
-      {
-        name: 'non-disputed-national-borders',
-        object: 'national',
-        style: { stroke: 'black', strokeWidth: '1px' },
-        type: 'mesh',
-        filterFn: this.nonDisputedBordersMeshFilter,
-        visible: true,
-      },
-      {
-        name: 'non-disputed-subnational-borders',
-        object: 'subnational',
-        style: { stroke: 'black', strokeWidth: '1px' },
-        type: 'mesh',
-        filterFn: this.nonDisputedBordersMeshFilter,
-        visible: !!props.subnational,
-      },
-      {
-        name: 'selected-non-disputed-national-borders',
-        object: 'national',
-        style: { stroke: 'black', strokeWidth: '2px' },
-        type: 'mesh',
-        filterFn: this.selectedBordersMeshFilter(selectedLocations),
-        visible: true,
-      },
-      {
-        name: 'selected-non-disputed-subnational-borders',
-        object: 'subnational',
-        style: { stroke: 'black', strokeWidth: '2px' },
-        type: 'mesh',
-        filterFn: this.selectedBordersMeshFilter(selectedLocations),
-        visible: !!props.subnational,
-      },
-    ];
+    const layers = flatMap(topojsonObjects, this.createLayers);
 
     const state = {
       colorScale: clampedScale('#ccc', 0.000001)
@@ -248,7 +184,7 @@ export default class Map extends React.Component {
 
   selectedBordersMeshFilter(selections) {
     const { geometryKeyField, keyField } = this.props;
-    const keysOfSelectedLocations = selections.map(datum =>
+    const keysOfSelectedLocations = map(selections, datum =>
       toString(propResolver(datum, keyField))
     );
 
@@ -282,6 +218,46 @@ export default class Map extends React.Component {
           && includes(geometryDisputes, neighborGeometryKey)
         );
     };
+  }
+
+  createLayers(name) {
+    const styleReset = { stroke: 'none' };
+
+    // array is used to maintain layer order
+    return [
+      {
+        name,
+        object: name,
+        style: styleReset,
+        selectedStyle: styleReset,
+        type: 'feature',
+        visible: true,
+      },
+      {
+        name: `${name}-disputed-borders`,
+        object: name,
+        style: { stroke: 'black', strokeWidth: '1px', strokeDasharray: '5, 5' },
+        type: 'mesh',
+        filterFn: this.disputedBordersMeshFilter,
+        visible: true,
+      },
+      {
+        name: `${name}-non-disputed-borders`,
+        object: name,
+        style: { stroke: 'black', strokeWidth: '1px' },
+        type: 'mesh',
+        filterFn: this.nonDisputedBordersMeshFilter,
+        visible: true,
+      },
+      {
+        name: `${name}-selected-non-disputed-borders`,
+        object: name,
+        style: { stroke: 'black', strokeWidth: '2px' },
+        type: 'mesh',
+        filterFn: this.selectedBordersMeshFilter(this.props.selectedLocations),
+        visible: true,
+      },
+    ];
   }
 
   renderTitle() {
@@ -533,9 +509,6 @@ Map.propTypes = {
 
   style: CommonPropTypes.style,
 
-  /* whether to include subnational layer */
-  subnational: PropTypes.bool,
-
   title: PropTypes.string,
 
   titleClassName: CommonPropTypes.className,
@@ -543,14 +516,17 @@ Map.propTypes = {
   titleStyle: PropTypes.object,
 
   /*
+    array of keys on topology.objects (e.g., 'national', 'ADM1', 'health_districts');
+    if a key on topology.objects is omitted, it will not be rendered
+  */
+  topojsonObjects: PropTypes.arrayOf(PropTypes.string),
+
+  /*
     preprojected topojson to render;
     given inclusion of mesh filters, there is a hard dependency on particular topojson
   */
   topology: PropTypes.shape({
-    objects: PropTypes.shape({
-      national: PropTypes.object.isRequired,
-      subnational: PropTypes.object,
-    }).isRequired,
+    objects: PropTypes.object.isRequired,
   }).isRequired,
 
   /* unit of data, used as axis label in choropleth legend */
@@ -579,9 +555,10 @@ Map.defaultProps = {
     bottom: 0,
     left: 50,
   },
+  level: 0,
   loading: false,
   selectedLocations: [],
-  subnational: false,
+  topojsonObjects: ['national'],
 };
 
 Map.propUpdates = {
@@ -623,9 +600,10 @@ Map.propUpdates = {
     if (isEqual(nextProps.selectedLocations, prevProps.selectedLocations)) return state;
     return assign({}, state, {
       layers: state.layers.map(layer => {
+        if (layer.type !== 'mesh') return layer;
+
         let meshFilter = layer.filterFn;
-        if (layer.name === 'selected-non-disputed-national-borders'
-            || layer.name === 'selected-non-disputed-subnational-borders') {
+        if (endsWith(layer.name, 'selected-non-disputed-borders')) {
           meshFilter = context.selectedBordersMeshFilter(nextProps.selectedLocations);
         }
         return assign({}, layer, { filterFn: meshFilter });
@@ -633,16 +611,13 @@ Map.propUpdates = {
     });
   },
   subnational: (state, _, prevProps, nextProps, context) => {
-    // if subnational layers are being toggled on or off,
+    // if map detail level is changed,
     // filter layers passed to choropleth and update internal mapping of which datum have a
     // corresponding geometry displayed on the choropleth
-    if (prevProps.subnational === nextProps.subnational) return state;
-    const layers = state.layers.map(layer => {
-      if (layer.object !== 'subnational') return layer;
-      return assign({}, layer, {
-        visible: !!nextProps.subnational,
-      });
-    });
+    if (isEqual(prevProps.topojsonObjects, nextProps.topojsonObjects)) return state;
+
+    // evaluate visibility of each layer
+    const layers = flatMap(nextProps.topojsonObjects, context.createLayers);
     return assign({}, state, {
       layers,
       locationIdsOnMap: context.getGeometryIds(nextProps.topology, layers),

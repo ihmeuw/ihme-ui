@@ -30,6 +30,13 @@ function randomRange() {
   return [randomNumberBetween0And99(), randomNumberBetween0And99()].sort((a, b) => a - b);
 }
 
+const MapLevel = {
+  NATIONAL: 1,
+  1: ['admin0'],
+  SUBNATIONAL: 2,
+  2: ['admin0', 'admin1', 'admin2'],
+};
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -38,7 +45,7 @@ class App extends React.Component {
       data: [],
       selections: [],
       selectedChoroplethDomain: [0, 1],
-      subnational: false,
+      mapLevel: MapLevel.NATIONAL,
     };
 
     bindAll(this, [
@@ -78,7 +85,9 @@ class App extends React.Component {
 
   onToggleSubnational() {
     this.setState({
-      subnational: !this.state.subnational,
+      mapLevel: this.state.mapLevel === MapLevel.NATIONAL
+        ? MapLevel.SUBNATIONAL
+        : MapLevel.NATIONAL,
     });
   }
 
@@ -112,7 +121,7 @@ class App extends React.Component {
 
   render() {
     const { topology } = this.props;
-    const { data, range, selections, selectedChoroplethDomain, subnational } = this.state;
+    const { data, mapLevel, range, selections, selectedChoroplethDomain } = this.state;
 
     if (!Array.isArray(data)) return null;
 
@@ -130,7 +139,7 @@ class App extends React.Component {
           onSliderMove={this.onSliderMove}
           selectedLocations={selections}
           sliderHandleFormat={numberFormat}
-          subnational={subnational}
+          topojsonObjects={MapLevel[mapLevel]}
           topology={topology}
           unit="Probability of death"
           valueField={valueField}
