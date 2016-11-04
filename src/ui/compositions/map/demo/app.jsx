@@ -32,9 +32,9 @@ function randomRange() {
 
 const MapLevel = {
   NATIONAL: 1,
-  1: ['admin0'],
+  1: ['national'],
   SUBNATIONAL: 2,
-  2: ['admin0', 'admin1', 'admin2'],
+  2: ['national', 'subnational'],
 };
 
 class App extends React.Component {
