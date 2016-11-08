@@ -217,6 +217,9 @@ export default class Map extends React.Component {
   }
 
   createLayers(name) {
+    // guard against creating layers that don't in fact correspond to a topojson object
+    if (!this.props.topology.objects.hasOwnProperty(name)) return [];
+
     const styleReset = { stroke: 'none' };
 
     // array is used to maintain layer order
