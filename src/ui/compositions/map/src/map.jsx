@@ -606,7 +606,7 @@ Map.propUpdates = {
       layers: [...state.layers],
     });
   },
-  subnational: (state, _, prevProps, nextProps, context) => {
+  topojsonObjects: (state, _, prevProps, nextProps, context) => {
     // if map detail level is changed,
     // filter layers passed to choropleth and update internal mapping of which datum have a
     // corresponding geometry displayed on the choropleth
