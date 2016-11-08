@@ -153,8 +153,8 @@ export default class Map extends React.Component {
    */
   getGeometryIds(topojson, layers) {
     const { geometryKeyField } = this.props;
-    const visibleLayers = keyBy(layers.filter((layer) => layer.visible), 'name');
-    const relevantObjects = filter(topojson.objects, (_, key) => visibleLayers[key]);
+    const layerNameToConfigMap = keyBy(layers, 'name');
+    const relevantObjects = filter(topojson.objects, (_, key) => layerNameToConfigMap[key]);
     return flatMap(relevantObjects, (object) =>
       object.geometries.map((geometry) =>
         propResolver(geometry, geometryKeyField)
