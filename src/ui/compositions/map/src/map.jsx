@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import {
   assign,
   bindAll,
-  endsWith,
   keyBy,
   flatMap,
   filter,
