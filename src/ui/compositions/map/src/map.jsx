@@ -182,42 +182,38 @@ export default class Map extends React.Component {
     /* eslint-enable max-len */
   }
 
-  selectedBordersMeshFilter(selections) {
-    const { geometryKeyField, keyField } = this.props;
-    const keysOfSelectedLocations = map(selections, datum =>
-      toString(propResolver(datum, keyField))
-    );
+  selectedBordersMeshFilter(geometry, neighborGeometry) {
+    const { geometryKeyField } = this.props;
+    const { keysOfSelectedLocations } = this.state;
 
-    return (geometry, neighborGeometry) => {
-      const geometryKey = toString(propResolver(geometry, geometryKeyField));
-      const geometryDisputes = getValue(geometry, ['properties', 'disputes'], []).map(toString);
-      const neighborGeometryKey = toString(propResolver(neighborGeometry, geometryKeyField));
-      const neighborGeometryDisputes = getValue(neighborGeometry, [
-        'properties',
-        'disputes',
-      ], []).map(toString);
+    const geometryKey = toString(propResolver(geometry, geometryKeyField));
+    const geometryDisputes = getValue(geometry, ['properties', 'disputes'], []).map(toString);
+    const neighborGeometryKey = toString(propResolver(neighborGeometry, geometryKeyField));
+    const neighborGeometryDisputes = getValue(neighborGeometry, [
+      'properties',
+      'disputes',
+    ], []).map(toString);
 
-      return (
-          // geometry is one of the geometries selected
-          includes(keysOfSelectedLocations, geometryKey)
+    return (
+        // geometry is one of the geometries selected
+        includes(keysOfSelectedLocations, geometryKey)
 
-          // neighborGeometry is one of the geometries selected
-          || includes(keysOfSelectedLocations, neighborGeometryKey)
+        // neighborGeometry is one of the geometries selected
+        || includes(keysOfSelectedLocations, neighborGeometryKey)
 
-          // or one of the selections disputed by geometry or neighborGeometry
-          || keysOfSelectedLocations.some(locId =>
-            includes(geometryDisputes, locId) || includes(neighborGeometryDisputes, locId)
-          )
+        // or one of the selections disputed by geometry or neighborGeometry
+        || keysOfSelectedLocations.some(locId =>
+          includes(geometryDisputes, locId) || includes(neighborGeometryDisputes, locId)
         )
+      )
 
-        && !(
-          includes(keysOfSelectedLocations, geometryKey)
-          && includes(neighborGeometryDisputes, geometryKey)
+      && !(
+        includes(keysOfSelectedLocations, geometryKey)
+        && includes(neighborGeometryDisputes, geometryKey)
 
-          || includes(keysOfSelectedLocations, neighborGeometryKey)
-          && includes(geometryDisputes, neighborGeometryKey)
-        );
-    };
+        || includes(keysOfSelectedLocations, neighborGeometryKey)
+        && includes(geometryDisputes, neighborGeometryKey)
+      );
   }
 
   createLayers(name) {
@@ -254,7 +250,7 @@ export default class Map extends React.Component {
         object: name,
         style: { stroke: 'black', strokeWidth: '2px' },
         type: 'mesh',
-        filterFn: this.selectedBordersMeshFilter(this.props.selectedLocations),
+        filterFn: this.selectedBordersMeshFilter,
         visible: true,
       },
     ];
@@ -596,18 +592,16 @@ Map.propUpdates = {
     }
     return state;
   },
-  selections: (state, _, prevProps, nextProps, context) => {
+  selections: (state, _, prevProps, nextProps) => {
     if (isEqual(nextProps.selectedLocations, prevProps.selectedLocations)) return state;
     return assign({}, state, {
-      layers: state.layers.map(layer => {
-        if (layer.type !== 'mesh') return layer;
-
-        let meshFilter = layer.filterFn;
-        if (endsWith(layer.name, 'selected-non-disputed-borders')) {
-          meshFilter = context.selectedBordersMeshFilter(nextProps.selectedLocations);
-        }
-        return assign({}, layer, { filterFn: meshFilter });
-      }),
+      keysOfSelectedLocations: map(nextProps.selectedLocations, datum =>
+        toString(propResolver(datum, nextProps.keyField))
+      ),
+      // spread state.layers array into new array to ensure they are not referentially equal
+      // this is for the benefit of ensuring that the layers are re-rendered by <Choropleth />
+      // see Choropleth::componentWillReceiveProps
+      layers: [...state.layers],
     });
   },
   subnational: (state, _, prevProps, nextProps, context) => {
