@@ -554,7 +554,6 @@ Map.defaultProps = {
     bottom: 0,
     left: 50,
   },
-  level: 0,
   loading: false,
   selectedLocations: [],
   topojsonObjects: ['national'],
