@@ -8,7 +8,7 @@ import { getWidestLabel } from './utils';
 import style from './select.css';
 import { menuWrapper } from './menu';
 import Value from './value';
-import multiValueRenderer from './muli-value-renderer';
+import multiValueRenderer from './multi-value-renderer';
 
 export default class MultiSelect extends React.Component {
   constructor(props) {
