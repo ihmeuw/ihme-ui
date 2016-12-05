@@ -2,13 +2,13 @@ import React, { PropTypes } from 'react';
 import Select, { propTypes as baseProps } from 'ihme-react-select';
 import { assign } from 'lodash';
 
-import { stateFromPropUpdates, propsChanged } from '../../../utils';
+import { stateFromPropUpdates, propsChanged, PureComponent } from '../../../utils';
 import { getWidestLabel } from './utils';
 
 import style from './select.css';
 import { menuWrapper } from './menu';
 
-export default class SingleSelect extends React.Component {
+export default class SingleSelect extends PureComponent {
   constructor(props) {
     super(props);
     this.state = stateFromPropUpdates(SingleSelect.propUpdates, {}, props, {});
