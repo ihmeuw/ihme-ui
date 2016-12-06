@@ -88,5 +88,10 @@ Menu.propTypes = menuPropTypes;
  * @returns {Function}
  */
 export function menuWrapper(width) {
-  return (menuProps) => (<Menu width={width} {...menuProps} />);
+  return (menuProps) => (
+    <Menu
+      width={width}
+      {...menuProps}
+    />
+  );
 }
