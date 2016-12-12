@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 import Select, { propTypes as baseProps } from 'ihme-react-select';
 import { assign } from 'lodash';
 
@@ -30,15 +31,15 @@ export default class SingleSelect extends PureComponent {
 
     return (
       <Select
-        className={style.select}
+        {...this.props}
         autofocus
-        searchable
-        wrapperStyle={wrapperStyle}
+        autosize={false}
+        className={classNames(style.select, this.props.className)}
+        menuContainerStyle={menuContainerStyle}
         menuRenderer={menuRenderer}
         menuStyle={menuStyle}
-        menuContainerStyle={menuContainerStyle}
-        autosize={false}
-        {...this.props}
+        searchable
+        wrapperStyle={wrapperStyle}
       />
     );
   }

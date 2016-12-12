@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 import Select, { propTypes as baseProps } from 'ihme-react-select';
 import { assign } from 'lodash';
 
@@ -36,20 +37,20 @@ export default class MultiSelect extends PureComponent {
 
     return (
       <Select
+        {...this.props}
         autofocus
+        autosize={false}
+        className={classNames(style.select, this.props.className)}
         clearable
-        searchable
-        multi
-        wrapperStyle={wrapperStyle}
-        className={style.select}
         menuRenderer={menuRenderer}
+        multi
+        menuContainerStyle={menuContainerStyle}
+        menuStyle={menuStyle}
+        resetValue={resetValue}
+        searchable
         valueComponent={Value}
         valueRenderer={multiValueRenderer}
-        menuStyle={menuStyle}
-        menuContainerStyle={menuContainerStyle}
-        resetValue={resetValue}
-        autosize={false}
-        {...this.props}
+        wrapperStyle={wrapperStyle}
       />
     );
   }
