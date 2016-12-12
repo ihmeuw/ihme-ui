@@ -76,6 +76,7 @@ MultiSelect.propUpdates = {
     if (!propsChanged(prevProps, nextProps, [
       'hierarchical',
       'labelKey',
+      'menuContainerStyle',
       'menuStyle',
       'options',
       'widthPad',
