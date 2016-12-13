@@ -30,14 +30,12 @@
   width: 100%;
   top: -2px;
   bottom: -2px;
-  z-index: 1;
 }
 
 .track-ticks {
   position: absolute;
   pointer-events: none;
   width: 100%;
-  z-index: 1;
   opacity: 0.1;
 }
 
