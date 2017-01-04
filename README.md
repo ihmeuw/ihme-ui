@@ -33,10 +33,6 @@ ihme-ui is a collection of JavaScript and React-based visualization tools and us
 
 ## Installation
 
-Requirements:
-
-* Node: ≥ v5.1.1
-
 To install ihme-ui tools and all dependencies:
 
 ```sh
@@ -50,23 +46,41 @@ npm run demo
 
 ## API
 
-### <a id="axis"></a>axis
+### General notes
+#### <a id="className"></a>className
 
-Chart axes with customizable scales and ticks.
+All className props are run through the [classnames](https://github.com/JedWatson/classnames) library, so can be a string, an object, or an array.
 
-Property | Required | Type(s) | Description
-        --- | :---: | :---: | ---
-`position` | no | object | where to position ticks relative to axis line; will match an AXIS_TYPE (default: bottom)<br /><br />one of: top, right, bottom, left
-`scale` | yes | object | appropriate scale for object
-`style` | no | object | style object to apply to element
-`ticks` | no | number | [number of axis ticks use](https://github.com/d3/d3-axis#axis_ticks)
-`tickFormat` | no | object | [format of axis ticks ticks](https://github.com/d3/d3-axis#axis_tickFormat)
-`tickPadding` | no | number | [padding of axis ticks](https://github.com/d3/d3-axis#axis_tickPadding) (default: 3px)
-`tickSize` | no | number | [size of both inner and outer tick lines](https://github.com/d3/d3-axis#axis_tickSize) (default: 6)
-`tickSizeInner` | no | number | [size of inner tick lines](https://github.com/d3/d3-axis#axis_tickSizeInner) (default: 6)
-`tickSizeOuter` | no | number | [size of outer tick lines](https://github.com/d3/d3-axis#axis_tickSizeOuter) (default: 6)
-`tickValues` | no | object | [user-specified tick values](https://github.com/d3/d3-axis#axis_tickValues) (default: automatic)
-`translate` | no | object | push axis in x or y direction
+---
+
+### <a id="axis"></a> \<Axis \/\>
+`import Axis from 'ihme-ui/axis'`
+
+Chart axis
+
+Property | Required | Type(s) | Defaults | Description
+        --- | :---: | :---: | :---: | ---
+`axisClassName` | no | [className](#className) | | className applied to group element directly containing axis
+`axisStyle` | no | object | | inline styles applied to group element directly containing axis
+`className` | no | [className](#className) | | className applied to outermost group element
+`height` | yes, unless translate provided | number | 0 | height of charting area, minus padding
+`label` | no | string | | the axis label
+`labelClassName` | no | [className](#className) | | className applied to text element surrounding axis label
+`labelStyle` | no | object | | inline applied to text element surrounding axis label
+`orientation` | yes | string | | where to position axis line; will position ticks accordingly;<br /><br />one of: "top", "right", "bottom", "left"
+`padding` | no | object | { top: 40, bottom: 40, left: 50, right: 50 } | used to position label 
+`scale` | yes | function | d3.scaleLinear() | appropriate scale for object
+`style` | no | object | | inline styles to apply to outermost group element
+`ticks` | no | number | | [number of axis ticks use](https://github.com/d3/d3-axis#axis_ticks)
+`tickArguments` | no | array | | [alternative to tickValues and/or tickFormat](https://github.com/d3/d3-axis#axis_tickArguments)
+`tickFormat` | no | function | | [format of axis ticks](https://github.com/d3/d3-axis#axis_tickFormat)
+`tickPadding` | no | number | | [padding of axis ticks](https://github.com/d3/d3-axis#axis_tickPadding) (default: 3px)
+`tickSize` | no | number | | [size of both inner and outer tick lines](https://github.com/d3/d3-axis#axis_tickSize) (default: 6)
+`tickSizeInner` | no | number | | [size of inner tick lines](https://github.com/d3/d3-axis#axis_tickSizeInner) (default: 6)
+`tickSizeOuter` | no | number | | [size of outer tick lines](https://github.com/d3/d3-axis#axis_tickSizeOuter) (default: 6)
+`tickValues` | no | object | | [user-specified tick values](https://github.com/d3/d3-axis#axis_tickValues) (default: automatic)
+`translate` | yes, unless width and height provided | object | | push axis in x or y direction
+`width` | yes, unless translate provided | number | 0 | width of charting area, minus padding
 
 ### axis-chart
 
