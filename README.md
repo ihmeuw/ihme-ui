@@ -77,11 +77,11 @@ Property | Required | Type(s) | Defaults | Description
 `ticks` | no | number | | [number of axis ticks use](https://github.com/d3/d3-axis#axis_ticks)
 `tickArguments` | no | array | | [alternative to tickValues and/or tickFormat](https://github.com/d3/d3-axis#axis_tickArguments)
 `tickFormat` | no | function | | [format of axis ticks](https://github.com/d3/d3-axis#axis_tickFormat)
-`tickPadding` | no | number | | [padding of axis ticks](https://github.com/d3/d3-axis#axis_tickPadding) (default: 3px)
-`tickSize` | no | number | | [size of both inner and outer tick lines](https://github.com/d3/d3-axis#axis_tickSize) (default: 6)
-`tickSizeInner` | no | number | | [size of inner tick lines](https://github.com/d3/d3-axis#axis_tickSizeInner) (default: 6)
-`tickSizeOuter` | no | number | | [size of outer tick lines](https://github.com/d3/d3-axis#axis_tickSizeOuter) (default: 6)
-`tickValues` | no | object | | [user-specified tick values](https://github.com/d3/d3-axis#axis_tickValues) (default: automatic)
+`tickPadding` | no | number | | [padding of axis ticks](https://github.com/d3/d3-axis#axis_tickPadding)
+`tickSize` | no | number | | [size of both inner and outer tick lines](https://github.com/d3/d3-axis#axis_tickSize)
+`tickSizeInner` | no | number | | [size of inner tick lines](https://github.com/d3/d3-axis#axis_tickSizeInner)
+`tickSizeOuter` | no | number | | [size of outer tick lines](https://github.com/d3/d3-axis#axis_tickSizeOuter)
+`tickValues` | no | object | | [user-specified tick values](https://github.com/d3/d3-axis#axis_tickValues)
 `translate` | yes, unless width and height provided | object | | push axis in x or y direction
 `width` | yes, unless translate provided | number | 0 | width of charting area, minus padding
 
@@ -109,19 +109,20 @@ Property | Required | Type(s) | Defaults | Description
 
 ### \<AxisChart /\>
 
-Chart with customizable width, height, scales, and padding.
+Wraps and provides its child charting components width, height, scales, and padding
 
-Property | Required | Type(s) | Description
-        --- | :---: | :---: | ---
-`children` | no | object | React element or elements<br /><br />one of type: arrayOf(PropTypes.node), node
-`className` | no | string, object | class names to appended to the element
-`height` | no | number | pixel height of line chart
-`padding`| no | number | padding around the chart contents (default: top:20 right:20 bottom:30 left:50)
-`width` | no | number | pixel width of line chart
-`xDomain` | no | object | [min, max] for xScale (i.e., the domain of the data)
-`xScaleType`| no | object | type of x scale<br /><br />pne of: band, linear, ordinal, point
-`yDomain` | no | object | [min, max] yScale (i.e., the range of the data)
-`yScaleType` | no | object | type of y scale<br /><br />one of: band, linear, ordinal, point
+Property | Required | Type(s) | Defaults | Description
+        --- | :---: | :---: | :---: | ---
+`className` | no | [className](#className) | | className applied to outermost svg element
+`height` | yes | number | | pixel height of line chart
+`loading` | no | bool | | flag to delay rendering while fetching data
+`padding`| no | object | { top: 20, bottom: 30, left: 50, right: 20 } | padding around the chart contents
+`style` | no | object | | inline styles to apply to outermost svg element
+`width` | yes | number | | pixel width of line chart
+`xDomain` | no | array | | [min, max] for xScale (i.e., the domain of the data)
+`xScaleType`| yes | string | | type of x scale<br />[name of d3 scale scale function](https://github.com/d3/d3-scale) 
+`yDomain` | no | array | | [min, max] yScale (i.e., the range of the data)
+`yScaleType` | yes | string | | type of y scale<br />[name of d3 scale scale function](https://github.com/d3/d3-scale)
 
 ### \<Button /\>
 

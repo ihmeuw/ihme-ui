@@ -70,6 +70,7 @@ export default class AxisChart extends React.Component {
         width={`${chartDimensions.width + props.padding.left + props.padding.right}px`}
         height={`${chartDimensions.height + props.padding.bottom + props.padding.top}px`}
         className={classNames(props.className)}
+        style={props.style}
       >
         {props.clipPath ? (<defs>
           <clipPath id={clipPathId}>
@@ -106,6 +107,7 @@ AxisChart.propTypes = {
   /* use clip path in children */
   clipPath: PropTypes.bool,
 
+  /* flag to delay rendering while fetching data */
   loading: PropTypes.bool,
 
   /* [min, max] for xScale (i.e., the domain of the data) */
@@ -121,10 +123,10 @@ AxisChart.propTypes = {
   yScaleType: PropTypes.oneOf(SCALE_TYPES),
 
   /* px width of line chart */
-  width: PropTypes.number,
+  width: PropTypes.number.isRequired,
 
   /* px height of line chart */
-  height: PropTypes.number,
+  height: PropTypes.number.isRequired,
 
   /* padding around the chart contents, space for Axis and Label */
   padding: PropTypes.shape({
@@ -134,7 +136,7 @@ AxisChart.propTypes = {
     left: PropTypes.number,
   }),
 
-  children: PropTypes.node,
+  style: PropTypes.object,
 };
 
 AxisChart.defaultProps = {
