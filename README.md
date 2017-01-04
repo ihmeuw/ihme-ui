@@ -11,6 +11,7 @@ ihme-ui is a collection of JavaScript and React-based visualization tools and us
     * [\<YAxis /\>](#yaxis-)
   * [\<AxisChart /\>](#axischart-)
   * [\<Button /\>](#button-)
+  * [\<Choropleth /\>](#choropleth-)
   * [\<ChoroplethLegend /\>](#choroplethlegend-)
   * [\<Group /\>](#group-)
     * [\<Option /\>](#option-)
@@ -54,10 +55,14 @@ npm run demo
 
 All className props are run through the [classnames](https://github.com/JedWatson/classnames) library, so can be a string, an object, or an array.
 
+#### style
+
+All style props can take an object. In some cases, the style prop can take a function that will compute and return a style object based on some criteria listed in the description.
+
 ---
 
 ### \<Axis /\>
-`import Axis from 'ihme-ui/axis'`
+`import Axis from 'ihme-ui/ui/axis'`
 
 Chart axis
 
@@ -70,7 +75,7 @@ Property | Required | Type(s) | Defaults | Description
 `label` | no | string | | the axis label
 `labelClassName` | no | [className](#className) | | className applied to text element surrounding axis label
 `labelStyle` | no | object | | inline applied to text element surrounding axis label
-`orientation` | yes | string | | where to position axis line; will position ticks accordingly;<br /><br />one of: "top", "right", "bottom", "left"
+`orientation` | yes | string | | where to position axis line; will position ticks accordingly;<br />one of: "top", "right", "bottom", "left"
 `padding` | no | object | { top: 40, bottom: 40, left: 50, right: 50 } | used to position label 
 `scale` | yes | function | d3.scaleLinear() | appropriate scale for object
 `style` | no | object | | inline styles to apply to outermost group element
@@ -86,28 +91,29 @@ Property | Required | Type(s) | Defaults | Description
 `width` | yes, unless translate provided | number | 0 | width of charting area, minus padding
 
 #### \<XAxis />
-`import { XAxis } from 'ihme-ui/axis'`
+`import { XAxis } from 'ihme-ui/ui/axis'`
 
 Chart x-axis that extends \<Axis /> and provides some useful defaults
 
 Property | Required | Type(s) | Defaults | Description
         --- | :---: | :---: | :---: | ---
-`orientation` | no | string | "bottom" | where to position axis line; will position ticks accordingly;<br /><br />one of: "top", "bottom"
+`orientation` | no | string | "bottom" | where to position axis line; will position ticks accordingly;<br />one of: "top", "bottom"
 `padding` | no | object | { top: 40, bottom: 40 } | used to position label 
 `scales` | yes | object | { x: d3.scaleLinear() } | appropriate scale for object
 
 #### \<YAxis />
-`import { YAxis } from 'ihme-ui/axis'`
+`import { YAxis } from 'ihme-ui/ui/axis'`
 
 Chart y-axis that extends \<Axis /> and provides some useful defaults
 
 Property | Required | Type(s) | Defaults | Description
         --- | :---: | :---: | :---: | ---
-`orientation` | no | string | "left" | where to position axis line; will position ticks accordingly;<br /><br />one of: "right", "left"
+`orientation` | no | string | "left" | where to position axis line; will position ticks accordingly;<br />one of: "right", "left"
 `padding` | no | object | { left: 50, right: 50 } | used to position label 
 `scales` | yes | object | { y: d3.scaleLinear() } | appropriate scale for object
 
 ### \<AxisChart /\>
+`import AxisChart from 'ihme-ui/ui/axis-chart'`
 
 Wraps and provides its child charting components width, height, scales, and padding
 
@@ -125,6 +131,7 @@ Property | Required | Type(s) | Defaults | Description
 `yScaleType` | yes | string | | type of y scale<br />[name of d3 scale scale function](https://github.com/d3/d3-scale)
 
 ### \<Button /\>
+`import Button from 'ihme-ui/ui/button'`
 
 Button with customizable id, name, class name, icon, animation, and click handler.
 
@@ -142,6 +149,52 @@ Property | Required | Type(s) | Defaults | Description
 `style` | no | object | | inline styles to apply to outermost svg element
 `text` | no | string | | text to render within button tag
 `theme` | no | string | | color scheme of component (see button.css)
+
+### \<Choropleth /\>
+`import Choropleth from 'ihme-ui/ui/choropleth'`
+
+Interactive map component
+
+Property | Required | Type(s) | Defaults | Description
+        --- | :---: | :---: | :---: | ---
+`className` | no | [className](#className) | | className applied to outermost div
+`colorScale` | yes | func | | function that accepts value of `keyfield` (str), and returns (str) stroke color for line
+`controls` | no | bool |  | show zoom controls 
+`controlsClassName` | no | [className](#className) | | className applied to controls container div 
+`controlsButtonClassName` | no | [className](#className) | | className applied to controls buttons 
+`controlsButtonStyle` | no | object | | inline styles to apply to controls buttons 
+`controlsStyle` | no | object | | inline styles to apply to outermost div 
+`data` | yes | array |  | array of datum objects 
+`geometryKeyField` | yes | string, func | | uniquely identifying field of geometry objects; if a function, will be called with the geometry object as first parameter 
+`height` | no | number | 400 | pixel height of containing element
+`keyField` | yes | string, func |  | unique key of datum; if a function, will be called with the datum object as first parameter
+`layers` | yes | array | | see [layers detail](#layers-detail)
+`maxZoom` | no | number | | max allowable zoom factor; 1 === fit bounds 
+`minZoom` | no | number | | min allowable zoom factor; 1 === fit bounds 
+`onClick` | no | func | | passed to each path<br />function: (event, datum, Path) => {...}
+`onMouseLeave` | no | func | | passed to each path<br />function: (event, datum, Path) => {...}
+`onMouseMove` | no | func | | passed to each path<br />function: (event, datum, Path) => {...}
+`onMouseOver` | no | func | | passed to each path<br />function: (event, datum, Path) => {...}
+`selectedLocations` | no | array | | array of selected location objects
+`style` | no | object | | inline styles applied outermost div
+`topology` | yes | object | | full topojson object<br />for information, see [topojson wiki](https://github.com/topojson/topojson/wiki)
+`valueField` | yes | string, func |  | key of datum that holds the value to display<br />function: (data, feature) => value
+`width` | no | number | 600 | pixel width of containing element
+`zoomStep` | no | number | 1.1 | amount to zoom in/out from zoom controls. current zoom scale is multiplied by prop value.<br />e.g. 1.1 is equal to 10% steps, 2.0 is equal to 100% steps
+
+##### Layers detail 
+
+Property | Required | Type(s) | Defaults | Description
+        --- | :---: | :---: | :---: | ---
+`className` | no | [className](#className) | | className applied to layer
+`filterFn` | no | func | | optional function to filter mesh grid, passed adjacent geometries<br />refer to [https://github.com/mbostock/topojson/wiki/API-Reference#mesh](https://github.com/mbostock/topojson/wiki/API-Reference#mesh)
+`name` | yes | string | | along with layer.type, will be part of the `key` of the layer; therefore, `${layer.type}-${layer.name}` needs to be unique
+`object` | yes | string | | name corresponding to key within topojson objects collection
+`selectedClassName` | no | [className](#className) | | className applied to selected paths
+`selectedStyle` | no | [style](#style) | | inline styles applied to selected paths<br />func: (feature) => style object
+`style` | no | [style](#style) | | inline styles applied to layer<br />func: (feature) => style object
+`type` | yes | string | | whether the layer should be a feature collection or mesh grid<br />one of: "feature", "mesh"
+`visible` | no | bool | | whether or not to render layer
 
 ### \<ChoroplethLegend /\>
 

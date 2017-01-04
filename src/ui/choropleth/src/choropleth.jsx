@@ -358,10 +358,7 @@ export default class Choropleth extends React.Component {
 
 Choropleth.propTypes = {
   /* classname to add rendered components */
-  className: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.string,
-  ]),
+  className: CommonPropTypes.className,
 
   /* fn that accepts keyfield, and returns stroke color for line */
   colorScale: PropTypes.func.isRequired,
@@ -370,16 +367,10 @@ Choropleth.propTypes = {
   controls: PropTypes.bool,
 
   /* classname to add to zoom controls container */
-  controlsClassName: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.string,
-  ]),
+  controlsClassName: CommonPropTypes.className,
 
   /* classname to add to zoom control buttons */
-  controlsButtonClassName: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.string,
-  ]),
+  controlsButtonClassName: CommonPropTypes.className,
 
   /* inline styles to apply to zoom control buttons */
   controlsButtonStyle: PropTypes.object,
