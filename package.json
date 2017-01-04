@@ -89,7 +89,7 @@
     "classnames": "^2.2.3",
     "d3": "^4.2.2",
     "ihme-react-select": "git+https://github.com/ihmeuw/ihme-react-select.git",
-    "interact.js": "^1.2.6",
+    "interact.js": "~1.2",
     "lodash": "^4.5.0",
     "react": "^15.1.0",
     "react-addons-pure-render-mixin": "^15.1.0",
