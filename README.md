@@ -7,6 +7,8 @@ ihme-ui is a collection of JavaScript and React-based visualization tools and us
 * [Installation](#installation)
 * [API Reference](#api)
   * [\<Axis /\>](#axis-)
+    * [\<XAxis /\>](#xaxis-)
+    * [\<YAxis /\>](#yaxis-)
   * [\<AxisChart /\>](#axischart-)
   * [\<Button /\>](#button-)
   * [\<ChoroplethLegend /\>](#choroplethlegend-)
@@ -82,6 +84,28 @@ Property | Required | Type(s) | Defaults | Description
 `tickValues` | no | object | | [user-specified tick values](https://github.com/d3/d3-axis#axis_tickValues) (default: automatic)
 `translate` | yes, unless width and height provided | object | | push axis in x or y direction
 `width` | yes, unless translate provided | number | 0 | width of charting area, minus padding
+
+#### \<XAxis />
+`import { XAxis } from 'ihme-ui/axis'`
+
+Chart x-axis that extends \<Axis /> and provides some useful defaults
+
+Property | Required | Type(s) | Defaults | Description
+        --- | :---: | :---: | :---: | ---
+`orientation` | no | string | "bottom" | where to position axis line; will position ticks accordingly;<br /><br />one of: "top", "bottom"
+`padding` | no | object | { top: 40, bottom: 40 } | used to position label 
+`scales` | yes | object | { x: d3.scaleLinear() } | appropriate scale for object
+
+#### \<YAxis />
+`import { YAxis } from 'ihme-ui/axis'`
+
+Chart y-axis that extends \<Axis /> and provides some useful defaults
+
+Property | Required | Type(s) | Defaults | Description
+        --- | :---: | :---: | :---: | ---
+`orientation` | no | string | "left" | where to position axis line; will position ticks accordingly;<br /><br />one of: "right", "left"
+`padding` | no | object | { left: 50, right: 50 } | used to position label 
+`scales` | yes | object | { y: d3.scaleLinear() } | appropriate scale for object
 
 ### \<AxisChart /\>
 
