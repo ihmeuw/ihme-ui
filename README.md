@@ -128,17 +128,20 @@ Property | Required | Type(s) | Defaults | Description
 
 Button with customizable id, name, class name, icon, animation, and click handler.
 
-Property | Required | Type(s) | Description
-        --- | :---: | :---: | ---
-`className` | no | string, object | array of classes to add to button<br /><br />one of type: string, object, array
-`disabled` | no | boolean | boolean value to set button as disabled
-`icon` | no | string | path to image to render within button tag
-`id` | no | string | id value for button
-`name` | no | string | name of button
-`onClick` | no | function | function to be executed onClick
-`showSpinner` | no | boolean | boolean value to display spinner
-`text` | no | string | text to render within button tag
-`theme` | no | string | color scheme of component (see button.css)
+Property | Required | Type(s) | Defaults | Description
+        --- | :---: | :---: | :---: | ---
+`className` | no | [className](#className) | | className applied to button
+`disabled` | no | boolean | | boolean value to set button as disabled
+`disabledClassName` | no | [className](#className) | | className applied to button when disabled
+`disabledStyle` | no | object | | inline styles to apply to outermost svg element when disabled
+`icon` | no | string | | path to image to render within button tag
+`id` | no | string | | id value for button
+`name` | no | string | | name of button
+`onClick` | no | function | | function to be executed on an onClick event
+`showSpinner` | no | boolean | | boolean value to display a loading spinner
+`style` | no | object | | inline styles to apply to outermost svg element
+`text` | no | string | | text to render within button tag
+`theme` | no | string | | color scheme of component (see button.css)
 
 ### \<ChoroplethLegend /\>
 

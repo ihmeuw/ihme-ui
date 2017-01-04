@@ -62,8 +62,6 @@ export default class Button extends PureComponent {
 }
 
 Button.propTypes = {
-  children: PropTypes.node,
-
   className: CommonPropTypes.className,
 
   disabled: PropTypes.bool,
@@ -86,7 +84,7 @@ Button.propTypes = {
   /* if true, will contain spinner and not render additional content */
   showSpinner: PropTypes.bool,
 
-  style: CommonPropTypes.style,
+  style: PropTypes.object,
 
   /* text to render within button tag */
   text: PropTypes.string,
