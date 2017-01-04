@@ -6,23 +6,24 @@ ihme-ui is a collection of JavaScript and React-based visualization tools and us
 
 * [Installation](#installation)
 * [API Reference](#api)
-  * [axis](#axis)
-  * [axis-chart](#axis-chart)
-  * [button](#button)
-  * [choropleth-legend](#choropleth-legend)
-  * [group](#group)
-    * [option](#option)
-  * [html-label](#html-label)
-  * [reponse-container](#response-container)
-  * [shape](#shape)
-    * [area](#area)
-    * [line](#line)
-    * [multi-line](#multi-line)
-    * [scatter](#scatter)
-    * [symbol](#symbol)
-  * [slider](#slider)
-  * [spinner](#spinner)
-  * [svg-text](#svg-text)
+  * [\<Axis /\>](#axis-)
+  * [\<AxisChart /\>](#axischart-)
+  * [\<Button /\>](#button-)
+  * [\<ChoroplethLegend /\>](#choroplethlegend-)
+  * [\<Group /\>](#group-)
+    * [\<Option /\>](#option-)
+  * [\<HtmlLabel /\>](#htmllabel-)
+  * [\<MultiSelect /\> and \<SingleSelect /\>](#multiselect--and-singleselect-)
+  * [\<ResponsiveContainer /\>](#responsivecontainer-)
+  * [\<Shape /\>](#shape-)
+    * [\<Area /\>](#area-)
+    * [\<Line /\>](#line-)
+    * [\<MultiLine /\>](#multiline-)
+    * [\<Scatter /\>](#scatter-)
+    * [\<Symbol /\>](#symbol-)
+  * [\<Slider /\>](#slider-)
+  * [\<Spinner /\>](#spinner-)
+  * [\<SvgText /\>](#svgtext-)
 * [Test Utilities](#test-utilities)
   * [Data Generator](#data-generator)
 * [Code Quality](#code-quality)
@@ -47,13 +48,13 @@ npm run demo
 ## API
 
 ### General notes
-#### <a id="className"></a>className
+#### className
 
 All className props are run through the [classnames](https://github.com/JedWatson/classnames) library, so can be a string, an object, or an array.
 
 ---
 
-### <a id="axis"></a> \<Axis \/\>
+### \<Axis /\>
 `import Axis from 'ihme-ui/axis'`
 
 Chart axis
@@ -82,7 +83,7 @@ Property | Required | Type(s) | Defaults | Description
 `translate` | yes, unless width and height provided | object | | push axis in x or y direction
 `width` | yes, unless translate provided | number | 0 | width of charting area, minus padding
 
-### axis-chart
+### \<AxisChart /\>
 
 Chart with customizable width, height, scales, and padding.
 
@@ -98,7 +99,7 @@ Property | Required | Type(s) | Description
 `yDomain` | no | object | [min, max] yScale (i.e., the range of the data)
 `yScaleType` | no | object | type of y scale<br /><br />one of: band, linear, ordinal, point
 
-### button
+### \<Button /\>
 
 Button with customizable id, name, class name, icon, animation, and click handler.
 
@@ -114,7 +115,7 @@ Property | Required | Type(s) | Description
 `text` | no | string | text to render within button tag
 `theme` | no | string | color scheme of component (see button.css)
 
-### choropleth-legend
+### \<ChoroplethLegend /\>
 
 Choropleth map legend with customizable color steps, color scale, data, appearance, and interaction handlers.
 
@@ -137,7 +138,7 @@ Property | Required | Type(s) | Description
 `x2` | no | number | x-axis coord (as percentage) of the end of the gradient (e.g., 100)
 `zoom` | no | number | float value used for implementing "zooming"; any element that needs to become larger in "presentation mode" should respond to this scale factor.<br /><br />Guide: <br />zoom: 0 -> smallest possible<br />zoom: 0.5 -> half of normal size<br />zoom: 1 -> normal<br />zoom: 2 -> twice normal size
 
-### group
+### \<Group /\>
 
 Button set with `selectable` property and customizable class names and interaction handlers.
 
@@ -148,7 +149,7 @@ Property | Required | Type(s) | Description
 `onClick` | yes | function | click handler with following signature: function(event, selectedValue)
 `style` | no | object | inline-styles to be applied to group wrapper
 
-#### option
+#### \<Option /\>
 
 Options for the group element, wrapped by group. Any additional props will be passed directly to the fundamental element this renders.
 
@@ -165,7 +166,7 @@ Property | Required | Type(s) | Description
 `text` | no | string | text to render within label tag
 `type` | no | string, number, object | react element to be wrapped by this option (default: Button)
 
-### html-label
+### \<HtmlLabel /\>
 
 HTML element label with customizable class name, icon, text, appearance, and interaction handlers.
 
@@ -180,7 +181,7 @@ Property | Required | Type(s) | Description
 `text` | no | string | text to render within label tag
 `theme` | no | string | color scheme of component; see html-label.css
 
-### MultiSelect and SingleSelect
+### \<MultiSelect /\> and \<SingleSelect /\>
 
 Select boxes built on top of [IHME-React-Select](https://github.com/ihmeuw/ihme-react-select). At minimum, the following props should be declared.
 
@@ -216,7 +217,7 @@ import { SingleSelect, MultiSelect } from 'ihme-ui/ui';
 ```
 
 
-### responsive-container
+### \<ResponsiveContainer /\>
 
 Responsive HTML container with customizable resize callback function and responsiveness to height and width. A simple wrapper for [react-virtualized](https://github.com/bvaughn/react-virtualized).
 
@@ -227,11 +228,11 @@ Property | Required | Type(s) | Description
 `disableWidth` | no | boolean | boolean value to disable dynamic :width property
 `onResize` | no | object | Callback function to be invoked on resize ({height, width})
 
-### shape
+### \<Shape /\>
 
 Selection of useful shapes and data displays, suitable for use within an ihme-ui chart.
 
-#### area
+#### \<Area /\>
 
 Area element with customizable appearance, data, data accessors, and interaction handlers.
 
@@ -245,7 +246,7 @@ Property | Required | Type(s) | Description
 `scales` | yes | object | [scales from d3Scale](https://github.com/d3/d3/wiki/Quantitative-Scales)
 `strokeWidth` | no | string | (default: 2.5)
 
-#### line
+#### \<Line /\>
 
 Line element with customizable appearance, data, data accessors, and interaction handlers.
 
@@ -260,7 +261,7 @@ Property | Required | Type(s) | Description
 `stroke` | no | string | (default: steelblue)
 `strokeWidth` | no | string | (default: 2.5)
 
-#### multi-line
+#### \<MultiLine /\>
 
 Multi-line element with customizable appearance, data, data accessors, and interaction handlers.
 
@@ -277,7 +278,7 @@ Property | Required | Type(s) | Description
 `showLine` | no | boolean | whether or not to draw lines (e.g., mean estimate lines)
 `showUncertainty` | no | boolean | whether or not to draw uncertainty areas for lines
 
-#### scatter
+#### \<Scatter /\>
 
 Scatterplot element with customizable appearance, data, data accessors, and interaction handlers.
 
@@ -293,7 +294,7 @@ Property | Required | Type(s) | Description
 `size` | no | number |
 `symbolType` | no | string | key name for value of symbol (default: circle)
 
-#### multi-scatter
+#### \<MultiScatter /\>
 
 Scatterplot element with customizable appearance, data, data accessors, and interaction handlers.
 
@@ -311,7 +312,7 @@ Property | Required | Type(s) | Description
 `symbolField` | no | string | key name for value of symbol
 `symbolScale` | no | object | function to transform symbol value to a shape
 
-#### symbol
+#### \<Symbol /\>
 
 Symbol element with customizable appearance, data, and interaction handlers.
 
@@ -326,7 +327,7 @@ Property | Required | Type(s) | Description
 `strokeWidth` | no | number | (default: 1)
 `type` | no | object | will match a [SYMBOL_TYPE](https://github.com/d3/d3/wiki/SVG-Shapes#symbol_type) (default: circle)<br /><br />one of: 'circle', 'square', 'triangle', 'cross', 'diamond', 'star', 'wye'
 
-### slider
+### \<Slider /\>
 
 Single- or multi-input-value selector on a track with customizable appearance and interaction handlers.
 
@@ -343,7 +344,7 @@ Property | Required | Type(s) | Description
 `value` | yes | number, object | initial selected value. If number, a single slider handle will be rendered. If object with keys 'min' and 'max', two slider handles will be rendered.<br /><br />one of type: number, array, shape
 `width` | no | number | width of element in pixels (default: 200)
 
-### spinner
+### \<Spinner /\>
 
 Animated indicator (e.g., for loading) with customizable size.
 
@@ -353,7 +354,7 @@ Property | Required | Type(s) | Description
 `inline` | no | bool | display spinner inline with other elements (e.g., in a button)
 `size` | no | string | one of: 'small', 'medium', 'large'
 
-### svg-text
+### \<SvgText /\>
 
 SVG element label with customizable anchor, position, and value.
 
