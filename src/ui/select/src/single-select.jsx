@@ -45,7 +45,18 @@ export default class SingleSelect extends PureComponent {
   }
 }
 
+const FLIP_MENU_UPWARDS_INLINE_STYLE = {
+  borderRadius: '4px 4px 0 0',
+  bottom: '100%',
+  marginTop: '0px',
+  marginBottom: '-1px',
+  top: 'auto',
+};
+
 const singleSelectPropTypes = {
+  /* drop down will flip up */
+  menuUpward: PropTypes.bool,
+
   /* width applied to outermost wrapper */
   width: PropTypes.number,
 
@@ -79,12 +90,18 @@ SingleSelect.propUpdates = {
       nextProps.hierarchical
     ) + nextProps.widthPad;
 
+    function getMenuContainerStyle(menuUpward) {
+      if (!menuUpward) return {};
+
+      return FLIP_MENU_UPWARDS_INLINE_STYLE;
+    }
+
     // if menu width changes, also set menuStyle and menuContainerStyle
     // also create new HoC for menuRenderer
     return assign({}, state, {
       menuContainerStyle: assign({}, {
         width: `${menuWidth}px`,
-      }, nextProps.menuContainerStyle),
+      }, nextProps.menuContainerStyle, getMenuContainerStyle(nextProps.menuUpward)),
       menuRenderer: menuWrapper(menuWidth),
       menuStyle: assign({}, {
         overflow: 'hidden',
