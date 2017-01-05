@@ -4,7 +4,7 @@ import Select, { propTypes as baseProps } from 'ihme-react-select';
 import { assign } from 'lodash';
 
 import { stateFromPropUpdates, propsChanged, PureComponent } from '../../../utils';
-import { getWidestLabel } from './utils';
+import { getMenuContainerStyle, getWidestLabel } from './utils';
 
 import style from './select.css';
 import { menuWrapper } from './menu';
@@ -57,6 +57,9 @@ export default class MultiSelect extends PureComponent {
 }
 
 const multiSelectPropTypes = {
+  /* drop down will flip up */
+  menuUpward: PropTypes.bool,
+
   /* width applied to outermost wrapper */
   width: PropTypes.number,
 
@@ -94,7 +97,7 @@ MultiSelect.propUpdates = {
     return assign({}, state, {
       menuContainerStyle: assign({}, {
         width: `${menuWidth}px`,
-      }, nextProps.menuContainerStyle),
+      }, nextProps.menuContainerStyle, getMenuContainerStyle(nextProps.menuUpward)),
       menuRenderer: menuWrapper(menuWidth),
       menuStyle: assign({}, {
         overflow: 'hidden',
