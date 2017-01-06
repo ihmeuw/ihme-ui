@@ -197,27 +197,36 @@ Property | Required | Type(s) | Defaults | Description
 `visible` | no | bool | | whether or not to render layer
 
 ### \<ChoroplethLegend /\>
+`import ChoroplethLegend from 'ihme-ui/ui/choropleth-legend'`
 
-Choropleth map legend with customizable color steps, color scale, data, appearance, and interaction handlers.
+Density plot with range sliders and axis
 
-Property | Required | Type(s) | Description
-        --- | :---: | :---: | ---
-`colorSteps` | yes | object | array of color steps, e.g. ['#fff', '#ccc', '\#000', ...]
-`colorScale` | yes | object | function that accepts data as a parameter and returns color
-`data` | yes | object | array of datum objects
-`domain` | yes | object | [min, max] for xScale; xScale positions <circles> and provides axis
-`keyField` | yes | string | uniquely identifying property of datum, e.g., location_id
-`margins` | no | object | margins to subtract from width and height
-`onClick` | no | object | onClick function for DensityPlot circles
-`onMouseOver` | no | object | onMouseOver function for DensityPlot circles
-`onSliderMove` | no | object | callback function to attach to slider handles
-`rangeExtent` | yes | object | array of [min, max] for slider in data space
-`valueField` | yes | string | property of datum object that holds value
-`unit` | no | string | unit of data; axis label
-`width` | yes | number | width of element in pixels
-`x1` | no | number | x-axis coord (as percentage) of the start of the gradient (e.g., 0)
-`x2` | no | number | x-axis coord (as percentage) of the end of the gradient (e.g., 100)
-`zoom` | no | number | float value used for implementing "zooming"; any element that needs to become larger in "presentation mode" should respond to this scale factor.<br /><br />Guide: <br />zoom: 0 -> smallest possible<br />zoom: 0.5 -> half of normal size<br />zoom: 1 -> normal<br />zoom: 2 -> twice normal size
+Property | Required | Type(s) | Defaults | Description
+        --- | :---: | :---: | :---: | ---
+`axisTickFormat` | no | function | [numberFormat](https://github.com/ihmeuw/ihme-ui/blob/docs/src/utils/numbers.js#L9) | [format of axis ticks](https://github.com/d3/d3-axis#axis_tickFormat)
+`axisTranslate` | no | object | { x: 0, y: 20 } | shift axis in the x or y directions; use to put padding between the color gradient rect and the axis
+`colorScale` | yes | function | | color scale for density plot; should accept `datum[valueField]` and return color string
+`colorSteps` | yes | array | | array of color steps, e.g. ['#fff', '#ccc', '\#000', ...]
+`data` | yes | array | | array of datum objects
+`domain` | yes | array | | [min, max] for xScale; xScale positions density plot and provides axis
+`height` | no | number | | height of outermost svg
+`keyField` | no | string or function | | uniquely identifying property of datum or function that accepts datum and returns unique value; if not provided, density plot symbols are keyed as `${xValue}:${yValue}:${index}`
+`margins` | no | object | { top: 50, right: 100, bottom: 50, left: 100 } | margins to subtract from width and height
+`onClick` | no | function | noop | onClick callback for density plot circles; <br /> signature: function(event, data, instance) {...}
+`onMouseLeave` | no | function | noop | onMouseLeave callback for density plot circles; <br /> signature: function(event, data, instance) {...}
+`onMouseMove` | no | function | noop | onMouseMove callback for density plot circles; <br /> signature: function(event, data, instance) {...}
+`onMouseOver` | no | function | noop | onMouseOver callback for density plot circles; <br /> signature: function(event, data, instance) {...}
+`onSliderMove` | no | function | noop | callback function to attach to slider handles; passed [min, max] (Array), the range extent as a percentage
+`rangeExtent` | yes | array | | array of [min, max] for slider in data space; `domain` is a good initial value
+`selectedLocations` | no | array | | array of selected datum objects
+`sliderHandleFormat` | no | function | [numberFormat](https://github.com/ihmeuw/ihme-ui/blob/docs/src/utils/numbers.js#L9) | format of slider handle labels
+`unit` | no | string | | unit of data; axis label
+`valueField` | yes | string or function | | property of data objects used to position and fill density plot circles; if a function, passed datum object
+`width` | no | number | | width of outermost svg, in pixels
+`x1` | no | number | 0 | x-axis coord (as percentage) of the start of the gradient (e.g., 0)
+`x2` | no | number | 100 | x-axis coord (as percentage) of the end of the gradient (e.g., 100)
+`xScale` | no | function | d3.scaleLinear() | scale for positioning density plot along its x-axis; must expose `domain` and `range` methods
+`zoom` | no | number | 1 | float value used for implementing "zooming"; any element that needs to become larger in "presentation mode" should respond to this scale factor.<br /><br />Guide: <br />zoom: 0 -> smallest possible<br />zoom: 0.5 -> half of normal size<br />zoom: 1 -> normal<br />zoom: 2 -> twice normal size
 
 ### \<Group /\>
 
