@@ -171,10 +171,10 @@ Property | Required | Type(s) | Defaults | Description
 `layers` | yes | array | | see [layers detail](#layers-detail)
 `maxZoom` | no | number | | max allowable zoom factor; 1 === fit bounds 
 `minZoom` | no | number | | min allowable zoom factor; 1 === fit bounds 
-`onClick` | no | func | | passed to each path<br />function: (event, datum, Path) => {...}
-`onMouseLeave` | no | func | | passed to each path<br />function: (event, datum, Path) => {...}
-`onMouseMove` | no | func | | passed to each path<br />function: (event, datum, Path) => {...}
-`onMouseOver` | no | func | | passed to each path<br />function: (event, datum, Path) => {...}
+`onClick` | no | func | | passed to each path;<br />signature: (event, datum, Path) => {...}
+`onMouseLeave` | no | func | | passed to each path;<br />signature: (event, datum, Path) => {...}
+`onMouseMove` | no | func | | passed to each path;<br />signature: (event, datum, Path) => {...}
+`onMouseOver` | no | func | | passed to each path;<br />signature: (event, datum, Path) => {...}
 `selectedLocations` | no | array | | array of selected location objects
 `style` | no | object | | inline styles applied outermost div
 `topology` | yes | object | | full topojson object<br />for information, see [topojson wiki](https://github.com/topojson/topojson/wiki)
