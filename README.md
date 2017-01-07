@@ -13,6 +13,7 @@ ihme-ui is a collection of JavaScript and React-based visualization tools and us
   * [\<Button /\>](#button-)
   * [\<Choropleth /\>](#choropleth-)
   * [\<ChoroplethLegend /\>](#choroplethlegend-)
+  * [\<ExpansionContainer /\>](#expansioncontainer-)
   * [\<Group /\>](#group-)
     * [\<Option /\>](#option-)
   * [\<HtmlLabel /\>](#htmllabel-)
@@ -227,6 +228,17 @@ Property | Required | Type(s) | Defaults | Description
 `x2` | no | number | 100 | x-axis coord (as percentage) of the end of the gradient (e.g., 100)
 `xScale` | no | function | d3.scaleLinear() | scale for positioning density plot along its x-axis; must expose `domain` and `range` methods
 `zoom` | no | number | 1 | float value used for implementing "zooming"; any element that needs to become larger in "presentation mode" should respond to this scale factor.<br /><br />Guide: <br />zoom: 0 -> smallest possible<br />zoom: 0.5 -> half of normal size<br />zoom: 1 -> normal<br />zoom: 2 -> twice normal size
+
+### \<ExpansionContainer /\>
+`import ExpansionContainer from 'ihme-ui/ui/expansion-container'`
+
+Drop-in replacement for any grouping element (e.g., div) that provides functionality for expanding `<Expandable />` components to `<ExpansionContainer />`'s full height and width.
+
+Property | Required | Type(s) | Defaults | Description
+        --- | :---: | :---: | :---: | ---
+`className` | no | [className](#className) | | className applied to outermost wrapping div
+`style` | no | object | | inline styles applied to outermost wrapping div; `position: relative` is added automatically
+`group` | no | string | "default" |  key used by `<Expandable />`s to register with `<ExpansionContainer />`; if more than one `<ExpansionContainer />` is mounted, `group` should be treated as required and unique per instance.
 
 ### \<Group /\>
 
