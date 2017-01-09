@@ -165,6 +165,50 @@ class App extends React.Component {
             value={singleSelectValue}
           />
         </section>
+        <section>
+          <h3>Multi-select flip up</h3>
+          {/* <pre><code>
+           <MultiSelect
+           labelKey="name"
+           valueKey="name"
+           onChange={ function (selections <Array>) {...} }
+           options={ [{name: 'Albany'}, ...] }
+           value={[]}
+           menuUpward
+           />
+
+           </code></pre> */}
+          <MultiSelect
+            labelKey="name"
+            valueKey="name"
+            onChange={this.onMultiSelectChange}
+            options={cities}
+            value={multiSelectValues}
+            menuUpward
+          />
+        </section>
+        <section>
+          <h3>Single-select flip up</h3>
+{/* <pre><code>
+       <SingleSelect
+         labelKey="name"
+         valueKey="name"
+         onChange={ function (selections <Object>) {...} }
+         options={ [{name: 'Albany'}, ...] }
+         value={null}
+         menuUpward
+       />
+
+</code></pre> */}
+          <SingleSelect
+            labelKey="name"
+            valueKey="name"
+            onChange={this.onSingleSelectChange}
+            options={cities}
+            value={singleSelectValue}
+            menuUpward
+          />
+        </section>
       </div>
     );
   }

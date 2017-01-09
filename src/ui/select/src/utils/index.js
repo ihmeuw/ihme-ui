@@ -25,3 +25,11 @@ export const getWidestLabel = (
     return Math.max(maxWidth, fullWidth);
   }, 0);
 };
+
+export const FLIP_MENU_UPWARDS_INLINE_STYLE = {
+  borderRadius: '4px 4px 0 0',
+  bottom: '100%',
+  marginTop: '0px',
+  marginBottom: '-1px',
+  top: 'auto',
+};

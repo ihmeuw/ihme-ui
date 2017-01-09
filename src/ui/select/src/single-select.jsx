@@ -4,7 +4,7 @@ import Select, { propTypes as baseProps } from 'ihme-react-select';
 import { assign } from 'lodash';
 
 import { stateFromPropUpdates, propsChanged, PureComponent } from '../../../utils';
-import { getWidestLabel } from './utils';
+import { FLIP_MENU_UPWARDS_INLINE_STYLE, getWidestLabel } from './utils';
 
 import style from './select.css';
 import { menuWrapper } from './menu';
@@ -46,6 +46,9 @@ export default class SingleSelect extends PureComponent {
 }
 
 const singleSelectPropTypes = {
+  /* drop down will flip up */
+  menuUpward: PropTypes.bool,
+
   /* width applied to outermost wrapper */
   width: PropTypes.number,
 
@@ -81,16 +84,24 @@ SingleSelect.propUpdates = {
 
     // if menu width changes, also set menuStyle and menuContainerStyle
     // also create new HoC for menuRenderer
-    return assign({}, state, {
-      menuContainerStyle: assign({}, {
-        width: `${menuWidth}px`,
-      }, nextProps.menuContainerStyle),
-      menuRenderer: menuWrapper(menuWidth),
-      menuStyle: assign({}, {
-        overflow: 'hidden',
-        width: `${menuWidth}px`,
-      }, nextProps.menuStyle),
-    });
+    return assign(
+      {},
+      state,
+      {
+        menuContainerStyle: assign(
+          {},
+          { width: `${menuWidth}px` },
+          nextProps.menuContainerStyle,
+          nextProps.menuUpward && FLIP_MENU_UPWARDS_INLINE_STYLE
+        ),
+        menuRenderer: menuWrapper(menuWidth),
+        menuStyle: assign(
+          {},
+          { overflow: 'hidden', width: `${menuWidth}px` },
+          nextProps.menuStyle
+        ),
+      }
+    );
   },
 
   wrapperStyle(state, _, prevProps, nextProps) {
