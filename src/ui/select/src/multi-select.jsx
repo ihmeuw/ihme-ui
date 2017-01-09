@@ -4,7 +4,7 @@ import Select, { propTypes as baseProps } from 'ihme-react-select';
 import { assign } from 'lodash';
 
 import { stateFromPropUpdates, propsChanged, PureComponent } from '../../../utils';
-import { getMenuContainerStyle, getWidestLabel } from './utils';
+import { FLIP_MENU_UPWARDS_INLINE_STYLE, getWidestLabel } from './utils';
 
 import style from './select.css';
 import { menuWrapper } from './menu';
@@ -94,16 +94,24 @@ MultiSelect.propUpdates = {
       nextProps.hierarchical
     ) + nextProps.widthPad;
 
-    return assign({}, state, {
-      menuContainerStyle: assign({}, {
-        width: `${menuWidth}px`,
-      }, nextProps.menuContainerStyle, getMenuContainerStyle(nextProps.menuUpward)),
-      menuRenderer: menuWrapper(menuWidth),
-      menuStyle: assign({}, {
-        overflow: 'hidden',
-        width: `${menuWidth}px`,
-      }, nextProps.menuStyle),
-    });
+    return assign(
+      {},
+      state,
+      {
+        menuContainerStyle: assign(
+          {},
+          { width: `${menuWidth}px` },
+          nextProps.menuContainerStyle,
+          nextProps.menuUpward && FLIP_MENU_UPWARDS_INLINE_STYLE
+        ),
+        menuRenderer: menuWrapper(menuWidth),
+        menuStyle: assign(
+          {},
+          { overflow: 'hidden', width: `${menuWidth}px` },
+          nextProps.menuStyle
+        ),
+      }
+    );
   },
 
   wrapperStyle(state, _, prevProps, nextProps) {

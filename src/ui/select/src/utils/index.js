@@ -33,9 +33,3 @@ export const FLIP_MENU_UPWARDS_INLINE_STYLE = {
   marginBottom: '-1px',
   top: 'auto',
 };
-
-export function getMenuContainerStyle(menuUpward) {
-  if (!menuUpward) return {};
-
-  return FLIP_MENU_UPWARDS_INLINE_STYLE;
-}
