@@ -114,7 +114,7 @@ export const HEIGHT_PROP_TYPES = {
 };
 
 Axis.propTypes = {
-  label: PropTypes.any,
+  label: PropTypes.string,
   labelClassName: CommonPropTypes.className,
   labelStyle: PropTypes.object,
 
