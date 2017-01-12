@@ -97,6 +97,14 @@ export const AXIS_SCALE_PROP_TYPES = {
   scale: PropTypes.func.isRequired,
 };
 
+export const HEIGHT_PROP_TYPES = {
+  height: PropTypes.number.isRequired,
+  translate: PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+  }).isRequired,
+};
+
 export const WIDTH_PROP_TYPES = {
   translate: PropTypes.shape({
     x: PropTypes.number.isRequired,
@@ -105,18 +113,23 @@ export const WIDTH_PROP_TYPES = {
   width: PropTypes.number.isRequired,
 };
 
-export const HEIGHT_PROP_TYPES = {
-  translate: PropTypes.shape({
-    x: PropTypes.number.isRequired,
-    y: PropTypes.number.isRequired,
-  }).isRequired,
-  height: PropTypes.number.isRequired,
-};
 
 Axis.propTypes = {
+  /* class name to apply to the axis */
+  className: CommonPropTypes.className,
+
+  /*
+   dimensions are provided by axis-chart
+   used for calculating translate, required if translate is not specified
+   */
+  height: atLeastOneOfProp(HEIGHT_PROP_TYPES),
+
   label: PropTypes.any,
   labelClassName: CommonPropTypes.className,
   labelStyle: PropTypes.object,
+
+  /* orientation of ticks relative to axis line */
+  orientation: PropTypes.oneOf(Object.keys(AXIS_TYPES)).isRequired,
 
   padding: PropTypes.shape({
     top: PropTypes.number,
@@ -125,12 +138,21 @@ Axis.propTypes = {
     right: PropTypes.number,
   }),
 
-  /* orientation of ticks relative to axis line */
-  orientation: PropTypes.oneOf(Object.keys(AXIS_TYPES)).isRequired,
+  /* appropriate scale for axis */
+  scale: atLeastOneOfProp(AXIS_SCALE_PROP_TYPES),
 
-  /* class name and style to apply to the axis */
-  className: CommonPropTypes.className,
+  /* style to apply to the axis */
   style: PropTypes.object,
+
+  /* see d3-axis docs */
+  tickArguments: PropTypes.array,
+  tickFormat: PropTypes.func,
+  tickPadding: PropTypes.number,
+  tickSize: PropTypes.number,
+  tickSizeInner: PropTypes.number,
+  tickSizeOuter: PropTypes.number,
+  tickValues: PropTypes.array,
+  ticks: PropTypes.number,
 
   /* push axis in x or y directions */
   translate: PropTypes.shape({
@@ -143,25 +165,9 @@ Axis.propTypes = {
    used for calculating translate, required if translate is not specified
   */
   width: atLeastOneOfProp(WIDTH_PROP_TYPES),
-  height: atLeastOneOfProp(HEIGHT_PROP_TYPES),
-
-  /* see d3-axis docs */
-  ticks: PropTypes.number,
-  tickArguments: PropTypes.array,
-  tickFormat: PropTypes.func,
-  tickSize: PropTypes.number,
-  tickSizeInner: PropTypes.number,
-  tickSizeOuter: PropTypes.number,
-  tickPadding: PropTypes.number,
-  tickValues: PropTypes.array,
-
-  /* appropriate scale for axis */
-  scale: atLeastOneOfProp(AXIS_SCALE_PROP_TYPES),
 };
 
 Axis.defaultProps = {
-  scale: scaleLinear(),
-  width: 0,
   height: 0,
   padding: {
     top: 40,
@@ -169,4 +175,6 @@ Axis.defaultProps = {
     left: 50,
     right: 50,
   },
+  scale: scaleLinear(),
+  width: 0,
 };
