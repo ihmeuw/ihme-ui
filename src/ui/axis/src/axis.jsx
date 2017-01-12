@@ -125,7 +125,7 @@ Axis.propTypes = {
    */
   height: atLeastOneOfProp(HEIGHT_PROP_TYPES),
 
-  label: PropTypes.any,
+  label: PropTypes.string,
   labelClassName: CommonPropTypes.className,
   labelStyle: PropTypes.object,
 
