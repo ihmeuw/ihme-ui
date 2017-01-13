@@ -163,8 +163,5 @@ Legend.propTypes = {
 Legend.defaultProps = {
   items: [],
   ItemComponent: LegendItem,
-  renderClear: false,
-  onClear: null,
-  onClick: null,
   TitleComponent: LegendTitle,
 };
