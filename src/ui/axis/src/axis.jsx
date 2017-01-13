@@ -115,6 +115,7 @@ export const WIDTH_PROP_TYPES = {
 
 
 Axis.propTypes = {
+
   /* class name to apply to the axis */
   className: CommonPropTypes.className,
 
@@ -124,7 +125,7 @@ Axis.propTypes = {
    */
   height: atLeastOneOfProp(HEIGHT_PROP_TYPES),
 
-  label: PropTypes.any,
+  label: PropTypes.string,
   labelClassName: CommonPropTypes.className,
   labelStyle: PropTypes.object,
 
