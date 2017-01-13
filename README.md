@@ -17,6 +17,7 @@ ihme-ui is a collection of JavaScript and React-based visualization tools and us
   * [\<Group /\>](#group-)
     * [\<Option /\>](#option-)
   * [\<HtmlLabel /\>](#htmllabel-)
+  * [\<Legend /\>](#legend-)
   * [\<MultiSelect /\> and \<SingleSelect /\>](#multiselect--and-singleselect-)
   * [\<ResponsiveContainer /\>](#responsivecontainer-)
   * [\<Shape /\>](#shape-)
@@ -281,6 +282,29 @@ Property | Required | Type(s) | Defaults | Description
 `onMouseOver` | no | function | | signature: function(SyntheticEvent) {...}
 `text` | no | string | | text to render within label tag
 `theme` | no | string | 'light' | one of: 'dark' (`color: white`), 'light' (`color: black`)
+
+### \<Legend /\>
+
+Property | Required | Type(s) | Defaults | Description
+        --- | :---: | :---: | :---: | ---
+`items` | yes | array | [] | legend items
+`ItemComponent` | no | function | [LegendItem](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/legend/src/legend-item.jsx) | component (must be passable to React.createElement) to render for each item; passed props `item`, `itemClassName`, `itemStyles`, `labelKey`, `LabelComponent`, `onClear`, `onClick`, `renderClear`, `symbolColorKey`, `symbolTypeKey`
+`itemClassName` | no | [className](#className) | | classname applied to `ItemComponent`
+`itemStyles` | no | [style](#style) | | inline styles applied to `ItemComponent`
+`LabelComponent` | no | function | | component to render for each item label
+`labelKey` | yes | string, function | | path to label in item objects (e.g., 'name', 'properties.label') or a function to resolve the label (signature: function (item) {...}) 
+`onClear` | no | function | | callback when 'clear' icon is clicked; signature: function(SyntheticEvent, item) {}
+`onClick` | no | function | | callback when legend item is clicked; signature: function(SyntheticEvent, item) {}
+`renderClear` | no | boolean | false | whether to render a 'clear' icon ('x') inline with each legend item
+`symbolColorKey` | yes | string, function | | path to symbol color in item objects (e.g., 'color', 'properties.color') or a function to resolve the color (signature: function (item) {...})
+`symbolTypeKey` | yes | string, function | | path to symbol type in item objects (e.g., 'type', 'properties.type') or a function to resolve the type (signature: function (item) {...}); must be one of [supported symbol types](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/symbol.js#L23)
+`title` | no | string | | title for the legend
+`TitleComponent` | no | function | | component (must be passable to React.createElement) to render for the title; passed props `title`, `className`, `style`
+`titleClassName` | no | [className](#className) | | className applied to title component
+`titleStyles` | no | object | | inline styles applied to title component
+`ulClassName` | no | [className](#className) | | className applied to `<ul>`, which wraps legend items
+`wrapperClassName` | no | [className](#className) | | className applied to outermost, wrapping `<div>`
+`wrapperStyles` | no| object | inline styles applied to outermost, wrapper `<div>`
 
 ### \<MultiSelect /\> and \<SingleSelect /\>
 
