@@ -270,18 +270,17 @@ Property | Required | Type(s) | Defaults | Description
 
 ### \<HtmlLabel /\>
 
-HTML element label with customizable class name, icon, text, appearance, and interaction handlers.
+An HTML `<label>` to wrap interactive content.
 
-Property | Required | Type(s) | Description
-        --- | :---: | :---: | ---
-`children` | no | object |  React element or elements<br /><br />one of type: arrayOf(PropTypes.node), node
-`className` | no | string, object | one of type: string, object, array
-`clickHandler` | no | object | function with following signature: function({ value })
-`hoverHandler` | no | object | function with following signature: function({ value })
-`htmlFor` | no | string | ID of a labelable form-related element
-`icon` | no |string | path to image to render within label tag
-`text` | no | string | text to render within label tag
-`theme` | no | string | color scheme of component; see html-label.css
+Property | Required | Type(s) | Defaults | Description
+        --- | :---: | :---: | :---: | ---
+`className` | no | [className](#className) | | className applied to `<label>`
+`htmlFor` | no | string | | ID of a labelable element; useful if label does not contain its control. See [https://www.w3.org/TR/html5/forms.html#attr-label-for](https://www.w3.org/TR/html5/forms.html#attr-label-for).
+`icon` | no |string | | path to image to render within label tag
+`onClick` | no | function| | signature: function(SyntheticEvent) {...}
+`onMouseOver` | no | function | | signature: function(SyntheticEvent) {...}
+`text` | no | string | | text to render within label tag
+`theme` | no | string | 'light' | one of: 'dark' (`color: white`), 'light' (`color: black`)
 
 ### \<MultiSelect /\> and \<SingleSelect /\>
 
