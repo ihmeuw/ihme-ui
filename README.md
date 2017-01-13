@@ -242,14 +242,14 @@ Property | Required | Type(s) | Defaults | Description
 
 ### \<Group /\>
 
-Button set with `selectable` property and customizable class names and interaction handlers.
+A wrapper to group elements, both visually and functionally. Its primary use case is as a buttonset, 
+which can be accomplished by wrapping `<Option />` components (or similar, customized components) in a `<Group />`.
 
-Property | Required | Type(s) | Description
-        --- | :---: | :---: | ---
-`children` | yes | object |  React element or elements<br /><br />one of type: arrayOf(PropTypes.node), node
-`className` | no | string, object | one of type: string, object, array
-`onClick` | yes | function | click handler with following signature: function(event, selectedValue)
-`style` | no | object | inline-styles to be applied to group wrapper
+Property | Required | Type(s) | Defaults | Description
+        --- | :---: | :---: | :---: | ---
+`className` | no | [className](#className) | | className applied to outermost wrapping div
+`onClick` | yes | function | | click handler with following signature: function(event, selectedValue)
+`style` | no | object | | inline styles applied to outermost wrapping div
 
 #### \<Option /\>
 
