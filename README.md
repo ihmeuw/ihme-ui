@@ -253,20 +253,20 @@ Property | Required | Type(s) | Defaults | Description
 
 #### \<Option /\>
 
-Options for the group element, wrapped by group. Any additional props will be passed directly to the fundamental element this renders.
+Component designed to be wrapped by `<Group />`. Renders `props.type` and provides it with computed props `className`, `disabled`, `selected`, and `style`. 
+Any additional props passed to `<Option />` will be passed directly to the rendered component.
 
-Property | Required | Type(s) | Description
-        --- | :---: | :---: | ---
-`className` | no | string, object | one of type: string, object, array
-`disabled` | no | boolean | whether option is disabled
-`disabledClassName` | no | string, array, object | className to apply when disabled
-`disabledStyle` | no | object | inline-style to apply when disabled
-`icon` | no | string | path to image to render within label tag
-`selected` | no | boolean | whether option is selected
-`selectedClassName` | no | string, array, object | className to apply when selected
-`selectedStyle` | no | object | inline-style to apply when selected
-`text` | no | string | text to render within label tag
-`type` | no | string, number, object | react element to be wrapped by this option (default: Button)
+Property | Required | Type(s) | Defaults | Description
+        --- | :---: | :---: | :---: | ---
+`className` | no | [className](#className) | | combined with `disabledClassName` and `selectedClassName` (if applicable) and passed to rendered component as `className`
+`disabled` | no | boolean | | whether option is disabled
+`disabledClassName` | no | [className](#className) | generated | className applied when disabled
+`disabledStyle` | no | object | | inline style applied when disabled
+`selected` | no | boolean | | whether option is selected
+`selectedClassName` | no | [className](#className) | generated | className applied when selected
+`selectedStyle` | no | object | | inline style applied when selected
+`style` | no | object | | inline styles
+`type` | no | string, function | [Button](#button-) | tag name (JSX primitive) or React component to be rendered
 
 ### \<HtmlLabel /\>
 
