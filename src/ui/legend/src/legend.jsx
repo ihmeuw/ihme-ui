@@ -127,7 +127,7 @@ Legend.propTypes = {
   title: PropTypes.string,
 
   /* custom component to render for the title;
-   passed { title: props.title, style: props.titleStyles } as props;
+   passed { className: props.titleClassName, title: props.title, style: props.titleStyles } as props;
    must be passable to React.createElement
    */
   TitleComponent: PropTypes.func,
