@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { isArray, pick } from 'lodash';
-import { propResolver } from '../../../utils';
+import { CommonPropTypes, propResolver } from '../../../utils';
 
 import styles from './legend.css';
 
@@ -70,20 +70,14 @@ Legend.propTypes = {
   ItemComponent: PropTypes.func,
 
   /* classname(s) to apply to li */
-  itemClassName: PropTypes.oneOfType([
-    PropTypes.array,
-    PropTypes.string,
-    PropTypes.object
-  ]),
+  itemClassName: CommonPropTypes.className,
 
-  /* inline-styles to be applied to individual legend item <li> */
-  itemStyles: PropTypes.oneOfType([
-    // if passed an object, will be applied directly inline to the li
-    PropTypes.object,
-
-    // if passed a function, will be called with the current item
-    PropTypes.func,
-  ]),
+  /*
+   inline-styles to be applied to individual legend item <li>
+   if passed an object, will be applied directly inline to the li
+   if passed a function, will be called with the current item
+  */
+  itemStyles: CommonPropTypes.style,
 
   /* custom component to render for each label, passed current item;
    must be passable to React.createElement
@@ -133,28 +127,16 @@ Legend.propTypes = {
   TitleComponent: PropTypes.func,
 
   /* extra class names to append to the title component */
-  titleClassName: PropTypes.oneOfType([
-    PropTypes.array,
-    PropTypes.string,
-    PropTypes.object
-  ]),
+  titleClassName: CommonPropTypes.className,
 
   /* inline styles to be applied to title component */
   titleStyles: PropTypes.object,
 
   /* any additional classes to add to <ul> */
-  ulClassName: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.object,
-    PropTypes.array
-  ]),
+  ulClassName: CommonPropTypes.className,
 
   /* any additional classes to add to Legend container */
-  wrapperClassName: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.object,
-    PropTypes.array
-  ]),
+  wrapperClassName: CommonPropTypes.className,
 
   /* inline styles to apply to legend wrapper */
   wrapperStyles: PropTypes.object
