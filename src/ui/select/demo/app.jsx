@@ -3,7 +3,7 @@ import { render } from 'react-dom';
 import { bindAll } from 'lodash';
 import { randomUniform } from 'd3';
 
-import { MultiSelect, SingleSelect } from '../';
+import { Select } from '../';
 import { default as cities } from './cities';
 import style from './app.css';
 
@@ -59,7 +59,8 @@ class App extends React.Component {
         <section>
           <h3>Multi-select</h3>
 {/* <pre><code>
-     <MultiSelect
+     <Select
+       multiSelect
        labelKey="name"
        valueKey="name"
        onChange={ function (selections <Array>) {...} }
@@ -68,7 +69,8 @@ class App extends React.Component {
      />
 
 </code></pre> */}
-          <MultiSelect
+          <Select
+            multiSelect
             labelKey="name"
             valueKey="name"
             onChange={this.onMultiSelectChange}
@@ -79,7 +81,8 @@ class App extends React.Component {
         <section>
           <h3>Hierarchical multi-select</h3>
 {/* <pre><code>
-     <MultiSelect
+     <Select
+       multiSelect
        hierarchical
        labelKey="name"
        valueKey="name"
@@ -89,7 +92,8 @@ class App extends React.Component {
      />
 
 </code></pre> */}
-          <MultiSelect
+          <Select
+            multiSelect
             hierarchical
             labelKey="name"
             valueKey="name"
@@ -101,7 +105,7 @@ class App extends React.Component {
         <section>
           <h3>Single-select</h3>
 {/* <pre><code>
-     <SingleSelect
+     <Select
        labelKey="name"
        valueKey="name"
        onChange={ function (selections <Object>) {...} }
@@ -110,7 +114,7 @@ class App extends React.Component {
      />
 
 </code></pre> */}
-          <SingleSelect
+          <Select
             labelKey="name"
             valueKey="name"
             onChange={this.onSingleSelectChange}
@@ -121,7 +125,7 @@ class App extends React.Component {
         <section>
           <h3>Hierarchical single-select</h3>
 {/* <pre><code>
-     <SingleSelect
+     <Select
        hierarchical
        labelKey="name"
        valueKey="name"
@@ -131,7 +135,7 @@ class App extends React.Component {
      />
 
 </code></pre> */}
-          <SingleSelect
+          <Select
             hierarchical
             labelKey="name"
             valueKey="name"
@@ -144,7 +148,7 @@ class App extends React.Component {
         <section>
           <h3>Option styling</h3>
 {/* <pre><code>
-       <SingleSelect
+       <Select
          hierarchical
          labelKey="name"
          valueKey="name"
@@ -155,7 +159,7 @@ class App extends React.Component {
        />
 
 </code></pre> */}
-          <SingleSelect
+          <Select
             hierarchical
             labelKey="name"
             valueKey="name"
@@ -167,18 +171,20 @@ class App extends React.Component {
         </section>
         <section>
           <h3>Multi-select flip up</h3>
-          {/* <pre><code>
-           <MultiSelect
-           labelKey="name"
-           valueKey="name"
-           onChange={ function (selections <Array>) {...} }
-           options={ [{name: 'Albany'}, ...] }
-           value={[]}
-           menuUpward
-           />
+{/* <pre><code>
+       <MultiSelect
+         multiSelect
+         labelKey="name"
+         valueKey="name"
+         onChange={ function (selections <Array>) {...} }
+         options={ [{name: 'Albany'}, ...] }
+         value={[]}
+         menuUpward
+       />
 
-           </code></pre> */}
-          <MultiSelect
+ </code></pre> */}
+          <Select
+            multiSelect
             labelKey="name"
             valueKey="name"
             onChange={this.onMultiSelectChange}
@@ -190,7 +196,7 @@ class App extends React.Component {
         <section>
           <h3>Single-select flip up</h3>
 {/* <pre><code>
-       <SingleSelect
+       <Select
          labelKey="name"
          valueKey="name"
          onChange={ function (selections <Object>) {...} }
@@ -200,7 +206,7 @@ class App extends React.Component {
        />
 
 </code></pre> */}
-          <SingleSelect
+          <Select
             labelKey="name"
             valueKey="name"
             onChange={this.onSingleSelectChange}
