@@ -33,15 +33,25 @@ export default class Select extends PureComponent {
       wrapperStyle,
     } = this.state;
 
+    const resetValue = null;
+
+    let placeholder;
+
+    if (!this.props.placeholder) {
+      placeholder = { placeholder: 'Select...' };
+    }
+
     return (
       <BaseSelect
         {...this.props}
+        {...placeholder}
         autofocus
         autosize={false}
         className={classNames(style.select, this.props.className)}
         menuContainerStyle={menuContainerStyle}
         menuRenderer={menuRenderer}
         menuStyle={menuStyle}
+        resetValue={resetValue}
         searchable
         wrapperStyle={wrapperStyle}
       />
@@ -60,9 +70,16 @@ export default class Select extends PureComponent {
       wrapperStyle,
     } = this.state;
 
+    let placeholder;
+
+    if (!this.props.placeholder) {
+      placeholder = { placeholder: 'Add/Remove' };
+    }
+
     return (
       <BaseSelect
         {...this.props}
+        {...placeholder}
         autofocus
         autosize={false}
         className={classNames(style.select, this.props.className)}
