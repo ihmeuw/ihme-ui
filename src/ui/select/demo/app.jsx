@@ -176,6 +176,7 @@ class App extends React.Component {
          multiSelect
          labelKey="name"
          valueKey="name"
+         placeholder="select cities"
          onChange={ function (selections <Array>) {...} }
          options={ [{name: 'Albany'}, ...] }
          value={[]}
@@ -200,6 +201,7 @@ class App extends React.Component {
        <Select
          labelKey="name"
          valueKey="name"
+         placeholder="select city"
          onChange={ function (selections <Object>) {...} }
          options={ [{name: 'Albany'}, ...] }
          value={null}
