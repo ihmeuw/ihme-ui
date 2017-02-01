@@ -190,6 +190,7 @@ class App extends React.Component {
             onChange={this.onMultiSelectChange}
             options={cities}
             value={multiSelectValues}
+            placeholder="select cities"
             menuUpward
           />
         </section>
@@ -209,6 +210,7 @@ class App extends React.Component {
           <Select
             labelKey="name"
             valueKey="name"
+            placeholder="select city"
             onChange={this.onSingleSelectChange}
             options={cities}
             value={singleSelectValue}
