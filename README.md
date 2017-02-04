@@ -5,35 +5,6 @@
 ihme-ui is a collection of JavaScript utilities and React-based user interface elements and visualization components developed by the [Institute of Health Metrics and Evaluation](http://healthdata.org). 
 This collection is used in IHME's [visualizations of global health metrics](http://www.healthdata.org/results/data-visualizations).
 
-* [Installation](#installation)
-* [API Reference](#api)
-  * [\<Axis /\>](#axis-)
-    * [\<XAxis /\>](#xaxis-)
-    * [\<YAxis /\>](#yaxis-)
-  * [\<AxisChart /\>](#axischart-)
-  * [\<Button /\>](#button-)
-  * [\<Choropleth /\>](#choropleth-)
-  * [\<ChoroplethLegend /\>](#choroplethlegend-)
-  * [\<ExpansionContainer /\>](#expansioncontainer-)
-  * [\<Group /\>](#group-)
-    * [\<Option /\>](#option-)
-  * [\<HtmlLabel /\>](#htmllabel-)
-  * [\<Legend /\>](#legend-)
-  * [\<MultiSelect /\> and \<SingleSelect /\>](#multiselect--and-singleselect-)
-  * [\<ResponsiveContainer /\>](#responsivecontainer-)
-  * [\<Shape /\>](#shape-)
-    * [\<Area /\>](#area-)
-    * [\<Line /\>](#line-)
-    * [\<MultiLine /\>](#multiline-)
-    * [\<Scatter /\>](#scatter-)
-    * [\<Symbol /\>](#symbol-)
-  * [\<Slider /\>](#slider-)
-  * [\<Spinner /\>](#spinner-)
-  * [\<SvgText /\>](#svgtext-)
-* [Test Utilities](#test-utilities)
-  * [Data Generator](#data-generator)
-* [Code Quality](#code-quality)
-
 ###### WORK IN PROGRESS: Not stable until v1.0.0
 
 ---
@@ -95,3 +66,29 @@ you'll automatically pull in the ES2015 build, which allows the module bundler t
 For a more detailed example of how to use this library, see [`starter-app/`](https://github.com/ihmeuw/ihme-ui/tree/master/starter-app).
 
 ---
+
+## API Reference
+
+* [\<Axis /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/axis/README.md)
+* [\<AxisChart /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/axis-chart/README.md)
+* [\<Button /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/button/README.md)
+* [\<Choropleth /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/choropleth/README.md)
+* [\<ChoroplethLegend /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/choropleth-legend/README.md)
+* [Compositions](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/compositions/README.md)
+  * [\<Map \/>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/compositions/map/README.md)
+* [\<ExpansionContainer /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/expansion-container/README.md)
+* [\<Group /\> and \<Option /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/group/README.md)
+* [\<HtmlLabel /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/html-label/README.md)
+* [\<Legend /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/legend/README.md)
+* \<Select /\> - docs coming soon!
+* [\<ResponsiveContainer /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/responsive-container/README.md)
+* [\<Shape /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/shape/README.md)
+  * \<Area /\>
+  * \<Line /\>
+  * \<MultiLine /\>
+  * \<Scatter /\>
+  * \<Symbol /\>
+* [\<Slider /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/slider/README.md)
+* [\<Spinner /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/spinner/README.md)
+* [\<SvgText /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/svg-text/README.md)
+* [\<Tooltip /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/tooltip/README.md)
