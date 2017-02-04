@@ -12,6 +12,10 @@ import styles from './expansion-container.css';
 
 export const containerStore = {};
 
+/**
+ * `import ExpansionContainer from 'ihme-ui/ui/expansion-container'`
+ *
+ */
 export default class ExpansionContainer extends PureComponent {
   constructor(props) {
     super(props);
@@ -121,9 +125,22 @@ export default class ExpansionContainer extends PureComponent {
 }
 
 ExpansionContainer.propTypes = {
+  /**
+   * className applied to outermost wrapping div
+   */
   className: CommonPropTypes.className,
+
+  /**
+   * inline styles applied to outermost wrapping div; `position: relative` is added automatically
+   */
   style: CommonPropTypes.style,
+
   children: PropTypes.node,
+
+  /**
+   * key used by `<Expandable />`s to register with `<ExpansionContainer />`;
+   * if more than one `<ExpansionContainer />` is mounted, `group` should be treated as required and unique per instance.
+   */
   group: PropTypes.string,
 };
 
