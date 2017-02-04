@@ -18,6 +18,9 @@ import styles from './choropleth-legend.css';
 
 const subtractMarginsFromWidth = (width, margins) => width - (margins.left + margins.right);
 
+/**
+ * `import ChoroplethLegend from 'ihme-ui/ui/choropleth-legend'`
+ */
 export default class ChoroplethLegend extends PureComponent {
   constructor(props) {
     super(props);
@@ -129,45 +132,56 @@ export default class ChoroplethLegend extends PureComponent {
 }
 
 ChoroplethLegend.propTypes = {
-  /* must return a number */
+  /**
+   * [format of axis ticks](https://github.com/d3/d3-axis#axis_tickFormat)
+   */
   axisTickFormat: PropTypes.func,
 
-  /*
-    shift XAxis in the x- or y- directions;
-    used to put some padding between the color gradient rect and the axis
-    defaults to { x: 0, y: 20 }
-  */
+  /**
+   * shift axis in the x or y directions; use to put padding between the color gradient rect and the axis
+   */
   axisTranslate: PropTypes.shape({
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
   }),
 
-  /* function that accepts data as param, returns color */
+  /**
+   * color scale for density plot; should accept `datum[valueField]` and return color string
+   */
   colorScale: PropTypes.func.isRequired,
 
-  /* array of color steps, e.g. ['#fff', '#ccc', '#000', ...] */
+  /**
+   * array of color steps, e.g. ['#fff', '#ccc', '\#000', ...]
+   */
   colorSteps: PropTypes.array.isRequired,
 
-  /* array of datum objects */
+  /**
+   * array of datum objects
+   */
   data: PropTypes.array.isRequired,
 
-  /* [min, max] for xScale; xScale positions <circles> and provides axis */
+  /**
+   * [min, max] for xScale; xScale positions density plot and provides axis
+   */
   domain: PropTypes.array.isRequired,
 
-  /* px height */
+  /**
+   * height of outermost svg
+   */
   height: PropTypes.number,
 
-  /*
-   a property on datum objects or function which accepts datum;
-   if provided, must resolve to a unique value per datum
-   if not provided, density plot symbols are keyed as: `${xValue}:${yValue}:${index}`
+  /**
+   * uniquely identifying property of datum or function that accepts datum and returns unique value;
+   * if not provided, density plot symbols are keyed as `${xValue}:${yValue}:${index}`
    */
   keyField: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.func,
   ]),
 
-  /* margins to subtract from width and height */
+  /**
+   * margins to subtract from width and height
+   */
   margins: PropTypes.shape({
     top: PropTypes.number,
     right: PropTypes.number,
@@ -175,76 +189,93 @@ ChoroplethLegend.propTypes = {
     left: PropTypes.number
   }),
 
-  /*
-   onClick for DensityPlot circles
-   same API as Scatter onClick
+  /**
+   * onClick callback for density plot circles;
+   * signature: function(event, data, instance) {...}
    */
   onClick: PropTypes.func,
 
-  /*
-   onMouseLeave for DensityPlot circles
-   same API as Scatter onMouseLeave
+  /**
+   * onMouseLeave callback for density plot circles;
+   * signature: function(event, data, instance) {...}
    */
   onMouseLeave: PropTypes.func,
 
-  /*
-   onMouseMove for DensityPlot circles
-   same API as Scatter onMouseMove
+  /**
+   * onMouseMove callback for density plot circles;
+   * signature: function(event, data, instance) {...}
    */
   onMouseMove: PropTypes.func,
 
-  /*
-   onMouseOver for DensityPlot circles
-   same API as Scatter onMouseOver
+  /**
+   * onMouseOver callback for density plot circles;
+   * signature: function(event, data, instance) {...}
    */
   onMouseOver: PropTypes.func,
 
-  /*
-   callback to attach to slider handles
-   should accept {Array} [min, max] -> the range extent as percentage
+  /**
+   * callback function to attach to slider handles;
+   * passed [min, max] (Array), the range extent as a percentage
    */
   onSliderMove: PropTypes.func,
 
-  /* [min, max] for slider in data space */
+  /**
+   * array of [min, max] for slider in data space; `domain` is a good initial value
+   */
   rangeExtent: PropTypes.array.isRequired,
 
+  /**
+   * array of selected datum objects
+   */
   selectedLocations: PropTypes.arrayOf(PropTypes.object),
 
+  /**
+   * format of slider handle labels
+   */
   sliderHandleFormat: PropTypes.func,
 
-  /* unit of data; axis label */
+  /**
+   * unit of data; axis label
+   */
   unit: PropTypes.string,
 
+  /**
+   * property of data objects used to position and fill density plot circles;
+   * if a function, signature: function(datum) {...}
+   */
   valueField: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.func,
   ]).isRequired,
 
-  /* px width */
+  /**
+   * width of outermost svg, in pixels
+   */
   width: PropTypes.number,
 
-  /* x-axis coord (as percentage) of the start of the gradient (e.g., 0) */
+  /**
+   * x-axis coord (as percentage) of the start of the gradient (e.g., 0)
+   */
   x1: PropTypes.number,
 
-  /* x-axis coord (as percentage) of the end of the gradient (e.g., 100) */
+  /**
+   * x-axis coord (as percentage) of the end of the gradient (e.g., 100)
+   */
   x2: PropTypes.number,
 
-  /*
-    a d3Scale for positioning density plot along its x-axis;
-    must expose .domain and .range methods
-    currently only supports continuous scales, should be extended to support others
-  */
+  /**
+   * scale for positioning density plot along its x-axis; must expose `domain` and `range` methods
+   */
   xScale: PropTypes.func,
 
-  /*
-   float value used for implementing "zooming";
-   any element that needs to become larger in "presentation mode"
-   should respond to this scale factor.
-   guide:
-   zoom: 0 -> smallest possible
-   zoom: 0.5 -> half of normal size
-   zoom: 1 -> normal
-   zoom: 2 -> twice normal size
+  /**
+   * float value used for implementing "zooming";
+   * any element that needs to become larger in "presentation mode" should respond to this scale factor.
+   * Guide
+   * zoom: 0 -> smallest possible
+   * zoom: 0.5 -> half of normal size
+   * zoom: 1 -> normal size ()
+   * zoom: 2 -> twice normal size
    */
   zoom: PropTypes.number
 };
