@@ -13,6 +13,11 @@ export function calcChartDimensions(width, height, padding) {
   };
 }
 
+/**
+ * `import AxisChart from 'ihme-ui/ui/axis-chart'`
+ *
+ * Wraps and provides its child charting components with height, width, scales, and padding
+ */
 export default class AxisChart extends React.Component {
   constructor(props) {
     super(props);
@@ -101,34 +106,29 @@ export default class AxisChart extends React.Component {
 }
 
 AxisChart.propTypes = {
-  /* class names to appended to the element */
+  /**
+   * className applied to outermost svg element
+   */
   className: CommonPropTypes.className,
 
-  /* use clip path in children */
+  /**
+   *  apply clipping path to charting area
+   */
   clipPath: PropTypes.bool,
 
-  /* flag to delay rendering while fetching data */
-  loading: PropTypes.bool,
-
-  /* [min, max] for xScale (i.e., the domain of the data) */
-  xDomain: PropTypes.array,
-
-  /* type of scale */
-  xScaleType: PropTypes.oneOf(SCALE_TYPES),
-
-  /* [min, max] yScale (i.e., the range of the data) */
-  yDomain: PropTypes.array,
-
-  /* type of scale */
-  yScaleType: PropTypes.oneOf(SCALE_TYPES),
-
-  /* px width of line chart */
-  width: PropTypes.number.isRequired,
-
-  /* px height of line chart */
+  /**
+   *  pixel height of line chart
+   */
   height: PropTypes.number.isRequired,
 
-  /* padding around the chart contents, space for Axis and Label */
+  /**
+   * flag to delay rendering while fetching data
+   */
+  loading: PropTypes.bool,
+
+  /**
+   * padding around the chart contents, space for Axis and Label
+   */
   padding: PropTypes.shape({
     top: PropTypes.number,
     bottom: PropTypes.number,
@@ -136,7 +136,37 @@ AxisChart.propTypes = {
     left: PropTypes.number,
   }),
 
+  /**
+   * inline styles to apply to outermost svg element
+   */
   style: PropTypes.object,
+
+  /**
+   * pixel width of line chart
+   */
+  width: PropTypes.number.isRequired,
+
+  /**
+   * [min, max] for xScale (i.e., the domain of the data)
+   */
+  xDomain: PropTypes.array,
+
+  /**
+   * type of x scale
+   * [name of d3 scale scale function](https://github.com/d3/d3-scale)
+   */
+  xScaleType: PropTypes.oneOf(SCALE_TYPES),
+
+  /**
+   * [min, max] yScale (i.e., the range of the data)
+   */
+  yDomain: PropTypes.array,
+
+  /**
+   * type of y scale
+   * [name of d3 scale scale function](https://github.com/d3/d3-scale)
+   */
+  yScaleType: PropTypes.oneOf(SCALE_TYPES),
 };
 
 AxisChart.defaultProps = {
