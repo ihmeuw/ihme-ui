@@ -4,6 +4,13 @@ import { atLeastOneOfProp, propsChanged } from '../../../utils';
 
 import Axis, { AXIS_SCALE_PROP_TYPES } from './axis';
 
+/**
+ * `import { YAxis } from 'ihme-ui/ui/axis'`
+ *
+ * Chart y-axis that extends <Axis \/> and provides some useful defaults.
+ *
+ * All props documented on <Axis \/> are available on <YAxis \/>.
+ */
 export default class YAxis extends Axis {
   constructor(props) {
     super(props);
@@ -25,6 +32,11 @@ export default class YAxis extends Axis {
     return propsChanged(this.props, nextProps, undefined, ['scale', 'scales']) ||
            propsChanged(this.state, nextState);
   }
+
+  render() {
+    // super.render call added so that react-docgen will parse this component
+    super.render();
+  }
 }
 
 const Y_AXIS_SCALE_PROP_TYPES = {
@@ -38,11 +50,20 @@ const Y_AXIS_SCALE_PROP_TYPES = {
 YAxis.propTypes = {
   ...Axis.propTypes,
 
-  /* OVERRIDE - orientation of ticks relative to axis line */
+  /**
+   * where to position axis line
+   * one of: 'left', 'right'
+   */
   orientation: PropTypes.oneOf(['left', 'right']),
 
-  /* scales are provided by axis-chart, only y scale is used by YAxis */
+  /**
+   * alternative to providing scales object with key 'y' and scale function as value
+   */
   scale: atLeastOneOfProp(Y_AXIS_SCALE_PROP_TYPES),
+
+  /**
+   *  scales are provided by axis-chart, only y scale is used by YAxis
+   */
   scales: atLeastOneOfProp(Y_AXIS_SCALE_PROP_TYPES),
 };
 

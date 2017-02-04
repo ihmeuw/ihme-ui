@@ -4,6 +4,13 @@ import { atLeastOneOfProp, propsChanged } from '../../../utils';
 
 import Axis, { AXIS_SCALE_PROP_TYPES } from './axis';
 
+/**
+ * `import { XAxis } from 'ihme-ui/ui/axis'`
+ *
+ * Chart x-axis that extends <Axis \/> and provides some useful defaults.
+ *
+ * All props documented on <Axis \/> are available on <XAxis \/>.
+ */
 export default class XAxis extends Axis {
   constructor(props) {
     super(props);
@@ -25,6 +32,11 @@ export default class XAxis extends Axis {
     return propsChanged(this.props, nextProps, undefined, ['scale', 'scales']) ||
            propsChanged(this.state, nextState);
   }
+
+  render() {
+    // super.render call added so that react-docgen will parse this component
+    super.render();
+  }
 }
 
 const X_AXIS_SCALE_PROP_TYPES = {
@@ -38,11 +50,20 @@ const X_AXIS_SCALE_PROP_TYPES = {
 XAxis.propTypes = {
   ...Axis.propTypes,
 
-  /* OVERRIDE - orientation of ticks relative to axis line */
+  /**
+   * where to position axis line
+   * one of: 'top', 'bottom'
+   */
   orientation: PropTypes.oneOf(['top', 'bottom']),
 
-  /* scales are provided by axis-chart, only x scale is used by XAxis */
+  /**
+   * alternative to providing scales object with key 'x' and scale function as value
+   */
   scale: atLeastOneOfProp(X_AXIS_SCALE_PROP_TYPES),
+
+  /**
+   *  scales are provided by axis-chart, only x scale is used by XAxis
+   */
   scales: atLeastOneOfProp(X_AXIS_SCALE_PROP_TYPES),
 };
 
