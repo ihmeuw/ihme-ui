@@ -30,6 +30,9 @@ import Controls from './controls';
 // slightly pad clip extent so that the boundary of the map does not show borders
 const CLIP_EXTENT_PADDING = 1;
 
+/**
+ * `import Choropleth from 'ihme-ui/ui/choropleth'`
+ */
 export default class Choropleth extends React.Component {
   /**
    * Because <Layer /> expects data to be an object with locationIds as keys
@@ -357,118 +360,186 @@ export default class Choropleth extends React.Component {
 }
 
 Choropleth.propTypes = {
-  /* classname to add rendered components */
+  /**
+   * className applied to outermost div
+   */
   className: CommonPropTypes.className,
 
-  /* fn that accepts keyfield, and returns stroke color for line */
+  /**
+   * function that accepts value of `keyfield` (str), and returns (str) stroke color for line
+   */
   colorScale: PropTypes.func.isRequired,
 
-  /* show zoom controls */
+  /**
+   * show zoom controls
+   */
   controls: PropTypes.bool,
 
-  /* classname to add to zoom controls container */
+  /**
+   * className applied to controls container div
+   */
   controlsClassName: CommonPropTypes.className,
 
-  /* classname to add to zoom control buttons */
+  /**
+   * className applied to controls buttons
+   */
   controlsButtonClassName: CommonPropTypes.className,
 
-  /* inline styles to apply to zoom control buttons */
+  /**
+   * inline styles to apply to controls buttons
+   */
   controlsButtonStyle: PropTypes.object,
 
-  /* inline styles to apply to zoom controls container */
+  /**
+   * inline styles to apply to outermost div
+   */
   controlsStyle: PropTypes.object,
 
-  /* array of datum objects */
+  /**
+   * array of datum objects
+   */
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
 
-  /*
-   uniquely identifying field of geometry objects
-   if a function, will be called with the geometry object as first parameter
-   N.B.: the resolved value of this prop should match the resolved value of `keyField` above
-   e.g., if data objects are of the following shape: { location_id: <number>, mean: <number> }
-   and if features within topojson are of the following shape: { type: <string>, properties: { location_id: <number> }, arcs: <array> }
-   `keyField` may be one of the following: 'location_id', or (datum) => datum.location_id
-   `geometryKeyField` may be one of the following: 'location_id' or (feature) => feature.properties.location_id
+  /**
+   * uniquely identifying field of geometry objects;
+   * if a function, will be called with the geometry object as first parameter
+   * N.B.: the resolved value of this prop should match the resolved value of `props.keyField`
+   * e.g., if data objects are of the following shape: { location_id: <number>, mean: <number> }
+   * and if features within topojson are of the following shape: { type: <string>, properties: { location_id: <number> }, arcs: <array> }
+   * `keyField` may be one of the following: 'location_id', or (datum) => datum.location_id
+   * `geometryKeyField` may be one of the following: 'location_id' or (feature) => feature.properties.location_id
    */
   geometryKeyField: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.func,
   ]).isRequired,
 
-  /* height of containing element, in px */
+  /**
+   * pixel height of containing element
+   */
   height: PropTypes.number,
 
-  /*
-   unique key of datum
-   if a function, will be called with the datum object as first parameter
+  /**
+   * unique key of datum;
+   * if a function, will be called with the datum object as first parameter
    */
   keyField: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.func,
   ]).isRequired,
 
-  /* layers to display */
+  /**
+   * layers of topojson to include
+   * layer description: {Object}
+   *  - `className`: className applied to layer
+   *  - `filterFn`: optional function to filter mesh grid, passed adjacent geometries
+   *    <br />refer to [https://github.com/mbostock/topojson/wiki/API-Reference#mesh](https://github.com/mbostock/topojson/wiki/API-Reference#mesh)
+   *  - `name`: (Required) along with layer.type, will be part of the `key` of the layer; therefore, `${layer.type}-${layer.name}` needs to be unique
+   *  - `object`: (Required) name corresponding to key within topojson objects collection
+   *  - `selectedClassName`: className applied to selected paths
+   *  - `selectedStyle`: inline styles applied to selected paths<br />func: (feature) => style object
+   *  - `style`: inline styles applied to layer<br />func: (feature) => style object
+   *  - `type`: (Required) whether the layer should be a feature collection or mesh grid<br />one of: "feature", "mesh"
+   *  - `visible`: whether or not to render layer
+   */
   layers: PropTypes.arrayOf(PropTypes.shape({
     className: CommonPropTypes.className,
 
-    // optional function to filter mesh grid, passed adjacent geometries
-    // refer to https://github.com/mbostock/topojson/wiki/API-Reference#mesh
+    /**
+     * optional function to filter mesh grid, passed adjacent geometries
+     * refer to https://github.com/mbostock/topojson/wiki/API-Reference#mesh
+     */
     filterFn: PropTypes.func,
 
-    // along with layer.type, will be part of the `key` of the layer
-    // therefore, `${layer.type}-${layer.name}` needs to be unique
+    /**
+     * along with layer.type, will be part of the `key` of the layer
+     * therefore, `${layer.type}-${layer.name}` needs to be unique
+     */
     name: PropTypes.string.isRequired,
 
-    // name corresponding to key within topojson objects collection
+    /**
+     * name corresponding to key within topojson objects collection
+     */
     object: PropTypes.string.isRequired,
 
-    // applied to selected paths
+    /**
+     * applied to selected paths
+     */
     selectedClassName: CommonPropTypes.className,
 
-    // applied to selected paths
+    /**
+     * inline styles applied to selected paths<br />func: (feature) => style object
+     */
     selectedStyle: PropTypes.oneOfType([
       PropTypes.object,
       PropTypes.func,
     ]),
 
-    // applied to paths
+    /**
+     * inline styles applied to layer<br />func: (feature) => style object
+     */
     style: PropTypes.oneOfType([
       PropTypes.object,
       PropTypes.func,
     ]),
 
-    // whether the layer should be a feature collection or mesh grid
+    /**
+     * whether the layer should be a feature collection or mesh grid<br />one of: "feature", "mesh"
+     */
     type: PropTypes.oneOf(['feature', 'mesh']).isRequired,
 
-    // whether or not to render layer
+    /**
+     * whether or not to render layer
+     * WILL BE DEPRECATED: if you do not want to render the layer,
+     * do not include its description in this array
+     */
     visible: PropTypes.bool,
   })).isRequired,
 
-  /* max allowable zoom factor; 1 === fit bounds */
+  /**
+   * max allowable zoom factor; 1 === fit bounds
+   */
   maxZoom: PropTypes.number,
 
-  /* min allowable zoom factor; 1 === fit bounds */
+  /**
+   * min allowable zoom factor; 1 === fit bounds
+   */
   minZoom: PropTypes.number,
 
-  /* passed to each path; signature: function(event, datum, Path) {...} */
+  /**
+   * passed to each path;<br />signature: (event, datum, Path) => {...}
+   */
   onClick: PropTypes.func,
 
-  /* passed to each path; signature: function(event, datum, Path) {...} */
+  /**
+   * passed to each path;<br />signature: (event, datum, Path) => {...}
+   */
   onMouseLeave: PropTypes.func,
 
-  /* passed to each path; signature: function(event, datum, Path) {...} */
+  /**
+   * passed to each path;<br />signature: (event, datum, Path) => {...}
+   */
   onMouseMove: PropTypes.func,
 
-  /* passed to each path; signature: function(event, datum, Path) {...} */
+  /**
+   * passed to each path;<br />signature: (event, datum, Path) => {...}
+   */
   onMouseOver: PropTypes.func,
 
-  /* array of data */
+  /**
+   * array of selected location objects
+   */
   selectedLocations: PropTypes.arrayOf(PropTypes.object),
 
-  /* inline styles to apply to choropleth container */
+  /**
+   * inline styles applied outermost div
+   */
   style: PropTypes.object,
 
-  /* full topojson */
+  /**
+   * full topojson object
+   * for more information, see the [topojson wiki](https://github.com/topojson/topojson/wiki)
+   */
   topology: PropTypes.shape({
     arcs: PropTypes.array,
     objects: PropTypes.object,
@@ -476,17 +547,25 @@ Choropleth.propTypes = {
     type: PropTypes.string
   }).isRequired,
 
-  /* key of datum that holds the value to display */
+  /**
+   * key of datum that holds the value to display (e.g., 'mean')
+   * if a function, signature: (data, feature) => value
+   */
   valueField: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.func,
   ]).isRequired,
 
-  /* width of containing element, in px */
+  /**
+   * pixel width of containing element
+   */
   width: PropTypes.number,
 
-  /* amount to zoom in/out from zoom controls. current zoom scale is multiplied by prop value.
-   e.g. 1.1 is equal to 10% steps, 2.0 is equal to 100% steps */
+  /**
+   * amount to zoom in/out from zoom controls.
+   * current zoom scale is multiplied by prop value.
+   * e.g. 1.1 is equal to 10% steps, 2.0 is equal to 100% steps
+   */
   zoomStep: PropTypes.number,
 };
 
