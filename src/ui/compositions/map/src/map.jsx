@@ -75,6 +75,18 @@ export const filterData = memoizeByLastCall((data, locationIdsOnMap, keyField) =
   /* eslint-enable eqeqeq */
 );
 
+/**
+ * `import Map from 'ihme-ui/ui/compositions/map'`
+ *
+ * `<Map />` is a composition of `<Choropleth />` and `<ChoroplethLegend />`.
+ * It provides a mesh-filter-based implementation for displaying disputed territories. In order to take advantage of this feature,
+ * your topojson must conform to the following requirements:
+ *  - geometries that are disputed must have an array of ids on their `properties` object on a key named `disputes`.
+ *  - the above ids must be resolvable by `props.geometryKeyField`
+ *
+ * [See it in action!](http://vizhub.healthdata.org/mortality/age-estimation)
+ *
+ */
 export default class Map extends React.Component {
   constructor(props) {
     super(props);
@@ -400,49 +412,72 @@ export default class Map extends React.Component {
 }
 
 Map.propTypes = {
+  /**
+   * [format of axis ticks](https://github.com/d3/d3-axis#axis_tickFormat)
+   * implicitly defaults to [numberFormat](https://github.com/ihmeuw/ihme-ui/blob/docs/src/utils/numbers.js#L9)
+   */
   axisTickFormat: PropTypes.func,
 
-  className: PropTypes.string,
+  /**
+   * className applied to outermost wrapping div
+   */
+  className: CommonPropTypes.className,
 
-  /*
-    list of hex or rbg color values
-    color scale will interpolate between these values
-    defaults to list of 11 colors with blue at the "bottom" and red at the "top"
-    this encodes IHME's "high numbers are bad" color scheme
+  /**
+   * list of hex or rbg color values
+   * color scale will interpolate between these values
+   * defaults to list of 11 colors with blue at the "bottom" and red at the "top"
+   * this encodes IHME's "high numbers are bad" color scheme
   */
   colorSteps: PropTypes.array,
 
-  /* array of datum objects */
+  /**
+   * array of datum objects
+   */
   data: PropTypes.array.isRequired,
 
-  /* domain of color scale */
+  /**
+   * domain of color scale
+   */
   domain: PropTypes.array.isRequired,
 
-  /* [minPercent, maxPercent] of color scale domain to place slider handles */
+  /**
+   * [minPercent, maxPercent] of color scale domain to place slider handles
+   */
   extentPct: PropTypes.array,
 
-  /*
-    uniquely identifying field of geometry objects;
-    see <Choropleth /> propTypes for more detail
-  */
+  /**
+   * uniquely identifying field of geometry objects;
+   * if a function, will be called with the geometry object as first parameter
+   * N.B.: the resolved value of this prop should match the resolved value of `props.keyField`
+   * e.g., if data objects are of the following shape: { location_id: <number>, mean: <number> }
+   * and if features within topojson are of the following shape: { type: <string>, properties: { location_id: <number> }, arcs: <array> }
+   * `keyField` may be one of the following: 'location_id', or (datum) => datum.location_id
+   * `geometryKeyField` may be one of the following: 'location_id' or (feature) => feature.properties.location_id
+   */
   geometryKeyField: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.func,
   ]).isRequired,
 
-  /*
-    unique key of datum;
-    see <Choropleth /> propTypes for more detail
-  */
+  /**
+   * unique key of datum;
+   * if a function, will be called with the datum object as first parameter
+   */
   keyField: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.func,
   ]).isRequired,
 
-  /* classname applied to div containing choropleth legend */
+  /**
+   * classname applied to div containing choropleth legend
+   */
   legendClassName: CommonPropTypes.className,
 
-  /* margins passed to ChoroplethLegend */
+  /**
+   * margins passed to `<ChoroplethLegend />`
+   * subtracted from width and height of `<ChoroplethLegend />`
+   */
   legendMargins: PropTypes.shape({
     top: PropTypes.number,
     right: PropTypes.number,
@@ -450,97 +485,142 @@ Map.propTypes = {
     left: PropTypes.number,
   }),
 
-  /* inline style object applied to div containing choropleth legend */
+  /**
+   * inline style object applied to div containing choropleth legend
+   */
   legendStyle: PropTypes.object,
 
-  /* is data for this component currently being fetched */
+  /**
+   * is data for this component currently being fetched
+   * will prevent component from updating (a la shouldComponentUpdate) if true
+   */
   loading: PropTypes.bool,
 
+  /**
+   * className applied to div directly wrapping `<Choropleth />`
+   */
   mapClassName: CommonPropTypes.className,
 
+  /**
+   * inline styles applied to div directly wrapping `<Choropleth />`
+   */
   mapStyle: CommonPropTypes.style,
 
-  /*
-    event handler passed to both choropleth and choropleth legend;
-    signature: function(event, locationId, Path) {...}
-  */
+  /**
+   * event handler passed to both choropleth and choropleth legend;
+   * signature: function(event, locationId, Path) {...}
+   */
   onClick: PropTypes.func,
 
-  /*
-   event handler passed to both choropleth and choropleth legend;
-   signature: function(event, locationId, Path) {...}
+  /**
+   * event handler passed to both choropleth and choropleth legend;
+   * signature: function(event, locationId, Path) {...}
    */
   onMouseLeave: PropTypes.func,
 
-  /*
-   event handler passed to both choropleth and choropleth legend;
-   signature: function(event, locationId, Path) {...}
+  /**
+   * event handler passed to both choropleth and choropleth legend;
+   * signature: function(event, locationId, Path) {...}
    */
   onMouseMove: PropTypes.func,
 
-  /*
-     event handler passed to both choropleth and choropleth legend;
-     signature: function(event, locationId, Path) {...}
+  /**
+   * event handler passed to both choropleth and choropleth legend;
+   * signature: function(event, locationId, Path) {...}
    */
   onMouseOver: PropTypes.func,
 
-  /*
-    callback for "Set scale" button;
-    passed current rangeExtent (in data space) as first and only argument
-  */
+  /**
+   * callback for "Set scale" button;
+   * passed current rangeExtent (in data space) as first and only argument
+   */
   onSetScale: PropTypes.func,
 
-  /* callback for slider handles attached to choropleth legend */
+  /**
+   * callback function to attach to slider handles;
+   * passed [min, max] (Array), the range extent as a percentage
+   */
   onSliderMove: PropTypes.func.isRequired,
 
-  /*
-    callback for "Reset" button;
-    passed current rangeExtent (in data space) as first and only argument
-    rangeExtent in this case will always equal this.props.domain
-  */
+  /**
+   * callback for "Reset" button;
+   * passed current rangeExtent (in data space) as first and only argument
+   * rangeExtent in this case will always equal this.props.domain
+   */
   onResetScale: PropTypes.func.isRequired,
 
-  /* array of data objects */
-  selectedLocations: PropTypes.array,
+  /**
+   * array of selected location objects
+   */
+  selectedLocations: PropTypes.arrayOf(PropTypes.object),
 
+  /**
+   * format of slider handle labels
+   * implicitly defaults to [numberFormat](https://github.com/ihmeuw/ihme-ui/blob/docs/src/utils/numbers.js#L9)
+   */
   sliderHandleFormat: PropTypes.func,
 
-  style: CommonPropTypes.style,
+  /**
+   * inline styles applied to outermost wrapping div
+   */
+  style: PropTypes.object,
 
+  /**
+   * title positioned on top of choropleth
+   * in semi-opaque div that spans the full width of the component
+   */
   title: PropTypes.string,
 
+  /**
+   * className applied to div wrapping the title
+   */
   titleClassName: CommonPropTypes.className,
 
+  /**
+   * inline styles applied to div wrapping the title
+   */
   titleStyle: PropTypes.object,
 
-  /*
-    array of keys on topology.objects (e.g., 'national', 'ADM1', 'health_districts');
-    if a key on topology.objects is omitted, it will not be rendered
-  */
+  /**
+   * array of keys on topology.objects (e.g., ['national', 'ADM1', 'health_districts']);
+   * if a key on topology.objects is omitted, it will not be rendered
+   */
   topojsonObjects: PropTypes.arrayOf(PropTypes.string),
 
-  /*
-    preprojected topojson to render;
-    given inclusion of mesh filters, there is a hard dependency on particular topojson
-  */
+  /**
+   * preprojected topojson;
+   * for more information, see the [topojson wiki](https://github.com/topojson/topojson/wiki)
+   */
   topology: PropTypes.shape({
     objects: PropTypes.object.isRequired,
   }).isRequired,
 
-  /* unit of data, used as axis label in choropleth legend */
+  /**
+   * unit of data;
+   * used as axis label in choropleth legend
+   */
   unit: PropTypes.string,
 
-  /* key of datum that holds the value to display */
+  /**
+   * key of datum that holds the value to display (e.g., 'mean')
+   * if a function, signature: (data, feature) => value
+   */
   valueField: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.func,
   ]).isRequired,
 
+  /**
+   * className applied to controls container div
+   */
   zoomControlsClassName: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.string,
   ]),
 
+  /**
+   * inline styles to apply to controls buttons
+   */
   zoomControlsStyle: PropTypes.object,
 };
 
