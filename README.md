@@ -68,27 +68,28 @@ For a more detailed example of how to use this library, see [`starter-app/`](htt
 ---
 
 ## API Reference
-
-* [\<Axis /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/axis/README.md)
-* [\<AxisChart /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/axis-chart/README.md)
-* [\<Button /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/button/README.md)
-* [\<Choropleth /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/choropleth/README.md)
-* [\<ChoroplethLegend /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/choropleth-legend/README.md)
-* [Compositions](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/compositions/README.md)
-  * [\<Map \/>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/compositions/map/README.md)
-* [\<ExpansionContainer /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/expansion-container/README.md)
-* [\<Group /\> and \<Option /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/group/README.md)
-* [\<HtmlLabel /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/html-label/README.md)
-* [\<Legend /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/legend/README.md)
-* \<Select /\> - docs coming soon!
-* [\<ResponsiveContainer /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/responsive-container/README.md)
-* [\<Shape /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/shape/README.md)
-  * \<Area /\>
-  * \<Line /\>
-  * \<MultiLine /\>
-  * \<Scatter /\>
-  * \<Symbol /\>
-* [\<Slider /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/slider/README.md)
-* [\<Spinner /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/spinner/README.md)
-* [\<SvgText /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/svg-text/README.md)
-* [\<Tooltip /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/tooltip/README.md)
+* Components
+  * [\<Axis /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/axis/README.md)
+  * [\<AxisChart /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/axis-chart/README.md)
+  * [\<Button /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/button/README.md)
+  * [\<Choropleth /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/choropleth/README.md)
+  * [\<ChoroplethLegend /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/choropleth-legend/README.md)
+  * [Compositions](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/compositions/README.md)
+    * [\<Map \/>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/compositions/map/README.md)
+  * [\<ExpansionContainer /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/expansion-container/README.md)
+  * [\<Group /\> and \<Option /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/group/README.md)
+  * [\<HtmlLabel /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/html-label/README.md)
+  * [\<Legend /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/legend/README.md)
+  * \<Select /\> - docs coming soon!
+  * [\<ResponsiveContainer /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/responsive-container/README.md)
+  * [\<Shape /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/shape/README.md)
+    * \<Area /\>
+    * \<Line /\>
+    * \<MultiLine /\>
+    * \<Scatter /\>
+    * \<Symbol /\>
+  * [\<Slider /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/slider/README.md)
+  * [\<Spinner /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/spinner/README.md)
+  * [\<SvgText /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/svg-text/README.md)
+  * [\<Tooltip /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/tooltip/README.md)
+* [Utilities](https://github.com/ihmeuw/ihme-ui/tree/master/src/utils) - docs coming soon!
