@@ -74,6 +74,9 @@ function getLowHighValues(value) {
   return { low: value };
 }
 
+/**
+ * `import Slider from 'ihme-ui/ui/slider'`
+ */
 export default class Slider extends PureComponent {
   constructor(props) {
     super(props);
@@ -147,10 +150,10 @@ export default class Slider extends PureComponent {
     return (event) => {
       let step;
       switch (event.keyCode) {
-        case 37:
+        case 37: // ArrowLeft
           step = -1;
           break;
-        case 39:
+        case 39: // ArrowRight
           step = 1;
           break;
         default:
@@ -311,44 +314,95 @@ export default class Slider extends PureComponent {
 }
 
 Slider.propTypes = {
-  /* include fill in the track to indicate value. */
+  /**
+   * Include fill in the track to indicate value.
+   */
   fill: PropTypes.bool,
+
+  /**
+   * Class name applied to fill.
+   */
   fillClassName: CommonPropTypes.className,
+
+  /**
+   * Inline styles applied to fill.
+   */
   fillStyle: PropTypes.object,
 
+  /**
+   * Font size of handle labels.
+   */
   fontSize: PropTypes.string,
 
+  /**
+   * Class name applied to slider handle.
+   */
   handleClassName: CommonPropTypes.className,
+
+  /**
+   * Inline styles applied to slider handle.
+   */
   handleStyle: PropTypes.object,
 
-  /*
-   * function applied to the selected value prior to rendering.
-   * Params:
-   *   value - selected value
-   *
-   * Returns:
-   *   'string'
-   *
-   * Default:
-   *   _.identity
+  /**
+   * Function applied to label prior to rendering.
+   * Signature: (value): string => {...}
    */
   labelFunc: PropTypes.func,
 
-  /*
-   * callback functions when value is changed.
-   * @param {Object} event - triggered the action
-   * @param {Object} value - low and high values
-   * @param {Object} Slider - the slider object itself
+  /**
+   * [dragmove](http://interactjs.io/docs/#interactevents) callback.
+   * Called when slider value is changed with the following arguments:
+   *  - {Object} SyntheticEvent - the triggered action
+   *  - {Object} values - { high: ..., low: ... }
+   *  - {Object} Slider - the slider object (class instance)
    */
   onDrag: PropTypes.func.isRequired,
+
+  /**
+   * [dragend](http://interactjs.io/docs/#interactevents) callback.
+   * Called when slider handle is released with the following arguments:
+   *  - {Object} SyntheticEvent - the triggered action
+   *  - {Object} values - { high: ..., low: ... }
+   *  - {Object} Slider - the slider object (class instance)
+   */
   onDragEnd: PropTypes.func,
 
+  /**
+   * onKeyDown callback. Named for consistency with onDrag and onDragEnd.
+   * Called with the following arguments:
+   *  - {Object} SyntheticEvent - the triggered action
+   *  - {Object} values - { high: ..., low: ... }
+   *  - {Object} Slider - the slider object (class instance)
+   */
   onKey: PropTypes.func,
+
+  /**
+   * onKeyUp callback. Named for consistency with onDrag and onDragEnd.
+   * Called with the following arguments:
+   *  - {Object} SyntheticEvent - the triggered action
+   *  - {Object} values - { high: ..., low: ... }
+   *  - {Object} Slider - the slider object (class instance)
+   */
   onKeyEnd: PropTypes.func,
 
+  /**
+   * onClick callback for slider track.
+   * Called with the following arguments:
+   *  - {Object} SyntheticEvent - the triggered action
+   *  - {Object} values - { high: ..., low: ... }
+   *  - {Object} Slider - the slider object (class instance)
+   */
   onTrackClick: PropTypes.func,
 
-  /* extents of slider values. */
+  /**
+   *  Extent of slider values. Can be either an array of [min, max] or a configuration object.
+   *  Config:
+   *    - low: min value
+   *    - high: max value
+   *    - steps: number of steps between low and high
+   *    - precision: rounding precision
+   */
   range: PropTypes.oneOfType([
     PropTypes.array,
     PropTypes.shape({
@@ -359,22 +413,35 @@ Slider.propTypes = {
     }),
   ]).isRequired,
 
-  /* class name and style for each tick */
+  /**
+   * Show ticks in track.
+   */
+  ticks: PropTypes.bool,
+
+  /**
+   * Class name applied to each tick marking within the track, if applicable.
+   */
   tickClassName: CommonPropTypes.className,
+
+  /**
+   * Inline styles applied to each tick marking within the track, if applicable.
+   */
   tickStyle: PropTypes.object,
 
-  /* show ticks in track */
-  ticks: PropTypes.bool,
-  ticksClassName: CommonPropTypes.className,
-  ticksStyle: PropTypes.object,
-
+  /**
+   * Class name applied to slider track.
+   */
   trackClassName: CommonPropTypes.className,
+
+  /**
+   * Inline styles applied to slider track.
+   */
   trackStyle: PropTypes.object,
 
-  /*
-   * Initial selected value.
+  /**
+   * Selected value.
    * If number, a single slider handle will be rendered.
-   * If object with keys 'low' and 'high', two slider handles will be rendered.
+   * If object with keys 'low' and 'high', two slider handles (a "range slider") will be rendered.
    */
   value: PropTypes.oneOfType([
     PropTypes.number,
@@ -386,11 +453,19 @@ Slider.propTypes = {
     }),
   ]).isRequired,
 
-  /* width and height of Slider component. */
+  /**
+   * Width of slider (in pixels).
+   */
   width: PropTypes.number,
 
-  /* class name styles applied to outermost wrapper */
+  /**
+   * Class name applied to outermost wrapper.
+   */
   wrapperClassName: CommonPropTypes.className,
+
+  /**
+   * Inline styles applied to outermost wrapper.
+   */
   wrapperStyle: PropTypes.object,
 };
 
