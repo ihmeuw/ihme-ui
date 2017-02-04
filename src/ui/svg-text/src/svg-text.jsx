@@ -1,19 +1,10 @@
 import React, { PropTypes } from 'react';
 
-const propTypes = {
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  anchor: PropTypes.oneOf(['start', 'middle', 'end']).isRequired,
-  x: PropTypes.number.isRequired,
-  y: PropTypes.number,
-  dx: PropTypes.number,
-  dy: PropTypes.number,
-  fill: PropTypes.string
-};
-
-const defaultProps = {
-  fill: 'black'
-};
-
+/**
+ * `import SvgText from 'ihme-ui/ui/svg-text'`
+ *
+ *  A primitive wrapper around an SVG `<text>` element.
+ */
 const SvgText = (props) => {
   const {
     x,
@@ -39,8 +30,45 @@ const SvgText = (props) => {
   );
 };
 
-SvgText.propTypes = propTypes;
+SvgText.propTypes = {
+  /**
+   * Text to render.
+   */
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 
-SvgText.defaultProps = defaultProps;
+  /**
+   * Where to anchor text.
+   */
+  anchor: PropTypes.oneOf(['start', 'middle', 'end']).isRequired,
+
+  /**
+   * Position element in x direction.
+   */
+  x: PropTypes.number.isRequired,
+
+  /**
+   * Position element in y direction.
+   */
+  y: PropTypes.number,
+
+  /**
+   * Shift element in x direction.
+   */
+  dx: PropTypes.number,
+
+  /**
+   * Shift element in y direction.
+   */
+  dy: PropTypes.number,
+
+  /**
+   * Fill color of txt.
+   */
+  fill: PropTypes.string
+};
+
+SvgText.defaultProps = {
+  fill: 'black'
+};
 
 export default SvgText;
