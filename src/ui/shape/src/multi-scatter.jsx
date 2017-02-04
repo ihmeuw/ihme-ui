@@ -5,6 +5,11 @@ import Scatter from './scatter';
 
 import { propResolver, PureComponent, CommonDefaultProps, CommonPropTypes } from '../../../utils';
 
+/**
+ * `import { MultiScatter } from 'ihme-ui/ui/shape'`
+ *
+ * This is a convenience component intended to make it easier to render many `<Scatter />`s on a single chart.
+ */
 export default class MultiScatter extends PureComponent {
   render() {
     const {
@@ -83,23 +88,39 @@ export default class MultiScatter extends PureComponent {
 }
 
 MultiScatter.propTypes = {
-  /* base classname to apply to mult-scatter <g> wrapper */
+  /**
+   * className applied to outermost wrapping `<g>`.
+   */
   className: CommonPropTypes.className,
 
-  /* string id url for clip path */
+  /**
+   * If a clip path is applied to a container element (e.g., an `<AxisChart />`),
+   * clip all children of `<MultiScatter />` to that container by passing in the clip path URL id.
+   */
   clipPathId: PropTypes.string,
 
-  /* function for a scale of colors. If present, overrides fill */
+  /**
+   * If provided and `dataAccessors.fill` is undefined,
+   * determines the color of scatter symbols.
+   */
   colorScale: PropTypes.func,
 
-  /* array of datum objects */
+  /**
+   *  Array of objects, e.g. [ {location: 'USA',values: []}, {location: 'Canada', values: []} ].
+   */
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
 
-  /*
-   accessors on datum objects
-     fill: property on data to provide fill (will be passed to colorScale)
-     x: property on data to position in x-direction
-     y: property on data to position in y-direction
+  /**
+   * Accessors on datum objects
+   *   fill: property on datum to provide fill (will be passed to `props.colorScale`)
+   *   key: unique dimension of datum (required)
+   *   symbol: property on datum used to determine which type of symbol to render (will be passed to `props.symbolScale`)
+   *   x: property on datum to position scatter symbols in x-direction
+   *   y: property on datum to position scatter symbols in y-direction
+   *
+   * Each accessor can either be a string or function. If a string, it is assumed to be the name of a
+   * property on datum objects; full paths to nested properties are supported (e.g., { `x`: 'values.year', ... }).
+   * If a function, it is passed datum objects as its first and only argument.
    */
   dataAccessors: PropTypes.shape({
     fill: CommonPropTypes.dataAccessor,
@@ -109,12 +130,12 @@ MultiScatter.propTypes = {
     y: CommonPropTypes.dataAccessor,
   }).isRequired,
 
-  /*
-   key names containing fields for child component configuration
-     color -> (optional) color data as input to color scale.
-     data -> data provided to child components. default: 'values'
-     key -> unique key to apply to child components. used as input to color scale if color field is not specified. default: 'key'
-     symbol -> symbol data as input to the symbol scale.
+  /**
+   * Accessors for objects within `props.data`
+   *   color: (optional) color data as input to color scale.
+   *   data: data provided to child components. default: 'values'
+   *   key: unique key to apply to child components. used as input to color scale if color field is not specified. default: 'key'
+   *   symbol: symbol data as input to the symbol scale.
    */
   fieldAccessors: PropTypes.shape({
     color: CommonPropTypes.dataAccessor,
@@ -123,75 +144,111 @@ MultiScatter.propTypes = {
     symbol: CommonPropTypes.dataAccessor,
   }),
 
-  /* the symbol to focus */
+  /**
+   * The datum object corresponding to the `<Symbol />` currently focused.
+   */
   focus: PropTypes.object,
 
-  /* classname to be applied if symbol has focus */
+  /**
+   * className applied if `<Symbol />` has focus.
+   */
   focusedClassName: CommonPropTypes.className,
 
-  /*
-   inline-style object or function to be applied if symbol has focus;
-   if a function, is called with datum
-   can override style and selectedStyle
+  /**
+   * inline styles applied to focused `<Symbol />`.
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<Symbol />`.
    */
   focusedStyle: CommonPropTypes.style,
 
-  /* mouse events signature: function(event, data, instance) {...} */
+  /**
+   * onClick callback.
+   * signature: function(SyntheticEvent, data, instance) {...}
+   */
   onClick: PropTypes.func,
+
+  /**
+   * onMouseLeave callback.
+   * signature: function(SyntheticEvent, data, instance) {...}
+   */
   onMouseLeave: PropTypes.func,
+
+  /**
+   * onMouseMove callback.
+   * signature: function(SyntheticEvent, data, instance) {...}
+   */
   onMouseMove: PropTypes.func,
+
+  /**
+   * onMouseOver callback.
+   * signature: function(SyntheticEvent, data, instance) {...}
+   */
   onMouseOver: PropTypes.func,
 
-  /* scales */
+  /**
+   * `x` and `y` scales for positioning `<Symbol />`s.
+   * Object with keys: `x`, and `y`.
+   */
   scales: PropTypes.shape({
     x: PropTypes.func,
     y: PropTypes.func,
   }).isRequired,
 
-  /*
-   classname to apply to Scatter's <g> wrapper;
-   named 'scatterClassName' to disambiguate 'className' prop passed to Symbol
+  /**
+   * className applied to `<Scatter />`'s outermost wrapping `<g>`.
    */
   scatterClassName: CommonPropTypes.className,
 
-  /*
-   function to apply to the datum to transform scatter values. default: _.identity
-   @param values
-   @param key
-   @return transformed data (or undefined)
+  /**
+   * function to apply to the datum to transform scatter values. default: _.identity
+   * signature: (data, key) => {...}
    */
   scatterValuesIteratee: PropTypes.func,
 
-  /* classname to be applied to Symbol if selected */
+  /**
+   * className applied to `<Symbol />`s if selected
+   */
   selectedClassName: CommonPropTypes.className,
 
-  /*
-   inline-style object or function to be applied if symbol is selected;
-   if a function, is called with datum
-   can override style
+  /**
+   * inline styles applied to selected `<Symbol />`s.
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<Symbol />`.
    */
   selectedStyle: CommonPropTypes.style,
 
-  /* a symbol that is selected, or an array of symbols selected */
+  /**
+   * Datum object or array of datum objects corresponding to selected `<Symbol />`s
+   */
   selection: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.array,
   ]),
 
-  /* size of symbols; see Symbol.propTypes */
+  /**
+   * Size of `<Symbol />`s; area in square pixels.
+   * If not provided, `<Symbol />` provides a default of 64.
+   */
   size: PropTypes.number,
 
-  style: CommonPropTypes.style,
+  /**
+   * inline style applied to outermost wrapping `<g>`
+   */
+  style: PropTypes.object,
 
-  /* base classname to apply to symbol */
+  /**
+   * className applied to each `<Symbol />`
+   */
   symbolClassName: CommonPropTypes.className,
 
-  /* function to transform symbol value to a shape */
+  /**
+   * If provided, used in conjunction with `dataAccessors.symbol` (or `dataAccessors.key` if not provided)
+   * to determine type of symbol to render
+   */
   symbolScale: PropTypes.func,
 
-  /*
-   inline-style object or function to be applied as base style for Symbols;
-   if a function, is called with associated datum
+  /**
+   * Inline styles applied to `<Symbol />`s.
    */
   symbolStyle: CommonPropTypes.style,
 };

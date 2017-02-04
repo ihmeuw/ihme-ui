@@ -19,6 +19,9 @@ const SYMBOL_ROTATE = {
   right: 90,
 };
 
+/**
+ * `import { Symbol } from 'ihme-ui/ui/shape'`
+ */
 export default class Symbol extends PureComponent {
   /**
    * Return path string for given symbol type and size
@@ -104,63 +107,111 @@ export default class Symbol extends PureComponent {
 }
 
 Symbol.propTypes = {
-  /* base classname to apply to symbol */
+  /**
+   * Class name applied to path.
+   */
   className: CommonPropTypes.className,
 
-  /* string id url for clip path */
+  /**
+   * If a clip path is applied to a container element (e.g., an `<AxisChart />`),
+   * clip this path to that container by passing in the clip path URL id.
+   */
   clipPathId: PropTypes.string,
 
-  /* Datum for the click and hover handlers. */
+  /**
+   * Datum object corresponding to this symbol ("bound" data, in the language in D3)
+   */
   datum: PropTypes.object,
 
+  /**
+   * Fill color for path.
+   */
   fill: PropTypes.string,
 
-  /* whether symbol has focus */
+  /**
+   * Whether symbol has focus.
+   */
   focused: PropTypes.bool,
 
-  /* classname to be applied if symbol has focus */
+  /**
+   * Class name applied if symbol has focus.
+   */
   focusedClassName: CommonPropTypes.className,
 
-  /*
-    inline-style object or function to be applied if symbol has focus;
-    if a function, is called with datum
-    can override style and selectedStyle
-  */
+  /**
+   * Inline styles applied if symbol has focus.
+   * If an object, spread directly into inline styles.
+   * If a function, called with `props.datum` as argument; must return an object of inline styles.
+   */
   focusedStyle: CommonPropTypes.style,
 
-  /* mouse events signature: function(event, data, instance) {...} */
+  /**
+   * onClick callback.
+   * signature: function(SyntheticEvent, data, instance) {...}
+   */
   onClick: PropTypes.func,
+
+  /**
+   * onMouseLeave callback.
+   * signature: function(SyntheticEvent, data, instance) {...}
+   */
   onMouseLeave: PropTypes.func,
+
+  /**
+   * onMouseMove callback.
+   * signature: function(SyntheticEvent, data, instance) {...}
+   */
   onMouseMove: PropTypes.func,
+
+  /**
+   * onMouseOver callback.
+   * signature: function(SyntheticEvent, data, instance) {...}
+   */
   onMouseOver: PropTypes.func,
 
-  /* whether symbol is selected */
+  /**
+   * Whether symbol is selected.
+   */
   selected: PropTypes.bool,
 
-  /* classname to be applied if symbol is selected */
+  /**
+   * Class name applied if selected.
+   */
   selectedClassName: CommonPropTypes.className,
 
-  /*
-   inline-style object or function to be applied if symbol is selected;
-   if a function, is called with datum
-   can override style
+  /**
+   * Inline styles applied to selected `<Symbol />`s.
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<Symbol />`.
    */
   selectedStyle: CommonPropTypes.style,
 
-  /* area in square pixels */
+  /**
+   * Area in square pixels.
+   */
   size: PropTypes.number,
 
-  /*
-   inline-style object or function to be applied as base style;
-   if a function, is called with datum
+  /**
+   * Base inline styles applied to `<Symbol />`s.
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<Symbol />`.
    */
   style: CommonPropTypes.style,
 
-  /* a SYMBOL_TYPE  */
+  /**
+   * Type of symbol to render, driven by d3-shape.
+   * One of: 'circle', 'cross', 'diamond', 'square', 'star', 'triangle', 'wye'
+   */
   symbolType: PropTypes.oneOf(symbolTypes()),
 
+  /**
+   * Move symbol away from origin in x direction.
+   */
   translateX: PropTypes.number,
 
+  /**
+   * Move symbol away from origin in y direction.
+   */
   translateY: PropTypes.number,
 };
 

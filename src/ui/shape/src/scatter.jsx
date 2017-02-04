@@ -20,6 +20,9 @@ import {
 
 import Symbol from './symbol';
 
+/**
+ * `import { Scatter } from 'ihme-ui/ui/shape'`
+ */
 export default class Scatter extends PureComponent {
   constructor(props) {
     super(props);
@@ -102,66 +105,138 @@ export default class Scatter extends PureComponent {
 }
 
 Scatter.propTypes = {
-  /* base classname to apply to scatter <g> wrapper */
+  /**
+   * className applied to outermost wrapping `<g>`.
+   */
   className: CommonPropTypes.className,
 
-  /* string id url for clip path */
+  /**
+   * If a clip path is applied to a container element (e.g., an `<AxisChart />`),
+   * clip all children of `<Scatter />` to that container by passing in the clip path URL id.
+   */
   clipPathId: PropTypes.string,
 
-  /* function for a scale of colors. If present, overrides fill */
+  /**
+   * If provided will determine color of rendered `<Symbol />`s
+   */
   colorScale: PropTypes.func,
 
-  /* array of datum objects */
+  /**
+   * Array of datum objects
+   */
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
 
-  /*
-    accessors on datum objects; each should be either
-    a property on datum objects or function which accepts that datum object
-      fill: property on datum to provide fill (will be passed to colorScale)
-      key: unique dimension of datum (required)
-      x: property on data to position in x-direction
-      y: property on data to position in y-direction
-  */
+  /**
+   * Accessors on datum objects
+   *   fill: property on datum to provide fill (will be passed to `props.colorScale`)
+   *   key: unique dimension of datum (required)
+   *   symbol: property on datum used to determine which type of symbol to render (will be passed to `props.symbolScale`)
+   *   x: property on datum to position scatter symbols in x-direction
+   *   y: property on datum to position scatter symbols in y-direction
+   *
+   * Each accessor can either be a string or function. If a string, it is assumed to be the name of a
+   * property on datum objects; full paths to nested properties are supported (e.g., { `x`: 'values.year', ... }).
+   * If a function, it is passed datum objects as its first and only argument.
+   */
   dataAccessors: PropTypes.shape({
     fill: CommonPropTypes.dataAccessor,
-    key: CommonPropTypes.dataAccessor,
+    key: CommonPropTypes.dataAccessor.isRequired,
     symbol: CommonPropTypes.dataAccessor,
     x: CommonPropTypes.dataAccessor,
     y: CommonPropTypes.dataAccessor,
   }).isRequired,
 
-  /* string for the color of this data group */
+  /**
+   * If `props.colorScale` is undefined, each `<Symbol />` will be given this same fill value.
+   */
   fill: PropTypes.string,
 
-  /* the symbol to focus */
+  /**
+   * The datum object corresponding to the `<Symbol />` currently focused.
+   */
   focus: PropTypes.object,
 
-  /* mouse events signature: function(event, data, instance) {...} */
+  /**
+   * className applied if `<Symbol />` has focus.
+   */
+  focusedClassName: CommonPropTypes.className,
+
+  /**
+   * inline styles applied to focused `<Symbol />`
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<Symbol />`.
+   */
+  focusedStyle: CommonPropTypes.style,
+
+  /**
+   * onClick callback.
+   * signature: function(SyntheticEvent, data, instance) {...}
+   */
   onClick: PropTypes.func,
+
+  /**
+   * onMouseLeave callback.
+   * signature: function(SyntheticEvent, data, instance) {...}
+   */
   onMouseLeave: PropTypes.func,
+
+  /**
+   * onMouseMove callback.
+   * signature: function(SyntheticEvent, data, instance) {...}
+   */
   onMouseMove: PropTypes.func,
+
+  /**
+   * onMouseOver callback.
+   * signature: function(SyntheticEvent, data, instance) {...}
+   */
   onMouseOver: PropTypes.func,
 
-  /* scales */
+  /**
+   * `x` and `y` scales for positioning `<Symbol />`s.
+   * Object with keys: `x`, and `y`.
+   */
   scales: PropTypes.shape({
     x: PropTypes.func,
     y: PropTypes.func,
   }).isRequired,
 
-  /* a symbol that is selected, or an array of symbols selected */
+  /**
+   * className applied to `<Symbol />`s if selected
+   */
+  selectedClassName: CommonPropTypes.className,
+
+  /**
+   * Array of datum objects corresponding to selected `<Symbol />`s
+   */
   selection: PropTypes.array,
 
-  /* size of symbols; see Symbol.propTypes */
+  /**
+   * Size of `<Symbol />`s; area in square pixels.
+   * If not provided, `<Symbol />` provides a default of 64.
+   */
   size: PropTypes.number,
 
+  /**
+   * Inline styles passed to each `<Symbol />`
+   */
   style: CommonPropTypes.style,
 
-  /* base classname to apply to symbol */
+  /**
+   * className applied to each `<Symbol />`
+   */
   symbolClassName: CommonPropTypes.className,
 
+  /**
+   * If provided, used in conjunction with `dataAccessors.symbol` (or `dataAccessors.key` if not provided)
+   * to determine type of symbol to render
+   */
   symbolScale: PropTypes.func,
 
-  /* string for the type of symbol to be used */
+  /**
+   * Type of symbol to render; use in lieu of `props.symbolScale`
+   * if you want all `<Symbol />` to be of the same type.
+   */
   symbolType: PropTypes.string,
 };
 

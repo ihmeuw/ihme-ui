@@ -12,6 +12,14 @@ import {
   PureComponent,
 } from '../../../utils';
 
+/**
+ * `import { MultiLine } from 'ihme-ui/ui/shape'`
+ *
+ * This is a convenience component intended to make it easier to render many `<Line />`s
+ * on a single chart. It additionally supports rendering `<Area />`s when the proper `dataAccessors`
+ * are provided, which can be helpful, for example, for showing uncertainty around an estimate represented
+ * by a line.
+ */
 export default class MultiLine extends PureComponent {
   render() {
     const {
@@ -105,48 +113,58 @@ export default class MultiLine extends PureComponent {
 }
 
 MultiLine.propTypes = {
-  /* base classname to apply to Areas that are children of MultiLine */
+  /**
+   * classname applied to `<Area/>`s that are children of MultiLine, if applicable
+   */
   areaClassName: CommonPropTypes.className,
 
-  /*
-   if object, spread directly as inline-style object into <Area />
-   if function, passed areaValues as first arg, area key as second arg
-    return value is spread as inline-style object into <Area />
+  /**
+   * inline styles applied to `<Area />`s, if applicable
    */
   areaStyle: CommonPropTypes.style,
 
-  /*
-   function to apply to the datum to transform area values. default: _.identity
-   @param values
-   @param key
-   @return transformed data (or undefined)
+  /**
+   * Function to apply to the data to transform area values. default: _.identity
+   * signature: (data, key) => {...}
    */
   areaValuesIteratee: PropTypes.func,
 
+  /**
+   * className applied to outermost wrapping `<g>`
+   */
   className: CommonPropTypes.className,
 
-  /* string id url for clip path */
+  /**
+   * If a clip path is applied to a container element (e.g., an `<AxisChart />`),
+   * clip all children of `<MultiLine />` to that container by passing in the clip path URL id.
+   */
   clipPathId: PropTypes.string,
 
-  /* fn that accepts keyfield, and returns stroke color for line */
+  /**
+   * Function that accepts keyfield and returns stroke color for line.
+   */
   colorScale: PropTypes.func,
 
-  /* array of objects
-    e.g. [ {location: 'USA',values: []}, {location: 'Canada', values: []} ]
-  */
+  /**
+   *  Array of objects, e.g. [ {location: 'USA',values: []}, {location: 'Canada', values: []} ].
+   */
   data: PropTypes.arrayOf(PropTypes.object),
 
-  /*
-    key names containing x, y data
-      x -> accessor for xscale
-      y -> accessor for yscale (when there's one, e.g. <Line />)
-      y0 -> accessor for yscale (when there're two; e.g., lower bound)
-      y1 -> accessor for yscale (when there're two; e.g., upper bound)
-
-    To show only a line, include just x, y.
-    To show only an area, include just x, y0, y1.
-    To show line and area, include all properties.
-  */
+  /**
+   * Keys on datum objects containing values to scale to chart
+   *   x: accessor for xscale
+   *   y: accessor for yscale (when applicable, e.g. <Line />)
+   *   y0: accessor for yscale (when applicable; e.g., lower bound)
+   *   y1: accessor for yscale (when applicable; e.g., upper bound)
+   *
+   * To render `<Line />`s, include just x, y.
+   * To render `<Area />`s, include just x, y0, y1.
+   * To render `<Line />`s and `<Area />`s, include all four properties.
+   *
+   * Each accessor can either be a string or function. If a string, it is assumed to be the name of a
+   * property on datum objects; full paths to nested properties are supported (e.g., { `x`: 'values.year', ... }).
+   * If a function, it is passed datum objects as its first and only argument.
+   */
   dataAccessors: PropTypes.oneOfType([
     PropTypes.shape({
       x: CommonPropTypes.dataAccessor.isRequired,
@@ -165,11 +183,15 @@ MultiLine.propTypes = {
     }),
   ]).isRequired,
 
-  /*
-   key names containing fields for child component configuration
-     color -> (optional) color data as input to color scale.
-     data -> data provided to child components. default: 'values'
-     key -> unique key to apply to child components. used as input to color scale if color field is not specified. default: 'key'
+  /**
+   * Accessors for objects within `props.data`
+   *  color: (optional) color data as input to color scale.
+   *  data: data provided to child components. default: 'values'
+   *  key: unique key to apply to child components. used as input to color scale if color field is not specified. default: 'key'
+   *
+   *  For example:
+   *  IF (`props.data` === [ {location: 'USA',values: [{...}, {...}]}, {location: 'Canada', values: [{...}, {...}]} ])
+   *  THEN `fieldAccessors` === { data: 'values', key: 'location' }
    */
   fieldAccessors: PropTypes.shape({
     color: CommonPropTypes.dataAccessor,
@@ -177,34 +199,58 @@ MultiLine.propTypes = {
     key: CommonPropTypes.dataAccessor.isRequired,
   }),
 
-  /* base classname to apply to Lines that are children of MultiLine */
+  /**
+   * classname applied to `<Line />`s, if applicable
+   */
   lineClassName: CommonPropTypes.className,
 
-  /*
-    if object, spread directly as inline-style object into <Line />
-    if function, passed lineValues as first arg, line key as second arg
-      return value is spread as inline-style object into <Line />
+  /**
+   * inline styles applied to `<Line />`s, if applicable
    */
   lineStyle: CommonPropTypes.style,
 
-  /*
-   function to apply to the datum to transform line values. default: _.identity
-   @see areaValuesIteratee
+  /**
+   * function to apply to the data to transform area values. default: _.identity
+   * signature: (data, key) => {...}
    */
   lineValuesIteratee: PropTypes.func,
 
-  /* mouse events signature: function(event, data, instance) {...} */
+  /**
+   * onClick callback.
+   * signature: function(SyntheticEvent, data, instance) {...}
+   */
   onClick: PropTypes.func,
+
+  /**
+   * onMouseLeave callback.
+   * signature: function(SyntheticEvent, data, instance) {...}
+   */
   onMouseLeave: PropTypes.func,
+
+  /**
+   * onMouseMove callback.
+   * signature: function(SyntheticEvent, data, instance) {...}
+   */
   onMouseMove: PropTypes.func,
+
+  /**
+   * onMouseOver callback.
+   * signature: function(SyntheticEvent, data, instance) {...}
+   */
   onMouseOver: PropTypes.func,
 
-  /* scales from d3Scale */
+  /**
+   * `x` and `y` scales.
+   * Object with keys: `x`, and `y`.
+   */
   scales: PropTypes.shape({
     x: PropTypes.func,
     y: PropTypes.func,
   }).isRequired,
 
+  /**
+   * inline style applied to outermost wrapping `<g>`
+   */
   style: CommonPropTypes.style,
 };
 
