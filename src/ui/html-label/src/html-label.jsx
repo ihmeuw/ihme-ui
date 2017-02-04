@@ -4,6 +4,11 @@ import classNames from 'classnames';
 import { CommonPropTypes } from '../../../utils/props';
 import styles from './html-label.css';
 
+/**
+ * `import HtmlLabel from 'ihme-ui/ui/html-label'`
+ *
+ * An HTML `<label>` to wrap interactive content.
+ */
 const HtmlLabel = (props) => {
   return (
     <label
@@ -22,23 +27,40 @@ const HtmlLabel = (props) => {
 HtmlLabel.propTypes = {
   children: PropTypes.element,
 
-  /* array of classes to add to label */
+  /**
+   * className applied to `<label>`
+   */
   className: CommonPropTypes.className,
 
-  /* ID of a labelable form-related element */
+  /**
+   * ID of a labelable element; useful if label does not contain its control.
+   * See [https://www.w3.org/TR/html5/forms.html#attr-label-for](https://www.w3.org/TR/html5/forms.html#attr-label-for).
+   */
   htmlFor: PropTypes.string,
 
-  /* path to image to render within label tag */
+  /**
+   * path to image to render within label tag
+   */
   icon: PropTypes.string,
 
+  /**
+   * signature: function(SyntheticEvent) {...}
+   */
   onClick: PropTypes.func,
 
+  /**
+   * signature: function(SyntheticEvent) {...}
+   */
   onMouseOver: PropTypes.func,
 
-  /* text to render within label tag */
+  /**
+   * text to render within label tag
+   */
   text: PropTypes.string,
 
-  /* color scheme of component; see html-label.css */
+  /**
+   * one of: 'dark' (`color: white`), 'light' (`color: black`)
+   */
   theme: PropTypes.oneOf(['dark', 'light']),
 };
 
