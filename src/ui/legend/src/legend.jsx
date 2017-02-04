@@ -8,6 +8,11 @@ import styles from './legend.css';
 import LegendItem from './legend-item';
 import LegendTitle from './legend-title';
 
+
+/**
+ * `import Legend from 'ihme-ui/ui/legend'`
+ *
+ */
 export default class Legend extends React.Component {
 
   renderTitle() {
@@ -61,84 +66,113 @@ export default class Legend extends React.Component {
 }
 
 Legend.propTypes = {
-  /* legend items to render */
+  /**
+   * legend items
+   */
   items: PropTypes.arrayOf(PropTypes.object).isRequired,
 
-  /* custom component to render for each item, passed current item;
-   must be passable to React.createElement
+  /**
+   * component (must be passable to React.createElement) to render for each item;
+   * passed props `item`, `itemClassName`, `itemStyles`, `labelKey`, `LabelComponent`, `onClear`, `onClick`, `renderClear`, `symbolColorKey`, `symbolTypeKey`
+   * defaults to [LegendItem](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/legend/src/legend-item.jsx)
    */
   ItemComponent: PropTypes.func,
 
-  /* classname(s) to apply to li */
+  /**
+   * classname applied to `ItemComponent`
+   */
   itemClassName: CommonPropTypes.className,
 
-  /*
-   inline-styles to be applied to individual legend item <li>
-   if passed an object, will be applied directly inline to the li
-   if passed a function, will be called with the current item
-  */
+  /**
+   * inline styles applied to `ItemComponent`
+   * if passed an object, will be applied directly inline to the `<li>`
+   * if passed a function, will be called with the current item obj
+   */
   itemStyles: CommonPropTypes.style,
 
-  /* custom component to render for each label, passed current item;
-   must be passable to React.createElement
+  /**
+   * custom component to render for each label, passed current item;
+   * must be passable to React.createElement
    */
   LabelComponent: PropTypes.func,
 
+  /**
+   * path to label in item objects (e.g., 'name', 'properties.label')
+   * or a function to resolve the label (signature: function (item) {...})
+   */
   labelKey: PropTypes.oneOfType([
-    /* either the path of label in the item objects */
     PropTypes.string,
-
-    /* or a function to resolve the label, passed the current item */
-    PropTypes.func
+    PropTypes.func,
   ]).isRequired,
 
-  /* callback when 'clear' icon is clicked; see props.renderClear */
+  /**
+   * callback when 'clear' icon is clicked; signature: function(SyntheticEvent, item) {}
+   */
   onClear: PropTypes.func,
 
-  /* callback when legend item is clicked */
+  /**
+   * callback when legend item is clicked; signature: function(SyntheticEvent, item) {}
+   */
   onClick: PropTypes.func,
 
-  /* whether to render a 'clear' icon ('x') inline with each legend item */
+  /**
+   * whether to render a 'clear' icon ('x') inline with each legend item
+   */
   renderClear: PropTypes.bool,
 
+  /**
+   * path to symbol color in item objects (e.g., 'color', 'properties.color')
+   * or a function to resolve the color (signature: function (item) {...})
+   */
   symbolColorKey: PropTypes.oneOfType([
-    /* either the path of symbol color in the item objects */
     PropTypes.string,
-
-    /* or a function to resolve the symbol color, passed the current item */
-    PropTypes.func
+    PropTypes.func,
   ]).isRequired,
 
+  /**
+   * path to symbol type in item objects (e.g., 'type', 'properties.type') or a function to resolve the type (signature: function (item) {...});
+   * must be one of [supported symbol types](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/symbol.js#L23)
+   */
   symbolTypeKey: PropTypes.oneOfType([
-    /* either the path of symbol type in the item objects */
     PropTypes.string,
-
-    /* or a function to resolve the symbol type, passed the current item */
-    PropTypes.func
+    PropTypes.func,
   ]).isRequired,
 
-  /* title for the legend */
+  /**
+   * title for the legend
+   */
   title: PropTypes.string,
 
-  /* custom component to render for the title;
-   passed { className: props.titleClassName, title: props.title, style: props.titleStyles } as props;
-   must be passable to React.createElement
+  /**
+   * component (must be passable to React.createElement) to render for the title;
+   * passed props `title`, `className`, `style`
+   * defaults to [LegendTitle](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/legend/src/legend-title.jsx)
    */
   TitleComponent: PropTypes.func,
 
-  /* extra class names to append to the title component */
+  /**
+   * className applied to title component
+   */
   titleClassName: CommonPropTypes.className,
 
-  /* inline styles to be applied to title component */
+  /**
+   * inline styles applied to title component
+   */
   titleStyles: PropTypes.object,
 
-  /* any additional classes to add to <ul> */
+  /**
+   * className applied to `<ul>`, which wraps legend items
+   */
   ulClassName: CommonPropTypes.className,
 
-  /* any additional classes to add to Legend container */
+  /**
+   * className applied to outermost, wrapping `<div>`
+   */
   wrapperClassName: CommonPropTypes.className,
 
-  /* inline styles to apply to legend wrapper */
+  /**
+   * inline styles applied to outermost, wrapper `<div>`
+   */
   wrapperStyles: PropTypes.object
 };
 
