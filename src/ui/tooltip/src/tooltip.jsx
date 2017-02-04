@@ -31,6 +31,12 @@ function mapShowPropToVisibilityRule(visible) {
   return 'hidden';
 }
 
+
+/**
+ * `import Tooltip from 'ihme-ui/ui/tooltip'`
+ *
+ * A wrapper to provide bounded, absolute positioning for arbitrary content.
+ */
 export default class Tooltip extends PureComponent {
   /**
    * Calculate the translation of the tooltip with respect to the top-left corner of the screen
@@ -152,46 +158,60 @@ export default class Tooltip extends PureComponent {
 }
 
 Tooltip.propTypes = {
-  /*
-   pixel bounds within which to render tooltip;
-   defaults to [0, window.innerWidth], [0, window.innerHeight]
-  */
+  /**
+   * Pixel bounds within which to render tooltip.
+   * Defaults to [0, window.innerWidth], [0, window.innerHeight].
+   */
   bounds: PropTypes.shape({
     x: PropTypes.arrayOf(PropTypes.number),
     y: PropTypes.arrayOf(PropTypes.number),
   }),
 
-  /* className to apply to tooltip wrapper */
+  /**
+   * Class name applied to outermost wrapping `<div>`.
+   */
   className: CommonPropTypes.className,
 
-  /* mouse postion (x; e.g., clientX) */
+  /**
+   * Mouse postion (x; e.g., clientX)
+   */
   mouseX: PropTypes.number,
 
-  /* mouse position (y; e.g., clientY) */
+  /**
+   * Mouse position (y; e.g., clientY)
+   */
   mouseY: PropTypes.number,
 
-  /* shift tooltip offsetX pixels left (if negative) or right (if positive) of mouseX  */
+  /**
+   * Shift tooltip offsetX pixels left (if negative) or right (if positive) of mouseX.
+   */
   offsetX: PropTypes.number,
 
-  /* shift tooltip offsetY pixels above (if negative) or below (if positive) of mouseY  */
+  /**
+   * Shift tooltip offsetY pixels above (if negative) or below (if positive) of mouseY.
+   */
   offsetY: PropTypes.number,
 
-  /*
-    guards against placing the tooltip outside of its bounds;
-    at minimum, tooltip will be placed paddingX within bounds.x
-  */
+  /**
+   * Guard against placing the tooltip outside of its bounds;
+   * at minimum, tooltip will be placed paddingX within bounds.x.
+   */
   paddingX: PropTypes.number,
 
-  /*
-    guards against placing the tooltip outside of its bounds;
-    at minimum, tooltip will be placed paddingY within bounds.y
-  */
+  /**
+   * Guard against placing the tooltip outside of its bounds;
+   * at minimum, tooltip will be placed paddingY within bounds.y.
+   */
   paddingY: PropTypes.number,
 
-  /* whether to show or hide tooltip */
+  /**
+   * Whether to show or hide tooltip.
+   */
   show: PropTypes.bool,
 
-  /* inline styles to be applied to tooltip wrapper */
+  /**
+   * Inline styles to be applied to tooltip wrapper.
+   */
   style: CommonPropTypes.style,
 };
 
