@@ -18,7 +18,7 @@ import Track from './track';
 import Fill from './fill';
 import Handle from './handle';
 import ResponsiveContainer from '../../responsive-container';
-import style from './style.css';
+import style from './slider.css';
 
 const VALUE_KEYS = ['low', 'high'];
 

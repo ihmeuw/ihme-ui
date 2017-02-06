@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import map from 'lodash/map';
 import { CommonPropTypes, PureComponent } from '../../../utils';
 
-import style from './style.css';
+import style from './slider.css';
 
 export default class Ticks extends PureComponent {
   render() {

@@ -6,7 +6,7 @@ import { CommonPropTypes, PureComponent } from '../../../utils';
 import { stateFromPropUpdates, updateFunc } from '../../../utils/props';
 
 import { getDimension, getSnapTargetFunc } from './util';
-import style from './style.css';
+import style from './slider.css';
 
 function getOffset(direction, width) {
   if (direction === 'left') {
