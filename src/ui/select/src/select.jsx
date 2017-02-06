@@ -21,8 +21,6 @@ export default class Select extends PureComponent {
     this.setState(
       stateFromPropUpdates(Select.propUpdates, this.props, nextProps, {})
     );
-    this.renderSingleSelect = this.renderSingleSelect.bind(this);
-    this.renderMultiSelect = this.renderMultiSelect.bind(this);
   }
 
   renderSingleSelect() {
@@ -33,25 +31,17 @@ export default class Select extends PureComponent {
       wrapperStyle,
     } = this.state;
 
-    const resetValue = null;
-
-    let placeholder;
-
-    if (!this.props.placeholder) {
-      placeholder = { placeholder: 'Select...' };
-    }
-
     return (
       <BaseSelect
         {...this.props}
-        {...placeholder}
         autofocus
         autosize={false}
         className={classNames(style.select, this.props.className)}
         menuContainerStyle={menuContainerStyle}
         menuRenderer={menuRenderer}
         menuStyle={menuStyle}
-        resetValue={resetValue}
+        placeholder={this.props.placeholder || 'Select...'}
+        resetValue={this.props.resetValue || null}
         searchable
         wrapperStyle={wrapperStyle}
       />
@@ -60,35 +50,25 @@ export default class Select extends PureComponent {
 
   renderMultiSelect() {
     const {
-      resetValue,
-    } = this.props;
-
-    const {
       menuContainerStyle,
       menuRenderer,
       menuStyle,
       wrapperStyle,
     } = this.state;
 
-    let placeholder;
-
-    if (!this.props.placeholder) {
-      placeholder = { placeholder: 'Add/Remove' };
-    }
-
     return (
       <BaseSelect
         {...this.props}
-        {...placeholder}
         autofocus
         autosize={false}
         className={classNames(style.select, this.props.className)}
         clearable
-        menuRenderer={menuRenderer}
-        multi
         menuContainerStyle={menuContainerStyle}
+        menuRenderer={menuRenderer}
         menuStyle={menuStyle}
-        resetValue={resetValue}
+        multi
+        placeholder={this.props.placeholder || 'Add/Remove...'}
+        resetValue={this.props.resetValue || []}
         searchable
         valueComponent={Value}
         valueRenderer={multiValueRenderer}
@@ -98,7 +78,9 @@ export default class Select extends PureComponent {
   }
 
   render() {
-    if (this.props.multiSelect) return this.renderMultiSelect();
+    if (this.props.multi) {
+      return this.renderMultiSelect();
+    }
 
     return this.renderSingleSelect();
   }
@@ -109,7 +91,7 @@ const selectPropTypes = {
   menuUpward: PropTypes.bool,
 
   /* allow multiple selections */
-  multiSelect: PropTypes.bool,
+  multi: PropTypes.bool,
 
   /* width applied to outermost wrapper */
   width: PropTypes.number,
@@ -121,7 +103,6 @@ const selectPropTypes = {
 Select.propTypes = assign({}, baseProps, selectPropTypes);
 
 Select.defaultProps = {
-  resetValue: [],
   widthPad: 60,
 };
 
