@@ -22,7 +22,7 @@ import Spinner from './spinner';
 import SvgText from './svg-text';
 import Tooltip from './tooltip';
 
-export default {
+export {
   Area,
   Axis,
   AxisChart,
