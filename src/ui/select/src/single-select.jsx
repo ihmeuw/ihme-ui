@@ -12,6 +12,10 @@ import { menuWrapper } from './menu';
 export default class SingleSelect extends PureComponent {
   constructor(props) {
     super(props);
+    console.warn(
+      'Deprecated: SingleSelect will not be available in future versions.'
+      + ' Please use Select.'
+    );
     this.state = stateFromPropUpdates(SingleSelect.propUpdates, {}, props, {});
   }
 
