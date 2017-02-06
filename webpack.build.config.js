@@ -12,30 +12,30 @@ function customizer(objValue, srcValue) {
 };
 
 var buildConfig = _.mergeWith({}, config, {
+  devtool: 'cheap-module-source-map',
   output: {
     library: 'ihmeUI',
     libraryTarget: 'umd',
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.(jsx?)|(css)$/,
         exclude: /node_modules/,
-        loader: 'babel-loader',
+        use: [
+          {
+            loader: 'babel-loader',
+          },
+        ],
       },
     ],
+
   },
   externals: {
     react: 'React',
     'react-dom': 'ReactDOM',
   },
 }, customizer);
-
-if (process.env.MINIFY) {
-  buildConfig.plugins.push(
-    new webpack.optimize.UglifyJsPlugin()
-  );
-}
 
 
 module.exports = buildConfig;
