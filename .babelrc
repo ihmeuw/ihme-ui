@@ -7,28 +7,49 @@
         ["es2015", { "modules": false }]
       ],
     },
-    "test": {
-      "presets": ["es2015"],
-      "plugins": ["css-modules-transform"]
-    },
-    "commonjs:babel": {
+    "commonjs": {
       "presets": ["es2015"],
       "plugins": [[
         "css-modules-transform",
         {
           "processCss": "./scripts/postCSSProcesser.js",
           "extractCss": {
-            "dir": "./style/",
+            "dir": "./lib/style/",
             "relativeRoot": "./src/",
             "filename": "[name].css"
           }
         }]
       ]
     },
-    "commonjs:webpack": {
+    "es": {
+      "presets": [
+        ["es2015", { "modules": false }]
+      ],
+      "plugins": [[
+        "css-modules-transform",
+        {
+          "processCss": "./scripts/postCSSProcesser.js",
+          "extractCss": {
+            "dir": "./es/style/",
+            "relativeRoot": "./src/",
+            "filename": "[name].css"
+          }
+        }]
+      ]
+    },
+    "test": {
       "presets": ["es2015"],
+      "plugins": ["css-modules-transform"]
+    },
+    "webpack": {
+      "presets": [
+        ["es2015", { "modules": false }]
+      ],
       "plugins": [
-        ["css-modules-transform", { "processCss": "./scripts/postCSSProcesser.js", "extractCss": "./dist/ihme-ui.css"}]
+        ["css-modules-transform", {
+          "processCss": "./scripts/postCSSProcesser.js",
+          "extractCss": "./dist/ihme-ui.css"
+        }]
       ]
     }
   },
