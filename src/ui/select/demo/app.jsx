@@ -60,46 +60,46 @@ class App extends React.Component {
           <h3>Multi-select</h3>
 {/* <pre><code>
      <Select
-       multiSelect
        labelKey="name"
-       valueKey="name"
+       multi
        onChange={ function (selections <Array>) {...} }
        options={ [{name: 'Albany'}, ...] }
        value={[]}
+       valueKey="name"
      />
 
 </code></pre> */}
           <Select
-            multiSelect
             labelKey="name"
-            valueKey="name"
+            multi
             onChange={this.onMultiSelectChange}
             options={cities}
             value={multiSelectValues}
+            valueKey="name"
           />
         </section>
         <section>
           <h3>Hierarchical multi-select</h3>
 {/* <pre><code>
      <Select
-       multiSelect
        hierarchical
        labelKey="name"
-       valueKey="name"
+       multi
        onChange={ function (selections <Array>) {...} }
        options={ [{ name: 'Albany', level: 1, bold: true }, ...] }
        value={[]}
+       valueKey="name"
      />
 
 </code></pre> */}
           <Select
-            multiSelect
             hierarchical
             labelKey="name"
-            valueKey="name"
+            multi
             onChange={this.onMultiSelectChange}
             options={hierarchicalCities}
             value={multiSelectValues}
+            valueKey="name"
           />
         </section>
         <section>
@@ -107,19 +107,19 @@ class App extends React.Component {
 {/* <pre><code>
      <Select
        labelKey="name"
-       valueKey="name"
        onChange={ function (selections <Object>) {...} }
        options={ [{name: 'Albany'}, ...] }
        value={null}
+       valueKey="name"
      />
 
 </code></pre> */}
           <Select
             labelKey="name"
-            valueKey="name"
             onChange={this.onSingleSelectChange}
             options={cities}
             value={singleSelectValue}
+            valueKey="name"
           />
         </section>
         <section>
@@ -128,20 +128,20 @@ class App extends React.Component {
      <Select
        hierarchical
        labelKey="name"
-       valueKey="name"
        onChange={ function (selections <Object>) {...} }
        options={ [{ name: 'Albany', level: 1, bold: true }, ...] }
        value={null}
+       valueKey="name"
      />
 
 </code></pre> */}
           <Select
             hierarchical
             labelKey="name"
-            valueKey="name"
             onChange={this.onSingleSelectChange}
             options={hierarchicalCities}
             value={singleSelectValue}
+            valueKey="name"
           />
         </section>
 
@@ -151,48 +151,48 @@ class App extends React.Component {
        <Select
          hierarchical
          labelKey="name"
-         valueKey="name"
          onChange={ function (selections <Object>) {...} }
          options={ [{ name: 'Albany', level: 1, bold: true }, ...] }
          optionStyle={function(option) {...}}
          value={null}
+         valueKey="name"
        />
 
 </code></pre> */}
           <Select
             hierarchical
             labelKey="name"
-            valueKey="name"
             onChange={this.onSingleSelectChange}
             options={hierarchicalCities}
             optionStyle={randomlyDisableOptions}
             value={singleSelectValue}
+            valueKey="name"
           />
         </section>
         <section>
           <h3>Multi-select flip up</h3>
 {/* <pre><code>
-       <MultiSelect
-         multiSelect
+       <Select
          labelKey="name"
-         valueKey="name"
-         placeholder="select cities"
+         menuUpward
+         multi
          onChange={ function (selections <Array>) {...} }
          options={ [{name: 'Albany'}, ...] }
+         placeholder="select cities"
          value={[]}
-         menuUpward
+         valueKey="name"
        />
 
  </code></pre> */}
           <Select
-            multiSelect
             labelKey="name"
-            valueKey="name"
+            menuUpward
+            multi
             onChange={this.onMultiSelectChange}
             options={cities}
-            value={multiSelectValues}
             placeholder="select cities"
-            menuUpward
+            value={multiSelectValues}
+            valueKey="name"
           />
         </section>
         <section>
@@ -200,23 +200,23 @@ class App extends React.Component {
 {/* <pre><code>
        <Select
          labelKey="name"
-         valueKey="name"
-         placeholder="select city"
+         menuUpward
          onChange={ function (selections <Object>) {...} }
          options={ [{name: 'Albany'}, ...] }
+         placeholder="select city"
          value={null}
-         menuUpward
+         valueKey="name"
        />
 
 </code></pre> */}
           <Select
             labelKey="name"
-            valueKey="name"
-            placeholder="select city"
+            menuUpward
             onChange={this.onSingleSelectChange}
             options={cities}
+            placeholder="select city"
             value={singleSelectValue}
-            menuUpward
+            valueKey="name"
           />
         </section>
       </div>
