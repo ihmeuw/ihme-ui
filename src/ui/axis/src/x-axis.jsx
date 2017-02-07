@@ -35,7 +35,7 @@ export default class XAxis extends Axis {
 
   render() {
     // super.render call added so that react-docgen will parse this component
-    super.render();
+    return super.render();
   }
 }
 
