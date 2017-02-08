@@ -28,7 +28,7 @@ module.exports = function(directory) {
       rules: [
         {
           test: /\.jsx?$/,
-          exclude: 'node-modules/',
+          exclude: /node_modules/,
           use: [
             { loader: 'babel-loader' },
             { loader: path.resolve(__dirname, './scripts/html-pre-tag-loader') }
