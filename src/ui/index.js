@@ -1,4 +1,4 @@
-import Axis from './axis';
+import Axis, { XAxis, YAxis } from './axis';
 import AxisChart from './axis-chart';
 import Button from './button';
 import Choropleth from './choropleth';
@@ -48,4 +48,6 @@ export {
   SvgText,
   Symbol,
   Tooltip,
+  XAxis,
+  YAxis,
 };
