@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-for dir in $(find style -type f); do
-    cat ${dir} >> style/ihme-ui.css
+DIR=$1
+
+for file in $(find $DIR/style -type f); do
+    cat ${file} >> $DIR/style/ihme-ui.css
 done

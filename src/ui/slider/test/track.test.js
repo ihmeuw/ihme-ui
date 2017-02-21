@@ -6,7 +6,7 @@ import sinon from 'sinon';
 import interact from 'interact.js';
 
 import Track from '../src/track';
-import style from '../src/style.css';
+import style from '../src/slider.css';
 
 chai.use(chaiEnzyme());
 

@@ -6,7 +6,7 @@ import { CommonPropTypes, PureComponent } from '../../../utils';
 
 import Ticks from './ticks';
 import { getSnapTargetFunc } from './util';
-import style from './style.css';
+import style from './slider.css';
 
 export default class Track extends PureComponent {
   constructor(props) {

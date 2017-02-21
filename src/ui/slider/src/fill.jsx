@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { CommonPropTypes, PureComponent } from '../../../utils';
 
 import { getDimension } from './util';
-import style from './style.css';
+import style from './slider.css';
 
 export default class Fill extends PureComponent {
   static getWidth(width, direction) {
