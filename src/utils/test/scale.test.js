@@ -1,8 +1,6 @@
 import chai from 'chai';
 import { scaleOrdinal, scaleLinear, scaleLog } from 'd3';
 
-const expect = chai.expect;
-
 import {
   clampedScale,
   domainToRange,
@@ -14,6 +12,8 @@ import {
 import {
   percentOfRange,
 } from '../domain';
+
+const expect = chai.expect;
 
 describe('scale utilities', () => {
   describe('getScaleTypes()', () => {

@@ -8,9 +8,7 @@ describe('utils.props', () => {
       const state = {};
 
       const propUpdates = {
-        dummy: (acc) => {
-          return acc;
-        },
+        dummy: acc => acc,
       };
       const prevProps = {};
       const nextProps = {};
@@ -71,12 +69,8 @@ describe('utils.props', () => {
     describe('updateFunc', () => {
       it('helps update a state object based on new props', () => {
         const propUpdates = {
-          value: props.updateFunc((nextProp) => {
-            return { position: nextProp * 2 };
-          }),
-          color: props.updateFunc((nextProp) => {
-            return { style: { color: nextProp } };
-          }),
+          value: props.updateFunc(nextProp => ({ position: nextProp * 2 })),
+          color: props.updateFunc(nextProp => ({ style: { color: nextProp } })),
         };
 
         let state = {
