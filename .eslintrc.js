@@ -16,5 +16,8 @@ module.exports = {
   },
   "ecmaFeatures": {
     "experimentalObjectRestSpread": true
+  },
+  "globals": {
+    "window": true
   }
 };
