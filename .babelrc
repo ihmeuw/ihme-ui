@@ -10,7 +10,7 @@
     "demo": {
       "presets": [
         ["es2015", { "modules": false }]
-      ],
+      ]
     },
     "commonjs": {
       "presets": ["es2015"],
