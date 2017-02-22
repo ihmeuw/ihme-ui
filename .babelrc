@@ -1,6 +1,11 @@
 {
   "presets": ["react"],
-  "plugins": ["lodash", "transform-object-rest-spread", "transform-runtime"],
+  "plugins": [
+    "lodash",
+    "transform-object-rest-spread",
+    "transform-exponentiation-operator",
+    "transform-runtime"
+  ],
   "env": {
     "demo": {
       "presets": [
