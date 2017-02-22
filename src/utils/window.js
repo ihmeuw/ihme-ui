@@ -1,6 +1,6 @@
 const TRANSPARENT_BACKGROUND = /^(rgba\(\d+, \d+, \d+, 0\)|transparent)$/i;  // rgba(0, 0, 0, 0)
 
-export function getBackgroundColor(element) {
+function getBackgroundColor(element) {
   // find DOM node with background color
   let el = element;
   while (el.style) {
@@ -12,3 +12,5 @@ export function getBackgroundColor(element) {
   }
   return 'white';
 }
+
+export default getBackgroundColor;

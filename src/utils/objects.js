@@ -36,15 +36,11 @@ export function propResolver(obj, property) {
  * @returns {Object} Merged target object
  */
 export function quickMerge(target = {}, ...sources) {
-  return reduce(sources, (acc, source) => {
-    return Object.assign(acc, reduce(source, (acc2, obj, key) => {
-      return {
-        ...acc2,
-        [key]: {
-          ...acc2[key],
-          ...obj,
-        },
-      };
-    }, acc));
-  }, target);
+  return reduce(sources, (acc, source) => Object.assign(acc, reduce(source, (acc2, obj, key) => ({
+    ...acc2,
+    [key]: {
+      ...acc2[key],
+      ...obj,
+    },
+  }), acc)), target);
 }

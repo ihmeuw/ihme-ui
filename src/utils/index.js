@@ -39,9 +39,7 @@ export {
   quickMerge,
 } from './objects';
 
-export {
-  PureComponent,
-} from './react';
+export PureComponent from './react';
 
 export {
   clampedScale,
@@ -51,9 +49,7 @@ export {
   rangeToDomain,
 } from './scale';
 
-export {
-  getStringWidth,
-} from './strings';
+export getStringWidth from './strings';
 
 export {
   CommonPropTypes,
@@ -71,6 +67,4 @@ export {
   symbolTypes,
 } from './symbol';
 
-export {
-  getBackgroundColor,
-} from './window';
+export getBackgroundColor from './window';
