@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { dataGenerator } from '../data';
+import { dataGenerator } from '../';
 
 describe('data generator', () => {
   it('returns an array', () => {
@@ -46,7 +46,7 @@ describe('data generator', () => {
     };
 
     const data = dataGenerator(config);
-    for (let i = 0; i < data.length; i++) {
+    for (let i = 0; i < data.length; i += 1) {
       expect(data[i].lamp).to.be.within(1, 200);
     }
   });
@@ -61,7 +61,7 @@ describe('data generator', () => {
     };
 
     const data = dataGenerator(config);
-    for (let i = 0; i < data.length; i++) {
+    for (let i = 0; i < data.length; i += 1) {
       expect(data[i].mean).to.be.within(data[i].mean_lb, data[i].mean_ub);
     }
   });
@@ -77,8 +77,8 @@ describe('data generator', () => {
     };
 
     const data = dataGenerator(config);
-    for (let i = 0; i < data.length - 1; i++) {
-      for (let j = i + 1; j < data.length; j++) {
+    for (let i = 0; i < data.length - 1; i += 1) {
+      for (let j = i + 1; j < data.length; j += 1) {
         expect([data[i].AAA, data[i].BBB, data[i].CCC, data[i].year_id])
         .to.not.eql([data[j].AAA, data[j].BBB, data[j].CCC, data[j].year_id]);
       }
@@ -95,7 +95,7 @@ describe('data generator', () => {
       length: 2
     };
     const data = dataGenerator(config);
-    for (let i = 0; i < data.length; i++) {
+    for (let i = 0; i < data.length; i += 1) {
       expect(data[i]).to.be.an('object')
       .with.property('unicorns', 'rainbows');
     }
