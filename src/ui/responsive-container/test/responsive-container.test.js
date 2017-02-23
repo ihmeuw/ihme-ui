@@ -13,7 +13,7 @@ import ResponsiveContainer from '../';
  */
 describe('<ResponsiveContainer />', () => {
   function ChildComponent() {
-    return <div></div>;
+    return <div />;
   }
 
   it('does not render child component when its parent\'s width and/or height are 0', () => {
