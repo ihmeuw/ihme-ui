@@ -146,13 +146,13 @@ ChoroplethLegend.propTypes = {
   colorScale: PropTypes.func.isRequired,
 
   /* array of color steps, e.g. ['#fff', '#ccc', '#000', ...] */
-  colorSteps: PropTypes.array.isRequired,
+  colorSteps: PropTypes.arrayOf(PropTypes.string).isRequired,
 
   /* array of datum objects */
-  data: PropTypes.array.isRequired,
+  data: PropTypes.arrayOf(PropTypes.object).isRequired,
 
   /* [min, max] for xScale; xScale positions <circles> and provides axis */
-  domain: PropTypes.array.isRequired,
+  domain: PropTypes.arrayOf(PropTypes.number).isRequired,
 
   /* px height */
   height: PropTypes.number,
@@ -206,7 +206,7 @@ ChoroplethLegend.propTypes = {
   onSliderMove: PropTypes.func,
 
   /* [min, max] for slider in data space */
-  rangeExtent: PropTypes.array.isRequired,
+  rangeExtent: PropTypes.arrayOf(PropTypes.number).isRequired,
 
   selectedLocations: PropTypes.arrayOf(PropTypes.object),
 

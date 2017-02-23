@@ -2,11 +2,11 @@ import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
+import { maxBy, minBy, noop } from 'lodash';
+import { scaleLinear, scalePow, scaleLog } from 'd3';
 
 import { dataGenerator } from '../../../test-utils';
 import { colorSteps } from '../../../utils';
-import { maxBy, minBy, noop } from 'lodash';
-import { scaleLinear, scalePow, scaleLog } from 'd3';
 
 import ChoroplethLegend from '../';
 
@@ -42,14 +42,14 @@ describe('<ChoroplethLegend />', () => {
       width={600}
       xScale={scaleLinear()}
     />);
-    ['Scatter', 'LinearGradient', 'Slider', 'XAxis'].forEach(component => {
+    ['Scatter', 'LinearGradient', 'Slider', 'XAxis'].forEach((component) => {
       expect(wrapper.find(component)).to.be.present();
     });
   });
 
   describe('xScale', () => {
     it('accepts continuous d3Scales', () => {
-      [scaleLinear, scalePow, scaleLog].forEach(scale => {
+      [scaleLinear, scalePow, scaleLog].forEach((scale) => {
         const wrapper = shallow(<ChoroplethLegend
           colorScale={noop}
           colorSteps={colorSteps}
