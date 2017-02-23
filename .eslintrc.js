@@ -19,6 +19,7 @@ module.exports = {
     "experimentalObjectRestSpread": true
   },
   "globals": {
-    "window": true
+    "window": true,
+    "navigator": true
   }
 };
