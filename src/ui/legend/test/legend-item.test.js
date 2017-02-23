@@ -4,12 +4,11 @@ import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow, mount } from 'enzyme';
 import sinon from 'sinon';
-
-chai.use(chaiEnzyme());
-
 import LegendItem from '../src/legend-item';
 import { Symbol } from '../../shape';
 import itemStyle from '../src/legend-item.css';
+
+chai.use(chaiEnzyme());
 
 describe('<LegendItem />', () => {
   const item = {

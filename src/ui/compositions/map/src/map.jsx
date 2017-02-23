@@ -8,6 +8,7 @@ import {
   flatMap,
   filter,
   get as getValue,
+  has,
   includes,
   intersectionWith,
   isEqual,
@@ -216,20 +217,20 @@ export default class Map extends React.Component {
         || keysOfSelectedLocations.some(locId =>
           includes(geometryDisputes, locId) || includes(neighborGeometryDisputes, locId)
         )
-      )
-
-      && !(
-        includes(keysOfSelectedLocations, geometryKey)
-        && includes(neighborGeometryDisputes, geometryKey)
-
-        || includes(keysOfSelectedLocations, neighborGeometryKey)
-        && includes(geometryDisputes, neighborGeometryKey)
+      ) && !(
+        (
+          includes(keysOfSelectedLocations, geometryKey)
+          && includes(neighborGeometryDisputes, geometryKey)
+        ) || (
+          includes(keysOfSelectedLocations, neighborGeometryKey)
+          && includes(geometryDisputes, neighborGeometryKey)
+        )
       );
   }
 
   createLayers(name) {
     // guard against creating layers that don't in fact correspond to a topojson object
-    if (!this.props.topology.objects.hasOwnProperty(name)) return [];
+    if (!has(this.props.topology.objects, name)) return [];
 
     const styleReset = { stroke: 'none' };
 

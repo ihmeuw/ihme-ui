@@ -21,7 +21,7 @@ export default class ExpansionContainer extends PureComponent {
     super(props);
     containerStore[props.group] = this;
     this.expandables = [];
-    this.defaultState = this.state = {
+    const initialState = {
       expanded: null,
       expanding: false,
       expandableTargetStyle: undefined,
@@ -30,6 +30,9 @@ export default class ExpansionContainer extends PureComponent {
         ...props.style,
       },
     };
+
+    this.defaultState = initialState;
+    this.state = initialState;
 
     bindAll(this, [
       'subscribe',

@@ -42,7 +42,9 @@ export default class Legend extends React.Component {
     ]);
 
     if (!isArray(items) || !items.length) return null;
-    return items.map(item => <ItemComponent key={propResolver(item, labelKey)} item={item} {...itemProps} />);
+    return items.map(
+      item => <ItemComponent key={propResolver(item, labelKey)} item={item} {...itemProps} />
+    );
   }
 
   render() {

@@ -8,7 +8,7 @@ import { containerStore } from './ExpansionContainer';
 import styles from './expansion-container.css';
 
 /* Adapted from is.js */
-const userAgent = (navigator && navigator.userAgent || '').toLowerCase();
+const userAgent = ((navigator && navigator.userAgent) || '').toLowerCase();
 
 function isFirefox() {
   const match = userAgent.match(/(?:firefox|fxios)\/(\d+)/);
@@ -92,10 +92,6 @@ export default class Expandable extends PureComponent {
     setTimeout(this.setState, 0, this.defaultState);
   }
 
-  componentWillUnmount() {
-    this._expansionContainer.unsubscribe(this);
-  }
-
   componentDidUpdate() {
     if (this.state.transitioning && !!this.state.innerStyle.transition) {
       // do nothing
@@ -111,6 +107,10 @@ export default class Expandable extends PureComponent {
         setTimeout(this.setState, 0, this.defaultState);
       }
     }
+  }
+
+  componentWillUnmount() {
+    this._expansionContainer.unsubscribe(this);
   }
 
   onExpand() {

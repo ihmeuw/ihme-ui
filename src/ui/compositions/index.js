@@ -1,5 +1,7 @@
-import Map from './map';
+import { Map, getRangeExtent, filterData } from './map';
 
 export {
-  Map
+  Map,
+  getRangeExtent,
+  filterData,
 };
