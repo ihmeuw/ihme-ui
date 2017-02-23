@@ -49,12 +49,10 @@ function getIndexesForValues(values, rangeList) {
  * @return {Object}
  */
 function getValuesForIndexes(indexes, rangeList) {
-  return reduce(indexes, (acc, value, key) => {
-    return {
-      ...acc,
-      [key]: rangeList[value],
-    };
-  }, {});
+  return reduce(indexes, (acc, value, key) => ({
+    ...acc,
+    [key]: rangeList[value],
+  }), {});
 }
 
 /**
@@ -245,7 +243,7 @@ export default class Slider extends PureComponent {
 
     return (
       <div className={style['handle-track']}>
-        <div className={style['flag-base']}></div>
+        <div className={style['flag-base']} />
         {map(indexes, (index, key) => {
           const direction = key === 'low' ? 'left' : 'right';
           const position = scale(index);
@@ -413,7 +411,7 @@ Slider.propUpdates = {
       const delta = nextProp.high - nextProp.low;
       const steps = nextProp.steps || delta + 1;
       nextRange = range(steps).map(
-        (d) => round(d * delta / (steps - 1) + nextProp.low, nextProp.precision)
+        d => round(d * delta / (steps - 1) + nextProp.low, nextProp.precision)
       );
     }
 
@@ -422,11 +420,12 @@ Slider.propUpdates = {
       scale: state.scale.domain([0, nextRange.length - 1]),
     };
   }),
-  value: updateFunc((nextProp, propName, nextProps, state) => {
-    return { indexes: getIndexesForValues(getLowHighValues(nextProp), state.range) };
-  }),
-  width: updateFunc(() => {
+  value: updateFunc(
+    (nextProp, propName, nextProps, state) => (
+      { indexes: getIndexesForValues(getLowHighValues(nextProp), state.range) }
+    )
+  ),
+  width: updateFunc(() =>
     // Track needs to be rendered with new width before Handles and Fill can be rendered
-    return { render: false };
-  }),
+     ({ render: false })),
 };

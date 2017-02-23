@@ -82,7 +82,7 @@ export default class Track extends PureComponent {
             x={this.state.ticks}
           />
         )}
-        <div ref={this.trackRef} className={style['track-click-target']}></div>
+        <div ref={this.trackRef} className={style['track-click-target']} />
       </div>
     );
   }
