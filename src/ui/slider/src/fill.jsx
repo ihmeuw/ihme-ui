@@ -19,8 +19,7 @@ export default class Fill extends PureComponent {
           height: getDimension(this.props.height),
           ...this.props.style,
         }}
-      >
-      </div>
+      />
     );
   }
 }
