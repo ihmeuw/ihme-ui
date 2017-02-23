@@ -182,8 +182,8 @@ FeatureLayer.propUpdates = {
       // sort features by whether or not they are selected
       // this is a way of ensuring that selected paths are rendered last
       // similar to, in a path click handler, doing a this.parentNode.appendChild(this)
-      sortedFeatures: sortBy(nextProps.features, (feature) =>
-        findIndex(nextProps.selectedLocations, (locationDatum) =>
+      sortedFeatures: sortBy(nextProps.features, feature =>
+        findIndex(nextProps.selectedLocations, locationDatum =>
           propResolver(locationDatum, nextProps.keyField) == propResolver(feature, nextProps.geometryKeyField)
         )
       ),
