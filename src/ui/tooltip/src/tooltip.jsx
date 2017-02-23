@@ -73,7 +73,7 @@ export default class Tooltip extends PureComponent {
     // aim to position tooltip centered about the mouse-cursor in the x-direction
     // guard against placing the tooltip out of its left of right bounds
     const x = clamp(
-      mouseX + offsetX - width / 2,
+      (mouseX + offsetX) - (width / 2),
       leftBound + paddingX,
       rightBound - paddingX - width
     );
@@ -166,6 +166,8 @@ Tooltip.propTypes = {
     x: PropTypes.arrayOf(PropTypes.number),
     y: PropTypes.arrayOf(PropTypes.number),
   }),
+
+  children: PropTypes.node.isRequired,
 
   /**
    * Class name applied to outermost wrapping `<div>`.
