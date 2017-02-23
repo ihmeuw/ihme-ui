@@ -31,20 +31,18 @@ const propTypes = {
   theme: PropTypes.string
 };
 
-const HtmlLabel = (props) => {
-  return (
-    <label
-      className={classNames(styles[props.theme], props.className)}
-      htmlFor={props.htmlFor}
-      onClick={props.clickHandler}
-      onMouseOver={props.hoverHandler}
-    >
-      {((path) => { return path ? <img alt="" src={path} /> : null; })(props.icon)}
-      {props.text}
-      {props.children}
-    </label>
+const HtmlLabel = props => (
+  <label
+    className={classNames(styles[props.theme], props.className)}
+    htmlFor={props.htmlFor}
+    onClick={props.clickHandler}
+    onMouseOver={props.hoverHandler}
+  >
+    {(path => path ? <img alt="" src={path} /> : null)(props.icon)}
+    {props.text}
+    {props.children}
+  </label>
   );
-};
 
 HtmlLabel.propTypes = propTypes;
 

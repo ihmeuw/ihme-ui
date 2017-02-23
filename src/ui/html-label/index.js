@@ -1,1 +1,1 @@
-export { default as default } from './src/html-label';
+export { default } from './src/html-label';
