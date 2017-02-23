@@ -1,1 +1,1 @@
-export { default as default } from './src/axis-chart';
+export { default } from './src/axis-chart';
