@@ -5,8 +5,6 @@
  * @param rest {Any}
  * @returns {function()}
  */
-function eventHandleWrapper(callback, ...rest) {
+export default function eventHandleWrapper(callback, ...rest) {
   return (event) => { callback(event, ...rest); };
 }
-
-export default eventHandleWrapper;
