@@ -42,7 +42,7 @@ describe('ChoroplethLegend <LinearGradient />', () => {
       />
     );
 
-    wrapper.find('linearGradient').children().forEach(node => {
+    wrapper.find('linearGradient').children().forEach((node) => {
       expect(node.type()).to.equal('stop');
       expect(node.props()).to.include.keys('offset', 'stopColor');
     });
