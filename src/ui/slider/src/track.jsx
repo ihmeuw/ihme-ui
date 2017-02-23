@@ -23,6 +23,10 @@ export default class Track extends PureComponent {
     this.setState(this.handlePropUpdates(this.props, nextProps));
   }
 
+  componentWillUnmount() {
+    this._interactable.unset();
+  }
+
   handlePropUpdates(prevProps, nextProps) {
     const state = {};
 
@@ -38,10 +42,6 @@ export default class Track extends PureComponent {
     }
 
     return state;
-  }
-
-  componentWillUnmount() {
-    this._interactable.unset();
   }
 
   get width() {
@@ -89,7 +89,7 @@ export default class Track extends PureComponent {
 }
 
 Track.propTypes = {
-  children: PropTypes.node,
+  children: PropTypes.node.isRequired,
 
   className: CommonPropTypes.className,
 

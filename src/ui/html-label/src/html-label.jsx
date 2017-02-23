@@ -38,11 +38,14 @@ const HtmlLabel = props => (
     onClick={props.clickHandler}
     onMouseOver={props.hoverHandler}
   >
-    {(path => path ? <img alt="" src={path} /> : null)(props.icon)}
+    {((path) => {
+      if (path) return <img alt="" src={path} />;
+      return null;
+    })(props.icon)}
     {props.text}
     {props.children}
   </label>
-  );
+);
 
 HtmlLabel.propTypes = propTypes;
 

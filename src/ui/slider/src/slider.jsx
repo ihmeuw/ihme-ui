@@ -411,7 +411,7 @@ Slider.propUpdates = {
       const delta = nextProp.high - nextProp.low;
       const steps = nextProp.steps || delta + 1;
       nextRange = range(steps).map(
-        d => round(d * delta / (steps - 1) + nextProp.low, nextProp.precision)
+        d => round(((d * delta) / (steps - 1)) + nextProp.low, nextProp.precision)
       );
     }
 

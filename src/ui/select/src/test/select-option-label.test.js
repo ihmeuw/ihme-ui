@@ -3,9 +3,9 @@ import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 
-chai.use(chaiEnzyme());
-
 import { FlatOptionLabel, HierarchicalOptionLabel } from '../select-option-label';
+
+chai.use(chaiEnzyme());
 
 describe('<SelectOptionLabel', () => {
   describe('<FlatOptionLabel />', () => {
