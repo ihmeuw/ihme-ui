@@ -2,10 +2,10 @@ import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { mount } from 'enzyme';
+import ResponsiveContainer from '../';
 
 chai.use(chaiEnzyme());
 
-import ResponsiveContainer from '../';
 
 /**
  * Until either JSDOM supports getBoundingClientRect or
