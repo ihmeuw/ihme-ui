@@ -49,7 +49,7 @@ describe('Choropleth <FeatureLayer />', () => {
     });
 
     it('pulls the geometryKeyField off feature.properties', () => {
-      const featuresWithProperties = features.map(feature => {
+      const featuresWithProperties = features.map((feature) => {
         const id = feature.id;
         return {
           ...omit(feature, 'id'),
@@ -79,7 +79,7 @@ describe('Choropleth <FeatureLayer />', () => {
         <FeatureLayer
           features={features}
           data={data}
-          geometryKeyField={(feature) => feature.id}
+          geometryKeyField={feature => feature.id}
           keyField="id"
           valueField="mean"
           pathGenerator={pathGenerator}
@@ -154,7 +154,7 @@ describe('Choropleth <FeatureLayer />', () => {
         />
       );
 
-      wrapper.find('g').find(Path).forEach(n => {
+      wrapper.find('g').find(Path).forEach((n) => {
         if (n.prop('feature').id === selectedFeature.id) {
           return expect(n.prop('selected')).to.be.true;
         }

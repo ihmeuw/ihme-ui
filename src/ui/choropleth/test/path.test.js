@@ -87,12 +87,8 @@ describe('Choropleth <Path />', () => {
         <Path
           pathGenerator={pathGenerator}
           feature={feature}
-          selectedStyle={(geoJSONFeature) => {
-            return { strokeWidth: `${geoJSONFeature.id * 2}px` };
-          }}
-          style={(geoJSONFeature) => {
-            return { strokeWidth: `${geoJSONFeature.id}px` };
-          }}
+          selectedStyle={geoJSONFeature => ({ strokeWidth: `${geoJSONFeature.id * 2}px` })}
+          style={geoJSONFeature => ({ strokeWidth: `${geoJSONFeature.id}px` })}
         />
       );
 
