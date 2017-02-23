@@ -2,10 +2,10 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { area } from 'd3';
 
-import { eventHandleWrapper } from '../../../utils/events';
 import {
   CommonPropTypes,
   CommonDefaultProps,
+  eventHandleWrapper,
   propsChanged,
   propResolver,
   PureComponent,
@@ -146,9 +146,9 @@ Area.propUpdates = {
     }
 
     const pathGenerator = area()
-      .x((datum) => nextProps.scales.x(propResolver(datum, nextProps.dataAccessors.x)))
-      .y0((datum) => nextProps.scales.y(propResolver(datum, nextProps.dataAccessors.y0)))
-      .y1((datum) => nextProps.scales.y(propResolver(datum, nextProps.dataAccessors.y1)));
+      .x(datum => nextProps.scales.x(propResolver(datum, nextProps.dataAccessors.x)))
+      .y0(datum => nextProps.scales.y(propResolver(datum, nextProps.dataAccessors.y0)))
+      .y1(datum => nextProps.scales.y(propResolver(datum, nextProps.dataAccessors.y1)));
 
     return {
       ...acc,

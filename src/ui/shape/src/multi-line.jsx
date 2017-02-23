@@ -75,35 +75,35 @@ export default class MultiLine extends PureComponent {
               : lineStyle;
 
             return (
-              [
-                (!!dataAccessors.x && !!dataAccessors.y0 && !!dataAccessors.y1 && !!areaValues) ?
-                  <Area
-                    className={areaClassName}
-                    dataAccessors={dataAccessors}
-                    data={areaValues}
-                    key={`area:${key}`}
-                    scales={scales}
-                    style={{
-                      fill: color,
-                      stroke: color,
-                      ...computedAreaStyle,
-                    }}
-                    {...childProps}
-                  /> : null,
-                (!!dataAccessors.x && !!dataAccessors.y && !!lineValues) ?
-                  <Line
-                    className={lineClassName}
-                    dataAccessors={dataAccessors}
-                    data={lineValues}
-                    key={`line:${key}`}
-                    scales={scales}
-                    style={{
-                      stroke: color,
-                      ...computedLineStyle,
-                    }}
-                    {...childProps}
-                  /> : null,
-              ]
+            [
+              (!!dataAccessors.x && !!dataAccessors.y0 && !!dataAccessors.y1 && !!areaValues) ?
+                <Area
+                  className={areaClassName}
+                  dataAccessors={dataAccessors}
+                  data={areaValues}
+                  key={`area:${key}`}
+                  scales={scales}
+                  style={{
+                    fill: color,
+                    stroke: color,
+                    ...computedAreaStyle,
+                  }}
+                  {...childProps}
+                /> : null,
+              (!!dataAccessors.x && !!dataAccessors.y && !!lineValues) ?
+                <Line
+                  className={lineClassName}
+                  dataAccessors={dataAccessors}
+                  data={lineValues}
+                  key={`line:${key}`}
+                  scales={scales}
+                  style={{
+                    stroke: color,
+                    ...computedLineStyle,
+                  }}
+                  {...childProps}
+                /> : null,
+            ]
             );
           })
         }

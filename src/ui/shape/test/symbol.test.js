@@ -80,7 +80,7 @@ describe('<Symbol />', () => {
       const wrapper = shallow(
         <Symbol
           datum={datum}
-          style={(d) => ({ stroke: 'red', strokeWidth: d.mean })}
+          style={d => ({ stroke: 'red', strokeWidth: d.mean })}
         />
       );
 
@@ -108,7 +108,7 @@ describe('<Symbol />', () => {
           datum={datum}
           style={baseStyle}
           selected
-          selectedStyle={(d) => ({ stroke: 'white', strokeWidth: d.mean * 2 })}
+          selectedStyle={d => ({ stroke: 'white', strokeWidth: d.mean * 2 })}
         />
       );
 

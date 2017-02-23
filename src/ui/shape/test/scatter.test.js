@@ -31,7 +31,7 @@ describe('<Scatter />', () => {
   });
 
   const yDomain = [minBy(data, 'population').population, maxBy(data, 'population').population];
-  const xDomain = map(uniqBy(data, 'year_id'), (obj) => obj.year_id);
+  const xDomain = map(uniqBy(data, 'year_id'), obj => obj.year_id);
 
   const xScale = scalePoint().domain(xDomain).range([0, chartDimensions.width]);
   const yScale = scaleLinear().domain(yDomain).range([chartDimensions.height, 0]);
@@ -70,7 +70,7 @@ describe('<Scatter />', () => {
       'symbolClassName',
     ];
     const assertion = (symbol) => {
-      nonInheritedProps.forEach(prop => {
+      nonInheritedProps.forEach((prop) => {
         expect(symbol).to.not.have.prop(prop);
       });
     };
@@ -93,7 +93,7 @@ describe('<Scatter />', () => {
       'symbolType',
     ];
     const assertion = (symbol) => {
-      inheritedProps.forEach(prop => {
+      inheritedProps.forEach((prop) => {
         expect(symbol).to.have.prop(prop);
       });
     };
@@ -178,10 +178,10 @@ describe('<Scatter />', () => {
           colorScale={spyMap.fill.spy}
           data={data}
           dataAccessors={{
-            fill: (d) => d.population,
-            key: (d) => d.id,
-            x: (d) => d.year_id,
-            y: (d) => d.population,
+            fill: d => d.population,
+            key: d => d.id,
+            x: d => d.year_id,
+            y: d => d.population,
           }}
           scales={{
             x: spyMap.x.spy,
@@ -281,9 +281,9 @@ describe('<Scatter />', () => {
         <Scatter
           data={data}
           dataAccessors={{
-            key: (d) => d.id,
-            x: (d) => d.year_id,
-            y: (d) => d.population,
+            key: d => d.id,
+            x: d => d.year_id,
+            y: d => d.population,
           }}
           scales={{
             x: xScale,
@@ -318,9 +318,9 @@ describe('<Scatter />', () => {
         <Scatter
           data={data}
           dataAccessors={{
-            key: (d) => d.id,
-            x: (d) => d.year_id,
-            y: (d) => d.population,
+            key: d => d.id,
+            x: d => d.year_id,
+            y: d => d.population,
           }}
           scales={{
             x: xScale,
@@ -354,9 +354,9 @@ describe('<Scatter />', () => {
         <Scatter
           data={data}
           dataAccessors={{
-            key: (d) => d.id,
-            x: (d) => d.year_id,
-            y: (d) => d.population,
+            key: d => d.id,
+            x: d => d.year_id,
+            y: d => d.population,
           }}
           scales={{
             x: xScale,
