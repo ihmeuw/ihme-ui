@@ -32,9 +32,9 @@ describe('<Area />', () => {
   const yScale = scaleLinear().domain(range).range([chartDimensions.height, 0]);
 
   const areaFunction = area()
-    .x((datum) => xScale(datum[keyField]))
-    .y0((datum) => yScale(datum.value_lb))
-    .y1((datum) => yScale(datum.value_ub));
+    .x(datum => xScale(datum[keyField]))
+    .y0(datum => yScale(datum.value_lb))
+    .y1(datum => yScale(datum.value_ub));
 
   const expectedPath = areaFunction(data);
 

@@ -3,10 +3,10 @@ import classNames from 'classnames';
 import { symbol } from 'd3';
 import { assign } from 'lodash';
 
-import { eventHandleWrapper } from '../../../utils/events';
 import {
   CommonDefaultProps,
   CommonPropTypes,
+  eventHandleWrapper,
   propsChanged,
   PureComponent,
   stateFromPropUpdates,

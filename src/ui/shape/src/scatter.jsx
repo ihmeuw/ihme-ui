@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import {
   assign,
   findIndex,
+  has,
   isFinite,
   keyBy,
   map,
@@ -87,7 +88,7 @@ export default class Scatter extends PureComponent {
                 datum={datum}
                 fill={colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill}
                 focused={focusedDatumKey === key}
-                selected={selectedDataMappedToKeys.hasOwnProperty(key)}
+                selected={has(selectedDataMappedToKeys, key)}
                 symbolType={resolvedSymbolType}
                 translateX={scales.x && isFinite(xValue) ? scales.x(xValue) : 0}
                 translateY={scales.y && isFinite(yValue) ? scales.y(yValue) : 0}
@@ -179,7 +180,7 @@ Scatter.propUpdates = {
   selections: (state, _, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, ['selection', 'dataAccessors'])) return state;
     return assign({}, state, {
-      selectedDataMappedToKeys: keyBy(nextProps.selection, (selectedDatum) =>
+      selectedDataMappedToKeys: keyBy(nextProps.selection, selectedDatum =>
         propResolver(selectedDatum, nextProps.dataAccessors.key)
       ),
     });
@@ -192,8 +193,8 @@ Scatter.propUpdates = {
       // sort data by whether or not datum is selected
       // this is a way of ensuring that selected symbols are rendered last
       // similar to, in a path click handler, doing a this.parentNode.appendChild(this)
-      sortedData: sortBy(nextProps.data, (datum) =>
-        findIndex(nextProps.selection, (selected) =>
+      sortedData: sortBy(nextProps.data, datum =>
+        findIndex(nextProps.selection, selected =>
           propResolver(datum, keyField) == propResolver(selected, keyField)
         )
       ),

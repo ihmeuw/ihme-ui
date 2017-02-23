@@ -32,20 +32,20 @@ describe('<MultiScatter />', () => {
     const scatterData = [
       {
         location: 'USA',
-        values: data.filter((datum) => { return datum.location === 'USA'; })
+        values: data.filter(datum => datum.location === 'USA')
       },
       {
         location: 'Canada',
-        values: data.filter((datum) => { return datum.location === 'Canada'; })
+        values: data.filter(datum => datum.location === 'Canada')
       },
       {
         location: 'Mexico',
-        values: data.filter((datum) => { return datum.location === 'Mexico'; })
+        values: data.filter(datum => datum.location === 'Mexico')
       }
     ];
 
     const yDomain = [minBy(data, 'population').population, maxBy(data, 'population').population];
-    const xDomain = map(uniqBy(data, 'year_id'), (obj) => { return (obj.year_id); });
+    const xDomain = map(uniqBy(data, 'year_id'), obj => (obj.year_id));
 
     const xScale = scalePoint().domain(xDomain).range([0, chartDimensions.width]);
     const yScale = scaleLinear().domain(yDomain).range([chartDimensions.height, 0]);
@@ -101,7 +101,7 @@ describe('<MultiScatter />', () => {
         'scatterClassName',
       ];
       const assertion = (symbol) => {
-        nonInheritedProps.forEach(prop => {
+        nonInheritedProps.forEach((prop) => {
           expect(symbol).to.not.have.prop(prop);
         });
       };
@@ -132,7 +132,7 @@ describe('<MultiScatter />', () => {
         'symbolType',
       ];
       const assertion = (symbol) => {
-        inheritedProps.forEach(prop => {
+        inheritedProps.forEach((prop) => {
           expect(symbol).to.have.prop(prop);
         });
       };

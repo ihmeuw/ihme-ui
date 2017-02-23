@@ -63,7 +63,7 @@ export default class MultiScatter extends PureComponent {
 
             const scatterValues = scatterValuesIteratee(values, key);
 
-            return !!scatterValues ? (
+            return scatterValues ? (
               <Scatter
                 className={scatterClassName}
                 data={scatterValues}

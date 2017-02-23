@@ -2,10 +2,10 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { line } from 'd3';
 
-import { eventHandleWrapper } from '../../../utils/events';
 import {
   CommonPropTypes,
   CommonDefaultProps,
+  eventHandleWrapper,
   propsChanged,
   propResolver,
   PureComponent,
@@ -105,8 +105,8 @@ Line.propUpdates = {
   path: (acc, propName, prevProps, nextProps) => {
     if (propsChanged(prevProps, nextProps, ['data', 'dataAccessors', 'scales'])) {
       const pathGenerator = line()
-        .x((datum) => nextProps.scales.x(propResolver(datum, nextProps.dataAccessors.x)))
-        .y((datum) => nextProps.scales.y(propResolver(datum, nextProps.dataAccessors.y)));
+        .x(datum => nextProps.scales.x(propResolver(datum, nextProps.dataAccessors.x)))
+        .y(datum => nextProps.scales.y(propResolver(datum, nextProps.dataAccessors.y)));
       return {
         ...acc,
         path: pathGenerator(nextProps.data),
