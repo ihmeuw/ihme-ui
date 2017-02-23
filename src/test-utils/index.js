@@ -1,9 +1,14 @@
-export {
-  dataGenerator
-} from './data';
+import dataGenerator from './data';
 
-export {
+import {
   getTopoJSON,
   getGeoJSON,
   getLocationIds
 } from './geography';
+
+export {
+  dataGenerator,
+  getTopoJSON,
+  getGeoJSON,
+  getLocationIds,
+};

@@ -1,9 +1,7 @@
 import * as topojson from 'topojson';
 import usTopoJSON from './assets/usaTopoJSON';
 
-export const getTopoJSON = () => {
-  return usTopoJSON;
-};
+export const getTopoJSON = () => usTopoJSON;
 
 export const getGeoJSON = (feature, type = 'feature') => {
   if (!usTopoJSON.objects[feature]) {
@@ -16,8 +14,4 @@ export const getGeoJSON = (feature, type = 'feature') => {
   return topojson.feature(usTopoJSON, usTopoJSON.objects[feature]);
 };
 
-export const getLocationIds = (features) => {
-  return features.map(feature => {
-    return feature.id;
-  });
-};
+export const getLocationIds = features => features.map(feature => feature.id);
