@@ -40,7 +40,7 @@ export const Float = {
 
   add(...rest) {
     const multiplier = this.maxMultiplier(...rest);
-    return rest.reduce((accum, num) => accum + num * multiplier, 0) / multiplier;
+    return (rest.reduce((accum, num) => accum + Math.round(num * multiplier), 0)) / multiplier;
   },
 
   /**
@@ -51,7 +51,7 @@ export const Float = {
    */
   divide(dividend, divisor) {
     const multiplier = this.maxMultiplier(dividend, divisor);
-    return ((dividend * multiplier) / (divisor * multiplier));
+    return (Math.round(dividend * multiplier) / Math.round(divisor * multiplier));
   },
 
   /**
@@ -62,7 +62,7 @@ export const Float = {
   multiply(...rest) {
     const multiplier = this.maxMultiplier(...rest);
     return rest.reduce((accum, num) =>
-      ((accum * multiplier) * (num * multiplier)) / Math.pow(multiplier, 2)
+      (Math.round(accum * multiplier) * Math.round(num * multiplier)) / Math.pow(multiplier, 2)
     , 1);
   },
 
@@ -74,6 +74,6 @@ export const Float = {
    */
   subtract(minuend, subtrahend) {
     const multiplier = this.maxMultiplier(minuend, subtrahend);
-    return ((minuend * multiplier) - (subtrahend * multiplier)) / multiplier;
+    return (Math.round(minuend * multiplier) - Math.round(subtrahend * multiplier)) / multiplier;
   },
 };

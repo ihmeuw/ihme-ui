@@ -63,6 +63,7 @@ describe('Number utilities', () => {
         expect(Float.multiply(1000000, 0.00001)).to.equal(10);
         expect(Float.multiply(3.01, 3.01)).to.equal(9.0601);
         expect(Float.multiply(1, 2, 3.001)).to.equal(6.002);
+        expect(Float.multiply(64.79, 100)).to.equal(6479);
       });
     });
 
@@ -78,6 +79,7 @@ describe('Number utilities', () => {
     describe('Float.subtract', () => {
       it('subtracts numbers without floating point errors', () => {
         expect(Float.subtract(0.3, 0.2)).to.equal(0.1);
+        expect(Float.subtract(64.79, 64.75)).to.equal(0.04);
       });
     });
   });
