@@ -26,20 +26,20 @@ describe('Number utilities', () => {
   describe('Float', () => {
     describe('Float.floatToIntMultiplier', () => {
       it('calculates power of ten by which to multiply a float to get an integer', () => {
-        expect(Float.floatToIntMultiplier(0.005)).to.equal(10000);
+        expect(Float.floatToIntMultiplier(0.005)).to.equal(1000);
         expect(Float.floatToIntMultiplier(1)).to.equal(1);
         expect(Float.floatToIntMultiplier(0)).to.equal(1);
-        expect(Float.floatToIntMultiplier(123456.123456)).to.equal(10000000);
+        expect(Float.floatToIntMultiplier(123456.123456)).to.equal(1000000);
       });
     });
 
     describe('Float.maxMultiplier', () => {
       it('finds the maximum float to integer multiplier in a set of numbers', () => {
-        expect(Float.maxMultiplier(1, 0.5)).to.equal(100);
+        expect(Float.maxMultiplier(1, 0.5)).to.equal(10);
         expect(Float.maxMultiplier(1, 2)).to.equal(1);
-        expect(Float.maxMultiplier(1.0000000000000, 0.3)).to.equal(100);
-        expect(Float.maxMultiplier(0.01, 0.002, 0.0003, 0.00004)).to.equal(1000000);
-        expect(Float.maxMultiplier(0.1, 0.2)).to.equal(100);
+        expect(Float.maxMultiplier(1.0000000000000, 0.3)).to.equal(10);
+        expect(Float.maxMultiplier(0.01, 0.002, 0.0003, 0.00004)).to.equal(100000);
+        expect(Float.maxMultiplier(0.1, 0.2)).to.equal(10);
       });
     });
 
