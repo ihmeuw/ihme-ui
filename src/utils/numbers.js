@@ -1,7 +1,7 @@
 import { isFinite } from 'lodash';
 
-function floor(real) {
-  return Math.floor(real);
+function round(real) {
+  return Math.round(real);
 }
 
 /**
@@ -27,7 +27,7 @@ export const Float = {
   floatToIntMultiplier(float) {
     const [, fraction] = float.toString().split('.');
     if (!fraction) return 1;
-    return Math.pow(10, fraction.length + 1);
+    return Math.pow(10, fraction.length);
   },
 
   /**
@@ -44,7 +44,7 @@ export const Float = {
 
   add(...rest) {
     const multiplier = this.maxMultiplier(...rest);
-    return floor(rest.reduce((accum, num) => accum + num * multiplier, 0)) / multiplier;
+    return (rest.reduce((accum, num) => accum + round(num * multiplier), 0)) / multiplier;
   },
 
   /**
@@ -55,7 +55,7 @@ export const Float = {
    */
   divide(dividend, divisor) {
     const multiplier = this.maxMultiplier(dividend, divisor);
-    return (floor(dividend * multiplier) / floor(divisor * multiplier));
+    return (round(dividend * multiplier) / round(divisor * multiplier));
   },
 
   /**
@@ -66,7 +66,7 @@ export const Float = {
   multiply(...rest) {
     const multiplier = this.maxMultiplier(...rest);
     return rest.reduce((accum, num) =>
-      floor((accum * multiplier) * (num * multiplier)) / Math.pow(multiplier, 2)
+      (round(accum * multiplier) * round(num * multiplier)) / Math.pow(multiplier, 2)
     , 1);
   },
 
@@ -78,6 +78,6 @@ export const Float = {
    */
   subtract(minuend, subtrahend) {
     const multiplier = this.maxMultiplier(minuend, subtrahend);
-    return floor((minuend * multiplier) - (subtrahend * multiplier)) / multiplier;
+    return (round(minuend * multiplier) - round(subtrahend * multiplier)) / multiplier;
   },
 };
