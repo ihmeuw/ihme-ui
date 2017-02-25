@@ -1,5 +1,9 @@
 import { isFinite } from 'lodash';
 
+function floor(real) {
+  return Math.floor(real);
+}
+
 /**
  * number formatter to be used as, for example, tickFormat fn and label formatter
  * if value is a non-finite number, returns empty string
@@ -23,7 +27,7 @@ export const Float = {
   floatToIntMultiplier(float) {
     const [, fraction] = float.toString().split('.');
     if (!fraction) return 1;
-    return Math.pow(10, fraction.length);
+    return Math.pow(10, fraction.length + 1);
   },
 
   /**
@@ -40,7 +44,7 @@ export const Float = {
 
   add(...rest) {
     const multiplier = this.maxMultiplier(...rest);
-    return rest.reduce((accum, num) => accum + num * multiplier, 0) / multiplier;
+    return floor(rest.reduce((accum, num) => accum + num * multiplier, 0)) / multiplier;
   },
 
   /**
@@ -51,7 +55,7 @@ export const Float = {
    */
   divide(dividend, divisor) {
     const multiplier = this.maxMultiplier(dividend, divisor);
-    return ((dividend * multiplier) / (divisor * multiplier));
+    return (floor(dividend * multiplier) / floor(divisor * multiplier));
   },
 
   /**
@@ -62,7 +66,7 @@ export const Float = {
   multiply(...rest) {
     const multiplier = this.maxMultiplier(...rest);
     return rest.reduce((accum, num) =>
-      ((accum * multiplier) * (num * multiplier)) / Math.pow(multiplier, 2)
+      floor((accum * multiplier) * (num * multiplier)) / Math.pow(multiplier, 2)
     , 1);
   },
 
@@ -74,6 +78,6 @@ export const Float = {
    */
   subtract(minuend, subtrahend) {
     const multiplier = this.maxMultiplier(minuend, subtrahend);
-    return ((minuend * multiplier) - (subtrahend * multiplier)) / multiplier;
+    return floor((minuend * multiplier) - (subtrahend * multiplier)) / multiplier;
   },
 };
