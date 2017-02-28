@@ -13,7 +13,7 @@ import styles from './expansion-container.css';
 export const containerStore = {};
 
 /**
- * `import ExpansionContainer from 'ihme-ui/ui/expansion-container'`
+ * `import { ExpansionContainer } from 'ihme-ui'`
  *
  */
 export default class ExpansionContainer extends PureComponent {

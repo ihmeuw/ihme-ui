@@ -76,7 +76,7 @@ export const filterData = memoizeByLastCall((data, locationIdsOnMap, keyField) =
 );
 
 /**
- * `import Map from 'ihme-ui/ui/compositions/map'`
+ * `import { Map } from 'ihme-ui'`
  *
  * `<Map />` is a composition of `<Choropleth />` and `<ChoroplethLegend />`.
  * It provides a mesh-filter-based implementation for displaying disputed territories. In order to take advantage of this feature,

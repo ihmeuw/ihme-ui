@@ -33,7 +33,7 @@ function mapShowPropToVisibilityRule(visible) {
 
 
 /**
- * `import Tooltip from 'ihme-ui/ui/tooltip'`
+ * `import { Tooltip } from 'ihme-ui'`
  *
  * A wrapper to provide bounded, absolute positioning for arbitrary content.
  */

@@ -10,7 +10,7 @@ import LegendTitle from './legend-title';
 
 
 /**
- * `import Legend from 'ihme-ui/ui/legend'`
+ * `import { Legend } from 'ihme-ui'`
  *
  */
 export default class Legend extends React.Component {

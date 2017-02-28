@@ -20,7 +20,7 @@ const SYMBOL_ROTATE = {
 };
 
 /**
- * `import { Symbol } from 'ihme-ui/ui/shape'`
+ * `import { Symbol } from 'ihme-ui'`
  */
 export default class Symbol extends PureComponent {
   /**

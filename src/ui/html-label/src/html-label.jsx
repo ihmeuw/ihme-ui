@@ -5,7 +5,7 @@ import { CommonPropTypes } from '../../../utils/props';
 import styles from './html-label.css';
 
 /**
- * `import HtmlLabel from 'ihme-ui/ui/html-label'`
+ * `import { HtmlLabel } from 'ihme-ui'`
  *
  * An HTML `<label>` to wrap interactive content.
  */

@@ -17,7 +17,7 @@ export const AXIS_TYPES = {
 };
 
 /**
- * `import Axis from 'ihme-ui/ui/axis'`
+ * `import { Axis } from 'ihme-ui'`
  */
 export default class Axis extends React.Component {
   constructor(props) {

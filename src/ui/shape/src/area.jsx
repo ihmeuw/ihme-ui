@@ -13,7 +13,7 @@ import {
 } from '../../../utils';
 
 /**
- * `import { Area } from 'ihme-ui/ui/shape'`
+ * `import { Area } from 'ihme-ui'`
  */
 export default class Area extends PureComponent {
   constructor(props) {

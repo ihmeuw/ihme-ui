@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 
 /**
- * `import SvgText from 'ihme-ui/ui/svg-text'`
+ * `import { SvgText } from 'ihme-ui'`
  *
  *  A primitive wrapper around an SVG `<text>` element.
  */

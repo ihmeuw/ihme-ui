@@ -19,7 +19,7 @@ import styles from './choropleth-legend.css';
 const subtractMarginsFromWidth = (width, margins) => width - (margins.left + margins.right);
 
 /**
- * `import ChoroplethLegend from 'ihme-ui/ui/choropleth-legend'`
+ * `import { ChoroplethLegend } from 'ihme-ui'`
  */
 export default class ChoroplethLegend extends PureComponent {
   constructor(props) {

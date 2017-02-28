@@ -31,7 +31,7 @@ import Controls from './controls';
 const CLIP_EXTENT_PADDING = 1;
 
 /**
- * `import Choropleth from 'ihme-ui/ui/choropleth'`
+ * `import { Choropleth } from 'ihme-ui'`
  */
 export default class Choropleth extends React.Component {
   /**

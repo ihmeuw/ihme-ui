@@ -21,7 +21,7 @@ import {
 import Symbol from './symbol';
 
 /**
- * `import { Scatter } from 'ihme-ui/ui/shape'`
+ * `import { Scatter } from 'ihme-ui'`
  */
 export default class Scatter extends PureComponent {
   constructor(props) {

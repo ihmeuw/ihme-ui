@@ -26,7 +26,7 @@ const LAYOUT_STYLES = [
 ];
 
 /**
- * `import { Expandable } from 'ihme-ui/ui/expansion-container'`
+ * `import { Expandable } from 'ihme-ui'`
  *
  *
  * `<Expandable />` is a *mostly* drop in replacement for a layout `<div />` that gives its contents

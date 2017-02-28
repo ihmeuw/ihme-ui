@@ -6,7 +6,7 @@ import Scatter from './scatter';
 import { propResolver, PureComponent, CommonDefaultProps, CommonPropTypes } from '../../../utils';
 
 /**
- * `import { MultiScatter } from 'ihme-ui/ui/shape'`
+ * `import { MultiScatter } from 'ihme-ui'`
  *
  * This is a convenience component intended to make it easier to render many `<Scatter />`s on a single chart.
  */

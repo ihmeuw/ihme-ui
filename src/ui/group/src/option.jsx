@@ -7,7 +7,7 @@ import Button from '../../button';
 import styles from './option.css';
 
 /**
- * `import { Option } from 'ihme-ui/ui/group`
+ * `import { Option } from 'ihme-ui'`
  *
  *
  * Component designed to be wrapped by `<Group />`. Renders `props.type` and provides it with computed props `className`, `disabled`, `selected`, and `style`.

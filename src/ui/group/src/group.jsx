@@ -6,7 +6,7 @@ import { CommonPropTypes, eventHandleWrapper, PureComponent } from '../../../uti
 import styles from './option.css';
 
 /**
- * `import Group from 'ihme-ui/ui/group'`
+ * `import { Group } from 'ihme-ui'`
  *
  *
  * A wrapper to group elements, both visually and functionally. Its primary use case is as a buttonset,

@@ -5,7 +5,7 @@ import { atLeastOneOfProp, propsChanged } from '../../../utils';
 import Axis, { AXIS_SCALE_PROP_TYPES } from './axis';
 
 /**
- * `import { XAxis } from 'ihme-ui/ui/axis'`
+ * `import { XAxis } from 'ihme-ui'`
  *
  * Chart x-axis that extends <Axis \/> and provides some useful defaults.
  *

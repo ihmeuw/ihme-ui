@@ -13,7 +13,7 @@ import {
 } from '../../../utils';
 
 /**
- * `import { Line } from 'ihme-ui/ui/shape'`
+ * `import { Line } from 'ihme-ui'`
  */
 export default class Line extends PureComponent {
   constructor(props) {

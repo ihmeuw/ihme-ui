@@ -3,7 +3,7 @@ import { AutoSizer } from 'react-virtualized';
 import { omit } from 'lodash';
 
 /**
- * `import ResponsiveContainer from 'ihme-ui/ui/responsive-container'`
+ * `import { ResponsiveContainer } from 'ihme-ui'`
  *
  *
  * A container which provides its children with props `width` and `height` (in pixels).

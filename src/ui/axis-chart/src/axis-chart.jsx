@@ -14,7 +14,7 @@ export function calcChartDimensions(width, height, padding) {
 }
 
 /**
- * `import AxisChart from 'ihme-ui/ui/axis-chart'`
+ * `import { AxisChart } from 'ihme-ui'`
  *
  * Wraps and provides its child charting components with height, width, scales, and padding
  */

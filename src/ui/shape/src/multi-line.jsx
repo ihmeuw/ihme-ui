@@ -13,7 +13,7 @@ import {
 } from '../../../utils';
 
 /**
- * `import { MultiLine } from 'ihme-ui/ui/shape'`
+ * `import { MultiLine } from 'ihme-ui'`
  *
  * This is a convenience component intended to make it easier to render many `<Line />`s
  * on a single chart. It additionally supports rendering `<Area />`s when the proper `dataAccessors`

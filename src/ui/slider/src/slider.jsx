@@ -75,7 +75,7 @@ function getLowHighValues(value) {
 }
 
 /**
- * `import Slider from 'ihme-ui/ui/slider'`
+ * `import { Slider } from 'ihme-ui'`
  */
 export default class Slider extends PureComponent {
   constructor(props) {

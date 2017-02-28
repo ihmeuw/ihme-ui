@@ -6,7 +6,7 @@ import { CommonPropTypes, PureComponent } from '../../../utils';
 import styles from './spinner.css';
 
 /**
- * `import Spinner from 'ihme-ui/ui/spinner'`
+ * `import { Spinner } from 'ihme-ui'`
  *
  *
  * Yet another loading indicator. But don't be fooled! This one doesn't actually spin.

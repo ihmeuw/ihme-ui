@@ -6,7 +6,7 @@ import styles from './button.css';
 import Spinner from '../../spinner';
 
 /**
- * `import Button from 'ihme-ui/ui/button'`
+ * `import { Button } from 'ihme-ui'`
  */
 export default class Button extends PureComponent {
   static calculateStyle(props) {
