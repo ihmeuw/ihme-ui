@@ -6,6 +6,7 @@ Grouped selection controls
 
 {{{group.props}}}
 
+---
 
 #### \<Option />
 {{{option.description}}}
