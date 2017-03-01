@@ -9,7 +9,7 @@ const replace = require('lodash/replace');
 
 const HEADER = `
 Property | Required | Type(s) | Defaults | Description
-        --- | :---: | :---: | :---: | ---
+:---    |:---      |:---     |:---      |:---       
 `;
 
 const COMMON_PROP_TYPES_TO_LINKS_MAP = {
