@@ -138,7 +138,7 @@ Axis.propTypes = {
   labelClassName: CommonPropTypes.className,
 
   /**
-   * inline applied to text element surrounding axis label
+   * inline styles applied to text element surrounding axis label
    */
   labelStyle: PropTypes.object,
 
