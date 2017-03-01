@@ -66,7 +66,6 @@ function buildDocs(api) {
   queue.await((err) => {
     if (err) {
       console.log(err);
-      return;
     }
 
     console.log('Finished building docs');
