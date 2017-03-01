@@ -41,7 +41,7 @@ function buildReadMe(filepath, view, done) {
   fs.readFile(templatePath, { encoding: 'utf8' }, (readErr, template) => {
     if (readErr) {
       console.log(readErr);
-      return;
+      return done();
     }
 
     console.log(`Documenting ${fileDescription.name}`);
