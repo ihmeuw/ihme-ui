@@ -12,7 +12,7 @@
       "plugins": [[
         "css-modules-transform",
         {
-          "processCss": "./scripts/postCSSProcesser.js",
+          "processCss": "./scripts/post-css-processer.js",
           "extractCss": {
             "dir": "./lib/style/",
             "relativeRoot": "./src/",
@@ -28,7 +28,7 @@
       "plugins": [[
         "css-modules-transform",
         {
-          "processCss": "./scripts/postCSSProcesser.js",
+          "processCss": "./scripts/post-css-processer.js",
           "extractCss": {
             "dir": "./es/style/",
             "relativeRoot": "./src/",
@@ -47,7 +47,7 @@
       ],
       "plugins": [
         ["css-modules-transform", {
-          "processCss": "./scripts/postCSSProcesser.js",
+          "processCss": "./scripts/post-css-processer.js",
           "extractCss": "./dist/ihme-ui.css"
         }]
       ]
