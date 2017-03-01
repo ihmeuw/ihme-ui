@@ -1,18 +1,18 @@
-<Map \/>
+\<Map />
 =====================
-`import Map from 'ihme-ui/ui/compositions/map'`
+`import { Map } from 'ihme-ui'`
 
 `<Map />` is a composition of `<Choropleth />` and `<ChoroplethLegend />`.
 It provides a mesh-filter-based implementation for displaying disputed territories. In order to take advantage of this feature,
 your topojson must conform to the following requirements:
  - geometries that are disputed must have an array of ids on their `properties` object on a key named `disputes`.
- - the above ids must be resolvable by `geometryKeyField`
+ - the above ids must be resolvable by `props.geometryKeyField`
 
 [See it in action!](http://vizhub.healthdata.org/mortality/age-estimation)
 
 
 Property | Required | Type(s) | Defaults | Description
-        --- | :---: | :---: | :---: | ---
+:---    |:---      |:---     |:---      |:---       
 `axisTickFormat` |  | func |  | [format of axis ticks](https://github.com/d3/d3-axis#axis_tickFormat)<br />implicitly defaults to [numberFormat](https://github.com/ihmeuw/ihme-ui/blob/docs/src/utils/numbers.js#L9)
 `className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to outermost wrapping div
 `colorSteps` |  | array | defaultColorSteps.slice().reverse() | list of hex or rbg color values<br />color scale will interpolate between these values<br />defaults to list of 11 colors with blue at the "bottom" and red at the "top"<br />this encodes IHME's "high numbers are bad" color scheme
@@ -27,13 +27,13 @@ Property | Required | Type(s) | Defaults | Description
 `loading` |  | bool | false | is data for this component currently being fetched<br />will prevent component from updating (a la shouldComponentUpdate) if true
 `mapClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to div directly wrapping `<Choropleth />`
 `mapStyle` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L16) |  | inline styles applied to div directly wrapping `<Choropleth />`
-`onClick` |  | func |  | event handler passed to both choropleth and choropleth legend;<br />signature: function(event, locationId, Path) {...}
-`onMouseLeave` |  | func |  | event handler passed to both choropleth and choropleth legend;<br />signature: function(event, locationId, Path) {...}
-`onMouseMove` |  | func |  | event handler passed to both choropleth and choropleth legend;<br />signature: function(event, locationId, Path) {...}
-`onMouseOver` |  | func |  | event handler passed to both choropleth and choropleth legend;<br />signature: function(event, locationId, Path) {...}
-`onSetScale` |  | func |  | callback for "Set scale" button;<br />passed current rangeExtent (in data space) as first and only argument
-`onSliderMove` | true | func |  | callback function to attach to slider handles;<br />passed [min, max] (Array), the range extent as a percentage
-`onResetScale` | true | func |  | callback for "Reset" button;<br />passed current rangeExtent (in data space) as first and only argument<br />rangeExtent in this case will always equal this.props.domain
+`onClick` |  | func |  | event handler passed to both choropleth and choropleth legend;<br />signature: (SyntheticEvent, datum, Path) => {...}
+`onMouseLeave` |  | func |  | event handler passed to both choropleth and choropleth legend;<br />signature: (SyntheticEvent, datum, Path) => {...}
+`onMouseMove` |  | func |  | event handler passed to both choropleth and choropleth legend;<br />signature: (SyntheticEvent, datum, Path) => {...}
+`onMouseOver` |  | func |  | event handler passed to both choropleth and choropleth legend;<br />signature: (SyntheticEvent, datum, Path) => {...}
+`onSetScale` |  | func |  | callback for "Set scale" button;<br />passed current rangeExtent (in data space) as first and only argument<br />signature: ([min, max]) => {...}
+`onSliderMove` | true | func |  | callback function to attach to slider handles;<br />passed [min, max] (Array), the range extent as a percentage<br />signature: ([min, max]) => {...}
+`onResetScale` | true | func |  | callback for "Reset" button;<br />passed current rangeExtent (in data space) as first and only argument<br />rangeExtent in this case will always equal this.props.domain<br />signature: (domain) => {...}
 `selectedLocations` |  | array of object | [] | array of selected location objects
 `sliderHandleFormat` |  | func |  | format of slider handle labels<br />implicitly defaults to [numberFormat](https://github.com/ihmeuw/ihme-ui/blob/docs/src/utils/numbers.js#L9)
 `style` |  | object |  | inline styles applied to outermost wrapping div

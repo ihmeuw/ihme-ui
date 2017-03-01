@@ -1,13 +1,13 @@
-<SvgText \/>
+\<SvgText />
 =====================
 
-`import SvgText from 'ihme-ui/ui/svg-text'`
+`import { SvgText } from 'ihme-ui'`
 
  A primitive wrapper around an SVG `<text>` element.
 
 
 Property | Required | Type(s) | Defaults | Description
-        --- | :---: | :---: | :---: | ---
+:---    |:---      |:---     |:---      |:---       
 `value` |  | string, number |  | Text to render.
 `anchor` | true | one of: 'start', 'middle', 'end' |  | Where to anchor text.
 `x` | true | number |  | Position element in x direction.
