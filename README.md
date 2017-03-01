@@ -54,9 +54,7 @@ In most cases, however, you'll be importing ihme-ui into your project, and bundl
 In support of this, `ihme-ui` exposes both a CommonJS (i.e., `var ihmeUI = require('ihme-ui')`) and an ES2015 (i.e., `import ihmeUI from 'ihme-ui'`) target.
 ```javascript
 // index.js
-import AxisChart from 'ihme-ui/ui/AxisChart';
-import { linspace } from 'ihme-ui/utils';
-
+import { AxisChart, linspace } from 'ihme-ui';
 ...
 
 ```
