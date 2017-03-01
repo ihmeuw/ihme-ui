@@ -1,6 +1,6 @@
 'use strict';
 
-// USAGE: $(npm bin)/react-docgen src/ui/legend/src/ | node ./scripts/buildDocs.js
+// EX. USAGE: $(npm bin)/react-docgen src/ui/legend/src/ | node ./scripts/build-doc.js
 
 const fs = require('fs');
 const path = require('path');
@@ -10,7 +10,7 @@ const d3 = require('d3');
 const assign = require('lodash/assign');
 const transform = require('lodash/transform');
 
-const generateMarkdownTable = require('./generateMarkdownTable');
+const generateMarkdownTable = require('./generate-markdown-table');
 
 function buildTemplateView(api) {
   return transform(api, (accum, componentDescription, filepath) => {
