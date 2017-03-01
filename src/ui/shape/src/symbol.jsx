@@ -141,31 +141,32 @@ Symbol.propTypes = {
   /**
    * Inline styles applied if symbol has focus.
    * If an object, spread directly into inline styles.
-   * If a function, called with `props.datum` as argument; must return an object of inline styles.
+   * If a function, called with `props.datum` as argument and return value is spread into inline styles;
+   * signature: (datum) => obj
    */
   focusedStyle: CommonPropTypes.style,
 
   /**
    * onClick callback.
-   * signature: function(SyntheticEvent, data, instance) {...}
+   * signature: (SyntheticEvent, datum, instance) => {...}
    */
   onClick: PropTypes.func,
 
   /**
    * onMouseLeave callback.
-   * signature: function(SyntheticEvent, data, instance) {...}
+   * signature: (SyntheticEvent, datum, instance) => {...}
    */
   onMouseLeave: PropTypes.func,
 
   /**
    * onMouseMove callback.
-   * signature: function(SyntheticEvent, data, instance) {...}
+   * signature: (SyntheticEvent, datum, instance) => {...}
    */
   onMouseMove: PropTypes.func,
 
   /**
    * onMouseOver callback.
-   * signature: function(SyntheticEvent, data, instance) {...}
+   * signature: (SyntheticEvent, datum, instance) => {...}
    */
   onMouseOver: PropTypes.func,
 
@@ -182,7 +183,9 @@ Symbol.propTypes = {
   /**
    * Inline styles applied to selected `<Symbol />`s.
    * If an object, spread into inline styles.
-   * If a function, passed underlying datum corresponding to its `<Symbol />`.
+   * If a function, passed underlying datum corresponding to its `<Symbol />`
+   * and return value spread into line styles;
+   * signature: (datum) => obj
    */
   selectedStyle: CommonPropTypes.style,
 

@@ -366,7 +366,7 @@ Choropleth.propTypes = {
   className: CommonPropTypes.className,
 
   /**
-   * function that accepts value of `keyfield` (str), and returns (str) stroke color for line
+   * accepts value of `keyfield` (str), returns stroke color for line (str)
    */
   colorScale: PropTypes.func.isRequired,
 
@@ -433,13 +433,16 @@ Choropleth.propTypes = {
    * layer description: {Object}
    *  - `className`: className applied to layer
    *  - `filterFn`: optional function to filter mesh grid, passed adjacent geometries
-   *    <br />refer to [https://github.com/mbostock/topojson/wiki/API-Reference#mesh](https://github.com/mbostock/topojson/wiki/API-Reference#mesh)
+   *      refer to [https://github.com/mbostock/topojson/wiki/API-Reference#mesh](https://github.com/mbostock/topojson/wiki/API-Reference#mesh)
    *  - `name`: (Required) along with layer.type, will be part of the `key` of the layer; therefore, `${layer.type}-${layer.name}` needs to be unique
    *  - `object`: (Required) name corresponding to key within topojson objects collection
    *  - `selectedClassName`: className applied to selected paths
-   *  - `selectedStyle`: inline styles applied to selected paths<br />func: (feature) => style object
-   *  - `style`: inline styles applied to layer<br />func: (feature) => style object
-   *  - `type`: (Required) whether the layer should be a feature collection or mesh grid<br />one of: "feature", "mesh"
+   *  - `selectedStyle`: inline styles applied to selected paths
+   *      func: (feature) => style object
+   *  - `style`: inline styles applied to layer
+   *      func: (feature) => style object
+   *  - `type`: (Required) whether the layer should be a feature collection or mesh grid
+   *      one of: "feature", "mesh"
    *  - `visible`: whether or not to render layer
    */
   layers: PropTypes.arrayOf(PropTypes.shape({
@@ -468,7 +471,9 @@ Choropleth.propTypes = {
     selectedClassName: CommonPropTypes.className,
 
     /**
-     * inline styles applied to selected paths<br />func: (feature) => style object
+     * inline styles applied to selected paths
+     * if a function, passed geometry feature;
+     * signature: (feature) => {}
      */
     selectedStyle: PropTypes.oneOfType([
       PropTypes.object,
@@ -476,7 +481,9 @@ Choropleth.propTypes = {
     ]),
 
     /**
-     * inline styles applied to layer<br />func: (feature) => style object
+     * inline styles applied to layer
+     * if a function, passed geometry feature;
+     * signature: (feature) => style object
      */
     style: PropTypes.oneOfType([
       PropTypes.object,
@@ -484,7 +491,8 @@ Choropleth.propTypes = {
     ]),
 
     /**
-     * whether the layer should be a feature collection or mesh grid<br />one of: "feature", "mesh"
+     * whether the layer should be a feature collection or mesh grid
+     * one of: "feature", "mesh"
      */
     type: PropTypes.oneOf(['feature', 'mesh']).isRequired,
 
@@ -507,22 +515,26 @@ Choropleth.propTypes = {
   minZoom: PropTypes.number,
 
   /**
-   * passed to each path;<br />signature: (event, datum, Path) => {...}
+   * passed to each path;
+   * signature: (SyntheticEvent, datum, Path) => {...}
    */
   onClick: PropTypes.func,
 
   /**
-   * passed to each path;<br />signature: (event, datum, Path) => {...}
+   * passed to each path;
+   * signature: (SyntheticEvent, datum, Path) => {...}
    */
   onMouseLeave: PropTypes.func,
 
   /**
-   * passed to each path;<br />signature: (event, datum, Path) => {...}
+   * passed to each path;
+   * signature: (SyntheticEvent, datum, Path) => {...}
    */
   onMouseMove: PropTypes.func,
 
   /**
-   * passed to each path;<br />signature: (event, datum, Path) => {...}
+   * passed to each path;
+   * signature: (SyntheticEvent, datum, Path) => {...}
    */
   onMouseOver: PropTypes.func,
 

@@ -508,37 +508,39 @@ Map.propTypes = {
 
   /**
    * event handler passed to both choropleth and choropleth legend;
-   * signature: function(event, locationId, Path) {...}
+   * signature: (SyntheticEvent, datum, Path) => {...}
    */
   onClick: PropTypes.func,
 
   /**
    * event handler passed to both choropleth and choropleth legend;
-   * signature: function(event, locationId, Path) {...}
+   * signature: (SyntheticEvent, datum, Path) => {...}
    */
   onMouseLeave: PropTypes.func,
 
   /**
    * event handler passed to both choropleth and choropleth legend;
-   * signature: function(event, locationId, Path) {...}
+   * signature: (SyntheticEvent, datum, Path) => {...}
    */
   onMouseMove: PropTypes.func,
 
   /**
    * event handler passed to both choropleth and choropleth legend;
-   * signature: function(event, locationId, Path) {...}
+   * signature: (SyntheticEvent, datum, Path) => {...}
    */
   onMouseOver: PropTypes.func,
 
   /**
    * callback for "Set scale" button;
    * passed current rangeExtent (in data space) as first and only argument
+   * signature: ([min, max]) => {...}
    */
   onSetScale: PropTypes.func,
 
   /**
    * callback function to attach to slider handles;
    * passed [min, max] (Array), the range extent as a percentage
+   * signature: ([min, max]) => {...}
    */
   onSliderMove: PropTypes.func.isRequired,
 
@@ -546,6 +548,7 @@ Map.propTypes = {
    * callback for "Reset" button;
    * passed current rangeExtent (in data space) as first and only argument
    * rangeExtent in this case will always equal this.props.domain
+   * signature: (domain) => {...}
    */
   onResetScale: PropTypes.func.isRequired,
 

@@ -71,7 +71,7 @@ Button.propTypes = {
   className: CommonPropTypes.className,
 
   /**
-   * boolean value to set button as disabled
+   * set button as disabled
    */
   disabled: PropTypes.bool,
 
@@ -101,13 +101,13 @@ Button.propTypes = {
   name: PropTypes.string,
 
   /**
-   * function to be executed on click;
+   * executed on click;
    * signature: function(SyntheticEvent) {...}
    */
   onClick: PropTypes.func,
 
   /**
-   * boolean value to display a loading spinner
+   * display a loading indicator
    */
   showSpinner: PropTypes.bool,
 

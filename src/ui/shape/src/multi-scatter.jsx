@@ -100,8 +100,7 @@ MultiScatter.propTypes = {
   clipPathId: PropTypes.string,
 
   /**
-   * If provided and `dataAccessors.fill` is undefined,
-   * determines the color of scatter symbols.
+   * If provided and `dataAccessors.fill` is undefined, determines the color of scatter symbols.
    */
   colorScale: PropTypes.func,
 
@@ -155,33 +154,35 @@ MultiScatter.propTypes = {
   focusedClassName: CommonPropTypes.className,
 
   /**
-   * inline styles applied to focused `<Symbol />`.
+   * Inline styles applied to focused `<Symbol />`.
    * If an object, spread into inline styles.
-   * If a function, passed underlying datum corresponding to its `<Symbol />`.
+   * If a function, passed underlying datum corresponding to its `<Symbol />`,
+   * and return value is spread into inline styles;
+   * signature: (datum) => obj
    */
   focusedStyle: CommonPropTypes.style,
 
   /**
    * onClick callback.
-   * signature: function(SyntheticEvent, data, instance) {...}
+   * signature: (SyntheticEvent, datum, instance) => {...}
    */
   onClick: PropTypes.func,
 
   /**
    * onMouseLeave callback.
-   * signature: function(SyntheticEvent, data, instance) {...}
+   * signature: (SyntheticEvent, datum, instance) => {...}
    */
   onMouseLeave: PropTypes.func,
 
   /**
    * onMouseMove callback.
-   * signature: function(SyntheticEvent, data, instance) {...}
+   * signature: (SyntheticEvent, datum, instance) => {...}
    */
   onMouseMove: PropTypes.func,
 
   /**
    * onMouseOver callback.
-   * signature: function(SyntheticEvent, data, instance) {...}
+   * signature: (SyntheticEvent, datum, instance) => {...}
    */
   onMouseOver: PropTypes.func,
 
@@ -213,7 +214,9 @@ MultiScatter.propTypes = {
   /**
    * inline styles applied to selected `<Symbol />`s.
    * If an object, spread into inline styles.
-   * If a function, passed underlying datum corresponding to its `<Symbol />`.
+   * If a function, passed underlying datum corresponding to its `<Symbol />`,
+   * and return value is spread into inline styles;
+   * signature: (datum) => obj
    */
   selectedStyle: CommonPropTypes.style,
 
@@ -227,7 +230,7 @@ MultiScatter.propTypes = {
 
   /**
    * Size of `<Symbol />`s; area in square pixels.
-   * If not provided, `<Symbol />` provides a default of 64.
+   * If not provided, `<Symbol />` provides a default of 64 (8px x 8px).
    */
   size: PropTypes.number,
 

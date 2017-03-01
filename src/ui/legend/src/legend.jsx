@@ -106,12 +106,14 @@ Legend.propTypes = {
   ]).isRequired,
 
   /**
-   * callback when 'clear' icon is clicked; signature: function(SyntheticEvent, item) {}
+   * callback when 'clear' icon is clicked;
+   * signature: (SyntheticEvent, item) => {}
    */
   onClear: PropTypes.func,
 
   /**
-   * callback when legend item is clicked; signature: function(SyntheticEvent, item) {}
+   * callback when legend item is clicked;
+   * signature: (SyntheticEvent, item) => {}
    */
   onClick: PropTypes.func,
 
@@ -122,7 +124,8 @@ Legend.propTypes = {
 
   /**
    * path to symbol color in item objects (e.g., 'color', 'properties.color')
-   * or a function to resolve the color (signature: function (item) {...})
+   * or a function to resolve the color
+   * signature: (item) => {...}
    */
   symbolColorKey: PropTypes.oneOfType([
     PropTypes.string,
@@ -130,7 +133,9 @@ Legend.propTypes = {
   ]).isRequired,
 
   /**
-   * path to symbol type in item objects (e.g., 'type', 'properties.type') or a function to resolve the type (signature: function (item) {...});
+   * path to symbol type in item objects (e.g., 'type', 'properties.type')
+   * or a function to resolve the type
+   * if a function: signature: (item) => {...}
    * must be one of [supported symbol types](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/symbol.js#L23)
    */
   symbolTypeKey: PropTypes.oneOfType([

@@ -151,7 +151,7 @@ ChoroplethLegend.propTypes = {
   colorScale: PropTypes.func.isRequired,
 
   /**
-   * array of color steps, e.g. ['#fff', '#ccc', '\#000', ...]
+   * color steps, e.g. ['#fff', '#ccc', '\#000', ...]
    */
   colorSteps: PropTypes.array.isRequired,
 
@@ -191,36 +191,39 @@ ChoroplethLegend.propTypes = {
 
   /**
    * onClick callback for density plot circles;
-   * signature: function(event, data, instance) {...}
+   * signature: (SyntheticEvent, data, instance) => {...}
    */
   onClick: PropTypes.func,
 
   /**
    * onMouseLeave callback for density plot circles;
-   * signature: function(event, data, instance) {...}
+   * signature: (SyntheticEvent, data, instance) => {...}
    */
   onMouseLeave: PropTypes.func,
 
   /**
    * onMouseMove callback for density plot circles;
-   * signature: function(event, data, instance) {...}
+   * signature: (SyntheticEvent, data, instance) => {...}
    */
   onMouseMove: PropTypes.func,
 
   /**
    * onMouseOver callback for density plot circles;
-   * signature: function(event, data, instance) {...}
+   * signature: (SyntheticEvent, data, instance) => {...}
    */
   onMouseOver: PropTypes.func,
 
   /**
-   * callback function to attach to slider handles;
-   * passed [min, max] (Array), the range extent as a percentage
+   * Callback to attach to slider handles;
+   * passed the range extent as a decimal representing percent of the range, e.g, [0.2, 0.5].
+   * signature: ([min, max]) => {...}
    */
   onSliderMove: PropTypes.func,
 
   /**
-   * array of [min, max] for slider in data space; `domain` is a good initial value
+   * [min, max] for slider in data space;
+   * if `isEqual(rangeExtent, domain)`, slider handles will be positioned at start and end of legend,
+   * which makes `props.domain` a good initial value
    */
   rangeExtent: PropTypes.array.isRequired,
 
@@ -230,7 +233,7 @@ ChoroplethLegend.propTypes = {
   selectedLocations: PropTypes.arrayOf(PropTypes.object),
 
   /**
-   * format of slider handle labels
+   * formatter for handle labels
    */
   sliderHandleFormat: PropTypes.func,
 
@@ -241,7 +244,7 @@ ChoroplethLegend.propTypes = {
 
   /**
    * property of data objects used to position and fill density plot circles;
-   * if a function, signature: function(datum) {...}
+   * if a function, signature: (datum) => {...}
    */
   valueField: PropTypes.oneOfType([
     PropTypes.string,

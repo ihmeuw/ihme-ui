@@ -122,7 +122,7 @@ AxisChart.propTypes = {
   height: PropTypes.number.isRequired,
 
   /**
-   * flag to delay rendering while fetching data
+   * delay rendering while fetching data
    */
   loading: PropTypes.bool,
 

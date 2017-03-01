@@ -113,7 +113,7 @@ Option.propTypes = {
   ]),
 
   /**
-   * an implicitly necessary prop; used by `<Group />` to generate proper onClick handlers
+   * used by `<Group />` to generate proper onClick handlers
    */
   value: PropTypes.any.required,
 };

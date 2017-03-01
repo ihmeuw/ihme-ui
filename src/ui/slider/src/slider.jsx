@@ -352,7 +352,8 @@ Slider.propTypes = {
 
   /**
    * [dragmove](http://interactjs.io/docs/#interactevents) callback.
-   * Called when slider value is changed with the following arguments:
+   * Called when slider value is changed.
+   * Signature: (SyntheticEvent, values, Slider) => {...}
    *  - {Object} SyntheticEvent - the triggered action
    *  - {Object} values - { high: ..., low: ... }
    *  - {Object} Slider - the slider object (class instance)
@@ -361,7 +362,8 @@ Slider.propTypes = {
 
   /**
    * [dragend](http://interactjs.io/docs/#interactevents) callback.
-   * Called when slider handle is released with the following arguments:
+   * Called when slider handle is released.
+   * Signature: (SyntheticEvent, values, Slider) => {...}
    *  - {Object} SyntheticEvent - the triggered action
    *  - {Object} values - { high: ..., low: ... }
    *  - {Object} Slider - the slider object (class instance)
@@ -370,7 +372,7 @@ Slider.propTypes = {
 
   /**
    * onKeyDown callback. Named for consistency with onDrag and onDragEnd.
-   * Called with the following arguments:
+   * Signature: (SyntheticEvent, values, Slider) => {...}
    *  - {Object} SyntheticEvent - the triggered action
    *  - {Object} values - { high: ..., low: ... }
    *  - {Object} Slider - the slider object (class instance)
@@ -379,7 +381,7 @@ Slider.propTypes = {
 
   /**
    * onKeyUp callback. Named for consistency with onDrag and onDragEnd.
-   * Called with the following arguments:
+   * Signature: (SyntheticEvent, values, Slider) => {...}
    *  - {Object} SyntheticEvent - the triggered action
    *  - {Object} values - { high: ..., low: ... }
    *  - {Object} Slider - the slider object (class instance)
@@ -388,7 +390,7 @@ Slider.propTypes = {
 
   /**
    * onClick callback for slider track.
-   * Called with the following arguments:
+   * Signature: (SyntheticEvent, values, Slider) => {...}
    *  - {Object} SyntheticEvent - the triggered action
    *  - {Object} values - { high: ..., low: ... }
    *  - {Object} Slider - the slider object (class instance)

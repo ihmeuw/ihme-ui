@@ -60,7 +60,7 @@ Group.propTypes = {
   /**
    * onClick callback passed to each child
    * implicitly depends on child components having a `value` prop
-   * signature: function(event, selectedValue) {...}
+   * signature: (SyntheticEvent, selectedValue) {...}
    */
   onClick: PropTypes.func.isRequired,
 

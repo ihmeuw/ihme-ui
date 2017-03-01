@@ -44,7 +44,7 @@ ResponsiveContainer.propTypes = {
 
   /**
    * Callback to be invoked on-resize.
-   * Signature: function ({ height, width }) {...}
+   * Signature: ({ height, width }) => {...}
    */
   onResize: PropTypes.func,
 };

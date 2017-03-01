@@ -89,25 +89,25 @@ Line.propTypes = {
 
   /**
    * onClick callback.
-   * signature: function(SyntheticEvent, data, instance) {...}
+   * signature: (SyntheticEvent, data, instance) => {...}
    */
   onClick: PropTypes.func,
 
   /**
    * onMouseLeave callback.
-   * signature: function(SyntheticEvent, data, instance) {...}
+   * signature: (SyntheticEvent, data, instance) => {...}
    */
   onMouseLeave: PropTypes.func,
 
   /**
    * onMouseMove callback.
-   * signature: function(SyntheticEvent, data, instance) {...}
+   * signature: (SyntheticEvent, data, instance) => {...}
    */
   onMouseMove: PropTypes.func,
 
   /**
    * onMouseOver callback.
-   * signature: function(SyntheticEvent, data, instance) {...}
+   * signature: (SyntheticEvent, data, instance) => {...}
    */
   onMouseOver: PropTypes.func,
 

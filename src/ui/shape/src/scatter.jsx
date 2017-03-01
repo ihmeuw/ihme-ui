@@ -164,31 +164,33 @@ Scatter.propTypes = {
   /**
    * inline styles applied to focused `<Symbol />`
    * If an object, spread into inline styles.
-   * If a function, passed underlying datum corresponding to its `<Symbol />`.
+   * If a function, passed underlying datum corresponding to its `<Symbol />`,
+   * and return value is spread into inline styles;
+   * signature: (datum) => obj
    */
   focusedStyle: CommonPropTypes.style,
 
   /**
    * onClick callback.
-   * signature: function(SyntheticEvent, data, instance) {...}
+   * signature: (SyntheticEvent, datum, instance) => {...}
    */
   onClick: PropTypes.func,
 
   /**
    * onMouseLeave callback.
-   * signature: function(SyntheticEvent, data, instance) {...}
+   * signature: (SyntheticEvent, datum, instance) => {...}
    */
   onMouseLeave: PropTypes.func,
 
   /**
    * onMouseMove callback.
-   * signature: function(SyntheticEvent, data, instance) {...}
+   * signature: (SyntheticEvent, datum, instance) => {...}
    */
   onMouseMove: PropTypes.func,
 
   /**
    * onMouseOver callback.
-   * signature: function(SyntheticEvent, data, instance) {...}
+   * signature: (SyntheticEvent, datum, instance) => {...}
    */
   onMouseOver: PropTypes.func,
 
@@ -213,7 +215,7 @@ Scatter.propTypes = {
 
   /**
    * Size of `<Symbol />`s; area in square pixels.
-   * If not provided, `<Symbol />` provides a default of 64.
+   * If not provided, `<Symbol />` provides a default of 64 (8px x 8px).
    */
   size: PropTypes.number,
 

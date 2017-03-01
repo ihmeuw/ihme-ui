@@ -44,12 +44,12 @@ HtmlLabel.propTypes = {
   icon: PropTypes.string,
 
   /**
-   * signature: function(SyntheticEvent) {...}
+   * signature: (SyntheticEvent) => {...}
    */
   onClick: PropTypes.func,
 
   /**
-   * signature: function(SyntheticEvent) {...}
+   * signature: (SyntheticEvent) => {...}
    */
   onMouseOver: PropTypes.func,
 

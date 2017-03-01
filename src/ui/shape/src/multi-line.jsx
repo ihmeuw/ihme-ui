@@ -124,7 +124,7 @@ MultiLine.propTypes = {
   areaStyle: CommonPropTypes.style,
 
   /**
-   * Function to apply to the data to transform area values. default: _.identity
+   * Applied to the data to transform area values. default: _.identity
    * signature: (data, key) => {...}
    */
   areaValuesIteratee: PropTypes.func,
@@ -142,6 +142,7 @@ MultiLine.propTypes = {
 
   /**
    * Function that accepts keyfield and returns stroke color for line.
+   * signature: (key) => str
    */
   colorScale: PropTypes.func,
 
@@ -217,25 +218,25 @@ MultiLine.propTypes = {
 
   /**
    * onClick callback.
-   * signature: function(SyntheticEvent, data, instance) {...}
+   * signature: (SyntheticEvent, data, instance) => {...}
    */
   onClick: PropTypes.func,
 
   /**
    * onMouseLeave callback.
-   * signature: function(SyntheticEvent, data, instance) {...}
+   * signature: (SyntheticEvent, data, instance) => {...}
    */
   onMouseLeave: PropTypes.func,
 
   /**
    * onMouseMove callback.
-   * signature: function(SyntheticEvent, data, instance) {...}
+   * signature: (SyntheticEvent, data, instance) => {...}
    */
   onMouseMove: PropTypes.func,
 
   /**
    * onMouseOver callback.
-   * signature: function(SyntheticEvent, data, instance) {...}
+   * signature: (SyntheticEvent, data, instance) => {...}
    */
   onMouseOver: PropTypes.func,
 
