@@ -1,4 +1,4 @@
-<ResponsiveContainer \/>
+\<ResponsiveContainer />
 =====================
 
 {{{responsive-container.description}}}

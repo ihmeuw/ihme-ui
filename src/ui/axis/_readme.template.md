@@ -1,16 +1,16 @@
-<Axis \/>
+\<Axis />
 =====================
 {{{axis.description}}}
 
 {{{axis.props}}}
 
-#### <XAxis \/>
+#### \<XAxis />
 {{{x-axis.description}}}
 
 {{{x-axis.props}}}
 
 
-#### <YAxis \/>
+#### \<YAxis />
 {{{y-axis.description}}}
 
 {{{y-axis.props}}}

@@ -7,9 +7,9 @@ import Axis, { AXIS_SCALE_PROP_TYPES } from './axis';
 /**
  * `import { XAxis } from 'ihme-ui'`
  *
- * Chart x-axis that extends <Axis \/> and provides some useful defaults.
+ * Chart x-axis that extends \<Axis /> and provides some useful defaults.
  *
- * All props documented on <Axis \/> are available on <XAxis \/>.
+ * All props documented on \<Axis /> are available on \<XAxis />.
  */
 export default class XAxis extends Axis {
   constructor(props) {

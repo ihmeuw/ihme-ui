@@ -1,4 +1,4 @@
-<HtmlLabel \/>
+\<HtmlLabel />
 =====================
 {{{html-label.description}}}
 

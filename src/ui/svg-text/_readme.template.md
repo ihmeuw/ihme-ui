@@ -1,4 +1,4 @@
-<SvgText \/>
+\<SvgText />
 =====================
 
 {{{svg-text.description}}}

@@ -1,4 +1,4 @@
-<ChoroplethLegend \/>
+\<ChoroplethLegend />
 =====================
 {{{choropleth-legend.description}}}
 

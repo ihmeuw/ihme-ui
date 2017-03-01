@@ -1,4 +1,4 @@
-<Choropleth \/>
+\<Choropleth />
 =====================
 {{{choropleth.description}}}
 

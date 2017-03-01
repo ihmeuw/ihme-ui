@@ -1,4 +1,4 @@
-<AxisChart \/>
+\<AxisChart />
 =====================
 {{{axis-chart.description}}}
 

@@ -7,9 +7,9 @@ import Axis, { AXIS_SCALE_PROP_TYPES } from './axis';
 /**
  * `import { YAxis } from 'ihme-ui'`
  *
- * Chart y-axis that extends <Axis \/> and provides some useful defaults.
+ * Chart y-axis that extends \<Axis /> and provides some useful defaults.
  *
- * All props documented on <Axis \/> are available on <YAxis \/>.
+ * All props documented on \<Axis /> are available on \<YAxis />.
  */
 export default class YAxis extends Axis {
   constructor(props) {

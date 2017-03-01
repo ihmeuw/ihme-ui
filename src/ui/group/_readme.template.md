@@ -1,13 +1,13 @@
 Grouped selection controls
 =====================
 
-#### <Group \/>
+#### \<Group />
 {{{group.description}}}
 
 {{{group.props}}}
 
 
-#### <Option \/>
+#### \<Option />
 {{{option.description}}}
 
 {{{option.props}}}

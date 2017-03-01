@@ -1,4 +1,4 @@
-<Tooltip \/>
+\<Tooltip />
 =====================
 
 {{{tooltip.description}}}

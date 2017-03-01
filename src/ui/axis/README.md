@@ -1,6 +1,6 @@
-<Axis \/>
+\<Axis />
 =====================
-`import Axis from 'ihme-ui/ui/axis'`
+`import { Axis } from 'ihme-ui'`
 
 
 Property | Required | Type(s) | Defaults | Description
@@ -25,8 +25,8 @@ Property | Required | Type(s) | Defaults | Description
 `translate` |  | object |  | push axis in x or y direction<br />keys: 'x' (required), 'y' (required)<br />required if width and height are not provided
 `width` |  | atLeastOneOfProp(WIDTH_PROP_TYPES) | 0 | width of charting area, minus padding<br />required if translate is not specified
 
-#### <XAxis \/>
-`import { XAxis } from 'ihme-ui/ui/axis'`
+#### \<XAxis />
+`import { XAxis } from 'ihme-ui'`
 
 Chart x-axis that extends <Axis \/> and provides some useful defaults.
 
@@ -35,7 +35,7 @@ All props documented on <Axis \/> are available on <XAxis \/>.
 
 Property | Required | Type(s) | Defaults | Description
         --- | :---: | :---: | :---: | ---
-`orientation` |  | one of: ,  | 'bottom' | where to position axis line<br />one of: 'top', 'bottom'
+`orientation` |  | one of: 'top', 'bottom' | 'bottom' | where to position axis line<br />one of: 'top', 'bottom'
 `scale` |  | atLeastOneOfProp(X_AXIS_SCALE_PROP_TYPES) |  | alternative to providing scales object with key 'x' and scale function as value
 `scales` |  | atLeastOneOfProp(X_AXIS_SCALE_PROP_TYPES) | { x: scaleLinear() } | scales are provided by axis-chart, only x scale is used by XAxis
 `width` |  |  | 0 | 
@@ -43,8 +43,8 @@ Property | Required | Type(s) | Defaults | Description
 `padding` |  |  | {<br />  top: 40,<br />  bottom: 40,<br />} | 
 
 
-#### <YAxis \/>
-`import { YAxis } from 'ihme-ui/ui/axis'`
+#### \<YAxis />
+`import { YAxis } from 'ihme-ui'`
 
 Chart y-axis that extends <Axis \/> and provides some useful defaults.
 
@@ -53,7 +53,7 @@ All props documented on <Axis \/> are available on <YAxis \/>.
 
 Property | Required | Type(s) | Defaults | Description
         --- | :---: | :---: | :---: | ---
-`orientation` |  | one of: ,  | 'left' | where to position axis line<br />one of: 'left', 'right'
+`orientation` |  | one of: 'left', 'right' | 'left' | where to position axis line<br />one of: 'left', 'right'
 `scale` |  | atLeastOneOfProp(Y_AXIS_SCALE_PROP_TYPES) |  | alternative to providing scales object with key 'y' and scale function as value
 `scales` |  | atLeastOneOfProp(Y_AXIS_SCALE_PROP_TYPES) | { y: scaleLinear() } | scales are provided by axis-chart, only y scale is used by YAxis
 `width` |  |  | 0 | 

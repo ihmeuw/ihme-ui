@@ -1,4 +1,4 @@
-<Slider \/>
+\<Slider />
 =====================
 
 {{{slider.description}}}

@@ -5,31 +5,31 @@ These components provide the "primitive" shapes for constructing line/area chart
 This is organizationally intended to mimic [d3-shape](https://github.com/d3/d3-shape).
 
 
-#### `<Area />`
+#### \<Area />
 {{{area.description}}}
 
 {{{area.props}}}
 
 
-#### `<Line />`
+#### \<Line />
 {{{line.description}}}
 
 {{{line.props}}}
 
 
-#### `<MultiLine />`
+#### \<MultiLine />
 {{{multi-line.description}}}
 
 {{{multi-line.props}}}
 
 
-#### `<Scatter />`
+#### \<Scatter />
 {{{scatter.description}}}
 
 {{{scatter.props}}}
 
 
-#### `<Symbol />`
+#### \<Symbol />
 {{{symbol.description}}}
 
 {{{symbol.props}}}
