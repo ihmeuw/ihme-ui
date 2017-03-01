@@ -84,13 +84,13 @@ function generateMarkdownTable(api) {
   if (isEmpty(api.props)) return '';
   return HEADER.concat(
     join(map(api.props, (description, propName) =>
-      [
+      join([
         `\`${propName}\``,
         description.required ? 'true' : '',
         inferType(description.type),
         replaceNewlineWithBreak(getValue(description, 'defaultValue.value', '')),
         replaceNewlineWithBreak(description.description),
-      ].join(' | ')
+      ], ' | ')
     ), '\n')
   );
 }
