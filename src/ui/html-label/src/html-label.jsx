@@ -1,51 +1,71 @@
 import React, { PropTypes } from 'react';
-
 import classNames from 'classnames';
 
+import { CommonPropTypes } from '../../../utils/props';
 import styles from './html-label.css';
 
-const propTypes = {
-  children: PropTypes.element,
-
-  /* array of classes to add to label */
-  className: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.object,
-    PropTypes.array
-  ]),
-
-  clickHandler: PropTypes.func,
-
-  hoverHandler: PropTypes.func,
-
-  /* ID of a labelable form-related element */
-  htmlFor: PropTypes.string,
-
-  /* path to image to render within label tag */
-  icon: PropTypes.string,
-
-  /* text to render within label tag */
-  text: PropTypes.string,
-
-  /* color scheme of component; see html-label.css */
-  theme: PropTypes.string
-};
-
+/**
+ * `import { HtmlLabel } from 'ihme-ui'`
+ *
+ * An HTML `<label>` to wrap interactive content.
+ */
 const HtmlLabel = (props) => {
   return (
     <label
       className={classNames(styles[props.theme], props.className)}
       htmlFor={props.htmlFor}
-      onClick={props.clickHandler}
-      onMouseOver={props.hoverHandler}
+      onClick={props.onClick}
+      onMouseOver={props.onMouseOver}
     >
-      {((path) => { return path ? <img alt="" src={path} /> : null; })(props.icon)}
+      {props.icon && <img alt="" src={props.icon} />}
       {props.text}
       {props.children}
     </label>
   );
 };
 
-HtmlLabel.propTypes = propTypes;
+HtmlLabel.propTypes = {
+  children: PropTypes.element,
+
+  /**
+   * className applied to `<label>`
+   */
+  className: CommonPropTypes.className,
+
+  /**
+   * ID of a labelable element; useful if label does not contain its control.
+   * See [https://www.w3.org/TR/html5/forms.html#attr-label-for](https://www.w3.org/TR/html5/forms.html#attr-label-for).
+   */
+  htmlFor: PropTypes.string,
+
+  /**
+   * path to image to render within label tag
+   */
+  icon: PropTypes.string,
+
+  /**
+   * signature: (SyntheticEvent) => {...}
+   */
+  onClick: PropTypes.func,
+
+  /**
+   * signature: (SyntheticEvent) => {...}
+   */
+  onMouseOver: PropTypes.func,
+
+  /**
+   * text to render within label tag
+   */
+  text: PropTypes.string,
+
+  /**
+   * one of: 'dark' (`color: white`), 'light' (`color: black`)
+   */
+  theme: PropTypes.oneOf(['dark', 'light']),
+};
+
+HtmlLabel.defaultProps = {
+  theme: 'light',
+};
 
 export default HtmlLabel;

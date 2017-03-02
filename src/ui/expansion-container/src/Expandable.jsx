@@ -26,13 +26,16 @@ const LAYOUT_STYLES = [
 ];
 
 /**
- * <Expandable /> is a *mostly* drop in replacement for a layout <div /> that gives its contents
- * expanding powers, and must accompany an <ExpansionContainer /> of the same `group` (default
- * group is 'default'). Flex related layout styles are passed directly to a content <div />, and
+ * `import { Expandable } from 'ihme-ui'`
+ *
+ *
+ * `<Expandable />` is a *mostly* drop in replacement for a layout `<div />` that gives its contents
+ * expanding powers, and must accompany an `<ExpansionContainer />` of the same `group` (default
+ * group is 'default'). Flex related layout styles are passed directly to a content `<div />`, and
  * additional styles like `border`, `margin`, etc. must be supplied via the `expandableClassName`
  * and `expandableStyle` props.
  *
- * Note: Transitions on the restore event do not execute on FireFox, and thus have been disabled.
+ * Note: Transitions on the restore event do not execute on Firefox, and thus have been disabled.
  */
 export default class Expandable extends PureComponent {
   constructor(props) {
@@ -314,18 +317,58 @@ export default class Expandable extends PureComponent {
 }
 
 Expandable.propTypes = {
+  /**
+   * className applied to outermost containing div
+   */
   className: CommonPropTypes.className,
+
+  /**
+   * inline styles applied to outermost containing div
+   */
   style: CommonPropTypes.style,
+
+  /**
+   * className applied to div directly wrapping component to expand
+   */
   expandableClassName: CommonPropTypes.className,
+
+  /**
+   * inline styles applied to div directly wrapping component to expand
+   */
   expandableStyle: CommonPropTypes.style,
+
+  /**
+   * className applied to "expand/contract" icon
+   */
   iconClassName: CommonPropTypes.className,
+
+  /**
+   * inline styles applied to "expand/contract" icon
+   */
   iconStyle: CommonPropTypes.style,
-  /* size of icon in px; applied to contentStyle as paddingRight and iconStyle as fontSize */
+
+  /**
+   * size of icon in px; applied to contentStyle as paddingRight and iconStyle as fontSize
+   */
   iconSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+
   children: PropTypes.node,
+
+  /**
+   * key used by `<Expandable />`s to register with `<ExpansionContainer />`;
+   * if more than one `<ExpansionContainer />` is mounted, `group` should be treated as required
+   * and unique per instance.
+   */
   group: PropTypes.string,
+
+  /**
+   * do not render "expand/contract" icon
+   */
   hideIcon: PropTypes.bool,
-  expanded: PropTypes.bool,
+
+  /**
+   * CSS transition to apply to `<Expandable />` when transitioning in height/width
+   */
   transition: PropTypes.string,
 };
 

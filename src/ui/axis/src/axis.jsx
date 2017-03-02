@@ -17,7 +17,7 @@ export const AXIS_TYPES = {
 };
 
 /**
- * Expose basic public API of d3-axis
+ * `import { Axis } from 'ihme-ui'`
  */
 export default class Axis extends React.Component {
   constructor(props) {
@@ -116,22 +116,42 @@ export const WIDTH_PROP_TYPES = {
 
 Axis.propTypes = {
 
-  /* class name to apply to the axis */
+  /**
+   * className applied to outermost group element
+   */
   className: CommonPropTypes.className,
 
-  /*
-   dimensions are provided by axis-chart
-   used for calculating translate, required if translate is not specified
+  /**
+   * height of charting area, minus padding
+   * required if translate is not provided
    */
   height: atLeastOneOfProp(HEIGHT_PROP_TYPES),
 
+  /**
+   * the axis label
+   */
   label: PropTypes.string,
+
+  /**
+   * className applied to text element surrounding axis label
+   */
   labelClassName: CommonPropTypes.className,
+
+  /**
+   * inline styles applied to text element surrounding axis label
+   */
   labelStyle: PropTypes.object,
 
-  /* orientation of ticks relative to axis line */
+  /**
+   * where to position axis line; will position ticks accordingly
+   * one of: "top", "right", "bottom", "left"
+   */
   orientation: PropTypes.oneOf(Object.keys(AXIS_TYPES)).isRequired,
 
+  /**
+   * used to position label
+   * keys: 'top', 'bottom', 'left', 'right'
+   */
   padding: PropTypes.shape({
     top: PropTypes.number,
     bottom: PropTypes.number,
@@ -139,31 +159,69 @@ Axis.propTypes = {
     right: PropTypes.number,
   }),
 
-  /* appropriate scale for axis */
+  /**
+   *  appropriate scale for axis
+   */
   scale: atLeastOneOfProp(AXIS_SCALE_PROP_TYPES),
 
-  /* style to apply to the axis */
+  /**
+   * inline styles to apply to outermost group element
+   */
   style: PropTypes.object,
 
-  /* see d3-axis docs */
-  tickArguments: PropTypes.array,
-  tickFormat: PropTypes.func,
-  tickPadding: PropTypes.number,
-  tickSize: PropTypes.number,
-  tickSizeInner: PropTypes.number,
-  tickSizeOuter: PropTypes.number,
-  tickValues: PropTypes.array,
+  /**
+   * [number of axis ticks use](https://github.com/d3/d3-axis#axis_ticks)
+   */
   ticks: PropTypes.number,
 
-  /* push axis in x or y directions */
+  /**
+   * [alternative to tickValues and/or tickFormat](https://github.com/d3/d3-axis#axis_tickArguments)
+   */
+  tickArguments: PropTypes.array,
+
+  /**
+   * [format of axis ticks](https://github.com/d3/d3-axis#axis_tickFormat)
+   */
+  tickFormat: PropTypes.func,
+
+  /**
+   * [padding of axis ticks](https://github.com/d3/d3-axis#axis_tickPadding)
+   */
+  tickPadding: PropTypes.number,
+
+  /**
+   * [size of both inner and outer tick lines](https://github.com/d3/d3-axis#axis_tickSize)
+   */
+  tickSize: PropTypes.number,
+
+  /**
+   * [size of inner tick lines](https://github.com/d3/d3-axis#axis_tickSizeInner)
+   */
+  tickSizeInner: PropTypes.number,
+
+  /**
+   * [size of outer tick lines](https://github.com/d3/d3-axis#axis_tickSizeOuter)
+   */
+  tickSizeOuter: PropTypes.number,
+
+  /**
+   * [user-specified tick values](https://github.com/d3/d3-axis#axis_tickValues)
+   */
+  tickValues: PropTypes.array,
+
+  /**
+   * push axis in x or y direction
+   * keys: 'x' (required), 'y' (required)
+   * required if width and height are not provided
+   */
   translate: PropTypes.shape({
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
   }),
 
-  /*
-   dimensions are provided by axis-chart
-   used for calculating translate, required if translate is not specified
+  /**
+   * width of charting area, minus padding
+   * required if translate is not specified
   */
   width: atLeastOneOfProp(WIDTH_PROP_TYPES),
 };

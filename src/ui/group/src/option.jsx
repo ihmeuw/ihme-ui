@@ -6,6 +6,13 @@ import { CommonPropTypes, PureComponent, propsChanged, stateFromPropUpdates } fr
 import Button from '../../button';
 import styles from './option.css';
 
+/**
+ * `import { Option } from 'ihme-ui'`
+ *
+ *
+ * Component designed to be wrapped by `<Group />`. Renders `props.type` and provides it with computed props `className`, `disabled`, `selected`, and `style`.
+ * Any additional props passed to `<Option />` will be passed directly to the rendered component.
+ */
 export default class Option extends PureComponent {
   static calculateStyle(props) {
     return {
@@ -56,22 +63,59 @@ export default class Option extends PureComponent {
 }
 
 Option.propTypes = {
+  /**
+   * combined with `disabledClassName` and `selectedClassName` (if applicable) and passed to rendered component as `className`
+   */
   className: CommonPropTypes.className,
 
-  /* apply disabled class styling */
+  /**
+   * whether option is disabled
+   */
   disabled: PropTypes.bool,
+
+  /**
+   * className applied when disabled
+   */
   disabledClassName: CommonPropTypes.className,
+
+  /**
+   * inline style applied when disabled
+   */
   disabledStyle: CommonPropTypes.style,
 
-  /* apply selected class styling */
+  /**
+   * whether option is selected
+   */
   selected: PropTypes.bool,
+
+  /**
+   * className applied when selected
+   */
   selectedClassName: CommonPropTypes.className,
+
+  /**
+   * inline style applied when selected
+   */
   selectedStyle: CommonPropTypes.style,
 
+  /**
+   * inline styles
+   */
   style: CommonPropTypes.style,
 
-  /* react element to be wrapped by this option */
-  type: PropTypes.any,
+  /**
+   * tag name (JSX primitive) or React component to be rendered
+   * defaults to [`<Button />`](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/button/src/button.jsx)
+   */
+  type: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+  ]),
+
+  /**
+   * used by `<Group />` to generate proper onClick handlers
+   */
+  value: PropTypes.any.required,
 };
 
 Option.defaultProps = {

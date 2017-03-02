@@ -5,70 +5,6 @@ import { propResolver, eventHandleWrapper } from '../../../utils';
 import styles from './legend-item.css';
 import { Symbol } from '../../shape';
 
-const propTypes = {
-  /* legend item to render */
-  item: PropTypes.object.isRequired,
-
-  /* classname(s) to apply to li */
-  itemClassName: PropTypes.oneOfType([
-    PropTypes.array,
-    PropTypes.string,
-    PropTypes.object
-  ]),
-
-  /* inline-styles to be applied to individual legend item <li> */
-  itemStyles: PropTypes.oneOfType([
-    // if passed an object, will be applied directly inline to the li
-    PropTypes.object,
-
-    // if passed a function, will be called with the current item
-    PropTypes.func,
-  ]),
-
-  /* custom component to render for each label, passed current item */
-  LabelComponent: PropTypes.func,
-
-  labelKey: PropTypes.oneOfType([
-    /* either the path of label in the item objects */
-    PropTypes.string,
-
-    /* or a function to resolve the label, passed the current item */
-    PropTypes.func
-  ]).isRequired,
-
-  /* callback when 'clear' icon is clicked; see props.renderClear */
-  onClear: PropTypes.func,
-
-  /* callback when legend item is clicked */
-  onClick: PropTypes.func,
-
-  /* whether to render a 'clear' icon ('x') inline with each legend item */
-  renderClear: PropTypes.bool,
-
-  symbolColorKey: PropTypes.oneOfType([
-    /* either the path of symbol color in the item objects */
-    PropTypes.string,
-
-    /* or a function to resolve the symbol color, passed the current item */
-    PropTypes.func
-  ]).isRequired,
-
-  symbolTypeKey: PropTypes.oneOfType([
-    /* either the path of symbol type in the item objects */
-    PropTypes.string,
-
-    /* or a function to resolve the symbol type, passed the current item */
-    PropTypes.func
-  ]).isRequired
-};
-
-const defaultProps = {
-  LabelComponent: null,
-  onClear: null,
-  onClick: null,
-  renderClear: false,
-};
-
 /**
  * label renderer
  */
@@ -141,5 +77,59 @@ export default function LegendItem(props) {
   );
 }
 
-LegendItem.propTypes = propTypes;
-LegendItem.defaultProps = defaultProps;
+LegendItem.propTypes = {
+  /* legend item to render */
+  item: PropTypes.object.isRequired,
+
+  /* classname(s) to apply to li */
+  itemClassName: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.string,
+    PropTypes.object
+  ]),
+
+  /* inline-styles to be applied to individual legend item <li> */
+  itemStyles: PropTypes.oneOfType([
+    // if passed an object, will be applied directly inline to the li
+    PropTypes.object,
+
+    // if passed a function, will be called with the current item
+    PropTypes.func,
+  ]),
+
+  /* custom component to render for each label, passed current item */
+  LabelComponent: PropTypes.func,
+
+  labelKey: PropTypes.oneOfType([
+    /* either the path of label in the item objects */
+    PropTypes.string,
+
+    /* or a function to resolve the label, passed the current item */
+    PropTypes.func
+  ]).isRequired,
+
+  /* callback when 'clear' icon is clicked; see props.renderClear */
+  onClear: PropTypes.func,
+
+  /* callback when legend item is clicked */
+  onClick: PropTypes.func,
+
+  /* whether to render a 'clear' icon ('x') inline with each legend item */
+  renderClear: PropTypes.bool,
+
+  symbolColorKey: PropTypes.oneOfType([
+    /* either the path of symbol color in the item objects */
+    PropTypes.string,
+
+    /* or a function to resolve the symbol color, passed the current item */
+    PropTypes.func
+  ]).isRequired,
+
+  symbolTypeKey: PropTypes.oneOfType([
+    /* either the path of symbol type in the item objects */
+    PropTypes.string,
+
+    /* or a function to resolve the symbol type, passed the current item */
+    PropTypes.func
+  ]).isRequired
+};

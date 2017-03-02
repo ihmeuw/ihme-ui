@@ -5,6 +5,15 @@ import { CommonPropTypes, eventHandleWrapper, PureComponent } from '../../../uti
 
 import styles from './option.css';
 
+/**
+ * `import { Group } from 'ihme-ui'`
+ *
+ *
+ * A wrapper to group elements, both visually and functionally. Its primary use case is as a buttonset,
+ * which can be accomplished by wrapping `<Option />` components (or similar, customized components) in a `<Group />`.
+ *
+ * If providing a custom component instead of using `<Option />`, component must accept an identifying `value` prop.
+ */
 export default class Group extends PureComponent {
   static onClickWrapper(optionValue, onClick) {
     return eventHandleWrapper(onClick, optionValue);
@@ -42,10 +51,22 @@ export default class Group extends PureComponent {
 
 Group.propTypes = {
   children: PropTypes.node.isRequired,
+
+  /**
+   * className applied to outermost wrapping div
+   */
   className: CommonPropTypes.className,
 
-  /* function with following signature: function(event, selectedOptionValue) */
+  /**
+   * onClick callback passed to each child
+   * implicitly depends on child components having a `value` prop
+   * signature: (SyntheticEvent, selectedValue) {...}
+   */
   onClick: PropTypes.func.isRequired,
+
+  /**
+   * inline styles applied to outermost wrapping div
+   */
   style: CommonPropTypes.style,
 };
 
