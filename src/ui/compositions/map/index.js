@@ -1,1 +1,1 @@
-export { default as default } from './src/map';
+export { default, getRangeExtent, filterData } from './src/map';

@@ -4,12 +4,11 @@ import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow, mount } from 'enzyme';
 import sinon from 'sinon';
-
-chai.use(chaiEnzyme());
-
 import LegendItem from '../src/legend-item';
 import { Symbol } from '../../shape';
 import itemStyle from '../src/legend-item.css';
+
+chai.use(chaiEnzyme());
 
 describe('<LegendItem />', () => {
   const item = {
@@ -30,9 +29,7 @@ describe('<LegendItem />', () => {
   });
 
   it('accepts a labelKey that is a function that is called with the item', () => {
-    const spy = sinon.spy((itemObj) => {
-      return itemObj.estimateStage;
-    });
+    const spy = sinon.spy(itemObj => itemObj.estimateStage);
 
     const wrapper = shallow(<LegendItem item={item} labelKey={spy} />);
     expect(wrapper.find('span')).to.have.text('GBD final');
@@ -46,9 +43,7 @@ describe('<LegendItem />', () => {
   });
 
   it('accepts a symbolTypeKey that is a function that is called with the item', () => {
-    const spy = sinon.spy((itemObj) => {
-      return itemObj.symbolType;
-    });
+    const spy = sinon.spy(itemObj => itemObj.symbolType);
     const wrapper = shallow(<LegendItem item={item} symbolTypeKey={spy} />);
 
     expect(wrapper).to.contain(<Symbol symbolType="triangle" />);
@@ -62,9 +57,7 @@ describe('<LegendItem />', () => {
   });
 
   it('accepts a symbolColorKey that is a function that is called with the item', () => {
-    const spy = sinon.spy((itemObj) => {
-      return itemObj.symbolColor;
-    });
+    const spy = sinon.spy(itemObj => itemObj.symbolColor);
     const wrapper = shallow(<LegendItem item={item} symbolColorKey={spy} />);
 
     expect(wrapper).to.contain(<Symbol fill="red" />);

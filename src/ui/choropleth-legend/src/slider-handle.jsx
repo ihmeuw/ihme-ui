@@ -36,7 +36,7 @@ const defaultProps = {
   position: 0,
   height: 15,
   label: null,
-  labelFormat: (n) => n,
+  labelFormat: n => n,
   which: 'x1'
 };
 
@@ -93,8 +93,7 @@ export default class SliderHandle extends React.Component {
           stroke="none"
           fill="#000"
           width="5px"
-        >
-        </rect>
+        />
         <SvgText
           value={labelFormat(label)}
           anchor={which === 'x1' ? 'end' : 'start'}

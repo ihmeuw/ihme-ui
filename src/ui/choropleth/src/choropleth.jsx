@@ -42,7 +42,7 @@ export default class Choropleth extends React.Component {
    * @return {Object} - keys are keyField (e.g., locationId), values are datum objects
    */
   static processData(data, keyField) {
-    return keyBy(data, (datum) => propResolver(datum, keyField));
+    return keyBy(data, datum => propResolver(datum, keyField));
   }
 
   constructor(props) {
@@ -118,7 +118,7 @@ export default class Choropleth extends React.Component {
 
       const visibleLayers = filter(nextProps.layers, { visible: true });
 
-      const uncachedLayers = filter(visibleLayers, (layer) =>
+      const uncachedLayers = filter(visibleLayers, layer =>
         layer.type === 'mesh' || !has(cache[layer.type], layer.name)
       );
 
@@ -221,8 +221,8 @@ export default class Choropleth extends React.Component {
       point(x, y, z) {
         // mike bostock math
         const area = 1 / scale / scale;
-        const pointX = x * scale + translate[0];
-        const pointY = y * scale + translate[1];
+        const pointX = (x * scale) + translate[0];
+        const pointY = (y * scale) + translate[1];
 
         if (z >= area) {
           this.stream.point(pointX, pointY);
@@ -231,7 +231,7 @@ export default class Choropleth extends React.Component {
     });
 
     return geoPath().projection({
-      stream: (pointStream) => transform.stream(clipExtent.stream(pointStream))
+      stream: pointStream => transform.stream(clipExtent.stream(pointStream))
     });
   }
 

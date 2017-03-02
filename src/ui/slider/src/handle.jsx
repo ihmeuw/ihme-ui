@@ -114,7 +114,7 @@ Handle.defaultProps = {
 };
 
 Handle.propUpdates = {
-  position: updateFunc((nextProp, _, nextProps) => {
-    return { style: { ...nextProps.style, left: getDimension(nextProp) } };
-  }),
+  position: updateFunc(
+    (nextProp, _, nextProps) => ({ style: { ...nextProps.style, left: getDimension(nextProp) } })
+  ),
 };

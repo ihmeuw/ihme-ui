@@ -21,7 +21,7 @@ describe('<MultiLine />', () => {
   });
 
   const yDomain = [minBy(data, valueField)[valueField], maxBy(data, valueField)[valueField]];
-  const xDomain = map(uniqBy(data, keyField), (obj) => { return (obj[keyField]); });
+  const xDomain = map(uniqBy(data, keyField), obj => (obj[keyField]));
 
   const scales = {
     x: scalePoint().domain(xDomain).range([0, 100]),

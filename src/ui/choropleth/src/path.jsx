@@ -93,8 +93,7 @@ export default class Path extends PureComponent {
         onMouseLeave={this.onMouseLeave}
         onMouseMove={this.onMouseMove}
         onMouseOver={this.onMouseOver}
-      >
-      </path>
+      />
     );
   }
 }

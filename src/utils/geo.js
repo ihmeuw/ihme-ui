@@ -1,8 +1,8 @@
 import * as topojson from 'topojson';
-import { reduce } from 'lodash';
+import { has, reduce } from 'lodash';
 import { geoPath } from 'd3';
 
-const defaultMeshFilter = () => { return true; };
+const defaultMeshFilter = () => true;
 
 /**
  * extract topojson layers as geoJSON
@@ -16,7 +16,7 @@ const defaultMeshFilter = () => { return true; };
 export function extractGeoJSON(topology, layers) {
   return reduce(layers, (acc, layer) => {
     // make certain the layer exists on the topojson
-    if (!topology.objects.hasOwnProperty(layer.object)) return acc;
+    if (!has(topology.objects, layer.object)) return acc;
 
     switch (layer.type) {
       case 'mesh':
@@ -51,10 +51,10 @@ export function extractGeoJSON(topology, layers) {
 export function concatGeoJSON(extractedGeoJSON) {
   // iterate over each property of extractedGeoJSON ('mesh' & 'feature')
   // reduce to single array of features
-  return reduce(extractedGeoJSON, (collection, type) => {
+  return reduce(extractedGeoJSON, (collection, type) =>
     // extractedGeoJSON[type] will be one of [extractedGeoJSON.mesh, extractedGeoJSON.feature]
     // each is an object with geoJSON features or geometric objects
-    return [...collection, ...reduce(type, (intermediateCollection, geoJSON) => {
+    [...collection, ...reduce(type, (intermediateCollection, geoJSON) => {
       switch (geoJSON.type) {
         // topojson::feature will only return GeoJSON Feature or FeatureCollection
         // topojson::mesh is excluded because it is not used in bounds calculations
@@ -65,8 +65,7 @@ export function concatGeoJSON(extractedGeoJSON) {
         default:
           return intermediateCollection;
       }
-    }, [])];
-  }, []);
+    }, [])], []);
 }
 
 /**
@@ -85,7 +84,7 @@ export function computeBounds(featureCollection) {
  */
 export function calcCenterPoint(width, height, scale, translate) {
   // mike bostock math
-  return [(width - 2 * translate[0]) / scale, (height - 2 * translate[1]) / scale];
+  return [(width - (2 * translate[0])) / scale, (height - (2 * translate[1])) / scale];
 }
 
 /**

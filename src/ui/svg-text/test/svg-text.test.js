@@ -2,10 +2,9 @@ import React from 'react';
 import chai, { expect } from 'chai';
 import { shallow } from 'enzyme';
 import chaiEnzyme from 'chai-enzyme';
+import SvgText from '../';
 
 chai.use(chaiEnzyme());
-
-import SvgText from '../';
 
 describe('<SvgText />', () => {
   it('renders an SVG text node', () => {

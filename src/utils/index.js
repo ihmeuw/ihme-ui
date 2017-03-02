@@ -1,14 +1,14 @@
-export {
+import {
   hasCrappyValues,
   linspace,
 } from './array';
 
-export {
+import {
   colorSteps,
   baseColorScale,
 } from './colors';
 
-export {
+import {
   percentOfRange,
   numFromPercent,
   domainFromPercent,
@@ -16,11 +16,10 @@ export {
   ensureWithinRange,
 } from './domain';
 
-export {
-  eventHandleWrapper,
-} from './events';
 
-export {
+import eventHandleWrapper from './events';
+
+import {
   calcCenterPoint,
   calcScale,
   calcTranslate,
@@ -30,20 +29,18 @@ export {
   extractGeoJSON,
 } from './geo';
 
-export {
+import {
   numberFormat,
 } from './numbers';
 
-export {
+import {
   propResolver,
   quickMerge,
 } from './objects';
 
-export {
-  PureComponent,
-} from './react';
+import PureComponent from './react';
 
-export {
+import {
   clampedScale,
   domainToRange,
   getScale,
@@ -51,11 +48,9 @@ export {
   rangeToDomain,
 } from './scale';
 
-export {
-  getStringWidth,
-} from './strings';
+import getStringWidth from './strings';
 
-export {
+import {
   CommonPropTypes,
   CommonDefaultProps,
   atLeastOneOfProp,
@@ -66,11 +61,50 @@ export {
   applyFuncToProps,
 } from './props';
 
-export {
+import {
   getSymbol,
   symbolTypes,
 } from './symbol';
 
+import getBackgroundColor from './window';
+
 export {
+  hasCrappyValues,
+  linspace,
+  colorSteps,
+  baseColorScale,
+  percentOfRange,
+  numFromPercent,
+  domainFromPercent,
+  isWithinRange,
+  ensureWithinRange,
+  eventHandleWrapper,
+  calcCenterPoint,
+  calcScale,
+  calcTranslate,
+  computeBounds,
+  concatAndComputeGeoJSONBounds,
+  concatGeoJSON,
+  extractGeoJSON,
+  numberFormat,
+  propResolver,
+  quickMerge,
+  PureComponent,
+  clampedScale,
+  domainToRange,
+  getScale,
+  getScaleTypes,
+  rangeToDomain,
+  getStringWidth,
+  CommonPropTypes,
+  CommonDefaultProps,
+  atLeastOneOfProp,
+  exactlyOneOfProp,
+  propsChanged,
+  stateFromPropUpdates,
+  updateFunc,
+  applyFuncToProps,
+  getSymbol,
+  symbolTypes,
   getBackgroundColor,
-} from './window';
+};

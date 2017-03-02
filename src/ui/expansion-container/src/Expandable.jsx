@@ -2,14 +2,13 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import bindAll from 'lodash/bindAll';
 import pick from 'lodash/pick';
-import { CommonPropTypes, PureComponent } from '../../../utils';
-import { getBackgroundColor } from '../../../utils/window';
+import { CommonPropTypes, getBackgroundColor, PureComponent } from '../../../utils';
 
 import { containerStore } from './ExpansionContainer';
 import styles from './expansion-container.css';
 
 /* Adapted from is.js */
-const userAgent = (navigator && navigator.userAgent || '').toLowerCase();
+const userAgent = ((navigator && navigator.userAgent) || '').toLowerCase();
 
 function isFirefox() {
   const match = userAgent.match(/(?:firefox|fxios)\/(\d+)/);
@@ -93,10 +92,6 @@ export default class Expandable extends PureComponent {
     setTimeout(this.setState, 0, this.defaultState);
   }
 
-  componentWillUnmount() {
-    this._expansionContainer.unsubscribe(this);
-  }
-
   componentDidUpdate() {
     if (this.state.transitioning && !!this.state.innerStyle.transition) {
       // do nothing
@@ -112,6 +107,10 @@ export default class Expandable extends PureComponent {
         setTimeout(this.setState, 0, this.defaultState);
       }
     }
+  }
+
+  componentWillUnmount() {
+    this._expansionContainer.unsubscribe(this);
   }
 
   onExpand() {
@@ -260,7 +259,7 @@ export default class Expandable extends PureComponent {
             d="M6.4,3.2 L-3.2,-6.4 L6.4,-6.4z"
             style={{
               fontSize: 'initial',
-              transform: `${!!(restoring || expanded) ? 'translate(-0.5em, 0.5em)' : 'initial'}`,
+              transform: `${restoring || expanded ? 'translate(-0.5em, 0.5em)' : 'initial'}`,
               transition: 'inherit',
             }}
           />
@@ -268,7 +267,7 @@ export default class Expandable extends PureComponent {
             d="M3.2,6.4 L-6.4,-3.2 L-6.4,6.4z"
             style={{
               fontSize: 'initial',
-              transform: `${!!(restoring || expanded) ? 'translate(0.5em, -0.5em)' : 'initial'}`,
+              transform: `${restoring || expanded ? 'translate(0.5em, -0.5em)' : 'initial'}`,
               transition: 'inherit',
             }}
           />

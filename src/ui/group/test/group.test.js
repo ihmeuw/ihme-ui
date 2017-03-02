@@ -23,9 +23,7 @@ describe('<Group />', () => {
 
   it('handles clicks', () => {
     const mockEvent = {};
-    const clickHandler = sinon.spy((evt, value) => {
-      return value;
-    });
+    const clickHandler = sinon.spy((evt, value) => value);
 
     const wrapper = mount(
       <Group onClick={clickHandler}>

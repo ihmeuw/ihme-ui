@@ -2,10 +2,10 @@ import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { mount } from 'enzyme';
+import ResponsiveContainer from '../';
 
 chai.use(chaiEnzyme());
 
-import ResponsiveContainer from '../';
 
 /**
  * Until either JSDOM supports getBoundingClientRect or
@@ -13,7 +13,7 @@ import ResponsiveContainer from '../';
  */
 describe('<ResponsiveContainer />', () => {
   function ChildComponent() {
-    return <div></div>;
+    return <div />;
   }
 
   it('does not render child component when its parent\'s width and/or height are 0', () => {

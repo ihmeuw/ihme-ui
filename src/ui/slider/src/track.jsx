@@ -23,6 +23,10 @@ export default class Track extends PureComponent {
     this.setState(this.handlePropUpdates(this.props, nextProps));
   }
 
+  componentWillUnmount() {
+    this._interactable.unset();
+  }
+
   handlePropUpdates(prevProps, nextProps) {
     const state = {};
 
@@ -38,10 +42,6 @@ export default class Track extends PureComponent {
     }
 
     return state;
-  }
-
-  componentWillUnmount() {
-    this._interactable.unset();
   }
 
   get width() {
@@ -82,14 +82,14 @@ export default class Track extends PureComponent {
             x={this.state.ticks}
           />
         )}
-        <div ref={this.trackRef} className={style['track-click-target']}></div>
+        <div ref={this.trackRef} className={style['track-click-target']} />
       </div>
     );
   }
 }
 
 Track.propTypes = {
-  children: PropTypes.node,
+  children: PropTypes.node.isRequired,
 
   className: CommonPropTypes.className,
 

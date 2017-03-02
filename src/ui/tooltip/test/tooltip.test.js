@@ -4,10 +4,9 @@ import chai, { expect } from 'chai';
 import { merge } from 'lodash';
 import chaiEnzyme from 'chai-enzyme';
 import { mount, shallow } from 'enzyme';
+import Tooltip from '../src/tooltip';
 
 chai.use(chaiEnzyme());
-
-import Tooltip from '../src/tooltip';
 
 describe('<Tooltip />', () => {
   describe('basic behavior', () => {

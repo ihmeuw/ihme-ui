@@ -37,7 +37,7 @@ describe('<Choropleth />', () => {
         .to.be.an('object');
 
       // each unique data::keyField should have a corresponding key in result.processedData
-      const expectedKeys = data.map((datum) => datum[keyField]);
+      const expectedKeys = data.map(datum => datum[keyField]);
       expectedKeys.forEach((key) => {
         expect(result)
           .to.have.property(key)
@@ -56,7 +56,7 @@ describe('<Choropleth />', () => {
       });
 
       it('accepts a function as layer style', () => {
-        const layerStyle = (geoJSONFeature) => ({ stroke: geoJSONFeature.properties.color });
+        const layerStyle = geoJSONFeature => ({ stroke: geoJSONFeature.properties.color });
         const calculatedStyle = Choropleth.prototype.calcMeshLayerStyle(Symbol(), layerStyle, feature);
         expect(calculatedStyle).to.deep.equal(expectedStyle);
       });

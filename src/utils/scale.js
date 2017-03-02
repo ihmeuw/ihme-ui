@@ -1,5 +1,5 @@
-import * as d3Scale from 'd3-scale';
-import { forOwn } from 'lodash';
+import * as d3Scale from 'd3';
+import { forOwn, has } from 'lodash';
 import { isWithinRange } from './index';
 
 const SCALES = {
@@ -127,7 +127,7 @@ export function clampedScale(clampedValue = '#ccc', tolerance) {
     };
 
     forOwn(scale, (fn, key) => {
-      if (!target.hasOwnProperty(key)) target[key] = fn;
+      if (!has(target, key)) target[key] = fn;
     });
 
     return target;

@@ -23,7 +23,7 @@ export const Float = {
   floatToIntMultiplier(float) {
     const [, fraction] = float.toString().split('.');
     if (!fraction) return 1;
-    return Math.pow(10, fraction.length);
+    return 10 ** fraction.length;
   },
 
   /**
@@ -62,8 +62,8 @@ export const Float = {
   multiply(...rest) {
     const multiplier = this.maxMultiplier(...rest);
     return rest.reduce((accum, num) =>
-      (Math.round(accum * multiplier) * Math.round(num * multiplier)) / Math.pow(multiplier, 2)
-    , 1);
+      (Math.round(accum * multiplier) * Math.round(num * multiplier)) / (multiplier ** 2)
+    );
   },
 
   /**

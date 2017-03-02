@@ -2,22 +2,20 @@ import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow, mount } from 'enzyme';
+import { forEach } from 'lodash';
+import Legend from '../';
 
 chai.use(chaiEnzyme());
-
-import Legend from '../';
 
 describe('<Legend />', () => {
   const labelKey = 'label';
   const symbolColorKey = 'symbolColor';
   const symbolTypeKey = 'symbolType';
-  const items = Array(5).fill(1).map((_, idx) => {
-    return {
-      [labelKey]: idx,
-      [symbolColorKey]: 'red',
-      [symbolTypeKey]: 'square'
-    };
-  });
+  const items = Array(5).fill(1).map((_, idx) => ({
+    [labelKey]: idx,
+    [symbolColorKey]: 'red',
+    [symbolTypeKey]: 'square'
+  }));
 
   it('renders an empty ul if given no legend items', () => {
     [{ items: [], }, { items: (void 0) }].forEach((test) => {
@@ -80,9 +78,9 @@ describe('<Legend />', () => {
         titleClassName={classNames}
       />
     );
-    for (const name of classNames) {
+    forEach(classNames, (name) => {
       expect(wrapper.find('h3')).to.have.className(name);
-    }
+    });
   });
 
   it('renders a title element with one or more class names supplied as keys in an object', () => {
@@ -100,9 +98,9 @@ describe('<Legend />', () => {
         titleClassName={classNames}
       />
     );
-    for (const name of Object.keys(classNames)) {
+    forEach(Object.keys(classNames), (name) => {
       expect(wrapper.find('h3')).to.have.className(name);
-    }
+    });
   });
 
   it('renders a list of items with the default LegendItem', () => {

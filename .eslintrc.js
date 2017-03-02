@@ -9,12 +9,18 @@ module.exports = {
     "comma-dangle": 0,
     "no-underscore-dangle": [2, { "allowAfterThis": true }],
     "arrow-body-style": [1, "as-needed"],
-    "max-len": [2, 100, 2, { "ignoreUrls": true, "ignoreComments": true }]
+    "max-len": [2, 100, 2, { "ignoreUrls": true, "ignoreComments": true }],
+    "no-void": 0,
+    "react/forbid-prop-types": [2, { "forbid": ['any']}]
   },
   "env": {
     "mocha": true
   },
   "ecmaFeatures": {
     "experimentalObjectRestSpread": true
+  },
+  "globals": {
+    "window": true,
+    "navigator": true
   }
 };

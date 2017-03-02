@@ -1,1 +1,1 @@
-export { default as default } from './src/svg-text';
+export { default } from './src/svg-text';

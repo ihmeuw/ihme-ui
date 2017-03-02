@@ -121,10 +121,9 @@ export default class Slider extends React.Component {
           stroke="none"
           fill="#cccccc"
           width={this.rectWidth('left', leftEdgeinPx)}
-        >
-        </rect>
+        />
         <SliderHandle
-          which={"x1"}
+          which={'x1'}
           position={leftEdgeinPx}
           label={minExtent}
           labelFormat={labelFormat}
@@ -139,8 +138,7 @@ export default class Slider extends React.Component {
           fill="#cccccc"
           x={rightEdgeInPx || 0}
           width={this.rectWidth('right', rightEdgeInPx, width)}
-        >
-        </rect>
+        />
         <SliderHandle
           which="x2"
           position={rightEdgeInPx}
@@ -157,7 +155,7 @@ export default class Slider extends React.Component {
 }
 
 Slider.propTypes = {
-  domain: PropTypes.array.isRequired,
+  domain: PropTypes.arrayOf(PropTypes.number).isRequired,
 
   /* the height of element (path, line, rect) that the slider will sit atop, in px */
   height: PropTypes.number,
@@ -175,7 +173,7 @@ Slider.propTypes = {
   onSliderMove: PropTypes.func,
 
   /* [min, max] of domain (in data space) user has selected; used to position slider handles */
-  rangeExtent: PropTypes.array.isRequired,
+  rangeExtent: PropTypes.arrayOf(PropTypes.number).isRequired,
 
   /* y shift of entire slider, in px */
   translateY: PropTypes.number,
@@ -205,5 +203,5 @@ Slider.defaultProps = {
   marginTop: 0,
   marginLeft: 0,
   translateY: 1,
-  onSliderMove: () => { return; }
+  onSliderMove: () => { }
 };

@@ -6,7 +6,7 @@
  * this function is without unit tests
  * @returns {Function} function(<String>, <String>, <CanvasRenderingContext2D>) {...}
  */
-export const getStringWidth = (() => {
+const getStringWidth = (() => {
   let context;
 
   /**
@@ -36,3 +36,5 @@ export const getStringWidth = (() => {
     return Math.ceil(metrics.width);
   };
 })();
+
+export default getStringWidth;
