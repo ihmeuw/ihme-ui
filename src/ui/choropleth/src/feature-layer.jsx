@@ -4,6 +4,7 @@ import {
   get as getValue,
   includes,
   findIndex,
+  isNil,
   map,
   sortBy,
 } from 'lodash';
@@ -71,7 +72,7 @@ export default class FeatureLayer extends PureComponent {
               ? valueField(data, feature)
               : getValue(datum, valueField);
 
-            const fill = value ? colorScale(value) : '#ccc';
+            const fill = isNil(value) ? '#ccc' : colorScale(value);
 
             return (
               <Path
