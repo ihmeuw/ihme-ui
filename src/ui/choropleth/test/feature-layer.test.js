@@ -135,6 +135,68 @@ describe('Choropleth <FeatureLayer />', () => {
         .first()
       ).to.have.prop('fill', colorScale(featureToTest.mean));
     });
+
+    it('has a fill color when datum value is zero', () => {
+      const testData = getLocationIds(features).reduce((map, locationId) => {
+        /* eslint-disable no-param-reassign */
+        map[locationId] = {
+          id: locationId,
+          mean: 0,
+        };
+
+        return map;
+        /* eslint-enable no-param-reassign */
+      }, {});
+      const wrapper = shallow(
+        <FeatureLayer
+          features={features}
+          data={testData}
+          geometryKeyField="id"
+          keyField="id"
+          valueField={(dataMappedToKeys, feature) => dataMappedToKeys[feature.id].mean}
+          pathGenerator={pathGenerator}
+          colorScale={colorScale}
+        />
+      );
+
+      expect(wrapper
+        .find('g')
+        .find(Path)
+        .filterWhere(n => n.prop('datum').id === featureToTest.id)
+        .first()
+      ).to.have.prop('fill', colorScale(0));
+    });
+
+    it('has a gray fill color when datum value is undefined', () => {
+      const testData = getLocationIds(features).reduce((map, locationId) => {
+        /* eslint-disable no-param-reassign */
+        map[locationId] = {
+          id: locationId,
+          mean: undefined,
+        };
+
+        return map;
+        /* eslint-enable no-param-reassign */
+      }, {});
+      const wrapper = shallow(
+        <FeatureLayer
+          features={features}
+          data={testData}
+          geometryKeyField="id"
+          keyField="id"
+          valueField={(dataMappedToKeys, feature) => dataMappedToKeys[feature.id].mean}
+          pathGenerator={pathGenerator}
+          colorScale={colorScale}
+        />
+      );
+
+      expect(wrapper
+        .find('g')
+        .find(Path)
+        .filterWhere(n => n.prop('datum').id === featureToTest.id)
+        .first()
+      ).to.have.prop('fill', '#ccc');
+    });
   });
 
   describe('selected', () => {
