@@ -31,6 +31,7 @@ export {
 } from './geo';
 
 export {
+  Float,
   numberFormat,
 } from './numbers';
 
