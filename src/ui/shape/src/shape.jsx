@@ -20,9 +20,9 @@ const SYMBOL_ROTATE = {
 };
 
 /**
- * `import { Symbol } from 'ihme-ui'`
+ * `import { Shape } from 'ihme-ui'`
  */
-export default class Symbol extends PureComponent {
+export default class Shape extends PureComponent {
   /**
    * Return path string for given symbol type and size
    * @param type {String}
@@ -62,11 +62,11 @@ export default class Symbol extends PureComponent {
 
   constructor(props) {
     super(props);
-    this.state = stateFromPropUpdates(Symbol.propUpdates, {}, props, {});
+    this.state = stateFromPropUpdates(Shape.propUpdates, {}, props, {});
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState(stateFromPropUpdates(Symbol.propUpdates, this.props, nextProps, {}));
+    this.setState(stateFromPropUpdates(Shape.propUpdates, this.props, nextProps, {}));
   }
 
   render() {
@@ -106,7 +106,7 @@ export default class Symbol extends PureComponent {
   }
 }
 
-Symbol.propTypes = {
+Shape.propTypes = {
   /**
    * Class name applied to path.
    */
@@ -181,9 +181,9 @@ Symbol.propTypes = {
   selectedClassName: CommonPropTypes.className,
 
   /**
-   * Inline styles applied to selected `<Symbol />`s.
+   * Inline styles applied to selected `<Shape />`s.
    * If an object, spread into inline styles.
-   * If a function, passed underlying datum corresponding to its `<Symbol />`
+   * If a function, passed underlying datum corresponding to its `<Shape />`
    * and return value spread into line styles;
    * signature: (datum) => obj
    */
@@ -195,9 +195,9 @@ Symbol.propTypes = {
   size: PropTypes.number,
 
   /**
-   * Base inline styles applied to `<Symbol />`s.
+   * Base inline styles applied to `<Shape />`s.
    * If an object, spread into inline styles.
-   * If a function, passed underlying datum corresponding to its `<Symbol />`.
+   * If a function, passed underlying datum corresponding to its `<Shape />`.
    */
   style: CommonPropTypes.style,
 
@@ -218,7 +218,7 @@ Symbol.propTypes = {
   translateY: PropTypes.number,
 };
 
-Symbol.defaultProps = {
+Shape.defaultProps = {
   fill: 'steelblue',
   focused: false,
   focusedClassName: 'focused',
@@ -243,13 +243,13 @@ Symbol.defaultProps = {
   style: {},
 };
 
-Symbol.propUpdates = {
+Shape.propUpdates = {
   // update path if symbol type or size have changed
   path: (accum, propName, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, ['symbolType', 'size'])) return accum;
     const [symbolType, rotate] = nextProps.symbolType.split(' ', 2);
     return assign(accum, {
-      path: Symbol.getPath(symbolType, nextProps.size),
+      path: Shape.getPath(symbolType, nextProps.size),
       rotate: SYMBOL_ROTATE[rotate] || 0,
     });
   },
@@ -268,7 +268,7 @@ Symbol.propUpdates = {
       return accum;
     }
     return assign(accum, {
-      style: Symbol.getStyle({
+      style: Shape.getStyle({
         datum: nextProps.datum,
         fill: nextProps.fill,
         focused: nextProps.focused,

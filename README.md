@@ -80,12 +80,12 @@ For a more detailed example of how to use this library, see [`starter-app/`](htt
   * [\<Legend /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/legend/README.md)
   * \<Select /\> - docs coming soon!
   * [\<ResponsiveContainer /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/responsive-container/README.md)
-  * [\<Shape /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/shape/README.md)
+  * [Shape](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/shape/README.md)
     * \<Area /\>
     * \<Line /\>
     * \<MultiLine /\>
     * \<Scatter /\>
-    * \<Symbol /\>
+    * \<Shape /\>
   * [\<Slider /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/slider/README.md)
   * [\<Spinner /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/spinner/README.md)
   * [\<SvgText /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/svg-text/README.md)

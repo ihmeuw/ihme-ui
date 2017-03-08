@@ -84,30 +84,30 @@ Property | Required | Type(s) | Defaults | Description
 :---    |:---      |:---     |:---      |:---       
 `className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to outermost wrapping `<g>`.
 `clipPathId` |  | string |  | If a clip path is applied to a container element (e.g., an `<AxisChart />`),<br />clip all children of `<Scatter />` to that container by passing in the clip path URL id.
-`colorScale` |  | func |  | If provided will determine color of rendered `<Symbol />`s
+`colorScale` |  | func |  | If provided will determine color of rendered `<Shape />`s
 `data` | true | array of object |  | Array of datum objects
 `dataAccessors` | true | object |  | Accessors on datum objects<br />  fill: property on datum to provide fill (will be passed to `props.colorScale`)<br />  key: unique dimension of datum (required)<br />  symbol: property on datum used to determine which type of symbol to render (will be passed to `props.symbolScale`)<br />  x: property on datum to position scatter symbols in x-direction<br />  y: property on datum to position scatter symbols in y-direction<br />Each accessor can either be a string or function. If a string, it is assumed to be the name of a<br />property on datum objects; full paths to nested properties are supported (e.g., { `x`: 'values.year', ... }).<br />If a function, it is passed datum objects as its first and only argument.
-`fill` |  | string | 'steelblue' | If `props.colorScale` is undefined, each `<Symbol />` will be given this same fill value.
-`focus` |  | object |  | The datum object corresponding to the `<Symbol />` currently focused.
-`focusedClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied if `<Symbol />` has focus.
-`focusedStyle` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L16) |  | inline styles applied to focused `<Symbol />`<br />If an object, spread into inline styles.<br />If a function, passed underlying datum corresponding to its `<Symbol />`,<br />and return value is spread into inline styles;<br />signature: (datum) => obj
+`fill` |  | string | 'steelblue' | If `props.colorScale` is undefined, each `<Shape />` will be given this same fill value.
+`focus` |  | object |  | The datum object corresponding to the `<Shape />` currently focused.
+`focusedClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied if `<Shape />` has focus.
+`focusedStyle` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L16) |  | inline styles applied to focused `<Shape />`<br />If an object, spread into inline styles.<br />If a function, passed underlying datum corresponding to its `<Shape />`,<br />and return value is spread into inline styles;<br />signature: (datum) => obj
 `onClick` |  | func | CommonDefaultProps.noop | onClick callback.<br />signature: (SyntheticEvent, datum, instance) => {...}
 `onMouseLeave` |  | func | CommonDefaultProps.noop | onMouseLeave callback.<br />signature: (SyntheticEvent, datum, instance) => {...}
 `onMouseMove` |  | func | CommonDefaultProps.noop | onMouseMove callback.<br />signature: (SyntheticEvent, datum, instance) => {...}
 `onMouseOver` |  | func | CommonDefaultProps.noop | onMouseOver callback.<br />signature: (SyntheticEvent, datum, instance) => {...}
-`scales` | true | object |  | `x` and `y` scales for positioning `<Symbol />`s.<br />Object with keys: `x`, and `y`.
-`selectedClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to `<Symbol />`s if selected
-`selection` |  | array |  | Array of datum objects corresponding to selected `<Symbol />`s
-`size` |  | number | 64 | Size of `<Symbol />`s; area in square pixels.<br />If not provided, `<Symbol />` provides a default of 64 (8px x 8px).
-`style` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L16) |  | Inline styles passed to each `<Symbol />`
-`symbolClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to each `<Symbol />`
+`scales` | true | object |  | `x` and `y` scales for positioning `<Shape />`s.<br />Object with keys: `x`, and `y`.
+`selectedClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to `<Shape />`s if selected
+`selection` |  | array |  | Array of datum objects corresponding to selected `<Shape />`s
+`size` |  | number | 64 | Size of `<Shape />`s; area in square pixels.<br />If not provided, `<Shape />` provides a default of 64 (8px x 8px).
+`style` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L16) |  | Inline styles passed to each `<Shape />`
+`symbolClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to each `<Shape />`
 `symbolScale` |  | func |  | If provided, used in conjunction with `dataAccessors.symbol` (or `dataAccessors.key` if not provided)<br />to determine type of symbol to render
-`symbolType` |  | string | 'circle' | Type of symbol to render; use in lieu of `props.symbolScale`<br />if you want all `<Symbol />` to be of the same type.
+`symbolType` |  | string | 'circle' | Type of symbol to render; use in lieu of `props.symbolScale`<br />if you want all `<Shape />` to be of the same type.
 
 ---
 
-#### \<Symbol />
-`import { Symbol } from 'ihme-ui'`
+#### \<Shape />
+`import { Shape } from 'ihme-ui'`
 
 
 Property | Required | Type(s) | Defaults | Description
@@ -125,9 +125,9 @@ Property | Required | Type(s) | Defaults | Description
 `onMouseOver` |  | func | CommonDefaultProps.noop | onMouseOver callback.<br />signature: (SyntheticEvent, datum, instance) => {...}
 `selected` |  | bool | false | Whether symbol is selected.
 `selectedClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) | 'selected' | Class name applied if selected.
-`selectedStyle` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L16) | {<br />  stroke: '#000',<br />  strokeWidth: 1,<br />} | Inline styles applied to selected `<Symbol />`s.<br />If an object, spread into inline styles.<br />If a function, passed underlying datum corresponding to its `<Symbol />`<br />and return value spread into line styles;<br />signature: (datum) => obj
+`selectedStyle` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L16) | {<br />  stroke: '#000',<br />  strokeWidth: 1,<br />} | Inline styles applied to selected `<Shape />`s.<br />If an object, spread into inline styles.<br />If a function, passed underlying datum corresponding to its `<Shape />`<br />and return value spread into line styles;<br />signature: (datum) => obj
 `size` |  | number | 64 | Area in square pixels.
-`style` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L16) | {} | Base inline styles applied to `<Symbol />`s.<br />If an object, spread into inline styles.<br />If a function, passed underlying datum corresponding to its `<Symbol />`.
+`style` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L16) | {} | Base inline styles applied to `<Shape />`s.<br />If an object, spread into inline styles.<br />If a function, passed underlying datum corresponding to its `<Shape />`.
 `symbolType` |  | one of: symbolTypes() | 'circle' | Type of symbol to render, driven by d3-shape.<br />One of: 'circle', 'cross', 'diamond', 'square', 'star', 'triangle', 'wye'
 `translateX` |  | number | 0 | Move symbol away from origin in x direction.
 `translateY` |  | number | 0 | Move symbol away from origin in y direction.

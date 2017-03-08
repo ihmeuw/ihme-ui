@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { propResolver, eventHandleWrapper } from '../../../utils';
 
 import styles from './legend-item.css';
-import { Symbol } from '../../shape';
+import { Shape } from '../../shape';
 
 /**
  * label renderer
@@ -67,7 +67,7 @@ export default function LegendItem(props) {
           width="1em" height="1em"
           className={styles.svg}
         >
-          <Symbol symbolType={type} fill={fill} />
+          <Shape symbolType={type} fill={fill} />
         </svg>
         <span className={styles.label}>
           {renderLabel(props)}

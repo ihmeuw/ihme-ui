@@ -8,7 +8,7 @@ import sinon from 'sinon';
 chai.use(chaiEnzyme());
 
 import LegendItem from '../src/legend-item';
-import { Symbol } from '../../shape';
+import { Shape } from '../../shape';
 import itemStyle from '../src/legend-item.css';
 
 describe('<LegendItem />', () => {
@@ -42,7 +42,7 @@ describe('<LegendItem />', () => {
 
   it('accepts a symbolTypeKey that is a string', () => {
     const wrapper = shallow(<LegendItem item={item} symbolTypeKey="symbolType" />);
-    expect(wrapper).to.contain(<Symbol symbolType="triangle" />);
+    expect(wrapper).to.contain(<Shape symbolType="triangle" />);
   });
 
   it('accepts a symbolTypeKey that is a function that is called with the item', () => {
@@ -51,14 +51,14 @@ describe('<LegendItem />', () => {
     });
     const wrapper = shallow(<LegendItem item={item} symbolTypeKey={spy} />);
 
-    expect(wrapper).to.contain(<Symbol symbolType="triangle" />);
+    expect(wrapper).to.contain(<Shape symbolType="triangle" />);
     expect(spy.called).to.be.true;
     expect(spy.calledWith(item)).to.be.true;
   });
 
   it('accepts a symbolColorKey that is a string', () => {
     const wrapper = shallow(<LegendItem item={item} symbolColorKey="symbolColor" />);
-    expect(wrapper).to.contain(<Symbol fill="red" />);
+    expect(wrapper).to.contain(<Shape fill="red" />);
   });
 
   it('accepts a symbolColorKey that is a function that is called with the item', () => {
@@ -67,7 +67,7 @@ describe('<LegendItem />', () => {
     });
     const wrapper = shallow(<LegendItem item={item} symbolColorKey={spy} />);
 
-    expect(wrapper).to.contain(<Symbol fill="red" />);
+    expect(wrapper).to.contain(<Shape fill="red" />);
     expect(spy.called).to.be.true;
     expect(spy.calledWith(item)).to.be.true;
   });

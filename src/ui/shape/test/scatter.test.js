@@ -8,7 +8,7 @@ import { scaleLinear, scalePoint } from 'd3';
 import sinon from 'sinon';
 import { dataGenerator } from '../../../test-utils';
 
-import { Scatter, Symbol } from '../';
+import { Scatter, Shape } from '../';
 
 chai.use(chaiEnzyme());
 
@@ -56,7 +56,7 @@ describe('<Scatter />', () => {
 
   it('contains 10 shapes', () => {
     const wrapper = shallow(component);
-    expect(wrapper.find(Symbol)).to.have.length(10);
+    expect(wrapper.find(Shape)).to.have.length(10);
   });
 
   it('does not pass specific properties to its children', () => {
@@ -75,7 +75,7 @@ describe('<Scatter />', () => {
       });
     };
 
-    shallow(component).find(Symbol).forEach(assertion);
+    shallow(component).find(Shape).forEach(assertion);
   });
 
   it('passes specified properties to its children', () => {
@@ -98,7 +98,7 @@ describe('<Scatter />', () => {
       });
     };
 
-    shallow(component).find(Symbol).forEach(assertion);
+    shallow(component).find(Shape).forEach(assertion);
   });
 
   it('selects a symbol', () => {
@@ -169,7 +169,7 @@ describe('<Scatter />', () => {
         });
       };
 
-      wrapper.find(Symbol).forEach(assertion);
+      wrapper.find(Shape).forEach(assertion);
     });
 
     it('accepts a function of plotDatum as a dataAccessor', () => {
@@ -203,7 +203,7 @@ describe('<Scatter />', () => {
         });
       };
 
-      wrapper.find(Symbol).forEach(assertion);
+      wrapper.find(Shape).forEach(assertion);
     });
 
     it('creates a one-dimensional plot if dataAccessor is not defined for y', () => {
@@ -214,7 +214,7 @@ describe('<Scatter />', () => {
           scales={{ x: xScale }}
         />
       );
-      wrapper.find(Symbol).forEach((symbol) => {
+      wrapper.find(Shape).forEach((symbol) => {
         expect(symbol).to.have.prop('translateX').that.is.a('number');
         expect(symbol).to.have.prop('translateY', 0);
       });
@@ -228,7 +228,7 @@ describe('<Scatter />', () => {
           scales={{ y: yScale }}
         />
       );
-      wrapper.find(Symbol).forEach((symbol) => {
+      wrapper.find(Shape).forEach((symbol) => {
         expect(symbol).to.have.prop('translateX', 0);
         expect(symbol).to.have.prop('translateY').that.is.a('number');
       });
@@ -251,7 +251,7 @@ describe('<Scatter />', () => {
         expect(spyCall.calledWith(symbolDatum.x)).to.be.true;
       };
 
-      wrapper.find(Symbol).forEach(assertion);
+      wrapper.find(Shape).forEach(assertion);
     });
 
     it('will not pass x-, y-, and fillValue into their appropriate scales if they resolve to a non-finite, non-number value', () => {
@@ -268,7 +268,7 @@ describe('<Scatter />', () => {
         expect(symbol).to.have.prop('translateX', 0);
       };
 
-      wrapper.find(Symbol).forEach(assertion);
+      wrapper.find(Shape).forEach(assertion);
       expect(spyMap.x.spy.called).to.be.false;
     });
   });
@@ -294,20 +294,20 @@ describe('<Scatter />', () => {
 
       expect(wrapper
         .find('g')
-        .find(Symbol)
+        .find(Shape)
         .first()
         .prop('datum')
       ).to.equal(selectedDatum);
       wrapper.setProps({ selection: [selectedDatum] });
       expect(wrapper
         .find('g')
-        .find(Symbol)
+        .find(Shape)
         .first()
         .prop('datum')
       ).to.not.equal(selectedDatum);
       expect(wrapper
         .find('g')
-        .find(Symbol)
+        .find(Shape)
         .last()
         .prop('datum')
       ).to.equal(selectedDatum);
@@ -329,7 +329,7 @@ describe('<Scatter />', () => {
         />
       );
 
-      wrapper.find('g').find(Symbol).forEach((node, idx) => {
+      wrapper.find('g').find(Shape).forEach((node, idx) => {
         expect(node.prop('datum')).to.equal(data[idx]);
       });
 
@@ -343,7 +343,7 @@ describe('<Scatter />', () => {
       const expectedSymbolOrder = drop(data);
       expectedSymbolOrder.push(selectedDatum);
 
-      wrapper.find('g').find(Symbol).forEach((node, idx) => {
+      wrapper.find('g').find(Shape).forEach((node, idx) => {
         expect(node.prop('datum')).to.equal(expectedSymbolOrder[idx]);
       });
     });

@@ -18,7 +18,7 @@ import {
   stateFromPropUpdates,
 } from '../../../utils';
 
-import Symbol from './symbol';
+import Shape from './shape';
 
 /**
  * `import { Scatter } from 'ihme-ui'`
@@ -84,7 +84,7 @@ export default class Scatter extends PureComponent {
             const yValue = propResolver(datum, dataAccessors.y);
 
             return (
-              <Symbol
+              <Shape
                 className={symbolClassName}
                 key={key}
                 datum={datum}
@@ -117,7 +117,7 @@ Scatter.propTypes = {
   clipPathId: PropTypes.string,
 
   /**
-   * If provided will determine color of rendered `<Symbol />`s
+   * If provided will determine color of rendered `<Shape />`s
    */
   colorScale: PropTypes.func,
 
@@ -147,24 +147,24 @@ Scatter.propTypes = {
   }).isRequired,
 
   /**
-   * If `props.colorScale` is undefined, each `<Symbol />` will be given this same fill value.
+   * If `props.colorScale` is undefined, each `<Shape />` will be given this same fill value.
    */
   fill: PropTypes.string,
 
   /**
-   * The datum object corresponding to the `<Symbol />` currently focused.
+   * The datum object corresponding to the `<Shape />` currently focused.
    */
   focus: PropTypes.object,
 
   /**
-   * className applied if `<Symbol />` has focus.
+   * className applied if `<Shape />` has focus.
    */
   focusedClassName: CommonPropTypes.className,
 
   /**
-   * inline styles applied to focused `<Symbol />`
+   * inline styles applied to focused `<Shape />`
    * If an object, spread into inline styles.
-   * If a function, passed underlying datum corresponding to its `<Symbol />`,
+   * If a function, passed underlying datum corresponding to its `<Shape />`,
    * and return value is spread into inline styles;
    * signature: (datum) => obj
    */
@@ -195,7 +195,7 @@ Scatter.propTypes = {
   onMouseOver: PropTypes.func,
 
   /**
-   * `x` and `y` scales for positioning `<Symbol />`s.
+   * `x` and `y` scales for positioning `<Shape />`s.
    * Object with keys: `x`, and `y`.
    */
   scales: PropTypes.shape({
@@ -204,28 +204,28 @@ Scatter.propTypes = {
   }).isRequired,
 
   /**
-   * className applied to `<Symbol />`s if selected
+   * className applied to `<Shape />`s if selected
    */
   selectedClassName: CommonPropTypes.className,
 
   /**
-   * Array of datum objects corresponding to selected `<Symbol />`s
+   * Array of datum objects corresponding to selected `<Shape />`s
    */
   selection: PropTypes.array,
 
   /**
-   * Size of `<Symbol />`s; area in square pixels.
-   * If not provided, `<Symbol />` provides a default of 64 (8px x 8px).
+   * Size of `<Shape />`s; area in square pixels.
+   * If not provided, `<Shape />` provides a default of 64 (8px x 8px).
    */
   size: PropTypes.number,
 
   /**
-   * Inline styles passed to each `<Symbol />`
+   * Inline styles passed to each `<Shape />`
    */
   style: CommonPropTypes.style,
 
   /**
-   * className applied to each `<Symbol />`
+   * className applied to each `<Shape />`
    */
   symbolClassName: CommonPropTypes.className,
 
@@ -237,7 +237,7 @@ Scatter.propTypes = {
 
   /**
    * Type of symbol to render; use in lieu of `props.symbolScale`
-   * if you want all `<Symbol />` to be of the same type.
+   * if you want all `<Shape />` to be of the same type.
    */
   symbolType: PropTypes.string,
 };

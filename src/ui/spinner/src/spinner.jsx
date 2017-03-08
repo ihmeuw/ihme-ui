@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { Symbol } from '../../shape';
+import { Shape } from '../../shape';
 import { CommonPropTypes, PureComponent } from '../../../utils';
 
 import styles from './spinner.css';
@@ -30,13 +30,13 @@ class Spinner extends PureComponent {
         style={style}
       >
         <svg className={styles.dot} viewBox="-8 -8 16 16" width="1em" height="1em">
-          <Symbol fill={symbolFill} style={symbolStyle} symbolType={symbolType} />
+          <Shape fill={symbolFill} style={symbolStyle} symbolType={symbolType} />
         </svg>
         <svg className={styles.dot} viewBox="-8 -8 16 16" width="1em" height="1em">
-          <Symbol fill={symbolFill} style={symbolStyle} symbolType={symbolType} />
+          <Shape fill={symbolFill} style={symbolStyle} symbolType={symbolType} />
         </svg>
         <svg className={styles.dot} viewBox="-8 -8 16 16" width="1em" height="1em">
-          <Symbol fill={symbolFill} style={symbolStyle} symbolType={symbolType} />
+          <Shape fill={symbolFill} style={symbolStyle} symbolType={symbolType} />
         </svg>
       </div>
     );

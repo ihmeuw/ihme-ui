@@ -117,9 +117,9 @@ class App extends React.Component {
      }}
      keyField="location"
      onClick={this.onClick}
-     onMouseLeave={function(event, datum, Symbol) {...}}
-     onMouseMove={function(event, datum, Symbol) {...}}
-     onMouseOver={function(event, datum, Symbol) {...}}
+     onMouseLeave={function(event, datum, Shape) {...}}
+     onMouseMove={function(event, datum, Shape) {...}}
+     onMouseOver={function(event, datum, Shape) {...}}
      selection={this.state.selectedItems}
      selectedStyle={{
        stroke: '#000',
@@ -196,10 +196,10 @@ class App extends React.Component {
        y: valueField   // population
      }}
      focus={{}}
-     onClick={function(event, datum, Symbol) {...}}
-     onMouseLeave={function(event, datum, Symbol) {...}}
-     onMouseMove={function(event, datum, Symbol) {...}}
-     onMouseOver={function(event, datum, Symbol) {...}}
+     onClick={function(event, datum, Shape) {...}}
+     onMouseLeave={function(event, datum, Shape) {...}}
+     onMouseMove={function(event, datum, Shape) {...}}
+     onMouseOver={function(event, datum, Shape) {...}}
      selection={this.state.selectedItems}
      symbolType="circle"
    />
@@ -250,10 +250,10 @@ class App extends React.Component {
     fill="tomato"
     data={[]}
     dataAccessors={{ x: valueField, key: 'id' }}
-    onClick={function(event, datum, Symbol) {...}}
-    onMouseLeave={function(event, datum, Symbol) {...}}
-    onMouseMove={function(event, datum, Symbol) {...}}
-    onMouseOver={function(event, datum, Symbol) {...}}
+    onClick={function(event, datum, Shape) {...}}
+    onMouseLeave={function(event, datum, Shape) {...}}
+    onMouseMove={function(event, datum, Shape) {...}}
+    onMouseOver={function(event, datum, Shape) {...}}
     symbolType="circle"
   />
 </AxisChart>
@@ -298,10 +298,10 @@ class App extends React.Component {
     data={[]}
     dataAccessors={{ y: valueField, key: 'id' }}
     symbolType={'circle'}
-    onClick={function(event, datum, Symbol) {...}}
-    onMouseLeave={function(event, datum, Symbol) {...}}
-    onMouseMove={function(event, datum, Symbol) {...}}
-    onMouseOver={function(event, datum, Symbol) {...}}
+    onClick={function(event, datum, Shape) {...}}
+    onMouseLeave={function(event, datum, Shape) {...}}
+    onMouseMove={function(event, datum, Shape) {...}}
+    onMouseOver={function(event, datum, Shape) {...}}
   />
 </AxisChart>
 </code></pre> */}
@@ -344,10 +344,10 @@ class App extends React.Component {
     fill={scaleCategory10()}
     data={[]}
     dataAccessors={{ fill: valueField, key: 'id', x: valueField }}
-    onClick={function(event, datum, Symbol) {...}}
-    onMouseLeave={function(event, datum, Symbol) {...}}
-    onMouseMove={function(event, datum, Symbol) {...}}
-    onMouseOver={function(event, datum, Symbol) {...}}
+    onClick={function(event, datum, Shape) {...}}
+    onMouseLeave={function(event, datum, Shape) {...}}
+    onMouseMove={function(event, datum, Shape) {...}}
+    onMouseOver={function(event, datum, Shape) {...}}
     symbolType="circle"
   />
 </AxisChart>

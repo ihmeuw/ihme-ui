@@ -144,19 +144,19 @@ MultiScatter.propTypes = {
   }),
 
   /**
-   * The datum object corresponding to the `<Symbol />` currently focused.
+   * The datum object corresponding to the `<Shape />` currently focused.
    */
   focus: PropTypes.object,
 
   /**
-   * className applied if `<Symbol />` has focus.
+   * className applied if `<Shape />` has focus.
    */
   focusedClassName: CommonPropTypes.className,
 
   /**
-   * Inline styles applied to focused `<Symbol />`.
+   * Inline styles applied to focused `<Shape />`.
    * If an object, spread into inline styles.
-   * If a function, passed underlying datum corresponding to its `<Symbol />`,
+   * If a function, passed underlying datum corresponding to its `<Shape />`,
    * and return value is spread into inline styles;
    * signature: (datum) => obj
    */
@@ -187,7 +187,7 @@ MultiScatter.propTypes = {
   onMouseOver: PropTypes.func,
 
   /**
-   * `x` and `y` scales for positioning `<Symbol />`s.
+   * `x` and `y` scales for positioning `<Shape />`s.
    * Object with keys: `x`, and `y`.
    */
   scales: PropTypes.shape({
@@ -207,21 +207,21 @@ MultiScatter.propTypes = {
   scatterValuesIteratee: PropTypes.func,
 
   /**
-   * className applied to `<Symbol />`s if selected
+   * className applied to `<Shape />`s if selected
    */
   selectedClassName: CommonPropTypes.className,
 
   /**
-   * inline styles applied to selected `<Symbol />`s.
+   * inline styles applied to selected `<Shape />`s.
    * If an object, spread into inline styles.
-   * If a function, passed underlying datum corresponding to its `<Symbol />`,
+   * If a function, passed underlying datum corresponding to its `<Shape />`,
    * and return value is spread into inline styles;
    * signature: (datum) => obj
    */
   selectedStyle: CommonPropTypes.style,
 
   /**
-   * Datum object or array of datum objects corresponding to selected `<Symbol />`s
+   * Datum object or array of datum objects corresponding to selected `<Shape />`s
    */
   selection: PropTypes.oneOfType([
     PropTypes.object,
@@ -229,8 +229,8 @@ MultiScatter.propTypes = {
   ]),
 
   /**
-   * Size of `<Symbol />`s; area in square pixels.
-   * If not provided, `<Symbol />` provides a default of 64 (8px x 8px).
+   * Size of `<Shape />`s; area in square pixels.
+   * If not provided, `<Shape />` provides a default of 64 (8px x 8px).
    */
   size: PropTypes.number,
 
@@ -240,7 +240,7 @@ MultiScatter.propTypes = {
   style: PropTypes.object,
 
   /**
-   * className applied to each `<Symbol />`
+   * className applied to each `<Shape />`
    */
   symbolClassName: CommonPropTypes.className,
 
@@ -251,7 +251,7 @@ MultiScatter.propTypes = {
   symbolScale: PropTypes.func,
 
   /**
-   * Inline styles applied to `<Symbol />`s.
+   * Inline styles applied to `<Shape />`s.
    */
   symbolStyle: CommonPropTypes.style,
 };

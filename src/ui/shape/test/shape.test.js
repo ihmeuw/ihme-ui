@@ -5,14 +5,14 @@ import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import { symbol, symbolCircle } from 'd3';
 
-import { Symbol } from '../';
+import { Shape } from '../';
 
 chai.use(chaiEnzyme());
 
-describe('<Symbol />', () => {
+describe('<Shape />', () => {
   it('renders any shape that is supported by d3Shape.symbol', () => {
     const assertion = (type) => {
-      const wrapper = shallow(<Symbol symbolType={type} />);
+      const wrapper = shallow(<Shape symbolType={type} />);
       expect(wrapper).to.have.exactly(1).descendants('path');
       expect(wrapper.find('path'))
         .to.have.attr('d')
@@ -23,7 +23,7 @@ describe('<Symbol />', () => {
   });
 
   it('renders a circle when given a type that is not supported by d3Shape.symbol', () => {
-    const wrapper = shallow(<Symbol symbolType="unicorn" />);
+    const wrapper = shallow(<Shape symbolType="unicorn" />);
     expect(wrapper).to.have.exactly(1).descendants('path');
     expect(wrapper.find('path'))
       .to.have.attr('d')
@@ -32,14 +32,14 @@ describe('<Symbol />', () => {
   });
 
   it('applies a rotate modifier when appropriate', () => {
-    const wrapper = shallow(<Symbol symbolType="triangle down" />);
+    const wrapper = shallow(<Shape symbolType="triangle down" />);
     expect(wrapper.find('path'))
       .to.have.attr('transform')
       .that.equals('translate(0, 0) rotate(180)');
   });
 
   it('does not apply a rotate modifier when appropriate', () => {
-    const wrapper = shallow(<Symbol symbolType="triangle" />);
+    const wrapper = shallow(<Shape symbolType="triangle" />);
     expect(wrapper.find('path'))
       .to.have.attr('transform')
       .that.equals('translate(0, 0) rotate(0)');
@@ -66,7 +66,7 @@ describe('<Symbol />', () => {
 
     it('applies style as an object', () => {
       const wrapper = shallow(
-        <Symbol
+        <Shape
           datum={datum}
           style={baseStyle}
         />
@@ -78,7 +78,7 @@ describe('<Symbol />', () => {
 
     it('applies style as a function', () => {
       const wrapper = shallow(
-        <Symbol
+        <Shape
           datum={datum}
           style={(d) => ({ stroke: 'red', strokeWidth: d.mean })}
         />
@@ -90,7 +90,7 @@ describe('<Symbol />', () => {
 
     it('applies selectedStyle as an object', () => {
       const wrapper = shallow(
-        <Symbol
+        <Shape
           datum={datum}
           style={baseStyle}
           selected
@@ -104,7 +104,7 @@ describe('<Symbol />', () => {
 
     it('applies selectedStyle as a function', () => {
       const wrapper = shallow(
-        <Symbol
+        <Shape
           datum={datum}
           style={baseStyle}
           selected
@@ -118,7 +118,7 @@ describe('<Symbol />', () => {
 
     it('applies focusedStyle as an object', () => {
       const wrapper = shallow(
-        <Symbol
+        <Shape
           datum={datum}
           focused
           focusedStyle={focusedStyle}
@@ -134,7 +134,7 @@ describe('<Symbol />', () => {
 
     it('applies focusedStyle as a function', () => {
       const wrapper = shallow(
-        <Symbol
+        <Shape
           datum={datum}
           focused
           focusedStyle={() => ({ stroke: 'blue' })}
@@ -151,7 +151,7 @@ describe('<Symbol />', () => {
 
   describe('classnames', () => {
     const wrapper = shallow(
-      <Symbol
+      <Shape
         className="base-classname"
         focusedClassName="focused-classname"
         selectedClassName="selected-classname"
@@ -183,7 +183,7 @@ describe('<Symbol />', () => {
     with event, locationId, and the React element`, () => {
       const datum = { mean: 10 };
       const wrapper = shallow(
-        <Symbol
+        <Shape
           datum={datum}
           onClick={eventHandler}
           onMouseLeave={eventHandler}
