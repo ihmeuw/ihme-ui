@@ -99,17 +99,18 @@ export default class SelectOption extends React.Component {
 
     const isFocused = option === focusedOption;
     const isSelected = valueArray ? valueArray.includes(option) : false;
+    const isDisabled = Boolean(option.disabled);
 
     return (
       <div
         className={classNames(
           styles.option, {
-            [styles.focused]: isFocused,
-            [styles.selected]: isSelected,
+            [styles.focused]: !isDisabled && isFocused,
+            [styles.selected]: !isDisabled && isSelected,
           }
         )}
-        onClick={this.onClick}
-        onMouseOver={this.onMouseOver}
+        onClick={!isDisabled && this.onClick}
+        onMouseOver={!isDisabled && this.onMouseOver}
         style={style}
       >
         {
