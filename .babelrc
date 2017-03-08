@@ -1,6 +1,6 @@
 {
   "presets": ["react"],
-  "plugins": ["lodash", "transform-object-rest-spread", "transform-runtime"],
+  "plugins": ["lodash", "transform-object-rest-spread"],
   "env": {
     "demo": {
       "presets": [
@@ -9,9 +9,8 @@
     },
     "commonjs": {
       "presets": ["es2015"],
-      "plugins": [[
-        "css-modules-transform",
-        {
+      "plugins": [
+        ["css-modules-transform", {
           "processCss": "./scripts/post-css-processer.js",
           "extractCss": {
             "dir": "./lib/style/",
@@ -25,9 +24,9 @@
       "presets": [
         ["es2015", { "modules": false }]
       ],
-      "plugins": [[
-        "css-modules-transform",
-        {
+      "plugins": [
+        "transform-runtime",
+        ["css-modules-transform", {
           "processCss": "./scripts/post-css-processer.js",
           "extractCss": {
             "dir": "./es/style/",
@@ -46,6 +45,7 @@
         ["es2015", { "modules": false }]
       ],
       "plugins": [
+        "transform-runtime",
         ["css-modules-transform", {
           "processCss": "./scripts/post-css-processer.js",
           "extractCss": "./dist/ihme-ui.css"
