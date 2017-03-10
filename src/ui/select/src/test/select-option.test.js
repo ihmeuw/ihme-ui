@@ -63,12 +63,6 @@ describe('<SelectOption />', () => {
       disabled: true,
     };
 
-    it('does not apply focused classname even when option has focus', () => {
-      const props = Object.assign({}, baseProps, { focusedOption: option, option });
-      const wrapper = shallow(<SelectOption {...props} />);
-      expect(wrapper).not.to.have.className(styles.focused);
-    });
-
     it('does not call the function passed as selectValue when the option is clicked', () => {
       const selectValue = spy();
       const props = Object.assign({}, baseProps, { selectValue, option });
