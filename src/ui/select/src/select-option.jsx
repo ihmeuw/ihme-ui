@@ -107,6 +107,7 @@ export default class SelectOption extends React.Component {
           styles.option, {
             [styles.focused]: isFocused,
             [styles.selected]: isSelected,
+            [styles.disabled]: isDisabled,
           }
         )}
         onClick={!isDisabled && this.onClick}

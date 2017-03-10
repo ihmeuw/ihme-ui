@@ -19,3 +19,7 @@
   background-color: #27ae60;
   color: #f5f5f5;
 }
+
+.disabled {
+  opacity: 0.5;
+}

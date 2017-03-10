@@ -78,5 +78,11 @@ describe('<SelectOption />', () => {
       wrapper.simulate('mouseover');
       expect(focusOption.notCalled).to.equal(true);
     });
+
+    it('applies disabled classname', () => {
+      const props = Object.assign({}, baseProps, { option });
+      const wrapper = shallow(<SelectOption {...props} />);
+      expect(wrapper).to.have.className(styles.disabled);
+    });
   });
 });
