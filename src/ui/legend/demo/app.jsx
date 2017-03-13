@@ -9,33 +9,33 @@ import Button from '../../button';
 const items = [
   {
     label: '95% UI for GBD non-shock estimates',
-    symbolColor: 'rgba(255, 120, 240, 0.2)',
-    symbolType: 'square'
+    shapeColor: 'rgba(255, 120, 240, 0.2)',
+    shapeType: 'square'
   },
   {
     label: '95% UI for GBD estimates with shocks',
-    symbolColor: 'rgba(200, 200, 10, 0.3)',
-    symbolType: 'square'
+    shapeColor: 'rgba(200, 200, 10, 0.3)',
+    shapeType: 'square'
   },
   {
     label: 'Stage 1 estimates',
-    symbolColor: '#00FF00',
-    symbolType: 'line'
+    shapeColor: '#00FF00',
+    shapeType: 'line'
   },
   {
     label: 'Stage 2 estimates',
-    symbolColor: '#0000FF',
-    symbolType: 'line'
+    shapeColor: '#0000FF',
+    shapeType: 'line'
   },
   {
     label: 'GBD estimates without shocks',
-    symbolColor: 'red',
-    symbolType: 'line'
+    shapeColor: 'red',
+    shapeType: 'line'
   },
   {
     label: 'UN Pop',
-    symbolColor: 'grey',
-    symbolType: 'cross'
+    shapeColor: 'grey',
+    shapeType: 'cross'
   },
 ];
 
@@ -80,41 +80,41 @@ class App extends React.Component {
   const items = [
     {
       label: '95% UI for GBD non-shock estimates',
-      symbolColor: 'rgba(255, 120, 240, 0.2)',
-      symbolType: 'square'
+      shapeColor: 'rgba(255, 120, 240, 0.2)',
+      shapeType: 'square'
     },
     {
       label: '95% UI for GBD estimates with shocks',
-      symbolColor: 'rgba(200, 200, 10, 0.3)',
-      symbolType: 'square'
+      shapeColor: 'rgba(200, 200, 10, 0.3)',
+      shapeType: 'square'
     },
     {
       label: 'Stage 1 estimates',
-      symbolColor: '#00FF00',
-      symbolType: 'line'
+      shapeColor: '#00FF00',
+      shapeType: 'line'
     },
     {
       label: 'Stage 2 estimates',
-      symbolColor: '#0000FF',
-      symbolType: 'line'
+      shapeColor: '#0000FF',
+      shapeType: 'line'
     },
     {
       label: 'GBD estimates without shocks',
-      symbolColor: 'red',
-      symbolType: 'line'
+      shapeColor: 'red',
+      shapeType: 'line'
     },
     {
       label: 'UN Pop',
-      symbolColor: 'grey',
-      symbolType: 'cross'
+      shapeColor: 'grey',
+      shapeType: 'cross'
     },
   ];
 
     <Legend
       items={items}
       labelKey="label"
-      symbolColorKey="symbolColor"
-      symbolTypeKey={(item) => item.symbolType}
+      shapeColorKey="shapeColor"
+      shapeTypeKey={(item) => item.shapeType}
       title="Estimate types"
       renderClear
       onClear={(event, item) => {}}
@@ -124,8 +124,8 @@ class App extends React.Component {
           <Legend
             items={items}
             labelKey="label"
-            symbolColorKey="symbolColor"
-            symbolTypeKey={(item) => item.symbolType}
+            shapeColorKey="shapeColor"
+            shapeTypeKey={(item) => item.shapeType}
             title="Estimate types"
             renderClear
             onClear={this.filterItem}

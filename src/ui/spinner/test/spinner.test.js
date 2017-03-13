@@ -23,7 +23,7 @@ describe('<Spinner />', () => {
   });
 
   it('takes an arbitrary classname', () => {
-    const wrapper = shallow(<Spinner className={'foobar'} />);
+    const wrapper = shallow(<Spinner className="foobar" />);
     expect(wrapper).to.have.className('foobar');
   });
 });

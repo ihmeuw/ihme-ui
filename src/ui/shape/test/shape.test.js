@@ -12,7 +12,7 @@ chai.use(chaiEnzyme());
 describe('<Shape />', () => {
   it('renders any shape that is supported by d3Shape.symbol', () => {
     const assertion = (type) => {
-      const wrapper = shallow(<Shape symbolType={type} />);
+      const wrapper = shallow(<Shape shapeType={type} />);
       expect(wrapper).to.have.exactly(1).descendants('path');
       expect(wrapper.find('path'))
         .to.have.attr('d')
@@ -23,7 +23,7 @@ describe('<Shape />', () => {
   });
 
   it('renders a circle when given a type that is not supported by d3Shape.symbol', () => {
-    const wrapper = shallow(<Shape symbolType="unicorn" />);
+    const wrapper = shallow(<Shape shapeType="unicorn" />);
     expect(wrapper).to.have.exactly(1).descendants('path');
     expect(wrapper.find('path'))
       .to.have.attr('d')
@@ -32,14 +32,14 @@ describe('<Shape />', () => {
   });
 
   it('applies a rotate modifier when appropriate', () => {
-    const wrapper = shallow(<Shape symbolType="triangle down" />);
+    const wrapper = shallow(<Shape shapeType="triangle down" />);
     expect(wrapper.find('path'))
       .to.have.attr('transform')
       .that.equals('translate(0, 0) rotate(180)');
   });
 
   it('does not apply a rotate modifier when appropriate', () => {
-    const wrapper = shallow(<Shape symbolType="triangle" />);
+    const wrapper = shallow(<Shape shapeType="triangle" />);
     expect(wrapper.find('path'))
       .to.have.attr('transform')
       .that.equals('translate(0, 0) rotate(0)');
@@ -162,13 +162,13 @@ describe('<Shape />', () => {
       expect(wrapper).to.have.className('base-classname');
     });
 
-    it('applies a selectedClassName if the symbol is selected', () => {
+    it('applies a selectedClassName if the shape is selected', () => {
       wrapper.setProps({ selected: true });
       expect(wrapper).to.have.className('base-classname');
       expect(wrapper).to.have.className('selected-classname');
     });
 
-    it('applies a focusedClassName if the symbol has focus', () => {
+    it('applies a focusedClassName if the shape has focus', () => {
       wrapper.setProps({ focused: true });
       expect(wrapper).to.have.className('base-classname');
       expect(wrapper).to.have.className('selected-classname');

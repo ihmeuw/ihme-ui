@@ -50,7 +50,7 @@ describe('<MultiScatter />', () => {
     const xScale = scalePoint().domain(xDomain).range([0, chartDimensions.width]);
     const yScale = scaleLinear().domain(yDomain).range([chartDimensions.height, 0]);
 
-    const symbolScale = scaleOrdinal()
+    const shapeScale = scaleOrdinal()
         .domain(['USA', 'Canada', 'Mexico'])
         .range(['circle', 'star', 'square']);
     const colorScale = scaleOrdinal()
@@ -62,12 +62,13 @@ describe('<MultiScatter />', () => {
     before(() => {
       component = (
         <MultiScatter
+          colorScale={colorScale}
           data={scatterData}
           dataAccessors={dataAccessors}
           fieldAccessors={{
             key: 'location',
             data: 'values',
-            symbol: 'location',
+            shape: 'location',
           }}
           focus={data[0]}
           focusedClassName="focused"
@@ -80,13 +81,12 @@ describe('<MultiScatter />', () => {
           selectedClassName="selected"
           selectedStyle={{ stroke: 'red' }}
           scatterClassName="scatter"
-          size={128}
-          symbolScale={symbolScale}
-          symbolStyle={{ fill: 'red' }}
-          colorScale={colorScale}
           scales={{ x: xScale, y: yScale }}
+          shapeClassName="symbol"
+          shapeScale={shapeScale}
+          shapeStyle={{ fill: 'red' }}
+          size={128}
           style={{ strokeWeight: 2 }}
-          symbolClassName="symbol"
         />
       );
     });
@@ -96,19 +96,21 @@ describe('<MultiScatter />', () => {
       expect(wrapper.find(Scatter)).to.have.length(3);
     });
 
-    it('passes specified properties to its children', () => {
+    it('does not pass specified properties to its children', () => {
       const nonInheritedProps = [
         'scatterClassName',
       ];
-      const assertion = (symbol) => {
+
+      const assertion = (shape) => {
         nonInheritedProps.forEach(prop => {
-          expect(symbol).to.not.have.prop(prop);
+          expect(shape).to.not.have.prop(prop);
         });
       };
+
       shallow(component).find(Scatter).forEach(assertion);
     });
 
-    it('does not pass specified properties to its children', () => {
+    it('passes specified properties to its children', () => {
       const inheritedProps = [
         'className',
         'data',
@@ -127,15 +129,17 @@ describe('<MultiScatter />', () => {
         'scales',
         'size',
         'style',
-        'symbolClassName',
-        'symbolScale',
-        'symbolType',
+        'shapeClassName',
+        'shapeScale',
+        'shapeType',
       ];
-      const assertion = (symbol) => {
+
+      const assertion = (shape) => {
         inheritedProps.forEach(prop => {
-          expect(symbol).to.have.prop(prop);
+          expect(shape).to.have.prop(prop);
         });
       };
+
       shallow(component).find(Scatter).forEach(assertion);
     });
   });

@@ -11,7 +11,7 @@ import {
   PureComponent,
   stateFromPropUpdates,
 } from '../../../utils';
-import { getSymbol, symbolTypes } from '../../../utils/symbol';
+import { getShape, shapeTypes } from '../../../utils/shape';
 
 const SYMBOL_ROTATE = {
   down: 180,
@@ -24,14 +24,14 @@ const SYMBOL_ROTATE = {
  */
 export default class Shape extends PureComponent {
   /**
-   * Return path string for given symbol type and size
+   * Return path string for given shape type and size
    * @param type {String}
    * @param size {Number}
    * @return {String}
    */
   static getPath(type, size) {
-    const symbolType = getSymbol(type);
-    return symbol().type(symbolType).size(size)();
+    const shapeType = getShape(type);
+    return symbol().type(shapeType).size(size)();
   }
 
   /**
@@ -45,13 +45,13 @@ export default class Shape extends PureComponent {
     let computedSelectedStyle = {};
     let computedFocusedStyle = {};
 
-    // if symbol is selected, compute selectedStyle
+    // if shape is selected, compute selectedStyle
     if (selected) {
       computedSelectedStyle = typeof selectedStyle === 'function' ?
         selectedStyle(datum) : selectedStyle;
     }
 
-    // if symbol is focused, compute focusedStyle
+    // if shape is focused, compute focusedStyle
     if (focused) {
       computedFocusedStyle = typeof focusedStyle === 'function' ?
         focusedStyle(datum) : focusedStyle;
@@ -119,7 +119,7 @@ Shape.propTypes = {
   clipPathId: PropTypes.string,
 
   /**
-   * Datum object corresponding to this symbol ("bound" data, in the language in D3)
+   * Datum object corresponding to this shape ("bound" data, in the language in D3)
    */
   datum: PropTypes.object,
 
@@ -129,17 +129,17 @@ Shape.propTypes = {
   fill: PropTypes.string,
 
   /**
-   * Whether symbol has focus.
+   * Whether shape has focus.
    */
   focused: PropTypes.bool,
 
   /**
-   * Class name applied if symbol has focus.
+   * Class name applied if shape has focus.
    */
   focusedClassName: CommonPropTypes.className,
 
   /**
-   * Inline styles applied if symbol has focus.
+   * Inline styles applied if shape has focus.
    * If an object, spread directly into inline styles.
    * If a function, called with `props.datum` as argument and return value is spread into inline styles;
    * signature: (datum) => obj
@@ -171,7 +171,7 @@ Shape.propTypes = {
   onMouseOver: PropTypes.func,
 
   /**
-   * Whether symbol is selected.
+   * Whether shape is selected.
    */
   selected: PropTypes.bool,
 
@@ -202,18 +202,18 @@ Shape.propTypes = {
   style: CommonPropTypes.style,
 
   /**
-   * Type of symbol to render, driven by d3-shape.
+   * Type of shape to render, driven by d3-shape.
    * One of: 'circle', 'cross', 'diamond', 'square', 'star', 'triangle', 'wye'
    */
-  symbolType: PropTypes.oneOf(symbolTypes()),
+  shapeType: PropTypes.oneOf(shapeTypes()),
 
   /**
-   * Move symbol away from origin in x direction.
+   * Move shape away from origin in x direction.
    */
   translateX: PropTypes.number,
 
   /**
-   * Move symbol away from origin in y direction.
+   * Move shape away from origin in y direction.
    */
   translateY: PropTypes.number,
 };
@@ -239,17 +239,17 @@ Shape.defaultProps = {
   size: 64,
   translateX: 0,
   translateY: 0,
-  symbolType: 'circle',
+  shapeType: 'circle',
   style: {},
 };
 
 Shape.propUpdates = {
-  // update path if symbol type or size have changed
+  // update path if shape type or size have changed
   path: (accum, propName, prevProps, nextProps) => {
-    if (!propsChanged(prevProps, nextProps, ['symbolType', 'size'])) return accum;
-    const [symbolType, rotate] = nextProps.symbolType.split(' ', 2);
+    if (!propsChanged(prevProps, nextProps, ['shapeType', 'size'])) return accum;
+    const [shapeType, rotate] = nextProps.shapeType.split(' ', 2);
     return assign(accum, {
-      path: Shape.getPath(symbolType, nextProps.size),
+      path: Shape.getPath(shapeType, nextProps.size),
       rotate: SYMBOL_ROTATE[rotate] || 0,
     });
   },

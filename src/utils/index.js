@@ -68,9 +68,9 @@ export {
 } from './props';
 
 export {
-  getSymbol,
-  symbolTypes,
-} from './symbol';
+  getShape,
+  shapeTypes,
+} from './shape';
 
 export {
   getBackgroundColor,

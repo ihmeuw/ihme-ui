@@ -1,6 +1,9 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { isArray, pick } from 'lodash';
+import {
+  map,
+  pick,
+} from 'lodash';
 import { CommonPropTypes, propResolver } from '../../../utils';
 
 import styles from './legend.css';
@@ -37,14 +40,17 @@ export default class Legend extends React.Component {
       'onClear',
       'onClick',
       'renderClear',
-      'symbolColorKey',
-      'symbolTypeKey'
+      'shapeColorKey',
+      'shapeTypeKey'
     ]);
 
-    if (!isArray(items) || !items.length) return null;
-    return items.map((item) => {
-      return <ItemComponent key={propResolver(item, labelKey)} item={item} {...itemProps} />;
-    });
+    return map(items, item =>
+      <ItemComponent
+        key={propResolver(item, labelKey)}
+        item={item}
+        {...itemProps}
+      />
+    );
   }
 
   render() {
@@ -73,7 +79,7 @@ Legend.propTypes = {
 
   /**
    * component (must be passable to React.createElement) to render for each item;
-   * passed props `item`, `itemClassName`, `itemStyles`, `labelKey`, `LabelComponent`, `onClear`, `onClick`, `renderClear`, `symbolColorKey`, `symbolTypeKey`
+   * passed props `item`, `itemClassName`, `itemStyles`, `labelKey`, `LabelComponent`, `onClear`, `onClick`, `renderClear`, `shapeColorKey`, `shapeTypeKey`
    * defaults to [LegendItem](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/legend/src/legend-item.jsx)
    */
   ItemComponent: PropTypes.func,
@@ -123,22 +129,22 @@ Legend.propTypes = {
   renderClear: PropTypes.bool,
 
   /**
-   * path to symbol color in item objects (e.g., 'color', 'properties.color')
+   * path to shape color in item objects (e.g., 'color', 'properties.color')
    * or a function to resolve the color
    * signature: (item) => {...}
    */
-  symbolColorKey: PropTypes.oneOfType([
+  shapeColorKey: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.func,
   ]).isRequired,
 
   /**
-   * path to symbol type in item objects (e.g., 'type', 'properties.type')
+   * path to shape type in item objects (e.g., 'type', 'properties.type')
    * or a function to resolve the type
    * if a function: signature: (item) => {...}
-   * must be one of [supported symbol types](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/symbol.js#L23)
+   * must be one of [supported shape types](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/shape.js#L23)
    */
-  symbolTypeKey: PropTypes.oneOfType([
+  shapeTypeKey: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.func,
   ]).isRequired,

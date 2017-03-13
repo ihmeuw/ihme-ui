@@ -20,7 +20,7 @@ const SHAPES = {
  * Get a list of shortened d3 symbol names.
  * @returns {Array} list of shortened scale names.
  */
-export function symbolTypes() {
+export function shapeTypes() {
   return Object.keys(SHAPES);
 }
 
@@ -30,7 +30,7 @@ export function symbolTypes() {
  * @param default_
  * @returns {symbol|circle} specified symbol type. Defaults to `circle`.
  */
-export function getSymbol(type, default_ = SHAPES.circle) {
+export function getShape(type, default_ = SHAPES.circle) {
   return SHAPES[type] || default_;
 }
 

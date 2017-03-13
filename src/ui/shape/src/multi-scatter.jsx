@@ -22,15 +22,15 @@ export default class MultiScatter extends PureComponent {
       scatterValuesIteratee,
       selection,
       style,
-      symbolScale,
-      symbolStyle,
+      shapeScale,
+      shapeStyle,
     } = this.props;
 
     const {
       color: colorField,
       data: dataField,
       key: keyField,
-      symbol: symbolField,
+      shape: shapeField,
     } = fieldAccessors;
 
     const childProps = pick(this.props, [
@@ -47,8 +47,8 @@ export default class MultiScatter extends PureComponent {
       'selectedStyle',
       'scales',
       'size',
-      'symbolClassName',
-      'symbolScale',
+      'shapeClassName',
+      'shapeScale',
     ]);
 
     return (
@@ -64,7 +64,7 @@ export default class MultiScatter extends PureComponent {
 
             const color = colorScale(colorField ? propResolver(datum, colorField) : key);
 
-            const symbolType = symbolField && symbolScale(propResolver(datum, symbolField));
+            const shapeType = shapeField && shapeScale(propResolver(datum, shapeField));
 
             const scatterValues = scatterValuesIteratee(values, key);
 
@@ -75,8 +75,8 @@ export default class MultiScatter extends PureComponent {
                 fill={color}
                 key={`scatter:${key}`}
                 selection={castArray(selection)}
-                style={symbolStyle}
-                symbolType={symbolType}
+                style={shapeStyle}
+                shapeType={shapeType}
                 {...childProps}
               />
             ) : null;
@@ -100,7 +100,7 @@ MultiScatter.propTypes = {
   clipPathId: PropTypes.string,
 
   /**
-   * If provided and `dataAccessors.fill` is undefined, determines the color of scatter symbols.
+   * If provided and `dataAccessors.fill` is undefined, determines the color of scatter shapes.
    */
   colorScale: PropTypes.func,
 
@@ -113,9 +113,9 @@ MultiScatter.propTypes = {
    * Accessors on datum objects
    *   fill: property on datum to provide fill (will be passed to `props.colorScale`)
    *   key: unique dimension of datum (required)
-   *   symbol: property on datum used to determine which type of symbol to render (will be passed to `props.symbolScale`)
-   *   x: property on datum to position scatter symbols in x-direction
-   *   y: property on datum to position scatter symbols in y-direction
+   *   shape: property on datum used to determine which type of shape to render (will be passed to `props.shapeScale`)
+   *   x: property on datum to position scatter shapes in x-direction
+   *   y: property on datum to position scatter shapes in y-direction
    *
    * Each accessor can either be a string or function. If a string, it is assumed to be the name of a
    * property on datum objects; full paths to nested properties are supported (e.g., { `x`: 'values.year', ... }).
@@ -124,7 +124,7 @@ MultiScatter.propTypes = {
   dataAccessors: PropTypes.shape({
     fill: CommonPropTypes.dataAccessor,
     key: CommonPropTypes.dataAccessor,
-    symbol: CommonPropTypes.dataAccessor,
+    shape: CommonPropTypes.dataAccessor,
     x: CommonPropTypes.dataAccessor,
     y: CommonPropTypes.dataAccessor,
   }).isRequired,
@@ -134,13 +134,13 @@ MultiScatter.propTypes = {
    *   color: (optional) color data as input to color scale.
    *   data: data provided to child components. default: 'values'
    *   key: unique key to apply to child components. used as input to color scale if color field is not specified. default: 'key'
-   *   symbol: symbol data as input to the symbol scale.
+   *   shape: shape data as input to the shape scale.
    */
   fieldAccessors: PropTypes.shape({
     color: CommonPropTypes.dataAccessor,
     data: CommonPropTypes.dataAccessor.isRequired,
     key: CommonPropTypes.dataAccessor.isRequired,
-    symbol: CommonPropTypes.dataAccessor,
+    shape: CommonPropTypes.dataAccessor,
   }),
 
   /**
@@ -242,18 +242,18 @@ MultiScatter.propTypes = {
   /**
    * className applied to each `<Shape />`
    */
-  symbolClassName: CommonPropTypes.className,
+  shapeClassName: CommonPropTypes.className,
 
   /**
-   * If provided, used in conjunction with `dataAccessors.symbol` (or `dataAccessors.key` if not provided)
-   * to determine type of symbol to render
+   * If provided, used in conjunction with `dataAccessors.shape` (or `dataAccessors.key` if not provided)
+   * to determine type of shape to render
    */
-  symbolScale: PropTypes.func,
+  shapeScale: PropTypes.func,
 
   /**
    * Inline styles applied to `<Shape />`s.
    */
-  symbolStyle: CommonPropTypes.style,
+  shapeStyle: CommonPropTypes.style,
 };
 
 MultiScatter.defaultProps = {
@@ -264,6 +264,6 @@ MultiScatter.defaultProps = {
   },
   scatterValuesIteratee: CommonDefaultProps.identity,
   size: 64,
-  symbolField: 'type',
-  symbolScale() { return 'circle'; },
+  shapeField: 'type',
+  shapeScale() { return 'circle'; },
 };

@@ -9,18 +9,18 @@ import Legend from '../';
 
 describe('<Legend />', () => {
   const labelKey = 'label';
-  const symbolColorKey = 'symbolColor';
-  const symbolTypeKey = 'symbolType';
+  const shapeColorKey = 'shapeColor';
+  const shapeTypeKey = 'shapeType';
   const items = Array(5).fill(1).map((_, idx) => {
     return {
       [labelKey]: idx,
-      [symbolColorKey]: 'red',
-      [symbolTypeKey]: 'square'
+      [shapeColorKey]: 'red',
+      [shapeTypeKey]: 'square'
     };
   });
 
   it('renders an empty ul if given no legend items', () => {
-    [{ items: [], }, { items: (void 0) }].forEach((test) => {
+    [{ items: [], }, { items: (void 0) }, { items: {} }].forEach((test) => {
       const wrapper = shallow(<Legend items={test.items} />);
       expect(wrapper.find('ul')).to.be.blank();
     });

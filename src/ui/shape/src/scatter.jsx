@@ -42,9 +42,9 @@ export default class Scatter extends PureComponent {
       fill,
       focus,
       scales,
-      symbolClassName,
-      symbolScale,
-      symbolType,
+      shapeClassName,
+      shapeScale,
+      shapeType,
     } = this.props;
 
     const { selectedDataMappedToKeys, sortedData } = this.state;
@@ -76,22 +76,22 @@ export default class Scatter extends PureComponent {
 
             const focusedDatumKey = focus ? propResolver(focus, dataAccessors.key) : null;
 
-            const resolvedSymbolType = dataAccessors.symbol ?
-              symbolScale(propResolver(datum, dataAccessors.symbol)) :
-              symbolType;
+            const resolvedShapeType = dataAccessors.shape ?
+              shapeScale(propResolver(datum, dataAccessors.shape)) :
+              shapeType;
 
             const xValue = propResolver(datum, dataAccessors.x);
             const yValue = propResolver(datum, dataAccessors.y);
 
             return (
               <Shape
-                className={symbolClassName}
+                className={shapeClassName}
                 key={key}
                 datum={datum}
                 fill={colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill}
                 focused={focusedDatumKey === key}
                 selected={selectedDataMappedToKeys.hasOwnProperty(key)}
-                symbolType={resolvedSymbolType}
+                shapeType={resolvedShapeType}
                 translateX={scales.x && isFinite(xValue) ? scales.x(xValue) : 0}
                 translateY={scales.y && isFinite(yValue) ? scales.y(yValue) : 0}
                 {...childProps}
@@ -130,9 +130,9 @@ Scatter.propTypes = {
    * Accessors on datum objects
    *   fill: property on datum to provide fill (will be passed to `props.colorScale`)
    *   key: unique dimension of datum (required)
-   *   symbol: property on datum used to determine which type of symbol to render (will be passed to `props.symbolScale`)
-   *   x: property on datum to position scatter symbols in x-direction
-   *   y: property on datum to position scatter symbols in y-direction
+   *   shape: property on datum used to determine which type of shape to render (will be passed to `props.shapeScale`)
+   *   x: property on datum to position scatter shapes in x-direction
+   *   y: property on datum to position scatter shapes in y-direction
    *
    * Each accessor can either be a string or function. If a string, it is assumed to be the name of a
    * property on datum objects; full paths to nested properties are supported (e.g., { `x`: 'values.year', ... }).
@@ -141,7 +141,7 @@ Scatter.propTypes = {
   dataAccessors: PropTypes.shape({
     fill: CommonPropTypes.dataAccessor,
     key: CommonPropTypes.dataAccessor.isRequired,
-    symbol: CommonPropTypes.dataAccessor,
+    shape: CommonPropTypes.dataAccessor,
     x: CommonPropTypes.dataAccessor,
     y: CommonPropTypes.dataAccessor,
   }).isRequired,
@@ -227,19 +227,19 @@ Scatter.propTypes = {
   /**
    * className applied to each `<Shape />`
    */
-  symbolClassName: CommonPropTypes.className,
+  shapeClassName: CommonPropTypes.className,
 
   /**
-   * If provided, used in conjunction with `dataAccessors.symbol` (or `dataAccessors.key` if not provided)
-   * to determine type of symbol to render
+   * If provided, used in conjunction with `dataAccessors.shape` (or `dataAccessors.key` if not provided)
+   * to determine type of shape to render
    */
-  symbolScale: PropTypes.func,
+  shapeScale: PropTypes.func,
 
   /**
-   * Type of symbol to render; use in lieu of `props.symbolScale`
+   * Type of shape to render; use in lieu of `props.shapeScale`
    * if you want all `<Shape />` to be of the same type.
    */
-  symbolType: PropTypes.string,
+  shapeType: PropTypes.string,
 };
 
 Scatter.defaultProps = {
@@ -249,7 +249,7 @@ Scatter.defaultProps = {
   onMouseMove: CommonDefaultProps.noop,
   onMouseOver: CommonDefaultProps.noop,
   size: 64,
-  symbolType: 'circle',
+  shapeType: 'circle',
 };
 
 Scatter.propUpdates = {

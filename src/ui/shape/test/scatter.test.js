@@ -49,8 +49,8 @@ describe('<Scatter />', () => {
       selection={[data[1], data[3]]}
       selectedClassName="selected"
       selectedStyle={{ stroke: 'aqua' }}
-      symbolClassName="symbol"
-      symbolType="circle"
+      shapeClassName="symbol"
+      shapeType="circle"
     />
   );
 
@@ -67,11 +67,11 @@ describe('<Scatter />', () => {
       'focus',
       'scales',
       'selection',
-      'symbolClassName',
+      'shapeClassName',
     ];
-    const assertion = (symbol) => {
+    const assertion = (shape) => {
       nonInheritedProps.forEach(prop => {
-        expect(symbol).to.not.have.prop(prop);
+        expect(shape).to.not.have.prop(prop);
       });
     };
 
@@ -90,23 +90,23 @@ describe('<Scatter />', () => {
       'selectedClassName',
       'selectedStyle',
       'size',
-      'symbolType',
+      'shapeType',
     ];
-    const assertion = (symbol) => {
+    const assertion = (shape) => {
       inheritedProps.forEach(prop => {
-        expect(symbol).to.have.prop(prop);
+        expect(shape).to.have.prop(prop);
       });
     };
 
     shallow(component).find(Shape).forEach(assertion);
   });
 
-  it('selects a symbol', () => {
+  it('selects a shape', () => {
     const wrapper = shallow(component);
     expect(wrapper.find({ selected: true })).to.have.length(2);
   });
 
-  it('focuses a symbol', () => {
+  it('focuses a shape', () => {
     const wrapper = shallow(component);
     expect(wrapper.find({ focused: true })).to.have.length(1);
   });
@@ -156,16 +156,16 @@ describe('<Scatter />', () => {
         />
       );
 
-      const assertion = (symbol, idx) => {
-        expect(symbol).to.have.prop('fill').that.is.a('string');
-        expect(symbol).to.have.prop('translateX').that.is.a('number');
+      const assertion = (shape, idx) => {
+        expect(shape).to.have.prop('fill').that.is.a('string');
+        expect(shape).to.have.prop('translateX').that.is.a('number');
         forEach(spyMap, (spyConfig, key) => {
           if (!spyConfig.spy.called) {
-            throw new Error(`${key} spy not called; ${symbol.prop(spyConfig.prop)}`);
+            throw new Error(`${key} spy not called; ${shape.prop(spyConfig.prop)}`);
           }
           const spyCall = spyConfig.spy.getCall(idx);
-          const symbolDatum = symbol.prop('datum');
-          expect(spyCall.calledWith(symbolDatum[spyConfig.accessor])).to.be.true;
+          const shapeDatum = shape.prop('datum');
+          expect(spyCall.calledWith(shapeDatum[spyConfig.accessor])).to.be.true;
         });
       };
 
@@ -190,16 +190,16 @@ describe('<Scatter />', () => {
         />
       );
 
-      const assertion = (symbol, idx) => {
-        expect(symbol).to.have.prop('fill').that.is.a('string');
-        expect(symbol).to.have.prop('translateX').that.is.a('number');
+      const assertion = (shape, idx) => {
+        expect(shape).to.have.prop('fill').that.is.a('string');
+        expect(shape).to.have.prop('translateX').that.is.a('number');
         forEach(spyMap, (spyConfig, key) => {
           if (!spyConfig.spy.called) {
-            throw new Error(`${key} spy not called; ${symbol.prop(spyConfig.prop)}`);
+            throw new Error(`${key} spy not called; ${shape.prop(spyConfig.prop)}`);
           }
           const spyCall = spyConfig.spy.getCall(idx);
-          const symbolDatum = symbol.prop('datum');
-          expect(spyCall.calledWith(symbolDatum[spyConfig.accessor])).to.be.true;
+          const shapeDatum = shape.prop('datum');
+          expect(spyCall.calledWith(shapeDatum[spyConfig.accessor])).to.be.true;
         });
       };
 
@@ -214,9 +214,9 @@ describe('<Scatter />', () => {
           scales={{ x: xScale }}
         />
       );
-      wrapper.find(Shape).forEach((symbol) => {
-        expect(symbol).to.have.prop('translateX').that.is.a('number');
-        expect(symbol).to.have.prop('translateY', 0);
+      wrapper.find(Shape).forEach((shape) => {
+        expect(shape).to.have.prop('translateX').that.is.a('number');
+        expect(shape).to.have.prop('translateY', 0);
       });
     });
 
@@ -228,9 +228,9 @@ describe('<Scatter />', () => {
           scales={{ y: yScale }}
         />
       );
-      wrapper.find(Shape).forEach((symbol) => {
-        expect(symbol).to.have.prop('translateX', 0);
-        expect(symbol).to.have.prop('translateY').that.is.a('number');
+      wrapper.find(Shape).forEach((shape) => {
+        expect(shape).to.have.prop('translateX', 0);
+        expect(shape).to.have.prop('translateY').that.is.a('number');
       });
     });
 
@@ -244,11 +244,11 @@ describe('<Scatter />', () => {
         />
       );
 
-      const assertion = (symbol, idx) => {
-        expect(symbol).to.have.prop('translateX').that.is.a('number');
+      const assertion = (shape, idx) => {
+        expect(shape).to.have.prop('translateX').that.is.a('number');
         const spyCall = spyMap.x.spy.getCall(idx);
-        const symbolDatum = symbol.prop('datum');
-        expect(spyCall.calledWith(symbolDatum.x)).to.be.true;
+        const shapeDatum = shape.prop('datum');
+        expect(spyCall.calledWith(shapeDatum.x)).to.be.true;
       };
 
       wrapper.find(Shape).forEach(assertion);
@@ -264,8 +264,8 @@ describe('<Scatter />', () => {
         />
       );
 
-      const assertion = (symbol) => {
-        expect(symbol).to.have.prop('translateX', 0);
+      const assertion = (shape) => {
+        expect(shape).to.have.prop('translateX', 0);
       };
 
       wrapper.find(Shape).forEach(assertion);
@@ -274,7 +274,7 @@ describe('<Scatter />', () => {
   });
 
   describe('selection', () => {
-    it('renders selected symbols last', () => {
+    it('renders selected shapes last', () => {
       const selectedDatum = data[0];
 
       const wrapper = shallow(
@@ -313,7 +313,7 @@ describe('<Scatter />', () => {
       ).to.equal(selectedDatum);
     });
 
-    it('does a stable sort of the symbols', () => {
+    it('does a stable sort of the shapes', () => {
       const wrapper = shallow(
         <Scatter
           data={data}
@@ -333,18 +333,18 @@ describe('<Scatter />', () => {
         expect(node.prop('datum')).to.equal(data[idx]);
       });
 
-      // selecting the first symbol should result in the following order:
+      // selecting the first shape should result in the following order:
       // newIndex :|: oldIndex
       //        0 -> 1
       //        1 -> 2
       //        2 -> 0
       const selectedDatum = data[0];
       wrapper.setProps({ selection: [selectedDatum] });
-      const expectedSymbolOrder = drop(data);
-      expectedSymbolOrder.push(selectedDatum);
+      const expectedShapeOrder = drop(data);
+      expectedShapeOrder.push(selectedDatum);
 
       wrapper.find('g').find(Shape).forEach((node, idx) => {
-        expect(node.prop('datum')).to.equal(expectedSymbolOrder[idx]);
+        expect(node.prop('datum')).to.equal(expectedShapeOrder[idx]);
       });
     });
 
