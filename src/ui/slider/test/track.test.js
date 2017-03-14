@@ -19,7 +19,7 @@ describe('<Track />', () => {
     );
 
     expect(wrapper).to.have.className(style.track);
-    expect(wrapper.find('div').last()).to.have.className(style['track-click-target']);
+    expect(wrapper.find('button').last()).to.have.className(style['track-click-target']);
     expect(wrapper.children()).to.have.length(1);
   });
 
