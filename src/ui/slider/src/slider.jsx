@@ -244,7 +244,7 @@ export default class Slider extends PureComponent {
     if (!this.state.render) return null;
 
     const { indexes, scale, snapTarget } = this.state;
-    const { labelFunc, handleClassName, handleStyle } = this.props;
+    const { disabled, labelFunc, handleClassName, handleStyle } = this.props;
 
     return (
       <div className={style['handle-track']}>
@@ -259,6 +259,7 @@ export default class Slider extends PureComponent {
               <Handle
                 className={classNames(handleClassName,
                                       { [style.connected]: indexes.low === indexes.high })}
+                disabled={disabled}
                 style={handleStyle}
                 onDrag={this.onHandleDrag}
                 onDragEnd={this.onHandleEnd(this.props.onDragEnd)}
@@ -279,7 +280,7 @@ export default class Slider extends PureComponent {
   }
 
   render() {
-    const { fontSize, width, wrapperClassName, wrapperStyle, ticks } = this.props;
+    const { disabled, fontSize, width, wrapperClassName, wrapperStyle, ticks } = this.props;
     const { snapTarget } = this.state;
 
     const wrapperStyles = {
@@ -297,6 +298,7 @@ export default class Slider extends PureComponent {
         <Track
           ref={this.trackRef}
           className={this.props.trackClassName}
+          disabled={disabled}
           style={this.props.trackStyle}
           onClick={this.onTrackClick}
           snapTarget={snapTarget}
@@ -314,6 +316,10 @@ export default class Slider extends PureComponent {
 }
 
 Slider.propTypes = {
+  /**
+   * Disable slider visually and functionally.
+   */
+  disabled: PropTypes.bool,
   /**
    * Include fill in the track to indicate value.
    */
@@ -472,6 +478,7 @@ Slider.propTypes = {
 };
 
 Slider.defaultProps = {
+  disabled: false,
   labelFunc: identity,
   onDrag: noop,
   onDragEnd: noop,

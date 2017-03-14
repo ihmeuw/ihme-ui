@@ -70,19 +70,33 @@ export default class Track extends PureComponent {
   }
 
   render() {
+    const {
+      children,
+      className,
+      disabled,
+      tickClassName,
+      ticksClassName,
+      tickStyle,
+      ticksStyle,
+    } = this.props;
+
     return (
-      <div className={classNames(style.track, this.props.className)} style={this.props.style}>
-        {this.props.children}
+      <div className={classNames(style.track, className)} style={this.props.style}>
+        {children}
         {this.state.ticks && (
           <Ticks
-            className={this.props.ticksClassName}
-            style={this.props.ticksStyle}
-            tickClassName={this.props.tickClassName}
-            tickStyle={this.props.tickStyle}
+            className={ticksClassName}
+            style={ticksStyle}
+            tickClassName={tickClassName}
+            tickStyle={tickStyle}
             x={this.state.ticks}
           />
         )}
-        <div ref={this.trackRef} className={style['track-click-target']}></div>
+        <button
+          ref={this.trackRef}
+          className={style['track-click-target']}
+          disabled={disabled}
+        ></button>
       </div>
     );
   }
@@ -92,6 +106,8 @@ Track.propTypes = {
   children: PropTypes.node,
 
   className: CommonPropTypes.className,
+
+  disabled: PropTypes.bool,
 
   onClick: PropTypes.func.isRequired,
 
