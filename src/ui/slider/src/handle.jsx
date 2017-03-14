@@ -113,8 +113,11 @@ Handle.defaultProps = {
   onKeyUp: noop,
 };
 
+const updateStyle = updateFunc((nextProp, _, nextProps) => {
+  return { style: { ...nextProps.style, left: getDimension(nextProps.position) } };
+});
+
 Handle.propUpdates = {
-  position: updateFunc((nextProp, _, nextProps) => {
-    return { style: { ...nextProps.style, left: getDimension(nextProp) } };
-  }),
+  position: updateStyle,
+  style: updateStyle,
 };
