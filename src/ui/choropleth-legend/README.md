@@ -12,7 +12,7 @@ Property | Required | Type(s) | Defaults | Description
 `data` | true | array |  | array of datum objects
 `domain` | true | array |  | [min, max] for xScale; xScale positions density plot and provides axis
 `height` |  | number |  | height of outermost svg
-`keyField` |  | string, func |  | uniquely identifying property of datum or function that accepts datum and returns unique value;<br />if not provided, density plot symbols are keyed as `${xValue}:${yValue}:${index}`
+`keyField` |  | string, func |  | uniquely identifying property of datum or function that accepts datum and returns unique value;<br />if not provided, density plot shapes are keyed as `${xValue}:${yValue}:${index}`
 `margins` |  | object | {<br />  top: 50,<br />  right: 100,<br />  bottom: 50,<br />  left: 100<br />} | margins to subtract from width and height
 `onClick` |  | func |  | onClick callback for density plot circles;<br />signature: (SyntheticEvent, data, instance) => {...}
 `onMouseLeave` |  | func |  | onMouseLeave callback for density plot circles;<br />signature: (SyntheticEvent, data, instance) => {...}

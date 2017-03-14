@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { propResolver, eventHandleWrapper } from '../../../utils';
 
 import styles from './legend-item.css';
-import { Symbol } from '../../shape';
+import { Shape } from '../../shape';
 
 /**
  * label renderer
@@ -33,11 +33,11 @@ export default function LegendItem(props) {
     onClear,
     onClick,
     renderClear,
-    symbolColorKey,
-    symbolTypeKey
+    shapeColorKey,
+    shapeTypeKey
   } = props;
-  const fill = propResolver(item, symbolColorKey);
-  const type = propResolver(item, symbolTypeKey);
+  const fill = propResolver(item, shapeColorKey);
+  const type = propResolver(item, shapeTypeKey);
 
   const inlineStyles = typeof itemStyles === 'function' ? itemStyles(item) : itemStyles;
 
@@ -57,17 +57,17 @@ export default function LegendItem(props) {
         </svg>
       ) : null}
       <div
-        className={classNames(styles['label-symbol-wrapper'], {
+        className={classNames(styles['label-shape-wrapper'], {
           [styles.clickable]: typeof onClick === 'function',
         })}
         onClick={onClick ? eventHandleWrapper(onClick, item) : null}
       >
         <svg
-          viewBox="-8 -8 16 16" // bounds of <Symbol /> with default size of 64
+          viewBox="-8 -8 16 16" // bounds of <Shape /> with default size of 64 (8x8)
           width="1em" height="1em"
           className={styles.svg}
         >
-          <Symbol symbolType={type} fill={fill} />
+          <Shape shapeType={type} fill={fill} />
         </svg>
         <span className={styles.label}>
           {renderLabel(props)}
@@ -117,19 +117,19 @@ LegendItem.propTypes = {
   /* whether to render a 'clear' icon ('x') inline with each legend item */
   renderClear: PropTypes.bool,
 
-  symbolColorKey: PropTypes.oneOfType([
-    /* either the path of symbol color in the item objects */
+  shapeColorKey: PropTypes.oneOfType([
+    /* either the path of shape color in the item objects */
     PropTypes.string,
 
-    /* or a function to resolve the symbol color, passed the current item */
+    /* or a function to resolve the shape color, passed the current item */
     PropTypes.func
   ]).isRequired,
 
-  symbolTypeKey: PropTypes.oneOfType([
-    /* either the path of symbol type in the item objects */
+  shapeTypeKey: PropTypes.oneOfType([
+    /* either the path of shape type in the item objects */
     PropTypes.string,
 
-    /* or a function to resolve the symbol type, passed the current item */
+    /* or a function to resolve the shape type, passed the current item */
     PropTypes.func
   ]).isRequired
 };

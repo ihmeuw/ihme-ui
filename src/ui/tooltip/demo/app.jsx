@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import { bindAll } from 'lodash';
 
-import { Symbol } from '../../shape';
+import { Shape } from '../../shape';
 import Tooltip from '../';
 
 import styles from './style.css';
@@ -17,7 +17,7 @@ function Dot({ datum, idx, left, onMouseOver, onMouseMove, onMouseLeave, top }) 
       }}
     >
       <svg>
-        <Symbol
+        <Shape
           datum={datum}
           onMouseOver={onMouseOver}
           onMouseMove={onMouseMove}

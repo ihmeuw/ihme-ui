@@ -8,15 +8,15 @@ import sinon from 'sinon';
 chai.use(chaiEnzyme());
 
 import LegendItem from '../src/legend-item';
-import { Symbol } from '../../shape';
+import { Shape } from '../../shape';
 import itemStyle from '../src/legend-item.css';
 
 describe('<LegendItem />', () => {
   const item = {
     estimateStage: 'GBD final',
-    symbolColor: 'red',
-    symbolType: 'triangle',
-    arbitraryField: 456
+    shapeColor: 'red',
+    shapeType: 'triangle',
+    arbitraryField: 456,
   };
 
   const mockEvent = {
@@ -40,34 +40,34 @@ describe('<LegendItem />', () => {
     expect(spy.calledWith(item)).to.be.true;
   });
 
-  it('accepts a symbolTypeKey that is a string', () => {
-    const wrapper = shallow(<LegendItem item={item} symbolTypeKey="symbolType" />);
-    expect(wrapper).to.contain(<Symbol symbolType="triangle" />);
+  it('accepts a shapeTypeKey that is a string', () => {
+    const wrapper = shallow(<LegendItem item={item} shapeTypeKey="shapeType" />);
+    expect(wrapper).to.contain(<Shape shapeType="triangle" />);
   });
 
-  it('accepts a symbolTypeKey that is a function that is called with the item', () => {
+  it('accepts a shapeTypeKey that is a function that is called with the item', () => {
     const spy = sinon.spy((itemObj) => {
-      return itemObj.symbolType;
+      return itemObj.shapeType;
     });
-    const wrapper = shallow(<LegendItem item={item} symbolTypeKey={spy} />);
+    const wrapper = shallow(<LegendItem item={item} shapeTypeKey={spy} />);
 
-    expect(wrapper).to.contain(<Symbol symbolType="triangle" />);
+    expect(wrapper).to.contain(<Shape shapeType="triangle" />);
     expect(spy.called).to.be.true;
     expect(spy.calledWith(item)).to.be.true;
   });
 
-  it('accepts a symbolColorKey that is a string', () => {
-    const wrapper = shallow(<LegendItem item={item} symbolColorKey="symbolColor" />);
-    expect(wrapper).to.contain(<Symbol fill="red" />);
+  it('accepts a shapeColorKey that is a string', () => {
+    const wrapper = shallow(<LegendItem item={item} shapeColorKey="shapeColor" />);
+    expect(wrapper).to.contain(<Shape fill="red" />);
   });
 
-  it('accepts a symbolColorKey that is a function that is called with the item', () => {
+  it('accepts a shapeColorKey that is a function that is called with the item', () => {
     const spy = sinon.spy((itemObj) => {
-      return itemObj.symbolColor;
+      return itemObj.shapeColor;
     });
-    const wrapper = shallow(<LegendItem item={item} symbolColorKey={spy} />);
+    const wrapper = shallow(<LegendItem item={item} shapeColorKey={spy} />);
 
-    expect(wrapper).to.contain(<Symbol fill="red" />);
+    expect(wrapper).to.contain(<Shape fill="red" />);
     expect(spy.called).to.be.true;
     expect(spy.calledWith(item)).to.be.true;
   });

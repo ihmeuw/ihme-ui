@@ -11,7 +11,7 @@ import {
   PureComponent,
   stateFromPropUpdates,
 } from '../../../utils';
-import { getSymbol, symbolTypes } from '../../../utils/symbol';
+import { getShape, shapeTypes } from '../../../utils/shape';
 
 const SYMBOL_ROTATE = {
   down: 180,
@@ -20,18 +20,18 @@ const SYMBOL_ROTATE = {
 };
 
 /**
- * `import { Symbol } from 'ihme-ui'`
+ * `import { Shape } from 'ihme-ui'`
  */
-export default class Symbol extends PureComponent {
+export default class Shape extends PureComponent {
   /**
-   * Return path string for given symbol type and size
+   * Return path string for given shape type and size
    * @param type {String}
    * @param size {Number}
    * @return {String}
    */
   static getPath(type, size) {
-    const symbolType = getSymbol(type);
-    return symbol().type(symbolType).size(size)();
+    const shapeType = getShape(type);
+    return symbol().type(shapeType).size(size)();
   }
 
   /**
@@ -45,13 +45,13 @@ export default class Symbol extends PureComponent {
     let computedSelectedStyle = {};
     let computedFocusedStyle = {};
 
-    // if symbol is selected, compute selectedStyle
+    // if shape is selected, compute selectedStyle
     if (selected) {
       computedSelectedStyle = typeof selectedStyle === 'function' ?
         selectedStyle(datum) : selectedStyle;
     }
 
-    // if symbol is focused, compute focusedStyle
+    // if shape is focused, compute focusedStyle
     if (focused) {
       computedFocusedStyle = typeof focusedStyle === 'function' ?
         focusedStyle(datum) : focusedStyle;
@@ -62,11 +62,11 @@ export default class Symbol extends PureComponent {
 
   constructor(props) {
     super(props);
-    this.state = stateFromPropUpdates(Symbol.propUpdates, {}, props, {});
+    this.state = stateFromPropUpdates(Shape.propUpdates, {}, props, {});
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState(stateFromPropUpdates(Symbol.propUpdates, this.props, nextProps, {}));
+    this.setState(stateFromPropUpdates(Shape.propUpdates, this.props, nextProps, {}));
   }
 
   render() {
@@ -106,7 +106,7 @@ export default class Symbol extends PureComponent {
   }
 }
 
-Symbol.propTypes = {
+Shape.propTypes = {
   /**
    * Class name applied to path.
    */
@@ -119,7 +119,7 @@ Symbol.propTypes = {
   clipPathId: PropTypes.string,
 
   /**
-   * Datum object corresponding to this symbol ("bound" data, in the language in D3)
+   * Datum object corresponding to this shape ("bound" data, in the language in D3)
    */
   datum: PropTypes.object,
 
@@ -129,17 +129,17 @@ Symbol.propTypes = {
   fill: PropTypes.string,
 
   /**
-   * Whether symbol has focus.
+   * Whether shape has focus.
    */
   focused: PropTypes.bool,
 
   /**
-   * Class name applied if symbol has focus.
+   * Class name applied if shape has focus.
    */
   focusedClassName: CommonPropTypes.className,
 
   /**
-   * Inline styles applied if symbol has focus.
+   * Inline styles applied if shape has focus.
    * If an object, spread directly into inline styles.
    * If a function, called with `props.datum` as argument and return value is spread into inline styles;
    * signature: (datum) => obj
@@ -171,7 +171,7 @@ Symbol.propTypes = {
   onMouseOver: PropTypes.func,
 
   /**
-   * Whether symbol is selected.
+   * Whether shape is selected.
    */
   selected: PropTypes.bool,
 
@@ -181,9 +181,9 @@ Symbol.propTypes = {
   selectedClassName: CommonPropTypes.className,
 
   /**
-   * Inline styles applied to selected `<Symbol />`s.
+   * Inline styles applied to selected `<Shape />`s.
    * If an object, spread into inline styles.
-   * If a function, passed underlying datum corresponding to its `<Symbol />`
+   * If a function, passed underlying datum corresponding to its `<Shape />`
    * and return value spread into line styles;
    * signature: (datum) => obj
    */
@@ -195,30 +195,30 @@ Symbol.propTypes = {
   size: PropTypes.number,
 
   /**
-   * Base inline styles applied to `<Symbol />`s.
+   * Base inline styles applied to `<Shape />`s.
    * If an object, spread into inline styles.
-   * If a function, passed underlying datum corresponding to its `<Symbol />`.
+   * If a function, passed underlying datum corresponding to its `<Shape />`.
    */
   style: CommonPropTypes.style,
 
   /**
-   * Type of symbol to render, driven by d3-shape.
+   * Type of shape to render, driven by d3-shape.
    * One of: 'circle', 'cross', 'diamond', 'square', 'star', 'triangle', 'wye'
    */
-  symbolType: PropTypes.oneOf(symbolTypes()),
+  shapeType: PropTypes.oneOf(shapeTypes()),
 
   /**
-   * Move symbol away from origin in x direction.
+   * Move shape away from origin in x direction.
    */
   translateX: PropTypes.number,
 
   /**
-   * Move symbol away from origin in y direction.
+   * Move shape away from origin in y direction.
    */
   translateY: PropTypes.number,
 };
 
-Symbol.defaultProps = {
+Shape.defaultProps = {
   fill: 'steelblue',
   focused: false,
   focusedClassName: 'focused',
@@ -239,17 +239,17 @@ Symbol.defaultProps = {
   size: 64,
   translateX: 0,
   translateY: 0,
-  symbolType: 'circle',
+  shapeType: 'circle',
   style: {},
 };
 
-Symbol.propUpdates = {
-  // update path if symbol type or size have changed
+Shape.propUpdates = {
+  // update path if shape type or size have changed
   path: (accum, propName, prevProps, nextProps) => {
-    if (!propsChanged(prevProps, nextProps, ['symbolType', 'size'])) return accum;
-    const [symbolType, rotate] = nextProps.symbolType.split(' ', 2);
+    if (!propsChanged(prevProps, nextProps, ['shapeType', 'size'])) return accum;
+    const [shapeType, rotate] = nextProps.shapeType.split(' ', 2);
     return assign(accum, {
-      path: Symbol.getPath(symbolType, nextProps.size),
+      path: Shape.getPath(shapeType, nextProps.size),
       rotate: SYMBOL_ROTATE[rotate] || 0,
     });
   },
@@ -268,7 +268,7 @@ Symbol.propUpdates = {
       return accum;
     }
     return assign(accum, {
-      style: Symbol.getStyle({
+      style: Shape.getStyle({
         datum: nextProps.datum,
         fill: nextProps.fill,
         focused: nextProps.focused,

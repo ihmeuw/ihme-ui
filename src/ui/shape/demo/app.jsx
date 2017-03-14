@@ -38,7 +38,7 @@ const valueFieldDomain = [minBy(data, valueField)[valueField], maxBy(data, value
 
 const keyFieldDomain = map(uniqBy(data, keyField), (obj) => { return (obj[keyField]); });
 
-const symbolScale = scaleOrdinal()
+const shapeScale = scaleOrdinal()
   .domain(['Brazil', 'Russia', 'India', 'China', 'Mexico', 'Indonesia', 'Nigeria', 'Vietnam'])
   .range(['circle', 'cross', 'diamond', 'line', 'square', 'star', 'triangle', 'wye']);
 
@@ -117,16 +117,16 @@ class App extends React.Component {
      }}
      keyField="location"
      onClick={this.onClick}
-     onMouseLeave={function(event, datum, Symbol) {...}}
-     onMouseMove={function(event, datum, Symbol) {...}}
-     onMouseOver={function(event, datum, Symbol) {...}}
+     onMouseLeave={function(event, datum, Shape) {...}}
+     onMouseMove={function(event, datum, Shape) {...}}
+     onMouseOver={function(event, datum, Shape) {...}}
      selection={this.state.selectedItems}
      selectedStyle={{
        stroke: '#000',
        strokeWidth: 1,
      }}
-     symbolField="location"
-     symbolScale={symbolScale}
+     shapeField="location"
+     shapeScale={shapeScale}
    />
  </AxisChart>
 </code></pre> */}
@@ -148,7 +148,7 @@ class App extends React.Component {
                   key: 'id',
                   x: keyField,
                   y: valueField,
-                  symbol: 'location',
+                  shape: 'location',
                 }}
                 fieldAccessors={{
                   data: 'values',
@@ -168,8 +168,8 @@ class App extends React.Component {
                   stroke: '#000',
                   strokeWidth: 1,
                 }}
-                symbolField="location"
-                symbolScale={symbolScale}
+                shapeField="location"
+                shapeScale={shapeScale}
               />
             </AxisChart>
         </section>
@@ -196,12 +196,12 @@ class App extends React.Component {
        y: valueField   // population
      }}
      focus={{}}
-     onClick={function(event, datum, Symbol) {...}}
-     onMouseLeave={function(event, datum, Symbol) {...}}
-     onMouseMove={function(event, datum, Symbol) {...}}
-     onMouseOver={function(event, datum, Symbol) {...}}
+     onClick={function(event, datum, Shape) {...}}
+     onMouseLeave={function(event, datum, Shape) {...}}
+     onMouseMove={function(event, datum, Shape) {...}}
+     onMouseOver={function(event, datum, Shape) {...}}
      selection={this.state.selectedItems}
-     symbolType="circle"
+     shapeType="circle"
    />
  </AxisChart>
 </code></pre> */}
@@ -230,7 +230,7 @@ class App extends React.Component {
                 onMouseMove={this.onMouseMove}
                 onMouseOver={this.onMouseOver}
                 selection={this.state.selectedItems}
-                symbolType="circle"
+                shapeType="circle"
               />
             </AxisChart>
         </section>
@@ -250,11 +250,11 @@ class App extends React.Component {
     fill="tomato"
     data={[]}
     dataAccessors={{ x: valueField, key: 'id' }}
-    onClick={function(event, datum, Symbol) {...}}
-    onMouseLeave={function(event, datum, Symbol) {...}}
-    onMouseMove={function(event, datum, Symbol) {...}}
-    onMouseOver={function(event, datum, Symbol) {...}}
-    symbolType="circle"
+    onClick={function(event, datum, Shape) {...}}
+    onMouseLeave={function(event, datum, Shape) {...}}
+    onMouseMove={function(event, datum, Shape) {...}}
+    onMouseOver={function(event, datum, Shape) {...}}
+    shapeType="circle"
   />
 </AxisChart>
 </code></pre> */}
@@ -277,7 +277,7 @@ class App extends React.Component {
                 onMouseMove={this.onMouseMove}
                 onMouseOver={this.onMouseOver}
                 selection={this.state.selectedItems}
-                symbolType="circle"
+                shapeType="circle"
               />
             </AxisChart>
         </section>
@@ -297,11 +297,11 @@ class App extends React.Component {
     fill={'cornflowerblue'}
     data={[]}
     dataAccessors={{ y: valueField, key: 'id' }}
-    symbolType={'circle'}
-    onClick={function(event, datum, Symbol) {...}}
-    onMouseLeave={function(event, datum, Symbol) {...}}
-    onMouseMove={function(event, datum, Symbol) {...}}
-    onMouseOver={function(event, datum, Symbol) {...}}
+    onClick={function(event, datum, Shape) {...}}
+    onMouseLeave={function(event, datum, Shape) {...}}
+    onMouseMove={function(event, datum, Shape) {...}}
+    onMouseOver={function(event, datum, Shape) {...}}
+    shapeType={'circle'}
   />
 </AxisChart>
 </code></pre> */}
@@ -324,7 +324,7 @@ class App extends React.Component {
                 onMouseMove={this.onMouseMove}
                 onMouseOver={this.onMouseOver}
                 selection={this.state.selectedItems}
-                symbolType="circle"
+                shapeType="circle"
               />
             </AxisChart>
         </section>
@@ -344,11 +344,11 @@ class App extends React.Component {
     fill={scaleCategory10()}
     data={[]}
     dataAccessors={{ fill: valueField, key: 'id', x: valueField }}
-    onClick={function(event, datum, Symbol) {...}}
-    onMouseLeave={function(event, datum, Symbol) {...}}
-    onMouseMove={function(event, datum, Symbol) {...}}
-    onMouseOver={function(event, datum, Symbol) {...}}
-    symbolType="circle"
+    onClick={function(event, datum, Shape) {...}}
+    onMouseLeave={function(event, datum, Shape) {...}}
+    onMouseMove={function(event, datum, Shape) {...}}
+    onMouseOver={function(event, datum, Shape) {...}}
+    shapeType="circle"
   />
 </AxisChart>
 </code></pre> */}
@@ -371,7 +371,7 @@ class App extends React.Component {
                 onMouseMove={this.onMouseMove}
                 onMouseOver={this.onMouseOver}
                 selection={this.state.selectedItems}
-                symbolType="circle"
+                shapeType="circle"
               />
             </AxisChart>
         </section>

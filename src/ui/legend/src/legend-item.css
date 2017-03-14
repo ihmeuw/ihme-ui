@@ -11,7 +11,7 @@
     width: 100%;
 }
 
-.label-symbol-wrapper {
+.label-shape-wrapper {
     composes: wrapper;
     flex: 1 1 auto;
 }

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { Symbol } from '../../shape';
+import { Shape } from '../../shape';
 import { CommonPropTypes, PureComponent } from '../../../utils';
 
 import styles from './spinner.css';
@@ -17,9 +17,9 @@ class Spinner extends PureComponent {
       className,
       inline,
       style,
-      symbolFill,
-      symbolStyle,
-      symbolType,
+      shapeFill,
+      shapeStyle,
+      shapeType,
     } = this.props;
 
     return (
@@ -30,13 +30,13 @@ class Spinner extends PureComponent {
         style={style}
       >
         <svg className={styles.dot} viewBox="-8 -8 16 16" width="1em" height="1em">
-          <Symbol fill={symbolFill} style={symbolStyle} symbolType={symbolType} />
+          <Shape fill={shapeFill} style={shapeStyle} shapeType={shapeType} />
         </svg>
         <svg className={styles.dot} viewBox="-8 -8 16 16" width="1em" height="1em">
-          <Symbol fill={symbolFill} style={symbolStyle} symbolType={symbolType} />
+          <Shape fill={shapeFill} style={shapeStyle} shapeType={shapeType} />
         </svg>
         <svg className={styles.dot} viewBox="-8 -8 16 16" width="1em" height="1em">
-          <Symbol fill={symbolFill} style={symbolStyle} symbolType={symbolType} />
+          <Shape fill={shapeFill} style={shapeStyle} shapeType={shapeType} />
         </svg>
       </div>
     );
@@ -60,25 +60,25 @@ Spinner.propTypes = {
   style: CommonPropTypes.style,
 
   /**
-   * Fill color of loading symbol.
+   * Fill color of loading shape.
    */
-  symbolFill: PropTypes.string,
+  shapeFill: PropTypes.string,
 
   /**
-   * Inline styles applied to loading symbol.
+   * Inline styles applied to loading shape.
    */
-  symbolStyle: CommonPropTypes.style,
+  shapeStyle: CommonPropTypes.style,
 
   /**
-   * Type of loading symbol to render.
+   * Type of loading shape to render.
    * One of: 'circle', 'cross', 'diamond', 'square', 'star', 'triangle', 'wye'
    */
-  symbolType: PropTypes.string,
+  shapeType: PropTypes.string,
 };
 
 Spinner.defaultProps = {
-  symbolFill: 'black',
-  symbolType: 'circle',
+  shapeFill: 'black',
+  shapeType: 'circle',
 };
 
 export default Spinner;

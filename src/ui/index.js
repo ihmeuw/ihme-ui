@@ -16,7 +16,8 @@ import {
   MultiLine,
   MultiScatter,
   Scatter,
-  Symbol } from './shape';
+  Shape,
+} from './shape';
 import Slider from './slider';
 import Spinner from './spinner';
 import SvgText from './svg-text';
@@ -46,7 +47,7 @@ export {
   Slider,
   Spinner,
   SvgText,
-  Symbol,
+  Shape,
   Tooltip,
   XAxis,
   YAxis,

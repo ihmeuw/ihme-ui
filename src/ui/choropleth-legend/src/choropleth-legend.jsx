@@ -93,7 +93,7 @@ export default class ChoroplethLegend extends PureComponent {
             scales={scatterScaleMap}
             selection={selectedLocations}
             size={180 * zoom}
-            symbolClassName={styles['density-circle']}
+            shapeClassName={styles['density-circle']}
           />
           <g transform={`translate(0, ${10 + (5 * zoom)})`}>
             <LinearGradient
@@ -172,7 +172,7 @@ ChoroplethLegend.propTypes = {
 
   /**
    * uniquely identifying property of datum or function that accepts datum and returns unique value;
-   * if not provided, density plot symbols are keyed as `${xValue}:${yValue}:${index}`
+   * if not provided, density plot shapes are keyed as `${xValue}:${yValue}:${index}`
    */
   keyField: PropTypes.oneOfType([
     PropTypes.string,

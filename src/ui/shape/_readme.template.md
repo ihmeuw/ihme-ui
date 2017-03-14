@@ -34,7 +34,7 @@ This is organizationally intended to mimic [d3-shape](https://github.com/d3/d3-s
 
 ---
 
-#### \<Symbol />
-{{{symbol.description}}}
+#### \<Shape />
+{{{shape.description}}}
 
-{{{symbol.props}}}
+{{{shape.props}}}
