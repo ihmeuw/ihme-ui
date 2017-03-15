@@ -31,4 +31,38 @@ describe('<Slider />', () => {
     wrapper.setProps({ value: { low: 2, high: 10 } });
     expect(wrapper.instance().state.indexes).to.deep.equal({ low: 1, high: 9 });
   });
+
+  describe('disabled', () => {
+    it('props are present for children', (done) => {
+      sinon.stub(Slider.prototype, 'receiveTrackWidth', (state) => ({
+        ...state,
+        render: true,
+        scale: state.scale.range([0, 100]),
+        snapTarget: { x: 100 / (state.range.length - 1) },
+      }));
+
+      const wrapper = mount(
+        <Slider
+          disabled
+          range={{
+            low: 1,
+            high: 10,
+          }}
+          value={{
+            low: 1,
+            high: 10,
+          }}
+          onChange={onChange}
+          fill
+        />
+      );
+
+      setImmediate(() => {
+        expect(wrapper.find('Handle').everyWhere(t => t.prop('disabled'))).to.equal(true);
+        expect(wrapper.find('Track').everyWhere(t => t.prop('disabled'))).to.equal(true);
+        Slider.prototype.receiveTrackWidth.restore();
+        done();
+      });
+    });
+  });
 });
