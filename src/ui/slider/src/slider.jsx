@@ -255,26 +255,23 @@ export default class Slider extends PureComponent {
           const direction = key === 'low' ? 'left' : 'right';
           const position = scale(index);
           return (
-            <ResponsiveContainer
+            <Handle
+              className={classNames(handleClassName,
+                { [style.connected]: indexes.low === indexes.high })}
+              direction={direction}
+              disabled={disabled}
               key={`handle:${key}`}
-            >
-              <Handle
-                className={classNames(handleClassName,
-                  { [style.connected]: indexes.low === indexes.high })}
-                direction={direction}
-                disabled={disabled}
-                label={range[index]}
-                labelFunc={labelFunc}
-                name={key}
-                onDrag={this.onHandleDrag}
-                onDragEnd={this.onHandleEnd(onDragEnd)}
-                onKeyDown={this.onHandleKeyDown}
-                onKeyUp={this.onHandleEnd(onKeyEnd)}
-                position={position}
-                snapTarget={snapTarget}
-                style={handleStyle}
-              />
-            </ResponsiveContainer>
+              label={range[index]}
+              labelFunc={labelFunc}
+              name={key}
+              onDrag={this.onHandleDrag}
+              onDragEnd={this.onHandleEnd(onDragEnd)}
+              onKeyDown={this.onHandleKeyDown}
+              onKeyUp={this.onHandleEnd(onKeyEnd)}
+              position={position}
+              snapTarget={snapTarget}
+              style={handleStyle}
+            />
           );
         })}
       </div>
