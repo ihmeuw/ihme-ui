@@ -17,7 +17,7 @@ import { stateFromPropUpdates, updateFunc } from '../../../utils/props';
 import Track from './track';
 import Fill from './fill';
 import Handle from './handle';
-import style from './slider.css';
+import styles from './slider.css';
 
 const VALUE_KEYS = ['low', 'high'];
 
@@ -249,15 +249,15 @@ export default class Slider extends PureComponent {
     const { indexes, range, scale, snapTarget } = this.state;
 
     return (
-      <div className={style['handle-track']}>
-        <div className={style['flag-base']}></div>
+      <div className={styles['handle-track']}>
+        <div className={styles['flag-base']}></div>
         {map(indexes, (index, key) => {
           const direction = key === 'low' ? 'left' : 'right';
           const position = scale(index);
           return (
             <Handle
               className={classNames(handleClassName,
-                { [style.connected]: indexes.low === indexes.high })}
+                { [styles.connected]: indexes.low === indexes.high })}
               direction={direction}
               disabled={disabled}
               key={`handle:${key}`}
@@ -280,8 +280,10 @@ export default class Slider extends PureComponent {
 
   render() {
     const {
+      className,
       disabled,
       fontSize,
+      style,
       tickClassName,
       tickStyle,
       ticks,
@@ -290,20 +292,18 @@ export default class Slider extends PureComponent {
       trackClassName,
       trackStyle,
       width,
-      wrapperClassName,
-      wrapperStyle,
     } = this.props;
     const { snapTarget } = this.state;
 
     const wrapperStyles = {
       fontSize: `${fontSize}`,
       width: `${width}px`,
-      ...wrapperStyle,
+      ...style,
     };
 
     return (
       <div
-        className={classNames(style.slider, wrapperClassName)}
+        className={classNames(styles.slider, className)}
         style={wrapperStyles}
       >
         {this.renderHandles()}
@@ -482,12 +482,12 @@ Slider.propTypes = {
   /**
    * Class name applied to outermost wrapper.
    */
-  wrapperClassName: CommonPropTypes.className,
+  className: CommonPropTypes.className,
 
   /**
    * Inline styles applied to outermost wrapper.
    */
-  wrapperStyle: PropTypes.object,
+  style: PropTypes.object,
 };
 
 Slider.defaultProps = {
