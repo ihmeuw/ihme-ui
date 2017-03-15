@@ -6,7 +6,7 @@ import { CommonPropTypes, PureComponent } from '../../../utils';
 
 import Ticks from './ticks';
 import { getSnapTargetFunc } from './util';
-import style from './slider.css';
+import styles from './slider.css';
 
 export default class Track extends PureComponent {
   constructor(props) {
@@ -57,11 +57,7 @@ export default class Track extends PureComponent {
       .origin('self')
       .styleCursor(false)
       .on('tap', (event) => {
-        const newEvent = {
-          ...event,
-          snap: snapTargetFunc(event.layerX),
-        };
-        this.props.onClick(newEvent);
+        this.props.onClick({ ...event, snap: snapTargetFunc(event.layerX) });
       });
   }
 
@@ -74,28 +70,30 @@ export default class Track extends PureComponent {
       children,
       className,
       disabled,
+      style,
       tickClassName,
       ticksClassName,
       tickStyle,
       ticksStyle,
     } = this.props;
+    const { ticks } = this.state;
 
     return (
-      <div className={classNames(style.track, className)} style={this.props.style}>
+      <div className={classNames(styles.track, className)} style={style}>
         {children}
-        {this.state.ticks && (
+        {ticks && (
           <Ticks
             className={ticksClassName}
             style={ticksStyle}
             tickClassName={tickClassName}
             tickStyle={tickStyle}
-            x={this.state.ticks}
+            x={ticks}
           />
         )}
         <button
-          ref={this.trackRef}
-          className={style['track-click-target']}
+          className={styles['track-click-target']}
           disabled={disabled}
+          ref={this.trackRef}
         ></button>
       </div>
     );
@@ -125,4 +123,8 @@ Track.propTypes = {
   ticks: PropTypes.bool,
   ticksClassName: CommonPropTypes.className,
   ticksStyle: PropTypes.object,
+};
+
+Track.defaultProps = {
+  disabled: false,
 };
