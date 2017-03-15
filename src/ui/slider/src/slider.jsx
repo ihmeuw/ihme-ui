@@ -7,7 +7,7 @@ import identity from 'lodash/identity';
 import inRange from 'lodash/inRange';
 import map from 'lodash/map';
 import noop from 'lodash/noop';
-import range from 'lodash/range';
+import range_ from 'lodash/range';
 import reduce from 'lodash/reduce';
 import round from 'lodash/round';
 import zipObject from 'lodash/zipObject';
@@ -17,7 +17,6 @@ import { stateFromPropUpdates, updateFunc } from '../../../utils/props';
 import Track from './track';
 import Fill from './fill';
 import Handle from './handle';
-import ResponsiveContainer from '../../responsive-container';
 import style from './slider.css';
 
 const VALUE_KEYS = ['low', 'high'];
@@ -35,8 +34,9 @@ function getIndexesForValues(values, rangeList) {
     const index = rangeList.indexOf(value);
     return {
       ...acc,
-      [key]: index !== -1 ?
-               index : key === 'low' ? 0 : rangeList.length - 1,
+      [key]: index !== -1
+        ? index : key === 'low'
+          ? 0 : rangeList.length - 1,
     };
     /* eslint-enable no-nested-ternary */
   }, {});
@@ -49,12 +49,7 @@ function getIndexesForValues(values, rangeList) {
  * @return {Object}
  */
 function getValuesForIndexes(indexes, rangeList) {
-  return reduce(indexes, (acc, value, key) => {
-    return {
-      ...acc,
-      [key]: rangeList[value],
-    };
-  }, {});
+  return reduce(indexes, (acc, value, key) => ({ ...acc, [key]: rangeList[value] }), {});
 }
 
 /**
@@ -90,12 +85,12 @@ export default class Slider extends PureComponent {
     this.handleCount = Object.keys(this.state.indexes).length;
 
     bindAll(this, [
+      'doSetState',
       'onHandleEnd',
       'onHandleDrag',
       'onHandleKeyDown',
       'onTrackClick',
       'trackRef',
-      'doSetState',
     ]);
   }
 
@@ -139,8 +134,8 @@ export default class Slider extends PureComponent {
 
       // Check that the mouse X pos is within the handle extent,
       // and that the computed value is in the range list
-      if (!inRange(pageX - handleExtent, nextPos - handleExtent) ||
-            !this.state.range[index]) return;
+      if (!inRange(pageX - handleExtent, nextPos - handleExtent)
+        || !this.state.range[index]) return;
 
       this.updateValueFromEvent(event, index, key, this.props.onDrag);
     };
@@ -181,8 +176,8 @@ export default class Slider extends PureComponent {
     const index = round(scale.invert(event.snap.x));
 
     /* Determine which handle is closer. 'low' == true, 'high' == false */
-    const comp = indexes.high === undefined ||
-      (Math.abs(indexes.low - index) < Math.abs(indexes.high - index) || indexes.low > index);
+    const comp = indexes.high === undefined
+      || (Math.abs(indexes.low - index) < Math.abs(indexes.high - index) || indexes.low > index);
 
     const key = comp ? 'low' : 'high';
 
@@ -194,9 +189,9 @@ export default class Slider extends PureComponent {
       const indexes = { ...this.state.indexes, [key]: index };
       const values = getValuesForIndexes(indexes, this.state.range);
 
-      if (indexes.low === undefined ||
-            indexes.high === undefined ||
-            indexes.low <= indexes.high) {
+      if (indexes.low === undefined
+        || indexes.high === undefined
+        || indexes.low <= indexes.high) {
         callback(event, values, this);
       }
     }
@@ -222,18 +217,18 @@ export default class Slider extends PureComponent {
   renderFill() {
     if (!this.state.render || !this.props.fill) return null;
 
-    const { indexes, scale } = this.state;
     const { fillStyle, fillClassName } = this.props;
+    const { indexes, scale } = this.state;
 
     return map(indexes, (index, key) => {
       const direction = key === 'low' ? 'left' : 'right';
       const position = scale(index);
       return (
         <Fill
-          key={`fill:${key}`}
           className={fillClassName}
-          style={fillStyle}
           direction={direction}
+          key={`fill:${key}`}
+          style={fillStyle}
           width={position}
         />
       );
@@ -243,8 +238,15 @@ export default class Slider extends PureComponent {
   renderHandles() {
     if (!this.state.render) return null;
 
-    const { indexes, scale, snapTarget } = this.state;
-    const { disabled, labelFunc, handleClassName, handleStyle } = this.props;
+    const {
+      disabled,
+      handleClassName,
+      handleStyle,
+      labelFunc,
+      onDragEnd,
+      onKeyEnd,
+    } = this.props;
+    const { indexes, range, scale, snapTarget } = this.state;
 
     return (
       <div className={style['handle-track']}>
@@ -258,19 +260,19 @@ export default class Slider extends PureComponent {
             >
               <Handle
                 className={classNames(handleClassName,
-                                      { [style.connected]: indexes.low === indexes.high })}
-                disabled={disabled}
-                style={handleStyle}
-                onDrag={this.onHandleDrag}
-                onDragEnd={this.onHandleEnd(this.props.onDragEnd)}
-                onKeyDown={this.onHandleKeyDown}
-                onKeyUp={this.onHandleEnd(this.props.onKeyEnd)}
-                name={key}
+                  { [style.connected]: indexes.low === indexes.high })}
                 direction={direction}
-                position={position}
-                label={this.state.range[index]}
+                disabled={disabled}
+                label={range[index]}
                 labelFunc={labelFunc}
+                name={key}
+                onDrag={this.onHandleDrag}
+                onDragEnd={this.onHandleEnd(onDragEnd)}
+                onKeyDown={this.onHandleKeyDown}
+                onKeyUp={this.onHandleEnd(onKeyEnd)}
+                position={position}
                 snapTarget={snapTarget}
+                style={handleStyle}
               />
             </ResponsiveContainer>
           );
@@ -280,7 +282,20 @@ export default class Slider extends PureComponent {
   }
 
   render() {
-    const { disabled, fontSize, width, wrapperClassName, wrapperStyle, ticks } = this.props;
+    const {
+      disabled,
+      fontSize,
+      tickClassName,
+      tickStyle,
+      ticks,
+      ticksClassName,
+      ticksStyle,
+      trackClassName,
+      trackStyle,
+      width,
+      wrapperClassName,
+      wrapperStyle,
+    } = this.props;
     const { snapTarget } = this.state;
 
     const wrapperStyles = {
@@ -296,17 +311,17 @@ export default class Slider extends PureComponent {
       >
         {this.renderHandles()}
         <Track
-          ref={this.trackRef}
-          className={this.props.trackClassName}
+          className={trackClassName}
           disabled={disabled}
-          style={this.props.trackStyle}
           onClick={this.onTrackClick}
+          ref={this.trackRef}
           snapTarget={snapTarget}
+          style={trackStyle}
+          tickClassName={tickClassName}
+          tickStyle={tickStyle}
           ticks={ticks}
-          ticksClassName={this.props.ticksClassName}
-          ticksStyle={this.props.ticksStyle}
-          tickClassName={this.props.tickClassName}
-          tickStyle={this.props.tickStyle}
+          ticksClassName={ticksClassName}
+          ticksStyle={ticksStyle}
         >
           {this.renderFill()}
         </Track>
@@ -320,6 +335,7 @@ Slider.propTypes = {
    * Disable slider visually and functionally.
    */
   disabled: PropTypes.bool,
+
   /**
    * Include fill in the track to indicate value.
    */
@@ -496,9 +512,8 @@ Slider.propUpdates = {
     if (!Array.isArray(nextProp)) {
       const delta = nextProp.high - nextProp.low;
       const steps = nextProp.steps || delta + 1;
-      nextRange = range(steps).map(
-        (d) => round(d * delta / (steps - 1) + nextProp.low, nextProp.precision)
-      );
+      nextRange = range_(steps).map((d) =>
+        round(d * delta / (steps - 1) + nextProp.low, nextProp.precision));
     }
 
     return {
@@ -506,11 +521,8 @@ Slider.propUpdates = {
       scale: state.scale.domain([0, nextRange.length - 1]),
     };
   }),
-  value: updateFunc((nextProp, propName, nextProps, state) => {
-    return { indexes: getIndexesForValues(getLowHighValues(nextProp), state.range) };
-  }),
-  width: updateFunc(() => {
-    // Track needs to be rendered with new width before Handles and Fill can be rendered
-    return { render: false };
-  }),
+  value: updateFunc((nextProp, propName, nextProps, state) =>
+    ({ indexes: getIndexesForValues(getLowHighValues(nextProp), state.range) })),
+  width: updateFunc(() =>
+    ({ render: false })), // Track needs to be rendered with new width before Handles and Fill can be rendered
 };
