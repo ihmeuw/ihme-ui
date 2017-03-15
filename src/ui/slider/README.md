@@ -6,6 +6,7 @@
 
 Property | Required | Type(s) | Defaults | Description
 :---    |:---      |:---     |:---      |:---       
+`disabled` |  | bool | false | Disable slider visually and functionally.
 `fill` |  | bool |  | Include fill in the track to indicate value.
 `fillClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | Class name applied to fill.
 `fillStyle` |  | object |  | Inline styles applied to fill.
@@ -26,5 +27,5 @@ Property | Required | Type(s) | Defaults | Description
 `trackStyle` |  | object |  | Inline styles applied to slider track.
 `value` | true | number, string, array, object |  | Selected value.<br />If number, a single slider handle will be rendered.<br />If object with keys 'low' and 'high', two slider handles (a "range slider") will be rendered.
 `width` |  | number | 200 | Width of slider (in pixels).
-`wrapperClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | Class name applied to outermost wrapper.
-`wrapperStyle` |  | object |  | Inline styles applied to outermost wrapper.
+`className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | Class name applied to outermost wrapper.
+`style` |  | object |  | Inline styles applied to outermost wrapper.
