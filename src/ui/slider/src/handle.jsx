@@ -67,16 +67,27 @@ export default class Handle extends PureComponent {
   }
 
   render() {
+    const {
+      className,
+      direction,
+      disabled,
+      label,
+      labelFunc,
+      name,
+      onKeyDown,
+      onKeyUp,
+    } = this.props;
     return (
       <button
         type="button"
-        className={classNames(style.flag, style[this.props.direction], this.props.className)}
+        className={classNames(style.flag, style[direction], className)}
+        disabled={disabled}
         style={this.state.style}
         ref={this.handleRef}
-        onKeyDown={this.props.onKeyDown(this.props.name)}
-        onKeyUp={this.props.onKeyUp}
+        onKeyDown={onKeyDown(name)}
+        onKeyUp={onKeyUp}
       >
-        {this.props.labelFunc(this.props.label)}
+        {labelFunc(label)}
       </button>
     );
   }
@@ -85,6 +96,7 @@ export default class Handle extends PureComponent {
 Handle.propTypes = {
   className: CommonPropTypes.className,
   direction: PropTypes.oneOf(['left', 'right', 'middle']),
+  disabled: PropTypes.bool,
   label: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,
@@ -105,6 +117,7 @@ Handle.propTypes = {
 
 Handle.defaultProps = {
   direction: 'middle',
+  disabled: false,
   label: '',
   labelFunc: identity,
   onDrag: noop,
@@ -113,8 +126,10 @@ Handle.defaultProps = {
   onKeyUp: noop,
 };
 
+const updateStyle = updateFunc((nextProp, _, nextProps) =>
+  ({ style: { ...nextProps.style, left: getDimension(nextProps.position) } }));
+
 Handle.propUpdates = {
-  position: updateFunc((nextProp, _, nextProps) => {
-    return { style: { ...nextProps.style, left: getDimension(nextProp) } };
-  }),
+  position: updateStyle,
+  style: updateStyle,
 };

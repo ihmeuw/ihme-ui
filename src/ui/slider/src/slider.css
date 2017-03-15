@@ -26,10 +26,16 @@
 }
 
 .track-click-target {
+  border: none;
+  background-color: transparent;
   position: absolute;
   width: 100%;
   top: -2px;
   bottom: -2px;
+}
+
+.track-click-target:focus {
+  outline: none;
 }
 
 .track-ticks {
@@ -57,6 +63,11 @@
   border: solid #27ae60;
   border-width: 0 1px;
   cursor: ew-resize;
+}
+
+.flag:disabled {
+  color: lightgray;
+  border-color: lightgray;
 }
 
 .flag.left {
@@ -99,6 +110,7 @@
 }
 
 .fill {
+  background-color: #ccc;
   position: absolute;
 }
 

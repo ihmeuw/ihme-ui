@@ -166,5 +166,7 @@ export function applyFuncToProps(prevProps, nextProps, propNames, firstFunc, ...
  * @param {string} propName
  * @param {Object} nextProps
  * @param {Object} state accumulator
+ * @param {Object} [context] - optional `this` context with which to call updateFuncCallback.
+ *                             Usually the react component instance.
  * @returns {Object} accumulated state.
  */

@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { CommonPropTypes, PureComponent } from '../../../utils';
 
 import { getDimension } from './util';
-import style from './slider.css';
+import styles from './slider.css';
 
 export default class Fill extends PureComponent {
   static getWidth(width, direction) {
@@ -11,13 +11,21 @@ export default class Fill extends PureComponent {
   }
 
   render() {
+    const {
+      className,
+      direction,
+      height,
+      style,
+      width,
+    } = this.props;
+
     return (
       <div
-        className={classNames(style.fill, style[this.props.direction], this.props.className)}
+        className={classNames(styles.fill, styles[direction], className)}
         style={{
-          width: Fill.getWidth(this.props.width, this.props.direction),
-          height: getDimension(this.props.height),
-          ...this.props.style,
+          ...style,
+          width: Fill.getWidth(width, direction),
+          height: getDimension(height),
         }}
       >
       </div>
@@ -42,8 +50,5 @@ Fill.propTypes = {
 Fill.defaultProps = {
   direction: 'left',
   height: '100%',
-  style: {
-    backgroundColor: '#ccc',
-  },
   width: 200,
 };

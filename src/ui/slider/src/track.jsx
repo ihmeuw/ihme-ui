@@ -6,7 +6,7 @@ import { CommonPropTypes, PureComponent } from '../../../utils';
 
 import Ticks from './ticks';
 import { getSnapTargetFunc } from './util';
-import style from './slider.css';
+import styles from './slider.css';
 
 export default class Track extends PureComponent {
   constructor(props) {
@@ -57,11 +57,7 @@ export default class Track extends PureComponent {
       .origin('self')
       .styleCursor(false)
       .on('tap', (event) => {
-        const newEvent = {
-          ...event,
-          snap: snapTargetFunc(event.layerX),
-        };
-        this.props.onClick(newEvent);
+        this.props.onClick({ ...event, snap: snapTargetFunc(event.layerX) });
       });
   }
 
@@ -70,19 +66,35 @@ export default class Track extends PureComponent {
   }
 
   render() {
+    const {
+      children,
+      className,
+      disabled,
+      style,
+      tickClassName,
+      ticksClassName,
+      tickStyle,
+      ticksStyle,
+    } = this.props;
+    const { ticks } = this.state;
+
     return (
-      <div className={classNames(style.track, this.props.className)} style={this.props.style}>
-        {this.props.children}
-        {this.state.ticks && (
+      <div className={classNames(styles.track, className)} style={style}>
+        {children}
+        {ticks && (
           <Ticks
-            className={this.props.ticksClassName}
-            style={this.props.ticksStyle}
-            tickClassName={this.props.tickClassName}
-            tickStyle={this.props.tickStyle}
-            x={this.state.ticks}
+            className={ticksClassName}
+            style={ticksStyle}
+            tickClassName={tickClassName}
+            tickStyle={tickStyle}
+            x={ticks}
           />
         )}
-        <div ref={this.trackRef} className={style['track-click-target']}></div>
+        <button
+          className={styles['track-click-target']}
+          disabled={disabled}
+          ref={this.trackRef}
+        ></button>
       </div>
     );
   }
@@ -92,6 +104,8 @@ Track.propTypes = {
   children: PropTypes.node,
 
   className: CommonPropTypes.className,
+
+  disabled: PropTypes.bool,
 
   onClick: PropTypes.func.isRequired,
 
@@ -109,4 +123,8 @@ Track.propTypes = {
   ticks: PropTypes.bool,
   ticksClassName: CommonPropTypes.className,
   ticksStyle: PropTypes.object,
+};
+
+Track.defaultProps = {
+  disabled: false,
 };

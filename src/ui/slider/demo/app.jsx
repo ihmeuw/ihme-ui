@@ -17,6 +17,7 @@ class App extends React.Component {
     this.items = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'];
 
     this.state = {
+      disabled: false,
       fontSize: '9pt',
       width: 200,
       range: {
@@ -52,6 +53,7 @@ class App extends React.Component {
     this.nextFontSize = `${this.randomGenerator([6, 24])}pt`;
 
     bindAll(this, [
+      'toggleDisable',
       'onChange',
       'onEnd',
       'onSingleValueChange',
@@ -63,6 +65,9 @@ class App extends React.Component {
     ]);
   }
 
+  toggleDisable() {
+    this.setState({ disabled: !this.state.disabled });
+  }
 
   onChange(event, value) {
     console.log('drag', value);
@@ -145,6 +150,12 @@ class App extends React.Component {
           <h5>Modify sliders</h5>
           <div>
             <Button
+              text={`${this.state.disabled ? 'Enable' : 'Disable'} sliders`}
+              onClick={this.toggleDisable}
+            />
+          </div>
+          <div>
+            <Button
               text="Set new min/max"
               onClick={this.setNewMinMax}
             />
@@ -197,6 +208,7 @@ class App extends React.Component {
     />
 </code></pre> */}
             <Slider
+              disabled={this.state.disabled}
               fontSize={this.state.fontSize}
               width={this.state.width}
               range={this.state.range}
@@ -229,6 +241,7 @@ class App extends React.Component {
     />
 </code></pre> */}
             <Slider
+              disabled={this.state.disabled}
               fontSize={this.state.fontSize}
               width={this.state.width}
               range={this.state.range}
@@ -256,6 +269,7 @@ class App extends React.Component {
     />
 </code></pre> */}
             <Slider
+              disabled={this.state.disabled}
               fontSize={this.state.fontSize}
               width={this.state.width}
               range={this.items}
