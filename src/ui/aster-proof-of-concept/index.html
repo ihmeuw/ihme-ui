@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ihme-ui Aster-Chart</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css">
+  <link rel="stylesheet" href="node_modules/ihme-ui/style/ihme-ui.css">
+  <style>
+    html, body {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+    }
+
+    body {
+      padding: 50px;
+    }
+
+    #app {
+      display: flex;
+      width: 100%;
+      height: 100%;
+    }
+    .whiskers {
+      stroke: #454545;
+    }
+
+    .under-arc {
+      fill: none;
+      stroke: none;
+      pointer-events: all;
+      opacity: .5;
+      cursor: pointer;
+    }
+    .arc-set:hover .under-arc {
+      fill: #ccc;
+    }
+
+    .outer-arc{
+      fill: none;
+    }
+
+    .outer-label{
+      fill: #b2b2b2;
+    }
+
+    .label-outline{
+      stroke: #454545;
+      stroke-width: .4em;
+    }
+
+    .label-outline,
+    .label{
+      fill: #fff;
+      pointer-events: none;
+      text-rendering: optimizeLegibility;
+      letter-spacing: .2em;
+    }
+
+    .label-outline {
+      stroke: #454545;
+      stroke-width: .3em;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+  </style>
+</head>
+<body>
+  <main id="app"></main>
+  <script src="bundle.js"></script>
+</body>
+</html>
