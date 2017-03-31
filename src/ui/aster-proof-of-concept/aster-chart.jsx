@@ -1,6 +1,6 @@
 import React from 'react';
 import { arc, pie } from 'd3';
-import { CommonPropTypes, getScale, getScaleTypes, propsChanged } from '../src/utils';
+import { CommonPropTypes, getScale, getScaleTypes, propsChanged } from '../../utils';
 
 import AsterTickCircles from './src/aster-tick-circles';
 import AsterArcs from './src/aster-arcs';

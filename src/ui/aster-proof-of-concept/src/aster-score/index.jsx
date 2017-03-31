@@ -1,11 +1,6 @@
 import React from 'react';
 
-export default function AsterScore(props) {
-  const {
-    content,
-    radius,
-  } = props;
-
+export default function AsterScore({ content, radius }) {
   return (
     <g
       className="aster-score"
