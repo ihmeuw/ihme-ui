@@ -2,7 +2,7 @@ import React from 'react';
 import { map } from 'lodash';
 const { scaleLinear } = require('d3-scale');
 
-import { innerRange } from '../../utils';
+import { innerRange } from '../utils';
 import AsterTickCircle from './aster-tick-circle';
 
 export default function AsterTickCircles(props) {

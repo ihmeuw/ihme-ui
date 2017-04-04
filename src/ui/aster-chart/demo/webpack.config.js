@@ -2,8 +2,7 @@
 
 module.exports = {
   devtool: 'source-map',
-  // context: __dirname,
-  entry: './app.jsx',
+  entry: __dirname + '/app.jsx',
   output: {
     path: __dirname,
     filename: 'bundle.js'
@@ -12,7 +11,7 @@ module.exports = {
     loaders: [
       {
         test: /\.jsx?$/,
-        exclude: __dirname + '/node-modules/',
+        exclude: __dirname + '../node-modules/',
         loaders: ['babel-loader']
       }
     ]

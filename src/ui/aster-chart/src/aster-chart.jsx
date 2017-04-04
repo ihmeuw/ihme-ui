@@ -1,12 +1,12 @@
 import React from 'react';
 import { arc, pie } from 'd3';
-import { CommonPropTypes, getScale, getScaleTypes, propsChanged } from '../../utils';
+import { CommonPropTypes, getScale, getScaleTypes, propsChanged } from '../../../utils';
 
-import AsterTickCircles from './src/aster-tick-circles';
-import AsterArcs from './src/aster-arcs';
-import AsterWhiskers from './src/aster-whiskers';
-import AsterLabels from './src/aster-labels';
-import AsterScore from './src/aster-score';
+import AsterTickCircles from './aster-tick-circles';
+import AsterArcs from './aster-arcs';
+import AsterWhiskers from './aster-whiskers';
+import AsterLabels from './aster-labels';
+import AsterScore from './aster-score';
 
 export default class AsterChart extends React.Component {
   constructor(props) {
