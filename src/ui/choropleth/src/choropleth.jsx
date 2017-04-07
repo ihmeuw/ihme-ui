@@ -404,19 +404,19 @@ Choropleth.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
 
   /**
-   * The datum object corresponding to the `<Shape />` currently focused.
+   * The datum object corresponding to the `<Path />` currently focused.
    */
   focus: PropTypes.object,
 
   /**
-   * className applied if `<Shape />` has focus.
+   * className applied if `<Path />` has focus.
    */
   focusedClassName: CommonPropTypes.className,
 
   /**
-   * inline styles applied to focused `<Shape />`
+   * inline styles applied to focused `<Path />`
    * If an object, spread into inline styles.
-   * If a function, passed underlying datum corresponding to its `<Shape />`,
+   * If a function, passed underlying datum corresponding to its `<Path />`,
    * and return value is spread into inline styles;
    * signature: (datum) => obj
    */
