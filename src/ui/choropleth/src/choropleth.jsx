@@ -295,6 +295,9 @@ export default class Choropleth extends React.Component {
               colorScale={this.props.colorScale}
               data={this.state.processedData}
               features={this.state.cache.feature[layer.name].features}
+              focus={this.props.focus}
+              focusedClassName={this.props.focusedClassName}
+              focusedStyle={this.props.focusedStyle}
               geometryKeyField={this.props.geometryKeyField}
               key={key}
               keyField={this.props.keyField}
@@ -399,6 +402,25 @@ Choropleth.propTypes = {
    * array of datum objects
    */
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
+
+  /**
+   * The datum object corresponding to the `<Shape />` currently focused.
+   */
+  focus: PropTypes.object,
+
+  /**
+   * className applied if `<Shape />` has focus.
+   */
+  focusedClassName: CommonPropTypes.className,
+
+  /**
+   * inline styles applied to focused `<Shape />`
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<Shape />`,
+   * and return value is spread into inline styles;
+   * signature: (datum) => obj
+   */
+  focusedStyle: CommonPropTypes.style,
 
   /**
    * uniquely identifying field of geometry objects;
