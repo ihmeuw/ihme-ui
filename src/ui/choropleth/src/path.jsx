@@ -103,7 +103,7 @@ export default class Path extends PureComponent {
         d={path}
         className={classNames(className, {
           [selectedClassName]: selected && selectedClassName,
-          [focusedClassName]: focused && selectedClassName,
+          [focusedClassName]: focused && focusedClassName,
         }) || (void 0)}
         style={style}
         onClick={this.onClick}
