@@ -19,18 +19,27 @@ export default class Path extends PureComponent {
    * @param {Object|Function} selectedStyle
    * @return {Object}
    */
-  static getStyle(feature, fill, selected, style, selectedStyle) {
+  static getStyle(feature, fill, selected, style, selectedStyle, focused, focusedStyle) {
     const baseStyle = { fill };
     const computedStyle = typeof style === 'function' ? style(feature) : style;
 
-    // if feature is not selected, early return to avoid applying selectedStyles
-    if (!selected) return assign({}, baseStyle, computedStyle);
+    let computedSelectedStyle = {};
+    let computedFocusedStyle = {};
 
-    // otherwise, apply selectedStyle on top of basic style
-    const computedSelectedStyle = typeof selectedStyle === 'function'
-                                  ? selectedStyle(feature)
-                                  : selectedStyle;
-    return assign({}, baseStyle, computedStyle, computedSelectedStyle);
+    // if feature is selected, compute selectedStyle
+    if (selected) {
+      computedSelectedStyle = typeof selectedStyle === 'function'
+        ? selectedStyle(feature)
+        : selectedStyle;
+    }
+
+    // if feature is focused, compute focusedStyle
+    if (focused) {
+      computedFocusedStyle = typeof focusedStyle === 'function' ?
+        focusedStyle(feature) : focusedStyle;
+    }
+
+    return assign({}, baseStyle, computedStyle, computedSelectedStyle, computedFocusedStyle);
   }
 
   constructor(props) {
@@ -79,7 +88,14 @@ export default class Path extends PureComponent {
   }
 
   render() {
-    const { className, selected, selectedClassName } = this.props;
+    const {
+      className,
+      selected,
+      selectedClassName,
+      focused,
+      focusedClassName,
+    } = this.props;
+
     const { path, style } = this.state;
 
     return (
@@ -87,6 +103,7 @@ export default class Path extends PureComponent {
         d={path}
         className={classNames(className, {
           [selectedClassName]: selected && selectedClassName,
+          [focusedClassName]: focused && focusedClassName,
         }) || (void 0)}
         style={style}
         onClick={this.onClick}
@@ -114,6 +131,24 @@ Path.propTypes = {
 
   /* fill of path */
   fill: PropTypes.string,
+
+  /**
+   * Whether shape has focus.
+   */
+  focused: PropTypes.bool,
+
+  /**
+   * Class name applied if shape has focus.
+   */
+  focusedClassName: CommonPropTypes.className,
+
+  /**
+   * Inline styles applied if shape has focus.
+   * If an object, spread directly into inline styles.
+   * If a function, called with `props.datum` as argument and return value is spread into inline styles;
+   * signature: (datum) => obj
+   */
+  focusedStyle: CommonPropTypes.style,
 
   /* signature: function(event, datum, Path) {...} */
   onClick: PropTypes.func,
@@ -144,12 +179,19 @@ Path.propTypes = {
 };
 
 Path.defaultProps = {
+  focused: false,
+  focusedClassName: 'focused',
+  focusedStyle: {
+    stroke: '#AAF',
+    strokeWidth: 2,
+  },
   onClick: noop,
   onMouseDown: noop,
   onMouseLeave: noop,
   onMouseMove: noop,
   onMouseOver: noop,
   selected: false,
+  selectedClassName: 'selected',
   selectedStyle: {
     strokeWidth: '2px',
     stroke: '#000',
@@ -169,11 +211,13 @@ Path.propUpdates = {
     });
   },
 
-  // update style if feature, fill, selected, selectedStyle, or style have changed
+  // update style if feature, fill, focused, focusedStyle, selected, selectedStyle, or style have changed
   style: (accum, propName, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, [
       'feature',
       'fill',
+      'focused',
+      'focusedStyle',
       'selected',
       'selectedStyle',
       'style'
@@ -186,7 +230,9 @@ Path.propUpdates = {
         nextProps.fill,
         nextProps.selected,
         nextProps.style,
-        nextProps.selectedStyle
+        nextProps.selectedStyle,
+        nextProps.focused,
+        nextProps.focusedStyle
       ),
     });
   }

@@ -92,7 +92,7 @@ export default class Shape extends PureComponent {
         d={path}
         className={classNames(className, {
           [selectedClassName]: selected && selectedClassName,
-          [focusedClassName]: focused && selectedClassName,
+          [focusedClassName]: focused && focusedClassName,
         }) || (void 0)}
         clipPath={clipPathId && `url(#${clipPathId})`}
         onClick={eventHandleWrapper(onClick, datum, this)}

@@ -34,7 +34,11 @@ export default class FeatureLayer extends PureComponent {
     const {
       colorScale,
       data,
+      focus,
+      focusedClassName,
+      focusedStyle,
       geometryKeyField,
+      keyField,
       onClick,
       onMouseLeave,
       onMouseMove,
@@ -60,6 +64,8 @@ export default class FeatureLayer extends PureComponent {
 
             const datum = getValue(data, [geometryKey]);
 
+            const focusedDatumKey = focus ? propResolver(focus, keyField) : null;
+
             // if valueField is a function, call it with all data as well as current feature
             // this enables being able to associate datum with features that don't necessarily map to
             // those features' key.
@@ -80,6 +86,9 @@ export default class FeatureLayer extends PureComponent {
                 datum={datum}
                 key={geometryKey}
                 feature={feature}
+                focused={focusedDatumKey === geometryKey}
+                focusedClassName={focusedClassName}
+                focusedStyle={focusedStyle}
                 fill={fill}
                 onClick={onClick}
                 onMouseLeave={onMouseLeave}
@@ -112,6 +121,25 @@ FeatureLayer.propTypes = {
 
   /* array of geoJSON feature objects, e.g.: [{ geometry: [Object], properties: [Object] }] */
   features: PropTypes.arrayOf(PropTypes.object).isRequired,
+
+  /**
+   * The datum object corresponding to the `<Path />` currently focused.
+   */
+  focus: PropTypes.object,
+
+  /**
+   * className applied if `<path />` has focus.
+   */
+  focusedClassName: CommonPropTypes.className,
+
+  /**
+   * inline styles applied to focused `<Path />`
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<Path />`,
+   * and return value is spread into inline styles;
+   * signature: (datum) => obj
+   */
+  focusedStyle: CommonPropTypes.style,
 
   /*
     uniquely identifying field of geometry objects

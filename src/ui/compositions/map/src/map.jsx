@@ -281,6 +281,9 @@ export default class Map extends React.Component {
   renderMap() {
     const {
       data,
+      focus,
+      focusedClassName,
+      focusedStyle,
       keyField,
       geometryKeyField,
       mapClassName,
@@ -307,6 +310,9 @@ export default class Map extends React.Component {
             controlsClassName={zoomControlsClassName}
             controlsStyle={zoomControlsStyle}
             data={data}
+            focus={focus}
+            focusedClassName={focusedClassName}
+            focusedStyle={focusedStyle}
             geometryKeyField={geometryKeyField}
             keyField={keyField}
             layers={layers}
@@ -330,6 +336,9 @@ export default class Map extends React.Component {
       data,
       domain,
       extentPct,
+      focus,
+      focusedClassName,
+      focusedStyle,
       keyField,
       legendClassName,
       legendMargins,
@@ -364,6 +373,9 @@ export default class Map extends React.Component {
               colorScale={colorScale}
               data={filterData(data, locationIdsOnMap, keyField)}
               domain={domain}
+              focus={focus}
+              focusedClassName={focusedClassName}
+              focusedStyle={focusedStyle}
               keyField={keyField}
               margins={legendMargins}
               onClick={onClick}
@@ -440,6 +452,25 @@ Map.propTypes = {
    * domain of color scale
    */
   domain: PropTypes.array.isRequired,
+
+  /**
+   * The datum object corresponding to the `<Shape />` currently focused.
+   */
+  focus: PropTypes.object,
+
+  /**
+   * className applied if `<Shape />` has focus.
+   */
+  focusedClassName: CommonPropTypes.className,
+
+  /**
+   * inline styles applied to focused `<Shape />`
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<Shape />`,
+   * and return value is spread into inline styles;
+   * signature: (datum) => obj
+   */
+  focusedStyle: CommonPropTypes.style,
 
   /**
    * [minPercent, maxPercent] of color scale domain to place slider handles

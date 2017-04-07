@@ -11,7 +11,7 @@ import {
 
 import Map from '../';
 import Button from '../../../button';
-import { dataGenerator } from '../../../../test-utils';
+import { dataGenerator } from '../../../../test-utils/data';
 import { numberFormat } from '../../../../utils';
 
 const keyField = 'loc_id';
@@ -46,6 +46,7 @@ class App extends React.Component {
       selections: [],
       selectedChoroplethDomain: [0, 1],
       mapLevel: MapLevel.NATIONAL,
+      focus: {},
     };
 
     bindAll(this, [
@@ -54,6 +55,8 @@ class App extends React.Component {
       'onResetScale',
       'onSliderMove',
       'onToggleSubnational',
+      'onMouseOver',
+      'onMouseLeave',
     ]);
   }
 
@@ -71,6 +74,14 @@ class App extends React.Component {
     this.setState({
       selections: xor(this.state.selections, [selectedDatum]),
     });
+  }
+
+  onMouseOver(event, datum) {
+    this.setState({ focus: datum });
+  }
+
+  onMouseLeave() {
+    this.setState({ focus: {} });
   }
 
   onGenerateNewData() {
@@ -132,9 +143,12 @@ class App extends React.Component {
           data={data}
           domain={range}
           extentPct={selectedChoroplethDomain}
+          focus={this.state.focus}
           geometryKeyField={`properties.${keyField}`}
           keyField={keyField}
           onClick={this.onClick}
+          onMouseOver={this.onMouseOver}
+          onMouseLeave={this.onMouseLeave}
           onResetScale={this.onResetScale}
           onSliderMove={this.onSliderMove}
           selectedLocations={selections}
