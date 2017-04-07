@@ -51,6 +51,34 @@ describe('Choropleth <Path />', () => {
   });
 
   describe('styling', () => {
+    const focusedStyle = {
+      stroke: 'blue',
+    };
+
+    it('applies focusedStyle as an object', () => {
+      const wrapper = shallow(
+        <Path
+          pathGenerator={pathGenerator}
+          focused
+          focusedStyle={focusedStyle}
+        />
+      );
+
+      expect(wrapper).to.have.style('stroke', 'blue');
+    });
+
+    it('applies focusedStyle as a function', () => {
+      const wrapper = shallow(
+        <Path
+          pathGenerator={pathGenerator}
+          focused
+          focusedStyle={() => ({ stroke: 'red' })}
+        />
+      );
+
+      expect(wrapper).to.have.style('stroke', 'red');
+    });
+
     it('sets strokeWidth to 2px when selected (default), 1px when unselected (default)', () => {
       const wrapper = shallow(
         <Path
