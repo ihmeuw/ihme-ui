@@ -28,8 +28,9 @@ export default class Path extends PureComponent {
 
     // if feature is selected, compute selectedStyle
     if (selected) {
-      computedSelectedStyle = typeof selectedStyle === 'function' ?
-        selectedStyle(feature) : selectedStyle;
+      computedSelectedStyle = typeof selectedStyle === 'function'
+        ? selectedStyle(feature)
+        : selectedStyle;
     }
 
     // if feature is focused, compute focusedStyle
