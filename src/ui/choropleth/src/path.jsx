@@ -178,12 +178,19 @@ Path.propTypes = {
 };
 
 Path.defaultProps = {
+  focused: false,
+  focusedClassName: 'focused',
+  focusedStyle: {
+    stroke: '#AAF',
+    strokeWidth: 2,
+  },
   onClick: noop,
   onMouseDown: noop,
   onMouseLeave: noop,
   onMouseMove: noop,
   onMouseOver: noop,
   selected: false,
+  selectedClassName: 'selected',
   selectedStyle: {
     strokeWidth: '2px',
     stroke: '#000',
@@ -203,11 +210,13 @@ Path.propUpdates = {
     });
   },
 
-  // update style if feature, fill, selected, selectedStyle, or style have changed
+  // update style if feature, fill, focused, focusedStyle, selected, selectedStyle, or style have changed
   style: (accum, propName, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, [
       'feature',
       'fill',
+      'focused',
+      'focusedStyle',
       'selected',
       'selectedStyle',
       'style'
