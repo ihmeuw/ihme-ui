@@ -5,6 +5,7 @@ import { scaleLinear } from 'd3';
 import {
   numberFormat,
   propsChanged,
+  CommonPropTypes,
   PureComponent,
   stateFromPropUpdates,
 } from '../../../utils';
