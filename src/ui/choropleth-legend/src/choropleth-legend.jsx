@@ -52,6 +52,9 @@ export default class ChoroplethLegend extends PureComponent {
       domain,
       width,
       height,
+      focus,
+      focusedClassName,
+      focusedStyle,
       margins,
       colorSteps,
       colorScale,
@@ -86,6 +89,9 @@ export default class ChoroplethLegend extends PureComponent {
             colorScale={colorScale}
             data={data}
             dataAccessors={dataAccessors}
+            focus={focus}
+            focusedClassName={focusedClassName}
+            focusedStyle={focusedStyle}
             onClick={onClick}
             onMouseLeave={onMouseLeave}
             onMouseMove={onMouseMove}
@@ -164,6 +170,25 @@ ChoroplethLegend.propTypes = {
    * [min, max] for xScale; xScale positions density plot and provides axis
    */
   domain: PropTypes.array.isRequired,
+
+  /**
+   * The datum object corresponding to the `<Shape />` currently focused.
+   */
+  focus: PropTypes.object,
+
+  /**
+   * className applied if `<Shape />` has focus.
+   */
+  focusedClassName: CommonPropTypes.className,
+
+  /**
+   * Inline styles applied to focused `<Shape />`.
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<Shape />`,
+   * and return value is spread into inline styles;
+   * signature: (datum) => obj
+   */
+  focusedStyle: CommonPropTypes.style,
 
   /**
    * height of outermost svg
