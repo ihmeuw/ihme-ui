@@ -87,8 +87,8 @@ export default class FeatureLayer extends PureComponent {
                 key={geometryKey}
                 feature={feature}
                 focused={focusedDatumKey === geometryKey}
-                focusedClassName={this.props.focusedClassName}
-                focusedStyle={this.props.focusedStyle}
+                focusedClassName={focusedClassName}
+                focusedStyle={focusedStyle}
                 fill={fill}
                 onClick={onClick}
                 onMouseLeave={onMouseLeave}
