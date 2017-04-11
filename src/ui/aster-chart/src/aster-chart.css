@@ -1,0 +1,49 @@
+.asterScore {
+  cursor: pointer;
+}
+
+.arcGroup:hover .underArc {
+  fill: #ccc;
+}
+
+.arcGroup {
+  cursor: pointer;
+}
+
+.outerArc{
+  fill: none;
+}
+
+.outerLabel{
+  fill: #b2b2b2;
+}
+
+.labelOutline, .label{
+  fill: #fff;
+  pointer-events: none;
+  text-rendering: optimizeLegibility;
+  letter-spacing: .2em;
+}
+
+.labelOutline{
+  stroke: #454545;
+  stroke-width: .3em;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+line path {
+  shape-rendering: crispEdges;
+}
+
+.underArc {
+  fill: none;
+  stroke: none;
+  pointer-events: all;
+  opacity: .5;
+  cursor: pointer;
+}
+
+.whiskers {
+  stroke: #454545;
+}

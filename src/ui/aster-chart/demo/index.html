@@ -2,71 +2,70 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>ihme-ui Aster-Chart</title>
+  <title>Aster Chart Demo</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css">
-
   <style>
     html, body {
       box-sizing: border-box;
+      min-width: 808px;
     }
 
-    html, body {
+    html, body, .app-container {
       width: 100%;
       height: 100%;
+      display: flex;
+      flex-direction: column;
     }
 
     body {
-      padding: 50px;
+      padding: 5px;
     }
 
+    label div {
+      display: inline;
+      margin: 0 2px;
+      padding-left: 3px;
+    }
+
+    main {
+      flex: 1 1 auto;
+    }
     #app {
       display: flex;
       width: 100%;
       height: 100%;
     }
-    .whiskers {
-      stroke: #454545;
+    .aster-code {
+      flex: 0 0 auto;
+    }
+    .button-set {
+      margin: 0 5px;
+      padding-right: 10px;
+    }
+    .controls div{
+      border-right: 1px solid black;
     }
 
-    .under-arc {
-      fill: none;
-      stroke: none;
-      pointer-events: all;
-      opacity: .5;
-      cursor: pointer;
+    .controls div:last-child {
+      border-right: none;
     }
-    .arc-set:hover .under-arc {
-      fill: #ccc;
+    pre {
+      background-color: cornsilk;
     }
-
-    .outer-arc{
-      fill: none;
-    }
-
-    .outer-label{
-      fill: #b2b2b2;
+    section {
+      margin-bottom: 25px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid black;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
 
-    .label-outline{
-      stroke: #454545;
-      stroke-width: .4em;
+    .tooltip {
+      min-width: 300px;
+      text-align: center;
     }
-
-    .label-outline,
-    .label{
-      fill: #fff;
-      pointer-events: none;
-      text-rendering: optimizeLegibility;
-      letter-spacing: .2em;
-    }
-
-    .label-outline {
-      stroke: #454545;
-      stroke-width: .3em;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
   </style>
 </head>
 <body>

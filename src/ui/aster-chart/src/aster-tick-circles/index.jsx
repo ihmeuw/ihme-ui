@@ -1,8 +1,9 @@
 import React from 'react';
 import { map } from 'lodash';
-const { scaleLinear } = require('d3-scale');
+import { scaleLinear } from 'd3';
 
-import { innerRange } from '../utils';
+import { CommonPropTypes } from '../../../../utils';
+import innerRange from '../utils';
 import AsterTickCircle from './aster-tick-circle';
 
 export default function AsterTickCircles(props) {
@@ -18,7 +19,6 @@ export default function AsterTickCircles(props) {
 
   const tickValues = innerRange(domain[0], domain[1], ticks);
 
-  // scale function to pass tick circles | set as default, but can be overridden
   const scaleFunction = scaleLinear()
     .domain(domain)
     .range([radius, innerRadius]);
@@ -51,33 +51,54 @@ export default function AsterTickCircles(props) {
       </g>
     </g>
   );
-};
+}
 
 AsterTickCircles.propTypes = {
   /**
    * array of inner elements of the aster
    */
-  children: React.PropTypes.array,
+  children: React.PropTypes.oneOfType([
+    CommonPropTypes.children,
+    React.PropTypes.arrayOf(CommonPropTypes.children),
+  ]).isRequired,
+
+  /**
+   * domain of data
+   */
+  domain: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+
+  /**
+   * size of the inner radius of the aster-chart
+   */
+  innerRadius: React.PropTypes.number.isRequired,
 
   /**
    * style of inner ticks
    */
-  innerTickStyle: React.PropTypes.object,
-
-  /**
-   * function to scale radius
-   */
-  scaleFunction: React.PropTypes.func,
-
-  /**
-   * array of tick values
-   */
-  tickValues: React.PropTypes.array,
+  innerTickStyle: React.PropTypes.shape({
+    stroke: React.PropTypes.string,
+    fill: React.PropTypes.string,
+    strokeDasharray: React.PropTypes.string,
+  }),
 
   /**
    * style of outer ticks
    */
-  outerTickStyle: React.PropTypes.object,
+  outerTickStyle: React.PropTypes.shape({
+    stroke: React.PropTypes.string,
+    fill: React.PropTypes.string,
+    strokeWidth: React.PropTypes.string,
+  }),
+
+  /**
+   * radius of aster-chart
+   */
+  radius: React.PropTypes.number.isRequired,
+
+  /**
+   * number of tick circles
+   */
+  ticks: React.PropTypes.number.isRequired,
 };
 
 AsterTickCircles.defaultProps = {
