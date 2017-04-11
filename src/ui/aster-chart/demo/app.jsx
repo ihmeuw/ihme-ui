@@ -3,6 +3,7 @@ import { render } from 'react-dom';
 import { scaleOrdinal, csvParse } from 'd3';
 import { bindAll } from 'lodash';
 
+import Button from '../../button';  // eslint-disable-line
 import ResponsiveContainer from '../../responsive-container';
 import HtmlLabel from '../../html-label';
 import Tooltip from '../../tooltip';
