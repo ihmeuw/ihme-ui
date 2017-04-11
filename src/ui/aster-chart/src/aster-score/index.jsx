@@ -41,31 +41,33 @@ export default class AsterScore extends PureComponent {
   }
 
   render() {
+    const { TOP_TEXT_DIVISOR, MAIN_TEXT_DIVISOR, BOTTOM_TEXT_DIVISOR } = AsterScore.statics;
     const { content, radius, className } = this.props;
     const { average, centerText } = content;
 
     return (
       <g
         className={className}
+        id="aster-score"
         textAnchor="middle"
         dy="1em"
         onClick={this.onClick}
       >
         <text
           dy="-1.1em"
-          fontSize={`${radius / 14}px`}
+          fontSize={`${radius / TOP_TEXT_DIVISOR}px`}
         >
           {centerText.top}
         </text>
         <text
           dy=".39em"
-          fontSize={`${radius / 6}px`}
+          fontSize={`${radius / MAIN_TEXT_DIVISOR}px`}
         >
           {average}
         </text>
         <text
           dy="3.2em"
-          fontSize={`${radius / 25}px`}
+          fontSize={`${radius / BOTTOM_TEXT_DIVISOR}px`}
         >
           {centerText.bottom}
         </text>
@@ -110,3 +112,9 @@ AsterScore.defaultProps = {
   onMouseMove: noop,
   onMouseOver: noop,
 };
+
+AsterScore.statics = {
+  TOP_TEXT_DIVISOR: 14,
+  MAIN_TEXT_DIVISOR: 6,
+  BOTTOM_TEXT_DIVISOR: 25,
+}
