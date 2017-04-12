@@ -117,4 +117,4 @@ AsterScore.statics = {
   TOP_TEXT_DIVISOR: 14,
   MAIN_TEXT_DIVISOR: 6,
   BOTTOM_TEXT_DIVISOR: 25,
-}
+};
