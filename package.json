@@ -96,7 +96,7 @@
     "react-addons-shallow-compare": "~15.1",
     "react-dom": "~15.1",
     "react-faux-dom": "~2.4",
-    "react-virtualized": "7.0.5",
+    "react-virtualized": "~7.24",
     "topojson": "~1.6"
   }
 }
