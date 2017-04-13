@@ -7,12 +7,12 @@ import {
   stateFromPropUpdates
 } from '../../../utils';
 
-import AsterTickCircles from './aster-tick-circles';
-import AsterArc from './aster-arcs/aster-arc';
-import AsterArcs from './aster-arcs';
-import AsterWhiskers from './aster-whiskers';
-import AsterLabels from './aster-labels';
-import AsterScore from './aster-score';
+import AsterTickCircles from './tick-circles';
+import AsterArc from './arc';
+import AsterArcs from './arcs';
+import AsterWhiskers from './whiskers';
+import AsterLabels from './labels';
+import AsterScore from './score';
 import style from './aster-chart.css';
 
 export default class AsterChart extends React.Component {
@@ -174,7 +174,7 @@ export default class AsterChart extends React.Component {
                    uncertaintyProps={uncertainty}
                  />
                  <AsterLabels
-                   d={d}
+                   datum={d}
                    outlineFunction={this.outlineFunction()}
                    labelProp={labels.inner}
                    scoreProp={labels.outer}

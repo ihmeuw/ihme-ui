@@ -1,13 +1,8 @@
 import React from 'react';
 import { bindAll, noop } from 'lodash';
 
-import {
-  // CommonPropTypes,
-  // propsChanged,
-  PureComponent,
-  // stateFromPropUpdates,
-} from '../../../../utils';
-import AsterArc from './aster-arc';
+import { PureComponent } from '../../../utils';
+import AsterArc from './arc';
 
 export default class AsterArcs extends PureComponent {
   constructor(props) {
@@ -101,8 +96,8 @@ AsterArcs.propTypes = {
 
   /**
    * color object containing colorScale and colorProp
-   * - property to use for color function
-   * - function to determine color from propertay of data
+   * - prop in data that maps to colorScale
+   * - function to determine color from prop of data
    */
   color: React.PropTypes.shape({
     colorProp: React.PropTypes.string,
@@ -142,7 +137,7 @@ AsterArcs.propTypes = {
   onMouseOver: React.PropTypes.func,
 
   /**
-   * css classNames
+   * css styles
    */
   styles: React.PropTypes.shape({
     arcGroup: React.PropTypes.string,

@@ -18,7 +18,7 @@ AsterTickCircle.propTypes = {
   r: React.PropTypes.number.isRequired,
 
   /**
-   * inline style of circle
+   * inline styles of circle
    */
   style: React.PropTypes.shape({
     stroke: React.PropTypes.string,

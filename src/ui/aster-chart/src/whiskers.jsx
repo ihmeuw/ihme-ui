@@ -1,8 +1,8 @@
 import React from 'react';
 import { isEmpty } from 'lodash';
 
-import { PureComponent } from '../../../../utils';
-import AsterWhisker from './aster-whisker';
+import { PureComponent } from '../../../utils';
+import AsterWhisker from './whisker';
 
 export default class AsterWhiskers extends PureComponent {
   static getBounds({ x1, y1, x2, y2 }) {
@@ -120,7 +120,7 @@ AsterWhiskers.propTypes = {
   radius: React.PropTypes.number.isRequired,
 
   /**
-   * css classNames
+   * css styles
    */
   styles: React.PropTypes.shape({ whiskers: React.PropTypes.string }).isRequired,
 

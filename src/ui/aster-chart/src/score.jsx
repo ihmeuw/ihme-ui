@@ -1,7 +1,7 @@
 import React from 'react';
 import { bindAll, noop } from 'lodash';
 
-import { PureComponent } from '../../../../utils';
+import { PureComponent } from '../../../utils';
 
 export default class AsterScore extends PureComponent {
   constructor(props) {

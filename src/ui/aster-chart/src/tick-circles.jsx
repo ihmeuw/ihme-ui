@@ -2,9 +2,9 @@ import React from 'react';
 import { map } from 'lodash';
 import { scaleLinear } from 'd3';
 
-import { CommonPropTypes } from '../../../../utils';
-import innerRange from '../utils';
-import AsterTickCircle from './aster-tick-circle';
+import { CommonPropTypes } from '../../../utils';
+import innerRange from './utils';
+import AsterTickCircle from './tick-circle';
 
 export default function AsterTickCircles(props) {
   const {
@@ -73,7 +73,7 @@ AsterTickCircles.propTypes = {
   innerRadius: React.PropTypes.number.isRequired,
 
   /**
-   * style of inner ticks
+   * styles of inner ticks
    */
   innerTickStyle: React.PropTypes.shape({
     stroke: React.PropTypes.string,
@@ -82,7 +82,7 @@ AsterTickCircles.propTypes = {
   }),
 
   /**
-   * style of outer ticks
+   * styles of outer ticks
    */
   outerTickStyle: React.PropTypes.shape({
     stroke: React.PropTypes.string,
