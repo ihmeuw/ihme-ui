@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { CommonPropTypes } from '../../../utils';
+
 export default function AsterArc(props) {
   const { className, d, fill, stroke, style } = props;
 
@@ -18,7 +20,7 @@ AsterArc.propTypes = {
   /**
    * the css class of the arc
    */
-  className: React.PropTypes.string.isRequired,
+  className: CommonPropTypes.className,
 
   /**
    * the d attribute of the path of the arc
@@ -38,13 +40,11 @@ AsterArc.propTypes = {
   /**
    * the svg stroke attribute of the arc
    */
-  style: React.PropTypes.shape({
-    stroke: React.PropTypes.string,
-    strokeWidth: React.PropTypes.string,
-  }),
+  style: CommonPropTypes.style,
 };
 
 AsterArc.defaultProps = {
+  className: 'arc',
   fill: 'none',
   stroke: 'none',
   style: {},

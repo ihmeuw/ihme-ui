@@ -4,7 +4,8 @@ import { assign, includes, isEqual, map, noop, reduce } from 'lodash';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 import {
-  stateFromPropUpdates
+  CommonPropTypes,
+  stateFromPropUpdates,
 } from '../../../utils';
 
 import AsterTickCircles from './tick-circles';
@@ -13,7 +14,7 @@ import AsterArcs from './arcs';
 import AsterWhiskers from './whiskers';
 import AsterLabels from './labels';
 import AsterScore from './score';
-import style from './aster-chart.css';
+import styles from './aster-chart.css';
 
 export default class AsterChart extends React.Component {
   static getAverageFromInputData(data, valueField) {
@@ -36,13 +37,13 @@ export default class AsterChart extends React.Component {
       height,
       radiusCenterRatio,
       radiusPaddingRatio,
-      sort,
+      comparator,
     } = props;
 
     const state = {
       average: AsterChart.getAverageFromInputData(data, accessorFields.value),
       asterData: pie()
-        .sort(sort)
+        .sort(comparator)
         .value(1)(data),
       radii: AsterChart.getRadiiFromDimensions(
         width,
@@ -111,6 +112,7 @@ export default class AsterChart extends React.Component {
     const {
       accessorFields,
       centerText,
+      classNames,
       colorScale,
       domain,
       onMouseOver,
@@ -119,7 +121,6 @@ export default class AsterChart extends React.Component {
       onArcClick,
       onScoreClick,
       selectedArcs,
-      styles,
       ticks,
     } = this.props;
 
@@ -134,7 +135,7 @@ export default class AsterChart extends React.Component {
       outerLabel,
       underArc,
       whiskers,
-    } = styles;
+    } = classNames;
 
     return (
       <svg
@@ -152,17 +153,16 @@ export default class AsterChart extends React.Component {
              map(asterData, (d, i) => (
                <g key={i}>
                  <AsterArcs
-                   arc={{
-                     arcValueFunction: this.arcValueFunction(),
-                     outlineFunction: this.outlineFunction(),
-                   }}
-                   styles={{ arcGroup, underArc }}
+                   arcValueFunction={this.arcValueFunction()}
+                   classNameArcGroup={arcGroup}
+                   classNameUnder={underArc}
                    color={{ colorProp: 'label', colorScale }}
                    datum={d}
                    onMouseOver={onMouseOver}
                    onMouseMove={onMouseMove}
                    onMouseLeave={onMouseLeave}
                    onClick={onArcClick}
+                   outlineFunction={this.outlineFunction()}
                    selectedArcs={[]}
                  />
                  <AsterWhiskers
@@ -170,7 +170,7 @@ export default class AsterChart extends React.Component {
                    domainEnd={domain[1]}
                    innerRadius={innerRadius}
                    radius={radius}
-                   styles={{ whiskers }}
+                   className={whiskers}
                    uncertaintyProps={uncertainty}
                  />
                  <AsterLabels
@@ -237,6 +237,11 @@ AsterChart.propTypes = {
   }),
 
   /**
+   * css styles from aster-chart.css
+   */
+  classNames: CommonPropTypes.className,
+
+  /**
    * scale to use for each arc in aster-chart
    */
   colorScale: React.PropTypes.func.isRequired,
@@ -252,14 +257,9 @@ AsterChart.propTypes = {
   domain: React.PropTypes.arrayOf(React.PropTypes.number),
 
   /**
-   * width of aster-chart
-   */
-  width: React.PropTypes.number,
-
-  /**
    * height of aster-chart
    */
-  height: React.PropTypes.number,
+  height: CommonPropTypes.height,
 
   /**
    * callback function for onMouseOver
@@ -310,24 +310,23 @@ AsterChart.propTypes = {
    * sort function for ordering data set
    * default: (a, b) => a.order - b.order
    */
-  sort: React.PropTypes.func,
-
-  /**
-   * css styles from aster-chart.css
-   */
-  styles: React.PropTypes.shape({
-
-  }),
+  comparator: React.PropTypes.func,
 
   /**
    * total number of circluar tick guides to display
    */
   ticks: React.PropTypes.number,
+
+  /**
+   * width of aster-chart
+   */
+  width: CommonPropTypes.width,
 };
 
 AsterChart.defaultProps = {
   radiusCenterRatio: 0.2,
   centerText: { bottom: '', top: '' },
+  classNames: styles,
   domain: [0, 100],
   height: 100,
   onMouseOver: noop,
@@ -337,25 +336,27 @@ AsterChart.defaultProps = {
   onScoreClick: noop,
   radiusPaddingRatio: 2.2,
   selectedArcs: [],
-  sort: (a, b) => a.order - b.order,
-  styles: style,
+  comparator: (a, b) => a.order - b.order,
   ticks: 5,
   width: 100,
 };
 
 AsterChart.propUpdates = {
+  asterData: (state, _, prevProps, nextProps) => {
+    if (isEqual(prevProps.data, nextProps.data) && prevProps.comparator === nextProps.comparator) {
+      return state;
+    }
+
+    return assign({}, state, {
+      asterData: pie()
+        .sort(nextProps.comparator)
+        .value(1)(nextProps.data),
+    });
+  },
   average: (state, _, prevProps, nextProps) => {
     if (isEqual(prevProps.data, nextProps.data)) return state;
     return assign({}, state, {
       average: AsterChart.getAverageFromInputData(nextProps.data, nextProps.accessorFields.value),
-    });
-  },
-  asterData: (state, _, prevProps, nextProps) => {
-    if (isEqual(prevProps.data, nextProps.data) && prevProps.sort === nextProps.sort) return state;
-    return assign({}, state, {
-      asterData: pie()
-        .sort(nextProps.sort)
-        .value(1)(nextProps.data),
     });
   },
   height: (state, _, prevProps, nextProps) => {

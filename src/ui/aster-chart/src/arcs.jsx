@@ -1,7 +1,7 @@
 import React from 'react';
 import { bindAll, noop } from 'lodash';
 
-import { PureComponent } from '../../../utils';
+import { CommonPropTypes, PureComponent } from '../../../utils';
 import AsterArc from './arc';
 
 export default class AsterArcs extends PureComponent {
@@ -46,33 +46,37 @@ export default class AsterArcs extends PureComponent {
 
   render() {
     const {
-      arc,
+      arcValueFunction,
       arcOutlineStroke,
+      classNameArcGroup,
+      classNameOver,
+      classNameUnder,
       color,
       datum,
+      outlineFunction,
       styles,
     } = this.props;
 
     return (
       <g
-        className={styles.arcGroup}
+        className={classNameArcGroup}
         onClick={this.onClick}
         onMouseLeave={this.onMouseLeave}
         onMouseMove={this.onMouseMove}
         onMouseOver={this.onMouseOver}
+        style={styles}
       >
         <AsterArc
-          className={styles.underArc || 'underArc'}
-          d={arc.outlineFunction(datum)}
+          className={classNameUnder}
+          d={outlineFunction(datum)}
         />
         <AsterArc
-          className={styles.arc || 'arc'}
-          d={arc.arcValueFunction(datum)}
+          d={arcValueFunction(datum)}
           fill={color.colorScale(datum.data[color.colorProp])}
         />
         <AsterArc
-          className={styles.overArc || 'overArc'}
-          d={arc.outlineFunction(datum)}
+          className={classNameOver}
+          d={outlineFunction(datum)}
           stroke={arcOutlineStroke}
         />
       </g>
@@ -82,27 +86,34 @@ export default class AsterArcs extends PureComponent {
 
 AsterArcs.propTypes = {
   /**
-   * arc object containing valueFunction, and outlineFunction
-   */
-  arc: React.PropTypes.shape({
-    arcValueFunction: React.PropTypes.func,
-    outlineFunction: React.PropTypes.func
-  }).isRequired,
-
-  /**
    * non-selected outline stroke color
    */
   arcOutlineStroke: React.PropTypes.string,
 
   /**
-   * color object containing colorScale and colorProp
-   * - prop in data that maps to colorScale
-   * - function to determine color from prop of data
+   * name of css class for the group of arcs
    */
-  color: React.PropTypes.shape({
-    colorProp: React.PropTypes.string,
-    colorScale: React.PropTypes.func,
-  }).isRequired,
+  classNameArcGroup: CommonPropTypes.className,
+
+  /**
+   * name of css class for the over arcs
+   */
+  classNameOver: CommonPropTypes.className,
+
+  /**
+   * name of css class for the under arcs
+   */
+  classNameUnder: CommonPropTypes.className,
+
+  /**
+   * - prop in data that maps to colorScale
+   */
+  colorProp: CommonPropTypes.dataAccessor.isRequired,
+
+  /**
+   * - scale function used with colorProp to determine appropriate color
+   */
+  colorScale: React.PropTypes.func.isRequired,
 
   /**
    * the data to be displayed by arc
@@ -113,7 +124,12 @@ AsterArcs.propTypes = {
     padAngle: React.PropTypes.number,
     startAngle: React.PropTypes.number,
     value: React.PropTypes.number,
-    data: React.PropTypes.objectOf(React.PropTypes.string),
+    data: React.PropTypes.objectOf(
+      React.PropTypes.oneOf([
+        React.PropTypes.string,
+        React.PropTypes.number,
+      ])
+    ).isRequired,
   }).isRequired,
 
   /**
@@ -139,11 +155,7 @@ AsterArcs.propTypes = {
   /**
    * css styles
    */
-  styles: React.PropTypes.shape({
-    arcGroup: React.PropTypes.string,
-    outerArc: React.PropTypes.string,
-    overArc: React.PropTypes.string,
-  }).isRequired,
+  styles: CommonPropTypes.style,
 };
 
 AsterArcs.defaultProps = {

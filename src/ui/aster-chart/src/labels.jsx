@@ -1,6 +1,14 @@
 import React from 'react';
 
 import { CommonPropTypes, PureComponent } from '../../../utils';
+import {
+  NINETY_DEGREES,
+  NEG_NINETY_DEGREES,
+  ONE_EIGHTY_DEGREES,
+  POS_OFFSET,
+  NEG_OFFSET,
+  DIVISOR,
+} from './constants';
 
 export default class AsterLabels extends PureComponent {
   /**
@@ -11,8 +19,6 @@ export default class AsterLabels extends PureComponent {
    * @returns {number}
    */
   static angleCalculator(datum, offset, threshold) {
-    const { NINETY_DEGREES, ONE_EIGHTY_DEGREES } = AsterLabels.statics;
-
     const angle = ((datum.startAngle + datum.endAngle) * (NINETY_DEGREES / Math.PI)) + offset;
     return angle > threshold ? angle - ONE_EIGHTY_DEGREES : angle;
   }
@@ -24,8 +30,6 @@ export default class AsterLabels extends PureComponent {
    * @returns {string}
    */
   static determineLabelTransform(datum, outlineFunction) {
-    const { NINETY_DEGREES, NEG_NINETY_DEGREES } = AsterLabels.statics;
-
     const center = outlineFunction.centroid(datum);
     const angle = AsterLabels.angleCalculator(datum, NEG_NINETY_DEGREES, NINETY_DEGREES);
 
@@ -39,7 +43,6 @@ export default class AsterLabels extends PureComponent {
    * @returns {string} d attribute of path for outer aster-arc
    */
   static outerArcFunction(datum, outlineFunction) {
-    const { NINETY_DEGREES, NEG_NINETY_DEGREES } = AsterLabels.statics;
     const angle = AsterLabels.angleCalculator(datum, 0, 0);
 
     let newArc = /(^.+?)L/.exec(outlineFunction(datum))[1];
@@ -58,25 +61,7 @@ export default class AsterLabels extends PureComponent {
     return newArc;
   }
 
-  constructor(props) {
-    super(props);
-
-    this.state = props;
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState(nextProps);
-  }
-
   render() {
-    const {
-      NINETY_DEGREES,
-      NEG_NINETY_DEGREES,
-      POS_OFFSET,
-      NEG_OFFSET,
-      DIVISOR,
-    } = AsterLabels.statics;
-
     const {
       datum,
       labelProp,
@@ -84,7 +69,7 @@ export default class AsterLabels extends PureComponent {
       scoreProp,
       styles,
       outlineFunction,
-    } = this.state;
+    } = this.props;
 
     return (
       <g className="asterLabels">
@@ -131,15 +116,6 @@ export default class AsterLabels extends PureComponent {
     );
   }
 }
-
-AsterLabels.statics = {
-  NINETY_DEGREES: 90,
-  NEG_NINETY_DEGREES: -90,
-  ONE_EIGHTY_DEGREES: 180,
-  POS_OFFSET: 18,
-  NEG_OFFSET: -8,
-  DIVISOR: 30
-};
 
 AsterLabels.propTypes = {
   /**

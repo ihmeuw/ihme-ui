@@ -24,7 +24,7 @@ AsterWhisker.propTypes = {
   /**
    * the css stroke of whisker
    */
-  stroke: React.PropTypes.string.isRequired,
+  stroke: React.PropTypes.string,
 
   /**
    * the x1 attribute of the whisker line

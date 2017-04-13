@@ -1,11 +1,11 @@
 import React from 'react';
 import { isEmpty } from 'lodash';
 
-import { PureComponent } from '../../../utils';
+import { CommonPropTypes, PureComponent } from '../../../utils';
 import AsterWhisker from './whisker';
 
 export default class AsterWhiskers extends PureComponent {
-  static getBounds({ x1, y1, x2, y2 }) {
+  static getBounds({ x1, y1, x2, y2 }, lengthMultiplier) {
     const dx = (x2 - x1);
     const dy = (y2 - y1);
     const length = Math.max(1, Math.sqrt((dx * dx) + (dy * dy)));
@@ -14,16 +14,16 @@ export default class AsterWhiskers extends PureComponent {
 
     return {
       upper: {
-        x1: x2 - (hy * 5),
-        y1: y2 + (hx * 5),
-        x2: x2 - (hy * -5),
-        y2: y2 + (hx * -5),
+        x1: x2 - (hy * lengthMultiplier),
+        y1: y2 + (hx * lengthMultiplier),
+        x2: x2 - (hy * -lengthMultiplier),
+        y2: y2 + (hx * -lengthMultiplier),
       },
       lower: {
-        x1: x1 - (hy * 5),
-        y1: y1 + (hx * 5),
-        x2: x1 - (hy * -5),
-        y2: y1 + (hx * -5),
+        x1: x1 - (hy * lengthMultiplier),
+        y1: y1 + (hx * lengthMultiplier),
+        x2: x1 - (hy * -lengthMultiplier),
+        y2: y1 + (hx * -lengthMultiplier),
       },
     };
   }
@@ -56,31 +56,28 @@ export default class AsterWhiskers extends PureComponent {
   }
 
   render() {
-    const { uncertaintyProps, data, styles } = this.props;
+    const { className, data, lengthMultiplier, uncertaintyProps } = this.props;
     if (isEmpty(uncertaintyProps)) return null;
 
     const whisker = this.getWhiskers(data);
-    const bounds = AsterWhiskers.getBounds(whisker);
+    const bounds = AsterWhiskers.getBounds(whisker, lengthMultiplier);
 
     return (
-      <g className={styles.whiskers}>
-        <g className="whisker">
+      <g className={className}>
+        <g>
           <AsterWhisker
-            className="whisker-line"
             x1={whisker.x1}
             y1={whisker.y1}
             x2={whisker.x2}
             y2={whisker.y2}
           />
           <AsterWhisker
-            className="whisker-lower"
             x1={bounds.lower.x1}
             y1={bounds.lower.y1}
             x2={bounds.lower.x2}
             y2={bounds.lower.y2}
           />
           <AsterWhisker
-            className="whisker-upper"
             x1={bounds.upper.x1}
             y1={bounds.upper.y1}
             x2={bounds.upper.x2}
@@ -93,6 +90,11 @@ export default class AsterWhiskers extends PureComponent {
 }
 
 AsterWhiskers.propTypes = {
+  /**
+   * css class
+   */
+  className: CommonPropTypes.className.isRequired,
+
   /**
    * last number of the domain
    */
@@ -115,14 +117,14 @@ AsterWhiskers.propTypes = {
   innerRadius: React.PropTypes.number.isRequired,
 
   /**
+   * multiply the resulting whisker by this prop, big number makes big whisker
+   */
+  lengthMultiplier: React.PropTypes.number,
+
+  /**
    * size of full radius of aster-chart
    */
   radius: React.PropTypes.number.isRequired,
-
-  /**
-   * css styles
-   */
-  styles: React.PropTypes.shape({ whiskers: React.PropTypes.string }).isRequired,
 
   /**
    * what key to use to access the uncertainty property
@@ -135,4 +137,5 @@ AsterWhiskers.propTypes = {
 
 AsterWhiskers.defaultProps = {
   uncertaintyProps: null,
+  lengthMultiplier: 5,
 };

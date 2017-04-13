@@ -14,7 +14,7 @@ export default function innerRange(start, stop, steps) {
 
   const span = max - min;
 
-  const values = map(Array(steps), (value, index) => min + ((span / (steps - 1)) * index));
+  const values = map(Array(steps), (_, index) => min + ((span / (steps - 1)) * index));
 
   return (start > stop) ? values.reverse() : values;
 }
