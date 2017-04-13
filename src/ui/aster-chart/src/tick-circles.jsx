@@ -3,7 +3,7 @@ import { map } from 'lodash';
 import { scaleLinear } from 'd3';
 
 import { CommonPropTypes } from '../../../utils';
-import innerRange from './utils';
+import { linspace } from '../../../utils/array';
 import AsterTickCircle from './tick-circle';
 
 export default function AsterTickCircles(props) {
@@ -17,7 +17,7 @@ export default function AsterTickCircles(props) {
     ticks,
   } = props;
 
-  const tickValues = innerRange(domain[0], domain[1], ticks);
+  const tickValues = linspace(domain, ticks);
 
   const scaleFunction = scaleLinear()
     .domain(domain)
