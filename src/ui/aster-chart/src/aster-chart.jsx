@@ -6,6 +6,7 @@ import PureRenderMixin from 'react-addons-pure-render-mixin';
 import {
   CommonPropTypes,
   stateFromPropUpdates,
+  updateFunc,
 } from '../../../utils';
 
 import AsterTickCircles from './tick-circles';
@@ -359,12 +360,7 @@ AsterChart.propUpdates = {
       average: AsterChart.getAverageFromInputData(nextProps.data, nextProps.accessorFields.value),
     });
   },
-  height: (state, _, prevProps, nextProps) => {
-    if (prevProps.height === nextProps.height) return state;
-    return assign({}, state, {
-      height: nextProps.height,
-    });
-  },
+  height: updateFunc(nextProp => ({ height: nextProp })),
   radii: (state, _, prevProps, nextProps) => {
     if (prevProps.width === nextProps.width && prevProps.height === nextProps.height) return state;
     return assign({}, state, {
@@ -383,10 +379,5 @@ AsterChart.propUpdates = {
       },
     });
   },
-  width: (state, _, prevProps, nextProps) => {
-    if (prevProps.width === nextProps.width) return state;
-    return assign({}, state, {
-      width: nextProps.width,
-    });
-  }
+  width: updateFunc(nextProp => ({ width: nextProp })),
 };
