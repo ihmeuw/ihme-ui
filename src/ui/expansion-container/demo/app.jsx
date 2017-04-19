@@ -67,9 +67,6 @@ class App extends React.Component {
       clicks: 0,
     };
     this.onClick = this.onClick.bind(this);
-    this.onMouseLeave = this.onMouseLeave.bind(this);
-    this.onMouseMove = this.onMouseMove.bind(this);
-    this.onMouseOver = this.onMouseOver.bind(this);
   }
 
   onClick() {
