@@ -31,6 +31,9 @@ class Chart extends PureComponent {
         style={props.style}
         expandableStyle={expandableStyle}
         iconClassName={props.iconClassName}
+        onMouseLeave={this.props.onMouseLeave}
+        onMouseMove={this.props.onMouseMove}
+        onMouseOver={this.props.onMouseOver}
       >
         Chart{props.chartNumber}
         <div
@@ -52,6 +55,9 @@ Chart.propTypes = {
   style: CommonPropTypes.style,
   iconClassName: CommonPropTypes.className,
   chartNumber: PropTypes.any,
+  onMouseLeave: PropTypes.func,
+  onMouseMove: PropTypes.func,
+  onMouseOver: PropTypes.func,
 };
 
 class App extends React.Component {
@@ -65,6 +71,18 @@ class App extends React.Component {
 
   onClick() {
     this.setState({ clicks: this.state.clicks + 1 });
+  }
+
+  onMouseLeave() {
+    console.log('leave');
+  }
+
+  onMouseMove() {
+    console.log('move');
+  }
+
+  onMouseOver() {
+    console.log('over');
   }
 
   render() {
@@ -85,6 +103,9 @@ class App extends React.Component {
                         flex: '1 1 auto',
                         overflow: 'scroll'
                       }}
+                      onMouseLeave={this.onMouseLeave}
+                      onMouseMove={this.onMouseMove}
+                      onMouseOver={this.onMouseOver}
                     >
 {/* <pre><code>
   <ExpansionContainer className="..." style={{ display: 'flex' }}>  // drop in replacement for <div>
@@ -113,8 +134,20 @@ class App extends React.Component {
                         backgroundColor: 'lightgreen',
                       }}
                     >
-                      <Chart chartNumber={this.state.clicks} style={chartStyle} />
-                      <Chart chartNumber={1} style={chartStyle} />
+                      <Chart
+                        chartNumber={this.state.clicks}
+                        style={chartStyle}
+                        onMouseOver={this.onMouseOver}
+                        onMouseLeave={this.onMouseLeave}
+                        onMouseMove={this.onMouseMove}
+                      />
+                      <Chart
+                        chartNumber={1}
+                        style={chartStyle}
+                        onMouseOver={this.onMouseOver}
+                        onMouseLeave={this.onMouseLeave}
+                        onMouseMove={this.onMouseMove}
+                      />
                     </div>
                   </ExpansionContainer>
                 </div>

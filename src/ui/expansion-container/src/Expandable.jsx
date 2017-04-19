@@ -2,8 +2,9 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import bindAll from 'lodash/bindAll';
 import pick from 'lodash/pick';
-import { CommonPropTypes, PureComponent } from '../../../utils';
+import { CommonPropTypes, CommonDefaultProps, PureComponent } from '../../../utils';
 import { getBackgroundColor } from '../../../utils/window';
+import { eventHandleWrapper } from '../../../utils/events';
 
 import { containerStore } from './ExpansionContainer';
 import styles from './expansion-container.css';
@@ -231,6 +232,9 @@ export default class Expandable extends PureComponent {
       iconClassName,
       iconSize,
       iconStyle,
+      onMouseLeave,
+      onMouseMove,
+      onMouseOver,
     } = this.props;
     const {
       expanded,
@@ -245,6 +249,9 @@ export default class Expandable extends PureComponent {
         onClick={this.wrappedEvent((expanded && this.restore) || (restored && this.expand))}
         viewBox="-16 -16 32 32"
         width="1em" height="1em"
+        onMouseLeave={eventHandleWrapper(onMouseLeave, this)}
+        onMouseMove={eventHandleWrapper(onMouseMove, this)}
+        onMouseOver={eventHandleWrapper(onMouseOver, this)}
       >
         <circle
           r="15"
@@ -317,15 +324,12 @@ export default class Expandable extends PureComponent {
 }
 
 Expandable.propTypes = {
+  children: PropTypes.node,
+
   /**
    * className applied to outermost containing div
    */
   className: CommonPropTypes.className,
-
-  /**
-   * inline styles applied to outermost containing div
-   */
-  style: CommonPropTypes.style,
 
   /**
    * className applied to div directly wrapping component to expand
@@ -336,6 +340,18 @@ Expandable.propTypes = {
    * inline styles applied to div directly wrapping component to expand
    */
   expandableStyle: CommonPropTypes.style,
+
+  /**
+   * key used by `<Expandable />`s to register with `<ExpansionContainer />`;
+   * if more than one `<ExpansionContainer />` is mounted, `group` should be treated as required
+   * and unique per instance.
+   */
+  group: PropTypes.string,
+
+  /**
+   * do not render "expand/contract" icon
+   */
+  hideIcon: PropTypes.bool,
 
   /**
    * className applied to "expand/contract" icon
@@ -352,19 +368,28 @@ Expandable.propTypes = {
    */
   iconSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 
-  children: PropTypes.node,
+  /**
+   * onMouseLeave callback.
+   * signature: (SyntheticEvent, instance) => {...}
+   */
+  onMouseLeave: PropTypes.func,
 
   /**
-   * key used by `<Expandable />`s to register with `<ExpansionContainer />`;
-   * if more than one `<ExpansionContainer />` is mounted, `group` should be treated as required
-   * and unique per instance.
+   * onMouseMove callback.
+   * signature: (SyntheticEvent, instance) => {...}
    */
-  group: PropTypes.string,
+  onMouseMove: PropTypes.func,
 
   /**
-   * do not render "expand/contract" icon
+   * onMouseOver callback.
+   * signature: (SyntheticEvent, instance) => {...}
    */
-  hideIcon: PropTypes.bool,
+  onMouseOver: PropTypes.func,
+
+  /**
+   * inline styles applied to outermost containing div
+   */
+  style: CommonPropTypes.style,
 
   /**
    * CSS transition to apply to `<Expandable />` when transitioning in height/width
@@ -376,4 +401,7 @@ Expandable.defaultProps = {
   group: 'default',
   iconSize: '20px',
   transition: 'all 0.5s ease',
+  onMouseLeave: CommonDefaultProps.noop,
+  onMouseMove: CommonDefaultProps.noop,
+  onMouseOver: CommonDefaultProps.noop,
 };
