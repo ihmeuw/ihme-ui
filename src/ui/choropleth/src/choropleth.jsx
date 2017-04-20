@@ -454,7 +454,7 @@ Choropleth.propTypes = {
    * layers of topojson to include
    * layer description: {Object}
    *  - `className`: className applied to layer
-   *  - `filterFn`: optional function to filter mesh grid, passed adjacent geometries
+   *  - `filter`: optional function to filter mesh grid, passed adjacent geometries
    *      refer to [https://github.com/mbostock/topojson/wiki/API-Reference#mesh](https://github.com/mbostock/topojson/wiki/API-Reference#mesh)
    *  - `name`: (Required) along with layer.type, will be part of the `key` of the layer; therefore, `${layer.type}-${layer.name}` needs to be unique
    *  - `object`: (Required) name corresponding to key within topojson objects collection
@@ -473,7 +473,7 @@ Choropleth.propTypes = {
      * optional function to filter mesh grid, passed adjacent geometries
      * refer to https://github.com/mbostock/topojson/wiki/API-Reference#mesh
      */
-    filterFn: PropTypes.func,
+    filter: PropTypes.func,
 
     /**
      * along with layer.type, will be part of the `key` of the layer
