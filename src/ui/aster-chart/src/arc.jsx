@@ -1,17 +1,23 @@
 import React from 'react';
+import classNames from 'classnames';
 
 import { CommonPropTypes } from '../../../utils';
 
 export default function AsterArc(props) {
-  const { className, d, fill, stroke, style } = props;
+  const {
+    className,
+    d,
+    datum,
+    fill,
+    style,
+  } = props;
 
   return (
     <path
-      className={className}
+      className={classNames(className)}
       d={d}
       fill={fill}
-      stroke={stroke}
-      style={style}
+      style={(typeof style === 'function') ? style(datum) : style}
     />
   );
 }
@@ -28,24 +34,24 @@ AsterArc.propTypes = {
   d: React.PropTypes.string.isRequired,
 
   /**
+   * Datum object corresponding to this AsterArc ("bound" data, in the language in D3)
+   */
+  datum: React.PropTypes.object,
+
+  /**
    * the svg fill of the arc
    */
   fill: React.PropTypes.string,
 
   /**
-   * the svg stroke attribute of the arc
-   */
-  stroke: React.PropTypes.string,
-
-  /**
-   * the svg stroke attribute of the arc
+   * Base inline styles applied to `<AsterArc />`s.
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<AsterArc />`.
    */
   style: CommonPropTypes.style,
 };
 
 AsterArc.defaultProps = {
-  className: 'arc',
+  className: '',
   fill: 'none',
-  stroke: 'none',
-  style: {},
 };

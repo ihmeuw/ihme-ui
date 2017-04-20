@@ -1,7 +1,18 @@
 import React from 'react';
-import { bindAll, noop } from 'lodash';
+import classNames from 'classnames';
 
-import { CommonPropTypes, PureComponent } from '../../../utils';
+import {
+  bindAll,
+  includes,
+  map,
+  noop,
+} from 'lodash';
+
+import {
+  CommonPropTypes,
+  propResolver,
+  PureComponent,
+} from '../../../utils';
 import AsterArc from './arc';
 
 export default class AsterArcs extends PureComponent {
@@ -47,37 +58,49 @@ export default class AsterArcs extends PureComponent {
   render() {
     const {
       arcValueFunction,
-      arcOutlineStroke,
+      classNameArc,
       classNameArcGroup,
       classNameOver,
+      classNameSelectedArcs,
       classNameUnder,
-      color,
+      colorField,
+      colorScale,
       datum,
+      keyField,
       outlineFunction,
-      styles,
+      selectedArcs,
+      underArcStyle,
     } = this.props;
 
     return (
       <g
-        className={classNameArcGroup}
+        className={classNames(classNameArcGroup)}
         onClick={this.onClick}
         onMouseLeave={this.onMouseLeave}
         onMouseMove={this.onMouseMove}
         onMouseOver={this.onMouseOver}
-        style={styles}
       >
         <AsterArc
-          className={classNameUnder}
+          className={classNames(classNameUnder)}
           d={outlineFunction(datum)}
+          datum={datum}
+          style={underArcStyle} // template to follow for style
         />
         <AsterArc
+          className={classNames(classNameArc)}
           d={arcValueFunction(datum)}
-          fill={color.colorScale(datum.data[color.colorProp])}
+          datum={datum}
+          fill={colorScale(propResolver(datum.data, colorField))}
         />
         <AsterArc
-          className={classNameOver}
+          className={
+            (includes(map(selectedArcs, selected =>
+              propResolver(selected.data, keyField)), propResolver(datum.data, keyField)))
+              ? classNames(classNameSelectedArcs)
+              : classNames(classNameOver)
+          }
           d={outlineFunction(datum)}
-          stroke={arcOutlineStroke}
+          datum={datum}
         />
       </g>
     );
@@ -108,7 +131,7 @@ AsterArcs.propTypes = {
   /**
    * - prop in data that maps to colorScale
    */
-  colorProp: CommonPropTypes.dataAccessor.isRequired,
+  colorKey: CommonPropTypes.dataAccessor.isRequired,
 
   /**
    * - scale function used with colorProp to determine appropriate color
@@ -116,21 +139,31 @@ AsterArcs.propTypes = {
   colorScale: React.PropTypes.func.isRequired,
 
   /**
-   * the data to be displayed by arc
+   * the data to be displayed by 'arc'. 'endAngle', 'index', 'padAngle', 'startAngle', 'value' are
+   * determined by the d3.pie()function applied automatically by the aster-chart class.  The d3.pie()
+   * function also holds a reference to the original 'data' used to make the datum object.  The only
+   * field necessary in data is whichever property the colorKey was chosen.
    */
   datum: React.PropTypes.shape({
-    endAngle: React.PropTypes.number,
-    index: React.PropTypes.number,
-    padAngle: React.PropTypes.number,
-    startAngle: React.PropTypes.number,
-    value: React.PropTypes.number,
     data: React.PropTypes.objectOf(
       React.PropTypes.oneOf([
         React.PropTypes.string,
         React.PropTypes.number,
       ])
     ).isRequired,
+    endAngle: React.PropTypes.number.isRequired,
+    index: React.PropTypes.number.isRequired,
+    padAngle: React.PropTypes.number.isRequired,
+    startAngle: React.PropTypes.number.isRequired,
+    value: React.PropTypes.number.isRequired,
   }).isRequired,
+
+  /**
+   * unique key of datum (if originally a function, string should be interpolated by parent)
+   */
+  keyField: React.PropTypes.oneOfType([
+    React.PropTypes.string,
+  ]).isRequired,
 
   /**
    * event handler callback for onClick
@@ -153,13 +186,17 @@ AsterArcs.propTypes = {
   onMouseOver: React.PropTypes.func,
 
   /**
-   * css styles
+   * an array of the selected arcs key ids
    */
-  styles: CommonPropTypes.style,
+  selectedArcs: React.PropTypes.arrayOf(
+    React.PropTypes.oneOfType([
+      React.PropTypes.number,
+      React.PropTypes.string
+    ])
+  ),
 };
 
 AsterArcs.defaultProps = {
-  arcOutlineStroke: '#fff',
   onClick: noop,
   onMouseLeave: noop,
   onMouseMove: noop,

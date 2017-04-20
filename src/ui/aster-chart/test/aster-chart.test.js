@@ -62,11 +62,14 @@ describe('<AsterChart />', () => {
           uncertainty: { lower: 'lower', upper: 'upper' },
           value: 'score',
         }}
+        asterScoreClassName="aster-score"
+        colorKey="id"
         colorScale={colorScale}
         data={data}
         domain={[0, 100]}
+        keyField="id"
         onScoreClick={clickHandler}
-        selectedArcs={['I am a selected arc']}
+        selectedArcs={[{ data: { id: 'selected test arc' } }]}
         ticks={5}
       />
     );
@@ -74,7 +77,6 @@ describe('<AsterChart />', () => {
 
   it('renders an svg', () => {
     const wrapper = shallow(component);
-
     expect(wrapper).to.have.tagName('svg');
   });
 
@@ -87,12 +89,12 @@ describe('<AsterChart />', () => {
   it('contains selected arcs', () => {
     const { selectedArcs } = component.props;
 
-    expect(selectedArcs[0]).to.equal('I am a selected arc');
+    expect(selectedArcs[0].data.id).to.equal('selected test arc');
   });
 
   it('handles clicks', () => {
     const wrapper = mount(component);
-    const asterScoreCenter = wrapper.find('#aster-score');
+    const asterScoreCenter = wrapper.find('.aster-score');
     asterScoreCenter.simulate('click');
 
     expect(clickHandler.called).to.be.true;

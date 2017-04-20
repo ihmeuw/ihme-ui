@@ -70,7 +70,25 @@ class App extends React.Component {
       'toggleUncertainty',
     ]);
 
-    this.state = props;
+    const {
+      boundsLowerField,
+      boundsUpperField,
+      labelField,
+      labelOuterField
+    } = props;
+
+    this.state = {
+      boundsLowerField,
+      boundsUpperField,
+      clientX: 0,
+      clientY: 0,
+      dataIndex: 0,
+      hoverData: {},
+      labelField,
+      labelOuterField,
+      selectedArcs: props.selectedArcs,
+      showTooltip: false,
+    };
   }
 
   onMouseOver(_, datum) {
@@ -95,12 +113,12 @@ class App extends React.Component {
   }
 
   onArcClick(e, datum) {
-    this.setState({ selectedArcs: [datum.data.id] });
+    this.setState({ selectedArcs: [datum] });
   }
 
   onScoreClick(e, scoreProps) {
-    const { label, score } = this.state.hoverData;
-    alert(`AVERAGE: ${scoreProps.content.average}\n${label}: ${score}`); // eslint-disable-line
+    const { label, score } = this.state.selectedArcs[0].data;
+    alert(`AVERAGE: ${scoreProps.average}\n${label}: ${score}`); // eslint-disable-line
   }
 
   toggleDataSet(_, selectedOptionValue) {
@@ -109,34 +127,20 @@ class App extends React.Component {
 
   toggleLabelProp(_, selectedOptionValue) {
     this.setState({
-      accessorFields: {
-        ...this.state.accessorFields,
-        labels: {
-          ...this.state.accessorFields.labels,
-          inner: selectedOptionValue ? App.defaultProps.accessorFields.labels.inner : null,
-        },
-      }
+      labelField: selectedOptionValue ? App.defaultProps.labelField : null,
     });
   }
 
   toggleScoreLabels(_, selectedOptionValue) {
     this.setState({
-      accessorFields: {
-        ...this.state.accessorFields,
-        labels: {
-          ...this.state.accessorFields.labels,
-          outer: selectedOptionValue ? App.defaultProps.accessorFields.labels.outer : null,
-        },
-      }
+      labelOuterField: selectedOptionValue ? App.defaultProps.labelOuterField : null,
     });
   }
 
   toggleUncertainty(_, selectedOptionValue) {
     this.setState({
-      accessorFields: {
-        ...this.state.accessorFields,
-        uncertainty: selectedOptionValue ? App.defaultProps.accessorFields.uncertainty : null,
-      }
+      boundsLowerField: selectedOptionValue ? App.defaultProps.boundsLowerField : null,
+      boundsUpperField: selectedOptionValue ? App.defaultProps.boundsUpperField : null,
     });
   }
 
@@ -145,21 +149,23 @@ class App extends React.Component {
       <div className="app-container">
         <div className="aster-code">
           <section>
-            {/* <pre><code>
-             <AsterChart
-               accessorFields={this.state.accessorFields}
-               colorScale={colorScale}
-               data={inputData[this.state.dataIndex]}
-               domain={[0, 100]}
-               onMouseOver={this.onMouseOver}
-               onMouseMove={this.onMouseMove}
-               onMouseLeave={this.onMouseLeave}
-               onArcClick={this.onArcClick}
-               onScoreClick={this.onScoreClick}
-               selectedArcs={this.state.selectedArcs}
-               ticks={5}
-             />
-             </code></pre> */}
+            {/*<pre><code>
+               <AsterChart
+                 fieldAccessors={this.state.fieldAccessors}
+                 colorKey="label"
+                 colorScale={colorScale}
+                 data={inputData[this.state.dataIndex]}
+                 domain={[0, 100]}
+                 keyField="id"
+                 onMouseOver={this.onMouseOver}
+                 onMouseMove={this.onMouseMove}
+                 onMouseLeave={this.onMouseLeave}
+                 onArcClick={this.onArcClick}
+                 onScoreClick={this.onScoreClick}
+                 selectedArcs={this.state.selectedArcs}
+                 ticks={5}
+               />
+            </code></pre>*/}
           </section>
         </div>
         <div style={{ display: 'flex', flex: '1 0 auto', flexDirection: 'column' }}>
@@ -190,12 +196,12 @@ class App extends React.Component {
                   <Option
                     text="On"
                     value={1}
-                    selected={!!this.state.accessorFields.uncertainty}
+                    selected={!!this.state.boundsLowerField}
                   />
                   <Option
                     text="Off"
                     value={0}
-                    selected={!this.state.accessorFields.uncertainty}
+                    selected={!this.state.boundsLowerField}
                   />
                 </Group>
               </HtmlLabel>
@@ -207,12 +213,12 @@ class App extends React.Component {
                   <Option
                     text="On"
                     value={1}
-                    selected={!!this.state.accessorFields.labels.inner}
+                    selected={!!this.state.labelField}
                   />
                   <Option
                     text="Off"
                     value={0}
-                    selected={!this.state.accessorFields.labels.inner}
+                    selected={!this.state.labelField}
                   />
                 </Group>
               </HtmlLabel>
@@ -224,12 +230,12 @@ class App extends React.Component {
                   <Option
                     text="On"
                     value={1}
-                    selected={!!this.state.accessorFields.labels.outer}
+                    selected={!!this.state.labelOuterField}
                   />
                   <Option
                     text="Off"
                     value={0}
-                    selected={!this.state.accessorFields.labels.outer}
+                    selected={!this.state.labelOuterField}
                   />
                 </Group>
               </HtmlLabel>
@@ -240,10 +246,15 @@ class App extends React.Component {
             <div style={{ display: 'flex', flex: '1 0 auto' }}>
               <ResponsiveContainer>
                 <AsterChart
-                  accessorFields={this.state.accessorFields}
+                  boundsLowerField={this.state.boundsLowerField}
+                  boundsUpperField={this.state.boundsUpperField}
+                  colorField="label"
                   colorScale={colorScale}
                   data={inputData[this.state.dataIndex]}
                   domain={[0, 100]}
+                  keyField="id"
+                  labelField={this.state.labelField}
+                  labelOuterField={this.state.labelOuterField}
                   onMouseOver={this.onMouseOver}
                   onMouseMove={this.onMouseMove}
                   onMouseLeave={this.onMouseLeave}
@@ -251,6 +262,7 @@ class App extends React.Component {
                   onScoreClick={this.onScoreClick}
                   selectedArcs={this.state.selectedArcs}
                   ticks={5}
+                  valueField="score"
                 />
               </ResponsiveContainer>
             </div>
@@ -291,16 +303,16 @@ class App extends React.Component {
 }
 
 App.defaultProps = {
-  accessorFields: {
-    labels: { outer: 'score', inner: 'label' },
-    uncertainty: { lower: 'lower', upper: 'upper' },
-    value: 'score',
-  },
+  boundsLowerField: 'lower',
+  boundsUpperField: 'upper',
   clientX: 0,
   clientY: 0,
   dataIndex: 0,
+  labelField: 'label',
+  labelOuterField: 'score',
   selectedArcs: [],
   showTooltip: false,
+  valueField: 'score',
 };
 
 render(<App />, document.getElementById('app'));

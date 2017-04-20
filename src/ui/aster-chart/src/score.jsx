@@ -1,7 +1,18 @@
 import React from 'react';
+import classNames from 'classnames';
 import { bindAll, noop } from 'lodash';
 
-import { PureComponent } from '../../../utils';
+import { CommonPropTypes, PureComponent } from '../../../utils';
+import {
+  BOTTOM_DY,
+  BOTTOM_TEXT_DIVISOR,
+  MIDDLE_TEXT_DIVISOR,
+  MIDDLE_DY,
+  SCORE_GROUP_DY,
+  TOP_DY,
+  TOP_TEXT_DIVISOR,
+} from './constants';
+import styles from './aster-chart.css';
 
 export default class AsterScore extends PureComponent {
   constructor(props) {
@@ -9,6 +20,9 @@ export default class AsterScore extends PureComponent {
 
     bindAll(this, [
       'onClick',
+      'onMouseLeave',
+      'onMouseMove',
+      'onMouseOver',
     ]);
   }
 
@@ -41,35 +55,45 @@ export default class AsterScore extends PureComponent {
   }
 
   render() {
-    const { TOP_TEXT_DIVISOR, MAIN_TEXT_DIVISOR, BOTTOM_TEXT_DIVISOR } = AsterScore.statics;
-    const { content, radius, className } = this.props;
-    const { average, centerText } = content;
+    const {
+      average,
+      bottomDy,
+      centerTextBottom,
+      centerTextTop,
+      className,
+      middleDy,
+      radius,
+      scoreGroupDy,
+      topDy,
+    } = this.props;
 
     return (
       <g
-        className={className}
-        id="aster-score"
+        className={classNames(className)}
         textAnchor="middle"
-        dy="1em"
+        dy={scoreGroupDy}
         onClick={this.onClick}
+        onMouseLeave={this.onMouseLeave}
+        onMouseMove={this.onMouseMove}
+        onMouseOver={this.onMouseOver}
       >
         <text
-          dy="-1.1em"
+          dy={topDy}
           fontSize={`${radius / TOP_TEXT_DIVISOR}px`}
         >
-          {centerText.top}
+          {centerTextTop}
         </text>
         <text
-          dy=".39em"
-          fontSize={`${radius / MAIN_TEXT_DIVISOR}px`}
+          dy={middleDy}
+          fontSize={`${radius / MIDDLE_TEXT_DIVISOR}px`}
         >
           {average}
         </text>
         <text
-          dy="3.2em"
+          dy={bottomDy}
           fontSize={`${radius / BOTTOM_TEXT_DIVISOR}px`}
         >
-          {centerText.bottom}
+          {centerTextBottom}
         </text>
       </g>
     );
@@ -77,44 +101,61 @@ export default class AsterScore extends PureComponent {
 }
 
 AsterScore.propTypes = {
-  /* class of asterScore */
-  className: React.PropTypes.string,
+  /**
+   *  the 'average' is the content displayed in the center of the score element
+   */
+  average: React.PropTypes.oneOf([React.PropTypes.string, React.PropTypes.number]),
 
-  /* the content of the aster-score */
-  content: React.PropTypes.shape({
-    average: React.PropTypes.number,
-    centerText: React.PropTypes.shape({
-      bottom: React.PropTypes.string,
-      topText: React.PropTypes.string
-    }),
-  }).isRequired,
+  /**
+   *  text to display below score of the Aster-Chart's center element
+   */
+  centerTextBottom: React.PropTypes.string,
 
-  /* radius of the aster chart */
+  /**
+   *  text to display above score of the Aster-Chart's center element
+   */
+  centerTextTop: React.PropTypes.string,
+
+  /**
+   *  class of asterScore center element
+   */
+  className: CommonPropTypes.className,
+
+  /**
+   *  radius of the aster chart
+   */
   radius: React.PropTypes.number.isRequired,
 
-  /* function to be called when clicked */
+  /**
+   *  function to be called when clicked
+   */
   onClick: React.PropTypes.func,
 
-  /* function to be called when onMouseLeave */
+  /**
+   *  function to be called when onMouseLeave
+   */
   onMouseLeave: React.PropTypes.func,
 
-  /* function to be called when onMouseMove */
+  /**
+   *  function to be called when onMouseMove
+   */
   onMouseMove: React.PropTypes.func,
 
-  /* function to be called when onMouseOver */
+  /**
+   *  function to be called when onMouseOver
+   */
   onMouseOver: React.PropTypes.func,
 };
 
 AsterScore.defaultProps = {
-  className: 'asterScore',
+  bottomDy: BOTTOM_DY,
+  className: styles.asterScore,
+  middleDy: MIDDLE_DY,
   onClick: noop,
   onMouseLeave: noop,
   onMouseMove: noop,
   onMouseOver: noop,
+  scoreGroupDy: SCORE_GROUP_DY,
+  topDy: TOP_DY,
 };
 
-AsterScore.statics = {
-  TOP_TEXT_DIVISOR: 14,
-  MAIN_TEXT_DIVISOR: 6,
-  BOTTOM_TEXT_DIVISOR: 25,
-};

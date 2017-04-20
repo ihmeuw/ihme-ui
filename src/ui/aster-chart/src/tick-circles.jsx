@@ -1,56 +1,75 @@
 import React from 'react';
-import { map } from 'lodash';
+import classNames from 'classnames';
+import { assign, map } from 'lodash';
 import { scaleLinear } from 'd3';
 
-import { CommonPropTypes } from '../../../utils';
+import {
+  CommonPropTypes,
+  propsChanged,
+  PureComponent,
+  stateFromPropUpdates,
+} from '../../../utils';
 import { linspace } from '../../../utils/array';
 import AsterTickCircle from './tick-circle';
 
-export default function AsterTickCircles(props) {
-  const {
-    children,
-    domain,
-    innerRadius,
-    innerTickStyle,
-    outerTickStyle,
-    radius,
-    ticks,
-  } = props;
+export default class AsterTickCircles extends PureComponent {
+  constructor(props) {
+    super(props);
 
-  const tickValues = linspace(domain, ticks);
+    this.state = stateFromPropUpdates(AsterTickCircles.propUpdates, {}, props, {});
+  }
 
-  const scaleFunction = scaleLinear()
-    .domain(domain)
-    .range([radius, innerRadius]);
+  componentWillReceiveProps(nextProps) {
+    this.setState(stateFromPropUpdates(
+      AsterTickCircles.propUpdates,
+      this.props,
+      nextProps,
+      this.state,
+      this
+    ));
+  }
 
-  return (
-    <g>
+  renderCircles(tickValues, className) {
+    return (
       <g>
         {
-          map(tickValues.slice(1, -1), (d, i) => (
+          map(tickValues, (d) => (
             <AsterTickCircle
-              r={scaleFunction(d)}
-              key={i}
-              style={innerTickStyle}
+              r={this.state.scale(d)}
+              key={`circle-${d}`}
+              className={classNames(className)}
             />
           ))
         }
       </g>
+    );
+  }
 
-      {children}
+  render() {
+    const {
+      children,
+      innerTickClassName,
+      outerTickClassName,
+    } = this.props;
 
+    const { tickValues } = this.state;
+
+    return (
       <g>
-        {
-          map([tickValues[0], tickValues[tickValues.length - 1]], (d, i) => (
-            <AsterTickCircle
-              r={scaleFunction(d)}
-              key={i}
-              style={outerTickStyle}
-            />
-        ))}
+        {this.renderCircles(
+          tickValues.slice(1, -1),
+          innerTickClassName
+        )}
+
+        {children}
+
+        {this.renderCircles(
+          [tickValues[0], tickValues[tickValues.length - 1]],
+          outerTickClassName
+        )}
       </g>
-    </g>
-  );
+    );
+  }
 }
 
 AsterTickCircles.propTypes = {
@@ -73,22 +92,14 @@ AsterTickCircles.propTypes = {
   innerRadius: React.PropTypes.number.isRequired,
 
   /**
-   * styles of inner ticks
+   * css class for the inner tick guides of the aster chart
    */
-  innerTickStyle: React.PropTypes.shape({
-    stroke: React.PropTypes.string,
-    fill: React.PropTypes.string,
-    strokeDasharray: React.PropTypes.string,
-  }),
+  innerTickClassName: CommonPropTypes.className,
 
   /**
-   * styles of outer ticks
+   * css class for the outlining circles (most inner and most outer)
    */
-  outerTickStyle: React.PropTypes.shape({
-    stroke: React.PropTypes.string,
-    fill: React.PropTypes.string,
-    strokeWidth: React.PropTypes.string,
-  }),
+  outerTickClassName: CommonPropTypes.className,
 
   /**
    * radius of aster-chart
@@ -101,15 +112,21 @@ AsterTickCircles.propTypes = {
   ticks: React.PropTypes.number.isRequired,
 };
 
-AsterTickCircles.defaultProps = {
-  innerTickStyle: {
-    stroke: 'gray',
-    fill: 'none',
-    strokeDasharray: '4 4',
+AsterTickCircles.propUpdates = {
+  scale: (state, _, prevProps, nextProps) => {
+    if (!propsChanged(prevProps, nextProps, ['domain', 'innerRadius', 'radius'])) return state;
+
+    return assign({}, state, {
+      scale: scaleLinear()
+        .domain(nextProps.domain)
+        .range([nextProps.radius, nextProps.innerRadius]),
+    });
   },
-  outerTickStyle: {
-    stroke: 'gray',
-    fill: 'none',
-    strokeWidth: '2px'
+  ticks: (state, _, prevProps, nextProps) => {
+    if (!propsChanged(prevProps, nextProps, ['domain', 'ticks'])) return state;
+
+    return assign({}, state, {
+      tickValues: linspace(nextProps.domain, nextProps.ticks),
+    });
   },
 };

@@ -1,4 +1,5 @@
 .asterScore {
+  fill: #454545;
   cursor: pointer;
 }
 
@@ -10,12 +11,28 @@
   cursor: pointer;
 }
 
+.innerTick {
+  stroke: #ccc;
+  fill: none;
+  stroke-dasharray: 4 4;
+}
+
+.outerTick {
+  stroke: #969696;
+  fill: none;
+  stroke-width: 2px
+}
+
 .outerArc{
   fill: none;
 }
 
 .outerLabel{
   fill: #b2b2b2;
+}
+
+.outerLabelSelected {
+  fill: #454545;
 }
 
 .labelOutline, .label{
@@ -32,8 +49,14 @@
   stroke-linejoin: round;
 }
 
-line path {
-  shape-rendering: crispEdges;
+.overArc {
+  stroke: #fff;
+}
+
+.selectedArc {
+  stroke-width: 2px;
+  fill: none;
+  stroke: #454545;
 }
 
 .underArc {

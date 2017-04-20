@@ -1,13 +1,22 @@
 import React from 'react';
+import classNames from 'classnames';
+import { includes } from 'lodash';
 
-import { CommonPropTypes, PureComponent } from '../../../utils';
 import {
+  CommonPropTypes,
+  propResolver,
+  PureComponent
+} from '../../../utils';
+
+import {
+  LABEL_DY,
+  LABEL_OUTLINE_DY,
   NINETY_DEGREES,
+  NEG_OFFSET,
   NEG_NINETY_DEGREES,
   ONE_EIGHTY_DEGREES,
   POS_OFFSET,
-  NEG_OFFSET,
-  DIVISOR,
+  TEXT_SIZE_DENOMINATOR,
 } from './constants';
 
 export default class AsterLabels extends PureComponent {
@@ -18,7 +27,7 @@ export default class AsterLabels extends PureComponent {
    * @param {number} threshold - limit of the angle (will flip 180 degrees if exceeded)
    * @returns {number}
    */
-  static angleCalculator(datum, offset, threshold) {
+  static calculateAngle(datum, offset, threshold) {
     const angle = ((datum.startAngle + datum.endAngle) * (NINETY_DEGREES / Math.PI)) + offset;
     return angle > threshold ? angle - ONE_EIGHTY_DEGREES : angle;
   }
@@ -31,7 +40,7 @@ export default class AsterLabels extends PureComponent {
    */
   static determineLabelTransform(datum, outlineFunction) {
     const center = outlineFunction.centroid(datum);
-    const angle = AsterLabels.angleCalculator(datum, NEG_NINETY_DEGREES, NINETY_DEGREES);
+    const angle = AsterLabels.calculateAngle(datum, NEG_NINETY_DEGREES, NINETY_DEGREES);
 
     return `translate(${center}) rotate(${angle})`;
   }
@@ -43,7 +52,7 @@ export default class AsterLabels extends PureComponent {
    * @returns {string} d attribute of path for outer aster-arc
    */
   static outerArcFunction(datum, outlineFunction) {
-    const angle = AsterLabels.angleCalculator(datum, 0, 0);
+    const angle = AsterLabels.calculateAngle(datum, 0, 0);
 
     let newArc = /(^.+?)L/.exec(outlineFunction(datum))[1];
     newArc = newArc.replace(/,/g, ' ');
@@ -63,53 +72,63 @@ export default class AsterLabels extends PureComponent {
 
   render() {
     const {
+      classNameLabel,
+      classNameLabelOutline,
+      classNameOuterArc,
+      classNameOuterLabel,
+      classNameOuterLabelSelected,
       datum,
-      labelProp,
+      keyField,
+      labelField,
+      labelOuterField,
       radius,
-      scoreProp,
-      styles,
       outlineFunction,
+      selectedArcs,
     } = this.props;
+
+    const angle = AsterLabels.calculateAngle(datum, 0, 0);
 
     return (
       <g className="asterLabels">
         <text
-          className={styles.labelOutline}
-          dy=".35em"
+          className={classNames(classNameLabelOutline)}
+          dy={LABEL_OUTLINE_DY}
           textAnchor="middle"
           transform={AsterLabels.determineLabelTransform(datum, outlineFunction)}
-          fontSize={`${radius / DIVISOR}px`}
+          fontSize={`${radius / TEXT_SIZE_DENOMINATOR}px`}
         >
-          {labelProp ? datum.data[labelProp] : ''}
+          {labelField ? propResolver(datum.data, labelField) : ''}
         </text>
         <text
-          className={styles.label}
-          dy=".35em"
+          className={classNames(classNameLabel)}
+          dy={LABEL_DY}
           textAnchor="middle"
           transform={AsterLabels.determineLabelTransform(datum, outlineFunction)}
-          fontSize={`${radius / DIVISOR}px`}
+          fontSize={`${radius / TEXT_SIZE_DENOMINATOR}px`}
         >
-          {labelProp ? datum.data[labelProp] : ''}
+          {labelField ? propResolver(datum.data, labelField) : ''}
         </text>
 
         <path
-          className={styles.outerArc}
-          id={`outer-arc-${datum.data.id}`}
+          className={classNames(classNameOuterArc)}
+          id={`outer-arc-${datum.data[keyField]}`}
           d={AsterLabels.outerArcFunction(datum, outlineFunction)}
         />
         <text
-          className={styles.outerLabel}
-          dy={(AsterLabels.angleCalculator(datum, 0, 0) < NINETY_DEGREES
-                && AsterLabels.angleCalculator(datum, 0, 0) > NEG_NINETY_DEGREES)
-                  ? POS_OFFSET
-                  : NEG_OFFSET
+          className={
+            (includes(selectedArcs.map(
+              selected => propResolver(selected.data, keyField)),
+              propResolver(datum.data, keyField))
+            ) ? classNames(classNameOuterLabelSelected) : classNames(classNameOuterLabel)
           }
+          dy={(angle < NINETY_DEGREES && angle > NEG_NINETY_DEGREES) ? POS_OFFSET : NEG_OFFSET}
         >
           <textPath
             startOffset="50%"
-            xlinkHref={`#outer-arc-${datum.data.id}`}
+            textAnchor="middle"
+            xlinkHref={`#outer-arc-${datum.data[keyField]}`}
           >
-            {scoreProp ? datum.data[scoreProp] : ''}
+            {labelOuterField ? propResolver(datum.data, labelOuterField) : ''}
           </textPath>
         </text>
       </g>
@@ -118,6 +137,33 @@ export default class AsterLabels extends PureComponent {
 }
 
 AsterLabels.propTypes = {
+  /**
+   * css class for label in the arc of the Aster-Chart
+   */
+  classNameLabel: CommonPropTypes.className,
+
+  /**
+   * css class for the label outline of the Aster-Chart
+   */
+  classNameLabelOutline: CommonPropTypes.className,
+
+  /**
+   * css class for the outer arc of the Aster-Chart
+   * note: this element exists to position outside label.
+   * it's advisable to not mess with this prop, but to leave it's default css
+   */
+  classNameOuterArc: CommonPropTypes.className,
+
+  /**
+   * css class for the outer labels surrounding the Aster-Chart
+   */
+  classNameOuterLabel: CommonPropTypes.className,
+
+  /**
+   * css class for the outer label of the Aster-Chart when that arc is selected
+   */
+  classNameOuterLabelSelected: CommonPropTypes.className,
+
   /**
    * the data to be displayed by label
    */
@@ -130,18 +176,23 @@ AsterLabels.propTypes = {
     data: React.PropTypes.objectOf(React.PropTypes.string),
   }).isRequired,
 
-  /* property in data to access what text a label should display */
-  labelProp: CommonPropTypes.dataAccessor,
+  /**
+   * property in data to access what text a label should display
+   */
+  labelField: CommonPropTypes.dataAccessor,
 
-  /* radius of aster-plot */
-  radius: React.PropTypes.string,
+  /**
+   * property in data to access what the score should display on edge of aster
+   */
+  labelOuterField: CommonPropTypes.dataAccessor,
 
-  /* property in data to access what the score should display */
-  scoreProp: React.PropTypes.string,
+  /**
+   *  radius of aster-plot
+   */
+  radius: React.PropTypes.number,
 
-  /* css style */
-  styles: CommonPropTypes.style,
-
-  /* d3 function for finding the outline of the aster-arc */
+  /**
+   *  d3 function for finding the outline of the aster-arc
+   */
   outlineFunction: React.PropTypes.func,
 };
