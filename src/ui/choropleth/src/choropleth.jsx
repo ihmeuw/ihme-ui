@@ -87,6 +87,8 @@ export default class Choropleth extends React.Component {
   componentDidMount() {
     const [x, y] = this.state.translate;
 
+    if (!this._svgSelection) return;
+
     this._svgSelection.call(
       this.zoom
         .on('zoom.ihme-ui-choropleth', this.zoomEvent)
@@ -169,12 +171,14 @@ export default class Choropleth extends React.Component {
         this.clipExtent
       );
 
-      this._svgSelection.call(
-        this.zoom.transform,
-        zoomIdentity
-          .translate(state.translate[0], state.translate[1])
-          .scale(state.scale)
-      );
+      if (this._svgSelection) {
+        this._svgSelection.call(
+          this.zoom.transform,
+          zoomIdentity
+            .translate(state.translate[0], state.translate[1])
+            .scale(state.scale)
+        );
+      }
     }
 
     // if the data has changed, transform it to be consumable by <Layer />
