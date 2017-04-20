@@ -241,7 +241,6 @@ export default class Map extends React.Component {
         style: styleReset,
         selectedStyle: styleReset,
         type: 'feature',
-        visible: true,
       },
       {
         name: `${name}-disputed-borders`,
@@ -249,7 +248,6 @@ export default class Map extends React.Component {
         style: { stroke: 'black', strokeWidth: '1px', strokeDasharray: '5, 5' },
         type: 'mesh',
         filterFn: this.disputedBordersMeshFilter,
-        visible: true,
       },
       {
         name: `${name}-non-disputed-borders`,
@@ -257,7 +255,6 @@ export default class Map extends React.Component {
         style: { stroke: 'black', strokeWidth: '1px' },
         type: 'mesh',
         filterFn: this.nonDisputedBordersMeshFilter,
-        visible: true,
       },
       {
         name: `${name}-selected-non-disputed-borders`,
@@ -265,7 +262,6 @@ export default class Map extends React.Component {
         style: { stroke: 'black', strokeWidth: '2px' },
         type: 'mesh',
         filterFn: this.selectedBordersMeshFilter,
-        visible: true,
       },
     ];
   }

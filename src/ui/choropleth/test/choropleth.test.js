@@ -3,6 +3,7 @@ import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
+import { tail } from 'lodash';
 
 import { dataGenerator, getTopoJSON, getLocationIds } from '../../../test-utils';
 
@@ -14,9 +15,8 @@ describe('<Choropleth />', () => {
   const keyField = 'locationId';
   const valueField = 'mean';
   const layers = [
-    { name: 'country', object: 'country', type: 'feature', visible: true },
-    { name: 'states', object: 'states', type: 'mesh', visible: true, filterFn(a, b) { return a !== b; } },
-    { name: 'fake', object: 'nonexistent', visible: true },
+    { name: 'country', object: 'country', type: 'feature' },
+    { name: 'states', object: 'states', type: 'mesh', filter: (a, b) => a !== b },
   ];
   const geo = getTopoJSON();
   const locIds = [102, ...getLocationIds(geo.objects.states.geometries)];
@@ -103,40 +103,14 @@ describe('<Choropleth />', () => {
       expect(wrapper).to.not.have.descendants('Controls');
     });
 
-    it('renders feature and mesh layers only', () => {
+    it('renders provided layers', () => {
       const wrapper = shallow(
         <Choropleth
           colorScale={noop}
           data={data}
           height={500}
           keyField={keyField}
-          layers={layers}
-          topology={geo}
-          valueField={valueField}
-          width={960}
-        />
-      );
-
-      expect(wrapper.find('svg')).to.have.exactly(1).descendants('FeatureLayer');
-      expect(wrapper.find('svg')).to.have.exactly(1).descendants('Path');
-    });
-
-    it('does not render a layer when layer.visible !== truthy', () => {
-      const updatedLayers = layers.map((l, i) => {
-        const visible = i !== 0;
-        return {
-          ...l,
-          visible,
-        };
-      });
-
-      const wrapper = shallow(
-        <Choropleth
-          colorScale={noop}
-          data={data}
-          height={500}
-          keyField={keyField}
-          layers={updatedLayers}
+          layers={tail(layers)}
           topology={geo}
           valueField={valueField}
           width={960}
@@ -144,6 +118,28 @@ describe('<Choropleth />', () => {
       );
 
       expect(wrapper.find('svg')).to.not.have.descendants('FeatureLayer');
+      expect(wrapper.find('svg')).to.have.exactly(1).descendants('Path');
+
+      wrapper.setProps({ layers });
+      expect(wrapper.find('svg')).to.have.exactly(1).descendants('FeatureLayer');
+      expect(wrapper.find('svg')).to.have.exactly(1).descendants('Path');
+    });
+
+    it('only renders feature and mesh layers', () => {
+      const wrapper = shallow(
+        <Choropleth
+          colorScale={noop}
+          data={data}
+          height={500}
+          keyField={keyField}
+          layers={[{ name: 'fake', object: 'nonexistent' }, ...layers]}
+          topology={geo}
+          valueField={valueField}
+          width={960}
+        />
+      );
+
+      expect(wrapper.find('svg')).to.have.exactly(1).descendants('FeatureLayer');
       expect(wrapper.find('svg')).to.have.exactly(1).descendants('Path');
     });
   });

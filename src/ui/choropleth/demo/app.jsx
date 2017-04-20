@@ -4,7 +4,7 @@ import { render } from 'react-dom';
 import { bindAll, filter, find, flatMap, forEach, includes, values, xor } from 'lodash';
 import { json, scaleLinear } from 'd3';
 
-import { dataGenerator } from '../../../test-utils';
+import { dataGenerator } from '../../../test-utils/data';
 import { colorSteps, linspace } from '../../../utils';
 
 import ResponsiveContainer from '../../responsive-container';
@@ -13,9 +13,9 @@ import Button from '../../button';
 
 // Array is used to maintain layer order.
 const LAYERS = [
-  { name: 'national', object: 'national', type: 'feature', visible: true, },
-  { name: 'subnational', object: 'subnational', type: 'feature', visible: false, },
-  { name: 'boundary', object: 'national', type: 'mesh', visible: false, style: { stroke: 'white', strokeWidth: '5px' }, filterFn: boundaryFilterFn(['101', '102', '130'])},
+  { name: 'national', object: 'national', type: 'feature' },
+  { name: 'subnational', object: 'subnational', type: 'feature' },
+  { name: 'boundary', object: 'national', type: 'mesh', style: { stroke: 'white', strokeWidth: '5px' }, filter: boundaryFilterFn(['101', '102', '130'])},
 ];
 
 function boundaryFilterFn(selections) {
@@ -36,16 +36,14 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
-    const layers = LAYERS.slice(0);
-
     this.state = {
       selections: [],
-      layers,
+      layers: LAYERS,
       domain: dataRange,
       keyField,
       valueField,
       colorScale,
-      ...this.updateData(layers, props.topology)
+      ...this.updateData(LAYERS, props.topology)
     };
 
     bindAll(this, [
@@ -72,13 +70,10 @@ class App extends React.Component {
     return { data, };
   }
 
-  toggleVisibility(layerName) {
+  toggleVisibility(layer) {
     return () => {
-      const layers = [...this.state.layers];
-
-      forEach(filter(layers, layerName), (layer) => {
-        layer.visible = !layer.visible;
-      });
+      const layerToToggle = filter(LAYERS, layer);
+      const layers = xor(this.state.layers, layerToToggle);
       this.setState({ layers, });
     }
   }
@@ -91,10 +86,10 @@ class App extends React.Component {
     const {
       data,
       keyField,
+      layers,
       valueField,
       colorScale,
       selections,
-      layers
     } = this.state;
 
     return (

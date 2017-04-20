@@ -116,9 +116,7 @@ export default class Choropleth extends React.Component {
         cache = {};
       }
 
-      const visibleLayers = filter(nextProps.layers, { visible: true });
-
-      const uncachedLayers = filter(visibleLayers, (layer) =>
+      const uncachedLayers = filter(nextProps.layers, layer =>
         layer.type === 'mesh' || !has(cache[layer.type], layer.name)
       );
 
@@ -284,8 +282,6 @@ export default class Choropleth extends React.Component {
 
   renderLayers() {
     return this.props.layers.map((layer) => {
-      if (!layer.visible) return null;
-
       const key = `${layer.type}-${layer.name}`;
 
       switch (layer.type) {
@@ -465,7 +461,6 @@ Choropleth.propTypes = {
    *      func: (feature) => style object
    *  - `type`: (Required) whether the layer should be a feature collection or mesh grid
    *      one of: "feature", "mesh"
-   *  - `visible`: whether or not to render layer
    */
   layers: PropTypes.arrayOf(PropTypes.shape({
     className: CommonPropTypes.className,
@@ -517,13 +512,6 @@ Choropleth.propTypes = {
      * one of: "feature", "mesh"
      */
     type: PropTypes.oneOf(['feature', 'mesh']).isRequired,
-
-    /**
-     * whether or not to render layer
-     * WILL BE DEPRECATED: if you do not want to render the layer,
-     * do not include its description in this array
-     */
-    visible: PropTypes.bool,
   })).isRequired,
 
   /**
