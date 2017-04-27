@@ -62,7 +62,7 @@ describe('<AsterChart />', () => {
           uncertainty: { lower: 'lower', upper: 'upper' },
           value: 'score',
         }}
-        asterScoreClassName="aster-score"
+        classNameAsterScore="aster-score"
         colorKey="id"
         colorScale={colorScale}
         data={data}

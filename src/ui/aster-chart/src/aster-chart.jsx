@@ -1,14 +1,19 @@
 import React from 'react';
 import classNames from 'classnames';
-import { arc, pie } from 'd3';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
+
+import {
+  arc,
+  pie,
+} from 'd3';
+
 import {
   assign,
+  includes,
   map,
   noop,
-  reduce,
   sortBy,
 } from 'lodash';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 import {
   CommonPropTypes,
@@ -22,7 +27,8 @@ import AsterArcs from './arcs';
 import AsterWhiskers from './whiskers';
 import AsterLabels from './labels';
 import AsterScore from './score';
-import style from './aster-chart.css';
+import classes from './aster-chart.css';
+
 import {
   RADIUS_CENTER_PROPORTION,
   RADIUS_PADDING_DIVIDER,
@@ -30,10 +36,6 @@ import {
 } from './constants';
 
 export default class AsterChart extends React.Component {
-  static getAverageFromInputData(data, keyField) {
-    return Math.round(reduce(data, (a, b) => a + +propResolver(b, [keyField]), 0) / data.length);
-  }
-
   static getRadiiFromDimensions(width, height, radiusPaddingDivider, radiusCenterProportion) {
     const radius = Math.min(width, height) / radiusPaddingDivider;
     const innerRadius = radiusCenterProportion * radius;
@@ -97,17 +99,31 @@ export default class AsterChart extends React.Component {
 
   render() {
     const {
-      average,
       asterData,
-      radii,
-      transformTranslate,
+      radii: {
+        innerRadius,
+        radius,
+      },
+      styleAsterGroup,
     } = this.state;
 
     const {
-      arcClassName,
-      arcGroupClassName,
-      asterClassName,
-      asterScoreClassName,
+      classNameArc,
+      classNameArcGroup,
+      classNameAsterGroup,
+      classNameAsterScore,
+      classNameInnerTick,
+      classNameLabel,
+      classNameLabelOutline,
+      classNameOuterArc,
+      classNameOuterLabel,
+      classNameOuterLabelSelected,
+      classNameOuterTick,
+      classNameOverArc,
+      classNameSelectedArcs,
+      classNameSVG,
+      classNameUnderArc,
+      classNameWhiskers,
       boundsLowerField,
       boundsUpperField,
       centerTextBottom,
@@ -115,11 +131,10 @@ export default class AsterChart extends React.Component {
       colorField,
       colorScale,
       domain,
+      formatOuterLabel,
+      formatScore,
       height,
-      innerTickClassName,
       keyField,
-      labelClassName,
-      labelOutlineClassName,
       labelField,
       labelOuterField,
       onMouseOver,
@@ -127,20 +142,27 @@ export default class AsterChart extends React.Component {
       onMouseLeave,
       onArcClick,
       onScoreClick,
-      outerArcClassName,
-      outerLabelClassName,
-      outerLabelSelectedClassName,
-      outerTickClassName,
-      overArcClassName,
       selectedArcs,
-      selectedArcsClassName,
+      styleArc,
+      styleArcGroup,
+      styleAsterScore,
+      styleInnerTick,
+      styleLabel,
+      styleLabelOutline,
+      styleOuterArc,
+      styleOuterLabel,
+      styleOuterLabelSelected,
+      styleOuterTick,
+      styleSVG,
+      styleOverArc,
+      styleSelectedArc,
+      styleUnderArc,
+      styleWhiskers,
       ticks,
-      underArcClassName,
+      valueField,
       width,
-      whiskersClassName,
     } = this.props;
 
-    const { innerRadius, radius } = radii;
     const {
       arcGroup,
       asterScore,
@@ -155,79 +177,105 @@ export default class AsterChart extends React.Component {
       selectedArc,
       underArc,
       whiskers,
-    } = style;
+    } = classes;
 
     return (
       <svg
-        width={width}
+        className={classNames(classNameSVG)}
         height={height}
-        style={this.props.style}
+        width={width}
+        style={styleSVG}
       >
-        <g style={transformTranslate} className={classNames(asterClassName)}>
+        <g
+          className={classNames(classNameAsterGroup)}
+          style={styleAsterGroup}
+        >
           <AsterTickCircles
             domain={domain}
             innerRadius={innerRadius}
-            innerTickClassName={classNames(innerTick, innerTickClassName)}
-            outerTickClassName={classNames(outerTick, outerTickClassName)}
+            classNameInnerTick={classNames(innerTick, classNameInnerTick)}
+            classNameOuterTick={classNames(outerTick, classNameOuterTick)}
             radius={radius}
+            styleInnerTick={styleInnerTick}
+            styleOuterTick={styleOuterTick}
             ticks={ticks}
           >
             {
-             map(asterData, datum => (
-               <g key={datum.data[keyField]}>
-                 <AsterArcs
-                   arcValueFunction={this.arcValueFunction()}
-                   classNameArc={classNames(arc, arcClassName)}
-                   classNameArcGroup={classNames(arcGroup, arcGroupClassName)}
-                   classNameOver={classNames(overArc, overArcClassName)}
-                   classNameSelectedArcs={classNames(selectedArc, selectedArcsClassName)}
-                   classNameUnder={classNames(underArc, underArcClassName)}
-                   colorField={colorField}
-                   colorScale={colorScale}
-                   datum={datum}
-                   keyField={keyField}
-                   onMouseOver={onMouseOver}
-                   onMouseMove={onMouseMove}
-                   onMouseLeave={onMouseLeave}
-                   onClick={onArcClick}
-                   outlineFunction={this.outlineFunction()}
-                   selectedArcs={selectedArcs}
-                 />
-                 <AsterWhiskers
-                   boundsLowerField={boundsLowerField}
-                   boundsUpperField={boundsUpperField}
-                   data={datum}
-                   domainEnd={domain[1]}
-                   innerRadius={innerRadius}
-                   radius={radius}
-                   className={classNames(whiskers, whiskersClassName)}
-                 />
-                 <AsterLabels
-                   classNameLabel={classNames(label, labelClassName)}
-                   classNameLabelOutline={classNames(labelOutline, labelOutlineClassName)}
-                   classNameOuterArc={classNames(outerArc, outerArcClassName)}
-                   classNameOuterLabel={classNames(outerLabel, outerLabelClassName)}
-                   classNameOuterLabelSelected={
-                     classNames(outerLabelSelected, outerLabelSelectedClassName)
-                   }
-                   datum={datum}
-                   outlineFunction={this.outlineFunction()}
-                   keyField={keyField}
-                   labelField={labelField}
-                   labelOuterField={labelOuterField}
-                   selectedArcs={selectedArcs}
-                   radius={radius}
-                 />
-               </g>
-             ))
+             map(asterData, (datum) => {
+               const isSelected = includes(map(selectedArcs, selected =>
+                 propResolver(selected.data, keyField)), propResolver(datum.data, keyField));
+
+               return (
+                 <g key={datum.data[keyField]}>
+                   <AsterArcs
+                     arcValueFunction={this.arcValueFunction()}
+                     classNameArc={classNames(arc, classNameArc)}
+                     classNameArcGroup={classNames(arcGroup, classNameArcGroup)}
+                     classNameOver={classNames(overArc, classNameOverArc)}
+                     classNameSelectedArcs={classNames(selectedArc, classNameSelectedArcs)}
+                     classNameUnder={classNames(underArc, classNameUnderArc)}
+                     colorField={colorField}
+                     colorScale={colorScale}
+                     datum={datum}
+                     keyField={keyField}
+                     onMouseOver={onMouseOver}
+                     onMouseMove={onMouseMove}
+                     onMouseLeave={onMouseLeave}
+                     onClick={onArcClick}
+                     outlineFunction={this.outlineFunction()}
+                     selected={isSelected}
+                     styleArc={styleArc}
+                     styleArcGroup={styleArcGroup}
+                     styleOverArc={styleOverArc}
+                     styleSelectedArc={styleSelectedArc}
+                     styleUnderArc={styleUnderArc}
+                   />
+                   <AsterWhiskers
+                     boundsLowerField={boundsLowerField}
+                     boundsUpperField={boundsUpperField}
+                     data={datum}
+                     domainEnd={domain[1]}
+                     innerRadius={innerRadius}
+                     radius={radius}
+                     className={classNames(whiskers, classNameWhiskers)}
+                     style={styleWhiskers}
+                   />
+                   <AsterLabels
+                     classNameLabel={classNames(label, classNameLabel)}
+                     classNameLabelOutline={classNames(labelOutline, classNameLabelOutline)}
+                     classNameOuterArc={classNames(outerArc, classNameOuterArc)}
+                     classNameOuterLabel={classNames(outerLabel, classNameOuterLabel)}
+                     classNameOuterLabelSelected={
+                       classNames(outerLabelSelected, classNameOuterLabelSelected)
+                     }
+                     datum={datum}
+                     formatOuterLabel={formatOuterLabel}
+                     outlineFunction={this.outlineFunction()}
+                     keyField={keyField}
+                     labelField={labelField}
+                     labelOuterField={labelOuterField}
+                     selected={isSelected}
+                     styleLabel={styleLabel}
+                     styleLabelOutline={styleLabelOutline}
+                     styleOuterArc={styleOuterArc}
+                     styleOuterLabel={styleOuterLabel}
+                     styleOuterLabelSelected={styleOuterLabelSelected}
+                     radius={radius}
+                   />
+                 </g>
+               );
+             })
             }
             <AsterScore
-              average={average} // maybe make aster score make the average?
               centerTextBottom={centerTextBottom}
               centerTextTop={centerTextTop}
-              className={classNames(asterScore, asterScoreClassName)}
+              className={classNames(asterScore, classNameAsterScore)}
+              data={asterData}
+              formatScore={formatScore}
               onClick={onScoreClick}
               radius={radius}
+              style={styleAsterScore}
+              valueField={valueField}
             />
           </AsterTickCircles>
         </g>
@@ -238,28 +286,6 @@ export default class AsterChart extends React.Component {
 
 AsterChart.propTypes = {
   /**
-   * css class for the arcClassName
-   * arcGroup contains 'underArc', 'arc', and 'overArc'. This class is applied to the 'arc'
-   * component -- which displays the value of inputed data.
-   */
-  arcClassName: CommonPropTypes.className,
-
-  /**
-   * css class for the arc-group
-   */
-  arcGroupClassName: CommonPropTypes.className,
-
-  /**
-   * css class for the entire aster chart group
-   */
-  asterClassName: CommonPropTypes.className,
-
-  /**
-   * css class for the score in the center of the aster chart
-   */
-  asterScoreClassName: CommonPropTypes.className,
-
-  /**
    * the field to access the lower uncertainty property on the data
    */
   boundsLowerField: CommonPropTypes.dataAccessor,
@@ -268,6 +294,100 @@ AsterChart.propTypes = {
    * the field to access the upper uncertainty property on the data
    */
   boundsUpperField: CommonPropTypes.dataAccessor,
+
+  /**
+   * css class for the classNameArc
+   * arcGroup contains 'underArc', 'arc', and 'overArc'. This class is applied to the 'arc'
+   * component -- which displays the value of inputed data.
+   */
+  classNameArc: CommonPropTypes.className,
+
+  /**
+   * css class for the arc-group
+   */
+  classNameArcGroup: CommonPropTypes.className,
+
+  /**
+   * css class for the g element that contains the Aster-Chart
+   */
+  classNameAsterGroup: CommonPropTypes.className,
+
+  /**
+   * css class for the AsterScore element in the center of the Aster-Chart
+   */
+  classNameAsterScore: CommonPropTypes.className,
+
+  /**
+   * css class for the entire aster chart group
+   */
+  classNameAsterGroupGroup: CommonPropTypes.className,
+
+  /**
+   * css class for the score in the center of the aster chart
+   */
+  classNameAsterGroupScore: CommonPropTypes.className,
+
+  /**
+   * css class for the inner tick guides of the aster chart
+   */
+  classNameInnerTick: CommonPropTypes.className,
+
+  /**
+   * css class for label in the arc of the Aster-Chart
+   */
+  classNameLabel: CommonPropTypes.className,
+
+  /**
+   * css class for the label outline of the Aster-Chart
+   */
+  classNameLabelOutline: CommonPropTypes.className,
+
+  /**
+   * css class for the outer arc of the Aster-Chart
+   * note: this element exists to position outside label.
+   * it's advisable to not mess with this prop, but to leave it's default css
+   */
+  classNameOuterArc: CommonPropTypes.className,
+
+  /**
+   * css class for the outer labels surrounding the Aster-Chart
+   */
+  classNameOuterLabel: CommonPropTypes.className,
+
+  /**
+   * css class for the outer label of the Aster-Chart when that arc is selected
+   */
+  classNameOuterLabelSelected: CommonPropTypes.className,
+
+  /**
+   * css class surrounding SVG element of the Aster-Chart
+   */
+  classNameSVG: CommonPropTypes.className,
+
+  /**
+   * css class for the outlining circles (most inner and most outer)
+   */
+  classNameOuterTick: CommonPropTypes.className,
+
+  /**
+   * css class for the outlining arcs
+   */
+  classNameOverArc: CommonPropTypes.className,
+
+  /**
+   * css class for the selected arcs
+   */
+  classNameSelectedArcs: CommonPropTypes.className,
+
+  /**
+   * css class for the under arcs
+   * under arcs main function is to supply a hover color
+   */
+  classNameUnderArc: CommonPropTypes.className,
+  /**
+   * css class for the arc-group
+   */
+  classNameWhiskers: CommonPropTypes.className,
 
   /**
    * text to display in center of aster-chart (below center average score)
@@ -287,7 +407,7 @@ AsterChart.propTypes = {
   /**
    * property in data that colorScale can use to determine color
    */
-  colorField: CommonPropTypes.dataAccessor,
+  colorField: CommonPropTypes.dataAccessor.isRequired,
 
   /**
    * sort function for ordering data set
@@ -306,30 +426,27 @@ AsterChart.propTypes = {
   domain: React.PropTypes.arrayOf(React.PropTypes.number),
 
   /**
-   * height of aster-chart
+   * an optional function to format the content in the labels that surround the Aster-Chart
+   * defaults to Math.round
    */
-  height: CommonPropTypes.height,
+  formatOuterLabel: React.PropTypes.func,
 
   /**
-   * css class for the inner tick guides of the aster chart
+   * an optional function to format the average shown in center of Aster-Chart
+   * defaults to Math.round
    */
-  innerTickClassName: CommonPropTypes.className,
+  formatScore: React.PropTypes.func,
+
+  /**
+   * height of Aster-Chart
+   */
+  height: CommonPropTypes.height,
 
   /**
    * unique key of datum;
    * if a function, will be called with the datum object as first parameter
    */
   keyField: CommonPropTypes.dataAccessor.isRequired,
-
-  /**
-   * css class for label in the arc of the Aster-Chart
-   */
-  labelClassName: CommonPropTypes.className,
-
-  /**
-   * css class for the label outline of the Aster-Chart
-   */
-  labelOutlineClassName: CommonPropTypes.className,
 
   /**
    * property in data to access what text a label should display with arc of Aster-Chart
@@ -367,33 +484,6 @@ AsterChart.propTypes = {
   onScoreClick: React.PropTypes.func,
 
   /**
-   * css class for the outer arc of the Aster-Chart
-   * note: this element exists to position outside label.
-   * it's advisable to not mess with this prop, but to leave it's default css
-   */
-  outerArcClassName: CommonPropTypes.className,
-
-  /**
-   * css class for the outer labels surrounding the Aster-Chart
-   */
-  outerLabelClassName: CommonPropTypes.className,
-
-  /**
-   * css class for the outer label of the Aster-Chart when that arc is selected
-   */
-  outerLabelSelectedClassName: CommonPropTypes.className,
-
-  /**
-   * css class for the outlining circles (most inner and most outer)
-   */
-  outerTickClassName: CommonPropTypes.className,
-
-  /**
-   * css class for the outlining arcs
-   */
-  overArcClassName: CommonPropTypes.className,
-
-  /**
    * 'radiusCenterProportion' is how much of the circle will be empty in the center of the chart.
    * eg. if the aster-chart has a radius of 1000px, and the user wants 35% of the radius to be
    * empty for the center area labeling, assign .35 to radiusCenterProportion.
@@ -414,14 +504,120 @@ AsterChart.propTypes = {
   selectedArcs: React.PropTypes.arrayOf(React.PropTypes.object),
 
   /**
-   * css class for the selected arcs
+   * Base inline styles applied to `<Arc />`s. (Controls color fill)
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<Arc />`
+   * and return value spread into line styles;
+   * signature: (datum) => obj
    */
-  selectedArcsClassName: CommonPropTypes.className,
+  styleArc: CommonPropTypes.style,
 
   /**
-   * css styles from aster-chart.css
+   * Inline styles applied to `<Arc />`s. (Controls color fill)
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<Arc />`
+   * and return value spread into line styles;
+   * signature: (datum) => obj
    */
-  style: CommonPropTypes.className,
+  styleArcGroup: CommonPropTypes.style,
+
+  /**
+   * Inline style applied to center score element of Aster-Chart.
+   *
+   * Unlike other classes props for Aster-Chart, this cannot be a function since no
+   * data is being iterated over when it is applied.
+   */
+  styleAsterScore: React.PropTypes.objectOf(React.PropTypes.string),
+
+  /**
+   * Inline style applied to inner ticks of Aster-Chart.
+   *
+   * Unlike other classes props for Aster-Chart, this cannot be a function since no
+   * data is being iterated over when it is applied.
+   */
+  styleInnerTick: React.PropTypes.objectOf(React.PropTypes.string),
+
+  /**
+   * Base inline styles applied to interior label `<AsterLabel />`s.
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<AsterLabel />`.
+   */
+  styleLabel: CommonPropTypes.style,
+
+  /**
+   * Base inline styles applied to outline of `<AsterLabel />`s. (displayed on each arc)
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<AsterLabel />`.
+   */
+  styleLabelOutline: CommonPropTypes.style,
+
+  /**
+   * Base inline styles applied to outside arc `<AsterLabel />`s.
+   * It should be noted that this is best not messed with.
+   * the main style applied here is making the element not visible, since it is used to place
+   * the outside text in the outer label of the Aster-Chart
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<AsterLabel />`.
+   */
+  styleOuterArc: CommonPropTypes.style1,
+
+  /**
+   * Base inline styles applied to outer label of `<AsterLabel />`s.
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<AsterLabel />`.
+   */
+  styleOuterLabel: CommonPropTypes.style1,
+
+  /**
+   * Base inline styles applied to outside label of selected arcs of `<AsterLabel />`s.
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<AsterLabel />`.
+   */
+  styleOuterLabelSelected: CommonPropTypes.style1,
+
+  /**
+   * Inline style applied to outer ticks of Aster-Chart.
+   *
+   * Unlike other classes props for Aster-Chart, this cannot be a function since no
+   * data is being iterated over when it is applied.
+   */
+  styleOuterTick: React.PropTypes.objectOf(React.PropTypes.string),
+
+  /**
+   * Base inline styles applied to overlaying `<Arc />`s. (controls non-selected outline)
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<Arc />`.
+   */
+  styleOverArc: CommonPropTypes.style,
+
+  /**
+   * Selected inline styles applied to overlaying `<Arc />`s. (Control's selected outline)
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<Arc />`.
+   */
+  styleSelectedArc: CommonPropTypes.style,
+
+  /**
+   * Inline style applied directly to svg containing entire chart.
+   *
+   * Unlike other classes props for Aster-Chart, this cannot be a function since no
+   * data is being iterated over when it is applied.
+   */
+  styleSVG: React.PropTypes.objectOf(React.PropTypes.string),
+
+  /**
+   * Base inline styles applied to underlying `<Arc />`s. (Controls hover)
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<Arc />`.
+   */
+  styleUnderArc: CommonPropTypes.style,
+
+  /**
+   * Base inline styles applied to `<styleWhiskers />`s. (Mainly concerning stroke, stroke-width)
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<Arc />`.
+   */
+  styleWhiskers: CommonPropTypes.style,
 
   /**
    * total number of circluar tick guides to display
@@ -429,32 +625,44 @@ AsterChart.propTypes = {
   ticks: React.PropTypes.number,
 
   /**
-   * css class for the under arcs
-   * under arcs main function is to supply a hover color
-   */
-  underArcClassName: CommonPropTypes.className,
-
-  /**
    * the name of the field of the Aster can derive value from.
    * i.e. measure, score, or any quantifyable value to display
    */
-  valueField: CommonPropTypes.dataAccessor,
+  valueField: CommonPropTypes.dataAccessor.isRequired,
 
   /**
    * width of aster-chart
    */
   width: CommonPropTypes.width,
-
-  /**
-   * css class for the arc-group
-   */
-  whiskersClassName: CommonPropTypes.className,
 };
 
 AsterChart.defaultProps = {
-  centerText: { bottom: '', top: '' },
+  boundsLowerField: null,
+  boundsUpperField: null,
+  centerTextBottom: '',
+  centerTextTop: '',
+  classNameArc: '',
+  classNameArcGroup: '',
+  classNameAsterGroup: '',
+  classNameAsterGroupScore: '',
+  classNameInnerTick: '',
+  classNameLabel: '',
+  classNameLabelOutline: '',
+  classNameOuterArc: '',
+  classNameOuterLabel: '',
+  classNameOuterLabelSelected: '',
+  classNameOuterTick: '',
+  classNameOverArc: '',
+  classNameSelectedArcs: '',
+  classNameSVG: '',
+  classNameUnderArc: '',
+  classNameWhiskers: '',
   domain: [0, 100],
+  formatOuterLabel: Math.round,
+  formatScore: Math.round,
   height: 100,
+  labelField: null,
+  labelOuterField: null,
   onMouseOver: noop,
   onMouseMove: noop,
   onMouseLeave: noop,
@@ -463,6 +671,21 @@ AsterChart.defaultProps = {
   radiusCenterProportion: RADIUS_CENTER_PROPORTION,
   radiusPaddingDivider: RADIUS_PADDING_DIVIDER,
   selectedArcs: [],
+  styleArc: {},
+  styleArcGroup: {},
+  styleAsterScore: {},
+  styleInnerTick: {},
+  styleLabel: {},
+  styleLabelOutline: {},
+  styleOuterArc: {},
+  styleOuterTick: {},
+  styleOuterLabel: {},
+  styleOuterLabelSelected: {},
+  styleSVG: {},
+  styleOverArc: {},
+  styleSelectedArc: {},
+  styleUnderArc: {},
+  styleWhiskers: {},
   comparator: (a, b) => a.order - b.order,
   ticks: 5,
   width: 100,
@@ -484,13 +707,6 @@ AsterChart.propUpdates = {
       ),
     });
   },
-  average: (state, _, prevProps, nextProps) => {
-    if (!propsChanged(prevProps, nextProps, ['data'])) return state;
-
-    return assign({}, state, {
-      average: AsterChart.getAverageFromInputData(nextProps.data, nextProps.valueField),
-    });
-  },
   radii: (state, _, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, ['height', 'width'])) return state;
 
@@ -502,13 +718,16 @@ AsterChart.propUpdates = {
         nextProps.radiusCenterProportion)
     });
   },
-  transformTranslate: (state, _, prevProps, nextProps) => {
-    if (!propsChanged(prevProps, nextProps, ['height', 'width'])) return state;
+  styleAsterGroup: (state, _, prevProps, nextProps) => {
+    if (!propsChanged(prevProps, nextProps, ['height', 'styleAsterGroup', 'width'])) return state;
 
     return assign({}, state, {
-      transformTranslate: {
-        transform: `translate(${nextProps.width / 2}px, ${nextProps.height / 2}px)`
-      },
+      styleAsterGroup: assign({},
+        {
+          transform: `translate(${nextProps.width / 2}px, ${nextProps.height / 2}px)`,
+        },
+        nextProps.styleAsterGroup
+      ),
     });
   },
 };

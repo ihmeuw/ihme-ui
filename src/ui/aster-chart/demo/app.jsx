@@ -149,14 +149,17 @@ class App extends React.Component {
       <div className="app-container">
         <div className="aster-code">
           <section>
-            {/*<pre><code>
+            {/* <pre><code>
                <AsterChart
-                 fieldAccessors={this.state.fieldAccessors}
-                 colorKey="label"
+                 boundsLowerField={this.state.boundsLowerField}
+                 boundsUpperField={this.state.boundsUpperField}
+                 colorField="label"
                  colorScale={colorScale}
                  data={inputData[this.state.dataIndex]}
                  domain={[0, 100]}
                  keyField="id"
+                 labelField={this.state.labelField}
+                 labelOuterField={this.state.labelOuterField}
                  onMouseOver={this.onMouseOver}
                  onMouseMove={this.onMouseMove}
                  onMouseLeave={this.onMouseLeave}
@@ -164,8 +167,9 @@ class App extends React.Component {
                  onScoreClick={this.onScoreClick}
                  selectedArcs={this.state.selectedArcs}
                  ticks={5}
+                 valueField="score"
                />
-            </code></pre>*/}
+            </code></pre> */}
           </section>
         </div>
         <div style={{ display: 'flex', flex: '1 0 auto', flexDirection: 'column' }}>

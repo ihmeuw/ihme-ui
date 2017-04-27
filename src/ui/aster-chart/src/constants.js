@@ -21,10 +21,10 @@ export const TEXT_SIZE_DENOMINATOR = 28.5;
 /**
  * constants for score.jsx
  */
-export const BOTTOM_DY = '3.2em';
-export const BOTTOM_TEXT_DIVISOR = 23;
-export const MIDDLE_TEXT_DIVISOR = 5;
-export const MIDDLE_DY = '.39em';
-export const SCORE_GROUP_DY = '1em';
-export const TOP_DY = '-1.1em';
-export const TOP_TEXT_DIVISOR = 12;
+export const DY_BOTTOM = '3.2em';
+export const DY_MIDDLE = '.39em';
+export const DY_TOP = '-1.1em';
+export const LENGTH_MULTIPLIER = 5;
+export const TEXT_DIVISOR_BOTTOM = 23;
+export const TEXT_DIVISOR_MIDDLE = 5;
+export const TEXT_DIVISOR_TOP = 12;

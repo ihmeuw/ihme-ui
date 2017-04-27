@@ -1,25 +1,66 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import { CommonPropTypes } from '../../../utils';
+import {
+  assign,
+} from 'lodash';
 
-export default function AsterArc(props) {
-  const {
-    className,
-    d,
-    datum,
-    fill,
-    style,
-  } = props;
+import {
+  CommonPropTypes,
+  propsChanged,
+  PureComponent,
+  stateFromPropUpdates,
+} from '../../../utils';
 
-  return (
-    <path
-      className={classNames(className)}
-      d={d}
-      fill={fill}
-      style={(typeof style === 'function') ? style(datum) : style}
-    />
-  );
+export default class AsterArc extends PureComponent {
+  static getStyle({ datum, fill, selected, style, styleSelected }) {
+    const baseStyle = { fill };
+    const computedStyle = typeof style === 'function' ? style(datum) : style;
+    let computedSelectedStyle = {};
+
+    // if arc is selected, compute selectedStyle
+    if (selected) {
+      computedSelectedStyle = typeof selectedStyle === 'function' ?
+        styleSelected(datum) : styleSelected;
+    }
+
+    return assign({}, baseStyle, computedStyle, computedSelectedStyle);
+  }
+
+  constructor(props) {
+    super(props);
+
+    this.state = stateFromPropUpdates(AsterArc.propUpdates, {}, props, {});
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState(
+      stateFromPropUpdates(
+        AsterArc.propUpdates,
+        this.props,
+        nextProps,
+        this.state,
+        this
+      )
+    );
+  }
+
+  render() {
+    const {
+      className,
+      classNameSelected,
+      d,
+      selected
+    } = this.props;
+
+    return (
+      <path
+        className={classNames(className, { [classNameSelected]: selected && classNameSelected })}
+        d={d}
+        style={this.state.style}
+      />
+    );
+  }
 }
 
 AsterArc.propTypes = {
@@ -29,6 +70,11 @@ AsterArc.propTypes = {
   className: CommonPropTypes.className,
 
   /**
+   * the css class of the arc when it is selected
+   */
+  classNameSelected: CommonPropTypes.className,
+
+  /**
    * the d attribute of the path of the arc
    */
   d: React.PropTypes.string.isRequired,
@@ -36,12 +82,17 @@ AsterArc.propTypes = {
   /**
    * Datum object corresponding to this AsterArc ("bound" data, in the language in D3)
    */
-  datum: React.PropTypes.object,
+  datum: React.PropTypes.objectOf(React.PropTypes.string).isRequired,
 
   /**
    * the svg fill of the arc
    */
   fill: React.PropTypes.string,
+
+  /**
+   * Whether arc is selected.
+   */
+  selected: React.PropTypes.bool.isRequired,
 
   /**
    * Base inline styles applied to `<AsterArc />`s.
@@ -53,5 +104,36 @@ AsterArc.propTypes = {
 
 AsterArc.defaultProps = {
   className: '',
+  classNameSelected: '',
   fill: 'none',
+  selected: false,
+  styleSelected: {},
+  style: {},
+};
+
+AsterArc.propUpdates = {
+  // update style if datum, selected, selectedStyle, or style have changed
+  style: (state, propName, prevProps, nextProps) => {
+    if (!propsChanged(
+      prevProps,
+      nextProps, [
+        'datum',
+        'fill',
+        'selected',
+        'style',
+        'styleSelected',
+      ])) {
+      return state;
+    }
+
+    return assign(state, {
+      style: AsterArc.getStyle({
+        datum: nextProps.datum,
+        fill: nextProps.fill,
+        selected: nextProps.selected,
+        style: nextProps.style,
+        styleSelected: nextProps.selectedStyle,
+      }),
+    });
+  },
 };

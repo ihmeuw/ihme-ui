@@ -1,6 +1,9 @@
 import React from 'react';
 import classNames from 'classnames';
-import { includes } from 'lodash';
+
+import {
+  assign,
+} from 'lodash';
 
 import {
   CommonPropTypes,
@@ -45,6 +48,21 @@ export default class AsterLabels extends PureComponent {
     return `translate(${center}) rotate(${angle})`;
   }
 
+  static getStyle({ datum, fontSize, selected, style, styleSelected }) {
+    const baseStyle = { fontSize };
+
+    const computedStyle = typeof style === 'function' ? style(datum) : style;
+    let computedSelectedStyle = {};
+
+    // if arc is selected, compute selectedStyle
+    if (selected) {
+      computedSelectedStyle = typeof selectedStyle === 'function' ?
+        styleSelected(datum) : styleSelected;
+    }
+
+    return assign({}, baseStyle, computedStyle, computedSelectedStyle);
+  }
+
   /**
    * takes arc outline d attr and returns just outer edge of that d attr
    * @param {object} datum - the datum of the aster arc
@@ -78,12 +96,18 @@ export default class AsterLabels extends PureComponent {
       classNameOuterLabel,
       classNameOuterLabelSelected,
       datum,
+      formatOuterLabel,
       keyField,
       labelField,
       labelOuterField,
       radius,
       outlineFunction,
-      selectedArcs,
+      selected,
+      styleLabel,
+      styleLabelOutline,
+      styleOuterArc,
+      styleOuterLabel,
+      styleOuterLabelSelected,
     } = this.props;
 
     const angle = AsterLabels.calculateAngle(datum, 0, 0);
@@ -95,40 +119,55 @@ export default class AsterLabels extends PureComponent {
           dy={LABEL_OUTLINE_DY}
           textAnchor="middle"
           transform={AsterLabels.determineLabelTransform(datum, outlineFunction)}
-          fontSize={`${radius / TEXT_SIZE_DENOMINATOR}px`}
+          style={AsterLabels.getStyle({
+            datum,
+            style: styleLabelOutline,
+            fontSize: `${radius / TEXT_SIZE_DENOMINATOR}px`,
+          })}
         >
-          {labelField ? propResolver(datum.data, labelField) : ''}
+          {propResolver(datum.data, labelField)}
         </text>
         <text
           className={classNames(classNameLabel)}
           dy={LABEL_DY}
           textAnchor="middle"
           transform={AsterLabels.determineLabelTransform(datum, outlineFunction)}
-          fontSize={`${radius / TEXT_SIZE_DENOMINATOR}px`}
+          style={AsterLabels.getStyle({
+            datum,
+            style: styleLabel,
+            fontSize: `${radius / TEXT_SIZE_DENOMINATOR}px`,
+
+          })}
         >
-          {labelField ? propResolver(datum.data, labelField) : ''}
+          {propResolver(datum.data, labelField)}
         </text>
 
         <path
           className={classNames(classNameOuterArc)}
           id={`outer-arc-${datum.data[keyField]}`}
           d={AsterLabels.outerArcFunction(datum, outlineFunction)}
+          style={AsterLabels.getStyle({ datum, style: styleOuterArc })}
         />
         <text
-          className={
-            (includes(selectedArcs.map(
-              selected => propResolver(selected.data, keyField)),
-              propResolver(datum.data, keyField))
-            ) ? classNames(classNameOuterLabelSelected) : classNames(classNameOuterLabel)
-          }
+          className={classNames(
+            classNameOuterLabel, {
+              [classNameOuterLabelSelected]: selected && classNameOuterLabelSelected,
+            })}
           dy={(angle < NINETY_DEGREES && angle > NEG_NINETY_DEGREES) ? POS_OFFSET : NEG_OFFSET}
+          style={AsterLabels.getStyle({
+            datum,
+            selected,
+            style: styleOuterLabel,
+            styleSelected: styleOuterLabelSelected,
+            transform: null,
+          })}
         >
           <textPath
             startOffset="50%"
             textAnchor="middle"
             xlinkHref={`#outer-arc-${datum.data[keyField]}`}
           >
-            {labelOuterField ? propResolver(datum.data, labelOuterField) : ''}
+            {formatOuterLabel(propResolver(datum.data, labelOuterField))}
           </textPath>
         </text>
       </g>
@@ -177,22 +216,94 @@ AsterLabels.propTypes = {
   }).isRequired,
 
   /**
+   * an optional function to format the content in the labels that surround the
+   * Aster-Chart
+   */
+  formatOuterLabel: React.PropTypes.func.isRequired,
+
+  /**
+   * unique key of datum (if originally a function, string should be interpolated by parent)
+   */
+  keyField: React.PropTypes.oneOfType([
+    React.PropTypes.string,
+  ]).isRequired,
+
+  /**
    * property in data to access what text a label should display
    */
-  labelField: CommonPropTypes.dataAccessor,
+  labelField: CommonPropTypes.dataAccessor.isRequired,
 
   /**
    * property in data to access what the score should display on edge of aster
    */
-  labelOuterField: CommonPropTypes.dataAccessor,
-
-  /**
-   *  radius of aster-plot
-   */
-  radius: React.PropTypes.number,
+  labelOuterField: CommonPropTypes.dataAccessor.isRequired,
 
   /**
    *  d3 function for finding the outline of the aster-arc
    */
-  outlineFunction: React.PropTypes.func,
+  outlineFunction: React.PropTypes.func.isRequired,
+
+  /**
+   *  radius of aster-plot
+   */
+  radius: React.PropTypes.number.isRequired,
+
+  /**
+   * Whether arc is selected.
+   */
+  selected: React.PropTypes.bool,
+
+  /**
+   * Base inline styles applied to main arc label of `<AsterLabel />`s
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<Arc />`.
+   */
+  styleLabel: CommonPropTypes.style,
+
+  /**
+   * Base inline styles applied to outline of arc label of `<AsterLabel />`s
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<Arc />`.
+   */
+  styleLabelOutline: CommonPropTypes.style,
+
+  /**
+   * Base inline styles applied to outer arc that `<AsterLabel />`s
+   * outer label is positioned by.
+   * it's not advisable to change this since it is mainly a positioning element for the outer label.
+   * but. do what your hear tells you.
+   *
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<Arc />`.
+   */
+  styleOuterArc: CommonPropTypes.style,
+
+  /**
+   * Base inline styles applied to outer label of `<AsterLabel />`s
+   * Usually, this label will show the score represented by the arc it corresponds to
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<Arc />`.
+   */
+  styleOuterLabel: CommonPropTypes.style,
+
+  /**
+   * Base inline styles applied to a selected arc's outer label of `<AsterLabel />`s
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<Arc />`.
+   */
+  styleOuterLabelSelected: CommonPropTypes.style,
+};
+
+AsterLabels.defaultProps = {
+  classNameLabel: '',
+  classNameLabelOutline: '',
+  classNameOuterArc: '',
+  classNameOuterLabel: '',
+  classNameOuterLabelSelected: '',
+  selected: false,
+  styleLabel: {},
+  styleLabelOutline: {},
+  styleOuterArc: {},
+  styleOuterLabel: {},
+  styleOuterLabelSelected: {},
 };

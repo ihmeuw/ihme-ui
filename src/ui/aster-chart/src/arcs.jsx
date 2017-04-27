@@ -3,8 +3,6 @@ import classNames from 'classnames';
 
 import {
   bindAll,
-  includes,
-  map,
   noop,
 } from 'lodash';
 
@@ -66,10 +64,13 @@ export default class AsterArcs extends PureComponent {
       colorField,
       colorScale,
       datum,
-      keyField,
       outlineFunction,
-      selectedArcs,
-      underArcStyle,
+      selected,
+      styleArc,
+      styleArcGroup,
+      styleOverArc,
+      styleSelectedArc,
+      styleUnderArc,
     } = this.props;
 
     return (
@@ -79,28 +80,29 @@ export default class AsterArcs extends PureComponent {
         onMouseLeave={this.onMouseLeave}
         onMouseMove={this.onMouseMove}
         onMouseOver={this.onMouseOver}
+        style={styleArcGroup}
       >
         <AsterArc
           className={classNames(classNameUnder)}
           d={outlineFunction(datum)}
           datum={datum}
-          style={underArcStyle} // template to follow for style
+          style={styleUnderArc}
         />
         <AsterArc
           className={classNames(classNameArc)}
           d={arcValueFunction(datum)}
           datum={datum}
           fill={colorScale(propResolver(datum.data, colorField))}
+          style={styleArc}
         />
         <AsterArc
-          className={
-            (includes(map(selectedArcs, selected =>
-              propResolver(selected.data, keyField)), propResolver(datum.data, keyField)))
-              ? classNames(classNameSelectedArcs)
-              : classNames(classNameOver)
-          }
+          className={classNames(classNameOver)}
+          classNameSelected={classNames(classNameSelectedArcs)}
           d={outlineFunction(datum)}
           datum={datum}
+          selected={selected}
+          style={styleOverArc}
+          styleSelected={styleSelectedArc}
         />
       </g>
     );
@@ -109,12 +111,20 @@ export default class AsterArcs extends PureComponent {
 
 AsterArcs.propTypes = {
   /**
-   * non-selected outline stroke color
+   * This is a function that is provided by d3.arc() to calculate
+   * the d attribute of the colored `value` portion of AsterArc path.
+   *
+   * This prop is automatically populated by the AsterChart that calls it
    */
-  arcOutlineStroke: React.PropTypes.string,
+  arcValueFunction: React.PropTypes.func.isRequired,
 
   /**
-   * name of css class for the group of arcs
+   * name of css class for the colored `value` arc of <AsterArcs />
+   */
+  classNameArc: CommonPropTypes.className,
+
+  /**
+   * name of css class for the returned group of arcs that make up <AsterArcs />
    */
   classNameArcGroup: CommonPropTypes.className,
 
@@ -124,6 +134,11 @@ AsterArcs.propTypes = {
   classNameOver: CommonPropTypes.className,
 
   /**
+   * name of css class for the over arcs
+   */
+  classNameSelectedArcs: CommonPropTypes.className,
+
+  /**
    * name of css class for the under arcs
    */
   classNameUnder: CommonPropTypes.className,
@@ -131,7 +146,7 @@ AsterArcs.propTypes = {
   /**
    * - prop in data that maps to colorScale
    */
-  colorKey: CommonPropTypes.dataAccessor.isRequired,
+  colorField: CommonPropTypes.dataAccessor.isRequired,
 
   /**
    * - scale function used with colorProp to determine appropriate color
@@ -186,19 +201,73 @@ AsterArcs.propTypes = {
   onMouseOver: React.PropTypes.func,
 
   /**
-   * an array of the selected arcs key ids
+   * This is a function that is provided by d3.arc() to calculate
+   * the d attribute of the full outline of the AsterArc path.
+   *
+   * This prop is automatically populated by the AsterChart that calls it
    */
-  selectedArcs: React.PropTypes.arrayOf(
-    React.PropTypes.oneOfType([
-      React.PropTypes.number,
-      React.PropTypes.string
-    ])
-  ),
+  outlineFunction: React.PropTypes.func.isRequired,
+
+  /**
+   * Whether arc is selected.
+   */
+  selected: React.PropTypes.bool.isRequired,
+
+  /**
+   * Base inline styles applied to `<Arc />`s. (Controls color fill -- may have side effects since
+   * fill is automatically chosen by the colorScale given to Aster-Chart)
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<Arc />`
+   * and return value spread into line styles;
+   * signature: (datum) => obj
+   */
+  styleArc: CommonPropTypes.style,
+
+  /**
+   * Inline styles applied to main `g` element returned in `<Arc />`.
+   * fill is automatically chosen by the colorScale given to Aster-Chart)
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<Arc />`
+   * and return value spread into line styles;
+   * signature: (datum) => obj
+   */
+  styleArcGroup: CommonPropTypes.style,
+
+  /**
+   * Base inline styles applied to overlaying `<Arc />`s. (controls non-selected outline)
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<Arc />`.
+   */
+  styleOverArc: CommonPropTypes.style,
+
+  /**
+   * Selected inline styles applied to overlaying `<Arc />`s. (Control's selected outline)
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<Arc />`.
+   */
+  styleSelectedArc: CommonPropTypes.style,
+
+  /**
+   * Base inline styles applied to underlying `<Arc />`s. (Controls hover)
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<Arc />`.
+   */
+  styleUnderArc: CommonPropTypes.style,
 };
 
 AsterArcs.defaultProps = {
+  classNameArc: '',
+  classNameArcGroup: '',
+  classNameOver: '',
+  classNameSelectedArcs: '',
+  classNameUnder: '',
   onClick: noop,
   onMouseLeave: noop,
   onMouseMove: noop,
   onMouseOver: noop,
+  styleArc: {},
+  styleArcGroup: {},
+  styleOverArc: {},
+  styleSelectedArc: {},
+  styleUnderArc: {},
 };

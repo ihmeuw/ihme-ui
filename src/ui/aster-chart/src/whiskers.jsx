@@ -8,7 +8,7 @@ import {
   PureComponent,
 } from '../../../utils';
 
-import AsterWhisker from './whisker';
+import { LENGTH_MULTIPLIER } from './constants';
 
 export default class AsterWhiskers extends PureComponent {
   static getBounds({ x1, y1, x2, y2 }, lengthMultiplier) {
@@ -71,6 +71,7 @@ export default class AsterWhiskers extends PureComponent {
       className,
       data,
       lengthMultiplier,
+      style,
     } = this.props;
 
     if (isEmpty(boundsLowerField)) return null;
@@ -79,21 +80,24 @@ export default class AsterWhiskers extends PureComponent {
     const bounds = AsterWhiskers.getBounds(whisker, lengthMultiplier);
 
     return (
-      <g className={classNames(className)}>
+      <g
+        className={classNames(className)}
+        style={(typeof style === 'function') ? style(data) : style}
+      >
         <g>
-          <AsterWhisker
+          <line
             x1={whisker.x1}
             y1={whisker.y1}
             x2={whisker.x2}
             y2={whisker.y2}
           />
-          <AsterWhisker
+          <line
             x1={bounds.lower.x1}
             y1={bounds.lower.y1}
             x2={bounds.lower.x2}
             y2={bounds.lower.y2}
           />
-          <AsterWhisker
+          <line
             x1={bounds.upper.x1}
             y1={bounds.upper.y1}
             x2={bounds.upper.x2}
@@ -150,9 +154,20 @@ AsterWhiskers.propTypes = {
    * size of full radius of aster-chart
    */
   radius: React.PropTypes.number.isRequired,
+
+  /**
+   * Base inline styles applied to `<AsterWhiskers />`s.
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<AsterWhiskers />`.
+   */
+  style: CommonPropTypes.style,
 };
 
 AsterWhiskers.defaultProps = {
+  boundsLowerField: '',
+  boundsUpperField: '',
+  className: '',
   uncertaintyProps: null,
-  lengthMultiplier: 5,
+  lengthMultiplier: LENGTH_MULTIPLIER,
+  style: {},
 };

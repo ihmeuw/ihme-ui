@@ -1,17 +1,31 @@
 import React from 'react';
 import classNames from 'classnames';
-import { bindAll, noop } from 'lodash';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 
-import { CommonPropTypes, PureComponent } from '../../../utils';
 import {
-  BOTTOM_DY,
-  BOTTOM_TEXT_DIVISOR,
-  MIDDLE_TEXT_DIVISOR,
-  MIDDLE_DY,
-  SCORE_GROUP_DY,
-  TOP_DY,
-  TOP_TEXT_DIVISOR,
+  assign,
+  bindAll,
+  noop,
+  reduce,
+} from 'lodash';
+
+import {
+  CommonPropTypes,
+  propsChanged,
+  propResolver,
+  PureComponent,
+  stateFromPropUpdates,
+} from '../../../utils';
+
+import {
+  DY_BOTTOM,
+  TEXT_DIVISOR_BOTTOM,
+  TEXT_DIVISOR_MIDDLE,
+  DY_MIDDLE,
+  DY_TOP,
+  TEXT_DIVISOR_TOP,
 } from './constants';
+
 import styles from './aster-chart.css';
 
 export default class AsterScore extends PureComponent {
@@ -24,6 +38,27 @@ export default class AsterScore extends PureComponent {
       'onMouseMove',
       'onMouseOver',
     ]);
+
+    this.state = stateFromPropUpdates(AsterScore.propUpdates, {}, props, {});
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState(
+      stateFromPropUpdates(
+        AsterScore.propUpdates,
+        this.props,
+        nextProps,
+        this.state,
+        this
+      )
+    );
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    // only update if data is not being currently loaded,
+    // and when props have changed,
+    return !nextProps.loading
+      && PureRenderMixin.shouldComponentUpdate.call(this, nextProps, nextState);
   }
 
   // e.g., select the average (score)
@@ -56,42 +91,44 @@ export default class AsterScore extends PureComponent {
 
   render() {
     const {
-      average,
-      bottomDy,
+      dyBottom,
+      dyMiddle,
+      dyTop,
       centerTextBottom,
       centerTextTop,
       className,
-      middleDy,
       radius,
-      scoreGroupDy,
-      topDy,
+      style,
+      textDivisorBottom,
+      textDivisorMiddle,
+      textDivisorTop,
     } = this.props;
 
     return (
       <g
         className={classNames(className)}
         textAnchor="middle"
-        dy={scoreGroupDy}
         onClick={this.onClick}
         onMouseLeave={this.onMouseLeave}
         onMouseMove={this.onMouseMove}
         onMouseOver={this.onMouseOver}
+        style={style}
       >
         <text
-          dy={topDy}
-          fontSize={`${radius / TOP_TEXT_DIVISOR}px`}
+          dy={dyTop}
+          fontSize={`${radius / textDivisorTop}px`}
         >
           {centerTextTop}
         </text>
         <text
-          dy={middleDy}
-          fontSize={`${radius / MIDDLE_TEXT_DIVISOR}px`}
+          dy={dyMiddle}
+          fontSize={`${radius / textDivisorMiddle}px`}
         >
-          {average}
+          {this.state.average}
         </text>
         <text
-          dy={bottomDy}
-          fontSize={`${radius / BOTTOM_TEXT_DIVISOR}px`}
+          dy={dyBottom}
+          fontSize={`${radius / textDivisorBottom}px`}
         >
           {centerTextBottom}
         </text>
@@ -101,11 +138,6 @@ export default class AsterScore extends PureComponent {
 }
 
 AsterScore.propTypes = {
-  /**
-   *  the 'average' is the content displayed in the center of the score element
-   */
-  average: React.PropTypes.oneOf([React.PropTypes.string, React.PropTypes.number]),
-
   /**
    *  text to display below score of the Aster-Chart's center element
    */
@@ -122,9 +154,35 @@ AsterScore.propTypes = {
   className: CommonPropTypes.className,
 
   /**
-   *  radius of the aster chart
+   * For determining classes, if classes is a function.
+   * If not providing classes, or providing classes as an object, this
+   * prop is not necessary
+   * (the dataset for the Aster-Chart)
    */
-  radius: React.PropTypes.number.isRequired,
+  data: React.PropTypes.arrayOf(React.PropTypes.object),
+
+  /**
+   * The `dy` attribute of the bottom text in the center element of the Aster-Chart.
+   * This prop affects positioning
+   */
+  dyBottom: React.PropTypes.string,
+
+  /**
+   * The `dy` attribute of the middle text in the center element of the Aster-Chart.
+   * This prop affects positioning
+   */
+  dyMiddle: React.PropTypes.string,
+
+  /**
+   * The `dy` attribute of the bottom text in the center element of the Aster-Chart.
+   * This prop affects positioning
+   */
+  dyTop: React.PropTypes.string,
+
+  /**
+   * Function to format the average shown in center of Aster-Chart
+   */
+  formatScore: React.PropTypes.func.isRequired,
 
   /**
    *  function to be called when clicked
@@ -145,17 +203,80 @@ AsterScore.propTypes = {
    *  function to be called when onMouseOver
    */
   onMouseOver: React.PropTypes.func,
+
+  /**
+   *  radius of the aster chart
+   */
+  radius: React.PropTypes.number.isRequired,
+
+  /**
+   * Inline style applied to center score element of Aster-Chart.
+   *
+   * Unlike other classes props for Aster-Chart, this cannot be a function since no
+   * data is being iterated over when it is applied.
+   */
+  style: React.PropTypes.objectOf(React.PropTypes.string),
+
+  /**
+   * The font size is determined by how big the radius of the Aster-Chart is.
+   * 'textDivisorBottom' divides the radius to give the calculated font-size to fit in the center
+   * of the Aster-Chart.  fontSize={`${radius / textDivisorBottom}px`}
+   * This lets the font grow and shrink.
+   */
+  textDivisorBottom: React.PropTypes.number,
+  /**
+   * The font size is determined by how big the radius of the Aster-Chart is.
+   * 'textDivisorMiddle' divides the radius to give the calculated font-size to fit in the center
+   * of the Aster-Chart.  fontSize={`${radius / textDivisorMiddle}px`}
+   * This lets the font grow and shrink.
+   */
+  textDivisorMiddle: React.PropTypes.number,
+
+  /**
+   * The font size is determined by how big the radius of the Aster-Chart is.
+   * 'textDivisorTop' divides the radius to give the calculated font-size to fit in the center
+   * of the Aster-Chart.  fontSize={`${radius / textDivisorTop}px`}
+   * This lets the font grow and shrink.
+   */
+  textDivisorTop: React.PropTypes.number,
+
+  /**
+   * the name of the field of the Aster can derive value from.
+   * i.e. measure, score, or any quantifiable value to display
+   */
+  valueField: CommonPropTypes.dataAccessor.isRequired,
 };
 
 AsterScore.defaultProps = {
-  bottomDy: BOTTOM_DY,
+  centerTextBottom: '',
+  centerTextTop: '',
   className: styles.asterScore,
-  middleDy: MIDDLE_DY,
+  data: [{}],
+  dyBottom: DY_BOTTOM,
+  dyMiddle: DY_MIDDLE,
+  dyTop: DY_TOP,
   onClick: noop,
   onMouseLeave: noop,
   onMouseMove: noop,
   onMouseOver: noop,
-  scoreGroupDy: SCORE_GROUP_DY,
-  topDy: TOP_DY,
+  style: {},
+  textDivisorBottom: TEXT_DIVISOR_BOTTOM,
+  textDivisorMiddle: TEXT_DIVISOR_MIDDLE,
+  textDivisorTop: TEXT_DIVISOR_TOP,
 };
 
+AsterScore.propUpdates = {
+  average: (state, _, prevProps, nextProps) => {
+    if (!propsChanged(prevProps, nextProps, ['data', 'formatScore', 'valueField'])) return state;
+
+    return assign({}, state, {
+      average: nextProps.formatScore(
+        reduce(
+          nextProps.data,
+          (a, b) => a + +propResolver(b.data, nextProps.valueField),
+          0
+        ) / nextProps.data.length
+      ),
+    });
+  },
+};

@@ -9,8 +9,8 @@ import {
   PureComponent,
   stateFromPropUpdates,
 } from '../../../utils';
+
 import { linspace } from '../../../utils/array';
-import AsterTickCircle from './tick-circle';
 
 export default class AsterTickCircles extends PureComponent {
   constructor(props) {
@@ -29,15 +29,16 @@ export default class AsterTickCircles extends PureComponent {
     ));
   }
 
-  renderCircles(tickValues, className) {
+  renderCircles(tickValues, className, style) {
     return (
       <g>
         {
-          map(tickValues, (d) => (
-            <AsterTickCircle
-              r={this.state.scale(d)}
-              key={`circle-${d}`}
+          map(tickValues, tick => (
+            <circle
               className={classNames(className)}
+              key={`circle-${tick}`}
+              r={this.state.scale(tick)}
+              style={style}
             />
           ))
         }
@@ -48,8 +49,10 @@ export default class AsterTickCircles extends PureComponent {
   render() {
     const {
       children,
-      innerTickClassName,
-      outerTickClassName,
+      classNameInnerTick,
+      classNameOuterTick,
+      styleInnerTick,
+      styleOuterTick,
     } = this.props;
 
     const { tickValues } = this.state;
@@ -58,14 +61,16 @@ export default class AsterTickCircles extends PureComponent {
       <g>
         {this.renderCircles(
           tickValues.slice(1, -1),
-          innerTickClassName
+          classNameInnerTick,
+          styleInnerTick
         )}
 
         {children}
 
         {this.renderCircles(
           [tickValues[0], tickValues[tickValues.length - 1]],
-          outerTickClassName
+          classNameOuterTick,
+          styleOuterTick
         )}
       </g>
     );
@@ -82,6 +87,16 @@ AsterTickCircles.propTypes = {
   ]).isRequired,
 
   /**
+   * css class for the inner tick guides of the aster chart
+   */
+  classNameInnerTick: CommonPropTypes.className.isRequired,
+
+  /**
+   * css class for the outlining circles (most inner and most outer)
+   */
+  classNameOuterTick: CommonPropTypes.className.isRequired,
+
+  /**
    * domain of data
    */
   domain: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
@@ -92,19 +107,25 @@ AsterTickCircles.propTypes = {
   innerRadius: React.PropTypes.number.isRequired,
 
   /**
-   * css class for the inner tick guides of the aster chart
-   */
-  innerTickClassName: CommonPropTypes.className,
-
-  /**
-   * css class for the outlining circles (most inner and most outer)
-   */
-  outerTickClassName: CommonPropTypes.className,
-
-  /**
    * radius of aster-chart
    */
   radius: React.PropTypes.number.isRequired,
+
+  /**
+   * Inline style applied to inner ticks of Aster-Chart.
+   *
+   * Unlike other classes props for Aster-Chart, this cannot be a function since no
+   * data is being iterated over when it is applied.
+   */
+  styleInnerTick: React.PropTypes.objectOf(React.PropTypes.string),
+
+  /**
+   * Inline style applied to outer ticks of Aster-Chart.
+   *
+   * Unlike other classes props for Aster-Chart, this cannot be a function since no
+   * data is being iterated over when it is applied.
+   */
+  styleOuterTick: React.PropTypes.objectOf(React.PropTypes.string),
 
   /**
    * number of tick circles
@@ -129,4 +150,9 @@ AsterTickCircles.propUpdates = {
       tickValues: linspace(nextProps.domain, nextProps.ticks),
     });
   },
+};
+
+AsterTickCircles.defaultProps = {
+  styleInnerTick: {},
+  styleOuterTick: {},
 };
