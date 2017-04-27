@@ -116,9 +116,14 @@ class App extends React.Component {
     this.setState({ selectedArcs: [datum] });
   }
 
-  onScoreClick(e, scoreProps) {
-    const { label, score } = this.state.selectedArcs[0].data;
-    alert(`AVERAGE: ${scoreProps.average}\n${label}: ${score}`); // eslint-disable-line
+  onScoreClick(e, scoreProps, asterScore) {
+    let selectedMessage = '';
+    if (this.state.selectedArcs[0]) {
+      const { label, score } = this.state.selectedArcs[0].data;
+      selectedMessage = `\n${label}: ${score}`;
+    }
+
+    alert(`AVERAGE: ${asterScore.state.average}${selectedMessage}`); // eslint-disable-line
   }
 
   toggleDataSet(_, selectedOptionValue) {

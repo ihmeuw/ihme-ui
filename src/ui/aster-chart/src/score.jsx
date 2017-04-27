@@ -224,6 +224,7 @@ AsterScore.propTypes = {
    * This lets the font grow and shrink.
    */
   textDivisorBottom: React.PropTypes.number,
+
   /**
    * The font size is determined by how big the radius of the Aster-Chart is.
    * 'textDivisorMiddle' divides the radius to give the calculated font-size to fit in the center

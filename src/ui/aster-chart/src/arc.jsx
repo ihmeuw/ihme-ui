@@ -23,7 +23,6 @@ export default class AsterArc extends PureComponent {
       computedSelectedStyle = typeof selectedStyle === 'function' ?
         styleSelected(datum) : styleSelected;
     }
-
     return assign({}, baseStyle, computedStyle, computedSelectedStyle);
   }
 
@@ -80,7 +79,9 @@ AsterArc.propTypes = {
   d: React.PropTypes.string.isRequired,
 
   /**
-   * Datum object corresponding to this AsterArc ("bound" data, in the language in D3)
+   * Datum object corresponding to this AsterArc.
+   * This object corresponds to the raw data that is bound to the d3.pie() data that
+   * the Aster-Chart consumes.
    */
   datum: React.PropTypes.objectOf(React.PropTypes.string).isRequired,
 
@@ -132,7 +133,7 @@ AsterArc.propUpdates = {
         fill: nextProps.fill,
         selected: nextProps.selected,
         style: nextProps.style,
-        styleSelected: nextProps.selectedStyle,
+        styleSelected: nextProps.styleSelected,
       }),
     });
   },

@@ -34,16 +34,6 @@ export default class AsterWhiskers extends PureComponent {
     };
   }
 
-  getRad(data, field) {
-    const {
-      domainEnd,
-      innerRadius,
-      radius,
-    } = this.props;
-
-    return ((radius - innerRadius) * (propResolver(data, field) / domainEnd)) + innerRadius;
-  }
-
   getWhiskers(d) {
     const {
       boundsLowerField: lower,

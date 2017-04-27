@@ -23,24 +23,11 @@ import {
 } from './constants';
 
 export default class AsterLabels extends PureComponent {
-  /**
-   * calculates the angle of the label based on the angle of the aster-arc
-   * @param {object} datum - the datum of the aster arc, containing startAngle and endAngle
-   * @param {number} offset - to be added to calculated angle
-   * @param {number} threshold - limit of the angle (will flip 180 degrees if exceeded)
-   * @returns {number}
-   */
   static calculateAngle(datum, offset, threshold) {
     const angle = ((datum.startAngle + datum.endAngle) * (NINETY_DEGREES / Math.PI)) + offset;
     return angle > threshold ? angle - ONE_EIGHTY_DEGREES : angle;
   }
 
-  /**
-   * determines the transform of aster-arc label
-   * @param {object} datum - the datum of the aster arc
-   * @param {function} outlineFunction - passed in function that returns outline of arc
-   * @returns {string}
-   */
   static determineLabelTransform(datum, outlineFunction) {
     const center = outlineFunction.centroid(datum);
     const angle = AsterLabels.calculateAngle(datum, NEG_NINETY_DEGREES, NINETY_DEGREES);
@@ -63,12 +50,6 @@ export default class AsterLabels extends PureComponent {
     return assign({}, baseStyle, computedStyle, computedSelectedStyle);
   }
 
-  /**
-   * takes arc outline d attr and returns just outer edge of that d attr
-   * @param {object} datum - the datum of the aster arc
-   * @param {function} outlineFunction - passed in function that returns outline of arc
-   * @returns {string} d attribute of path for outer aster-arc
-   */
   static outerArcFunction(datum, outlineFunction) {
     const angle = AsterLabels.calculateAngle(datum, 0, 0);
 
@@ -167,7 +148,7 @@ export default class AsterLabels extends PureComponent {
             textAnchor="middle"
             xlinkHref={`#outer-arc-${datum.data[keyField]}`}
           >
-            {formatOuterLabel(propResolver(datum.data, labelOuterField))}
+            {(labelOuterField) ? formatOuterLabel(propResolver(datum.data, labelOuterField)) : ''}
           </textPath>
         </text>
       </g>
@@ -231,12 +212,12 @@ AsterLabels.propTypes = {
   /**
    * property in data to access what text a label should display
    */
-  labelField: CommonPropTypes.dataAccessor.isRequired,
+  labelField: CommonPropTypes.dataAccessor,
 
   /**
    * property in data to access what the score should display on edge of aster
    */
-  labelOuterField: CommonPropTypes.dataAccessor.isRequired,
+  labelOuterField: CommonPropTypes.dataAccessor,
 
   /**
    *  d3 function for finding the outline of the aster-arc
@@ -300,6 +281,8 @@ AsterLabels.defaultProps = {
   classNameOuterArc: '',
   classNameOuterLabel: '',
   classNameOuterLabelSelected: '',
+  labelField: null,
+  labelOuterField: null,
   selected: false,
   styleLabel: {},
   styleLabelOutline: {},

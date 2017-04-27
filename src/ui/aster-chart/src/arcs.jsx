@@ -80,18 +80,18 @@ export default class AsterArcs extends PureComponent {
         onMouseLeave={this.onMouseLeave}
         onMouseMove={this.onMouseMove}
         onMouseOver={this.onMouseOver}
-        style={styleArcGroup}
+        style={(typeof styleArcGroup === 'function') ? styleArcGroup(datum) : styleArcGroup}
       >
         <AsterArc
           className={classNames(classNameUnder)}
           d={outlineFunction(datum)}
-          datum={datum}
+          datum={datum.data}
           style={styleUnderArc}
         />
         <AsterArc
           className={classNames(classNameArc)}
           d={arcValueFunction(datum)}
-          datum={datum}
+          datum={datum.data}
           fill={colorScale(propResolver(datum.data, colorField))}
           style={styleArc}
         />
@@ -99,7 +99,7 @@ export default class AsterArcs extends PureComponent {
           className={classNames(classNameOver)}
           classNameSelected={classNames(classNameSelectedArcs)}
           d={outlineFunction(datum)}
-          datum={datum}
+          datum={datum.data}
           selected={selected}
           style={styleOverArc}
           styleSelected={styleSelectedArc}
@@ -144,41 +144,29 @@ AsterArcs.propTypes = {
   classNameUnder: CommonPropTypes.className,
 
   /**
-   * - prop in data that maps to colorScale
+   * prop in data that maps to colorScale
    */
   colorField: CommonPropTypes.dataAccessor.isRequired,
 
   /**
-   * - scale function used with colorProp to determine appropriate color
+   * scale function used with colorProp to determine appropriate color fill of an arc
    */
   colorScale: React.PropTypes.func.isRequired,
 
   /**
    * the data to be displayed by 'arc'. 'endAngle', 'index', 'padAngle', 'startAngle', 'value' are
-   * determined by the d3.pie()function applied automatically by the aster-chart class.  The d3.pie()
+   * determined by the d3.pie()function applied automatically by the aster-chart class. The d3.pie()
    * function also holds a reference to the original 'data' used to make the datum object.  The only
    * field necessary in data is whichever property the colorKey was chosen.
    */
   datum: React.PropTypes.shape({
-    data: React.PropTypes.objectOf(
-      React.PropTypes.oneOf([
-        React.PropTypes.string,
-        React.PropTypes.number,
-      ])
-    ).isRequired,
+    data: React.PropTypes.object.isRequired,
     endAngle: React.PropTypes.number.isRequired,
     index: React.PropTypes.number.isRequired,
     padAngle: React.PropTypes.number.isRequired,
     startAngle: React.PropTypes.number.isRequired,
     value: React.PropTypes.number.isRequired,
   }).isRequired,
-
-  /**
-   * unique key of datum (if originally a function, string should be interpolated by parent)
-   */
-  keyField: React.PropTypes.oneOfType([
-    React.PropTypes.string,
-  ]).isRequired,
 
   /**
    * event handler callback for onClick
@@ -241,14 +229,14 @@ AsterArcs.propTypes = {
   styleOverArc: CommonPropTypes.style,
 
   /**
-   * Selected inline styles applied to overlaying `<Arc />`s. (Control's selected outline)
+   * Selected inline styles applied to overlaying `<Arc />`s. (control's selected outline)
    * If an object, spread into inline styles.
    * If a function, passed underlying datum corresponding to its `<Arc />`.
    */
   styleSelectedArc: CommonPropTypes.style,
 
   /**
-   * Base inline styles applied to underlying `<Arc />`s. (Controls hover)
+   * Base inline styles applied to underlying `<Arc />`s. (controls hover)
    * If an object, spread into inline styles.
    * If a function, passed underlying datum corresponding to its `<Arc />`.
    */

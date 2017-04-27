@@ -63,7 +63,7 @@ describe('<AsterChart />', () => {
           value: 'score',
         }}
         classNameAsterScore="aster-score"
-        colorKey="id"
+        colorField="id"
         colorScale={colorScale}
         data={data}
         domain={[0, 100]}
@@ -71,6 +71,7 @@ describe('<AsterChart />', () => {
         onScoreClick={clickHandler}
         selectedArcs={[{ data: { id: 'selected test arc' } }]}
         ticks={5}
+        valueField="score"
       />
     );
   });

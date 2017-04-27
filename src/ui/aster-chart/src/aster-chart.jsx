@@ -217,7 +217,6 @@ export default class AsterChart extends React.Component {
                      colorField={colorField}
                      colorScale={colorScale}
                      datum={datum}
-                     keyField={keyField}
                      onMouseOver={onMouseOver}
                      onMouseMove={onMouseMove}
                      onMouseLeave={onMouseLeave}
@@ -298,7 +297,7 @@ AsterChart.propTypes = {
   /**
    * css class for the classNameArc
    * arcGroup contains 'underArc', 'arc', and 'overArc'. This class is applied to the 'arc'
-   * component -- which displays the value of inputed data.
+   * component -- which displays the value of inputted data.
    */
   classNameArc: CommonPropTypes.className,
 
@@ -313,19 +312,14 @@ AsterChart.propTypes = {
   classNameAsterGroup: CommonPropTypes.className,
 
   /**
-   * css class for the AsterScore element in the center of the Aster-Chart
-   */
-  classNameAsterScore: CommonPropTypes.className,
-
-  /**
-   * css class for the entire aster chart group
-   */
-  classNameAsterGroupGroup: CommonPropTypes.className,
-
-  /**
    * css class for the score in the center of the aster chart
    */
   classNameAsterGroupScore: CommonPropTypes.className,
+
+  /**
+   * css class for the AsterScore element in the center of the Aster-Chart
+   */
+  classNameAsterScore: CommonPropTypes.className,
 
   /**
    * css class for the inner tick guides of the aster chart
@@ -384,6 +378,7 @@ AsterChart.propTypes = {
    * under arcs main function is to supply a hover color
    */
   classNameUnderArc: CommonPropTypes.className,
+
   /**
    * css class for the arc-group
    */
@@ -559,21 +554,21 @@ AsterChart.propTypes = {
    * If an object, spread into inline styles.
    * If a function, passed underlying datum corresponding to its `<AsterLabel />`.
    */
-  styleOuterArc: CommonPropTypes.style1,
+  styleOuterArc: CommonPropTypes.style,
 
   /**
    * Base inline styles applied to outer label of `<AsterLabel />`s.
    * If an object, spread into inline styles.
    * If a function, passed underlying datum corresponding to its `<AsterLabel />`.
    */
-  styleOuterLabel: CommonPropTypes.style1,
+  styleOuterLabel: CommonPropTypes.style,
 
   /**
    * Base inline styles applied to outside label of selected arcs of `<AsterLabel />`s.
    * If an object, spread into inline styles.
    * If a function, passed underlying datum corresponding to its `<AsterLabel />`.
    */
-  styleOuterLabelSelected: CommonPropTypes.style1,
+  styleOuterLabelSelected: CommonPropTypes.style,
 
   /**
    * Inline style applied to outer ticks of Aster-Chart.
@@ -620,13 +615,13 @@ AsterChart.propTypes = {
   styleWhiskers: CommonPropTypes.style,
 
   /**
-   * total number of circluar tick guides to display
+   * total number of circular tick guides to display
    */
   ticks: React.PropTypes.number,
 
   /**
    * the name of the field of the Aster can derive value from.
-   * i.e. measure, score, or any quantifyable value to display
+   * i.e. measure, score, or any quantifiable value to display
    */
   valueField: CommonPropTypes.dataAccessor.isRequired,
 
@@ -645,6 +640,7 @@ AsterChart.defaultProps = {
   classNameArcGroup: '',
   classNameAsterGroup: '',
   classNameAsterGroupScore: '',
+  classNameAsterScore: '',
   classNameInnerTick: '',
   classNameLabel: '',
   classNameLabelOutline: '',
@@ -658,8 +654,8 @@ AsterChart.defaultProps = {
   classNameUnderArc: '',
   classNameWhiskers: '',
   domain: [0, 100],
-  formatOuterLabel: Math.round,
-  formatScore: Math.round,
+  formatOuterLabel: value => Number(value).toFixed(1).replace(/\.0+(\D|$)/, '$1'),
+  formatScore: value => Number(value).toFixed(0),
   height: 100,
   labelField: null,
   labelOuterField: null,
