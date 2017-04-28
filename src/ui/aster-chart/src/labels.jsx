@@ -43,7 +43,7 @@ export default class AsterLabels extends PureComponent {
 
     // if arc is selected, compute selectedStyle
     if (selected) {
-      computedSelectedStyle = typeof selectedStyle === 'function' ?
+      computedSelectedStyle = typeof styleSelected === 'function' ?
         styleSelected(datum) : styleSelected;
     }
 

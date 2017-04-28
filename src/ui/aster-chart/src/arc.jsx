@@ -20,7 +20,7 @@ export default class AsterArc extends PureComponent {
 
     // if arc is selected, compute selectedStyle
     if (selected) {
-      computedSelectedStyle = typeof selectedStyle === 'function' ?
+      computedSelectedStyle = typeof styleSelected === 'function' ?
         styleSelected(datum) : styleSelected;
     }
     return assign({}, baseStyle, computedStyle, computedSelectedStyle);
@@ -115,15 +115,9 @@ AsterArc.defaultProps = {
 AsterArc.propUpdates = {
   // update style if datum, selected, selectedStyle, or style have changed
   style: (state, propName, prevProps, nextProps) => {
-    if (!propsChanged(
-      prevProps,
-      nextProps, [
-        'datum',
-        'fill',
-        'selected',
-        'style',
-        'styleSelected',
-      ])) {
+    const propsToCheck = ['datum', 'fill', 'selected', 'style', 'styleSelected'];
+
+    if (!propsChanged(prevProps, nextProps, propsToCheck)) {
       return state;
     }
 
