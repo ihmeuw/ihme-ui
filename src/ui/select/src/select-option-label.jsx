@@ -1,4 +1,6 @@
 import React, { PropTypes } from 'react';
+import { default as getValue } from 'lodash/get';
+
 
 /**
  * Flat option label
@@ -12,7 +14,7 @@ const flatOptionPropTypes = {
 };
 
 export function FlatOptionLabel(props) {
-  return <span>{props.option[props.labelKey] || ''}</span>;
+  return <span>{`${getValue(props.option, [props.labelKey], '')}`}</span>;
 }
 
 FlatOptionLabel.propTypes = flatOptionPropTypes;
@@ -40,7 +42,7 @@ export function HierarchicalOptionLabel(props) {
         fontWeight: props.option.bold ? 'bold' : 'normal',
       }}
     >
-      {props.option[props.labelKey] || ''}
+      {`${getValue(props.option, [props.labelKey], '')}`}
     </span>
   );
 }
