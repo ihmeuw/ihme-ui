@@ -26,10 +26,24 @@ describe('<SelectOptionLabel', () => {
         option: {
           name: 'Seattle',
         },
+        labelKey: 'other'
       };
       const wrapper = shallow(<FlatOptionLabel {...props} />);
 
       expect(wrapper).to.have.text('');
+    });
+
+    it('returns proper label if option[labelKey] is falsey but not undefined', () => {
+      const spec = [
+        { props: { option: { name: 0 }, labelKey: 'name' }, expectation: '0' },
+        { props: { option: { name: false }, labelKey: 'name' }, expectation: 'false' },
+        { props: { option: { name: null }, labelKey: 'name' }, expectation: 'null' },
+        { props: { option: { name: '' }, labelKey: 'name' }, expectation: '' },
+      ];
+      spec.forEach(test => {
+        const wrapper = shallow(<FlatOptionLabel {...test.props} />);
+        expect(wrapper).to.have.text(test.expectation);
+      });
     });
   });
 
