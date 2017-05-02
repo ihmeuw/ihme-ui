@@ -22,15 +22,14 @@ describe('<SelectOptionLabel', () => {
     });
 
     it('returns an empty string if option[labelKey] is undefined', () => {
-      const props = {
-        option: {
-          name: 'Seattle',
-        },
-        labelKey: 'other'
-      };
-      const wrapper = shallow(<FlatOptionLabel {...props} />);
-
-      expect(wrapper).to.have.text('');
+      const spec = [
+        { option: { name: 'Seattle' }, labelKey: 'other' },
+        { option: { name: undefined }, labelKey: 'name' },
+      ];
+      spec.forEach(props => {
+        const wrapper = shallow(<FlatOptionLabel {...props} />);
+        expect(wrapper).to.have.text('');
+      });
     });
 
     it('returns proper label if option[labelKey] is falsey but not undefined', () => {
@@ -38,6 +37,7 @@ describe('<SelectOptionLabel', () => {
         { props: { option: { name: 0 }, labelKey: 'name' }, expectation: '0' },
         { props: { option: { name: false }, labelKey: 'name' }, expectation: 'false' },
         { props: { option: { name: null }, labelKey: 'name' }, expectation: 'null' },
+        { props: { option: { name: NaN }, labelKey: 'name' }, expectation: 'NaN' },
         { props: { option: { name: '' }, labelKey: 'name' }, expectation: '' },
       ];
       spec.forEach(test => {
@@ -71,6 +71,31 @@ describe('<SelectOptionLabel', () => {
       spec.forEach((test) => {
         const wrapper = shallow(<HierarchicalOptionLabel {...test.props} />);
         expect(wrapper).to.have.style('font-weight', test.expectation);
+      });
+    });
+
+    it('returns an empty string if option[labelKey] is undefined', () => {
+      const spec = [
+        { option: { name: 'Seattle' }, labelKey: 'other' },
+        { option: { name: undefined }, labelKey: 'name' },
+      ];
+      spec.forEach(props => {
+        const wrapper = shallow(<HierarchicalOptionLabel {...props} />);
+        expect(wrapper).to.have.text('');
+      });
+    });
+
+    it('returns proper label if option[labelKey] is falsey but not undefined', () => {
+      const spec = [
+        { props: { option: { name: 0 }, labelKey: 'name' }, expectation: '0' },
+        { props: { option: { name: false }, labelKey: 'name' }, expectation: 'false' },
+        { props: { option: { name: null }, labelKey: 'name' }, expectation: 'null' },
+        { props: { option: { name: NaN }, labelKey: 'name' }, expectation: 'NaN' },
+        { props: { option: { name: '' }, labelKey: 'name' }, expectation: '' },
+      ];
+      spec.forEach(test => {
+        const wrapper = shallow(<HierarchicalOptionLabel {...test.props} />);
+        expect(wrapper).to.have.text(test.expectation);
       });
     });
   });
