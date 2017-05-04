@@ -85,6 +85,8 @@ export default class Choropleth extends React.Component {
   }
 
   componentDidMount() {
+    if (!this._svgSelection) return;
+
     const [x, y] = this.state.translate;
 
     this._svgSelection.call(
@@ -116,9 +118,7 @@ export default class Choropleth extends React.Component {
         cache = {};
       }
 
-      const visibleLayers = filter(nextProps.layers, { visible: true });
-
-      const uncachedLayers = filter(visibleLayers, (layer) =>
+      const uncachedLayers = filter(nextProps.layers, layer =>
         layer.type === 'mesh' || !has(cache[layer.type], layer.name)
       );
 
@@ -171,12 +171,15 @@ export default class Choropleth extends React.Component {
         this.clipExtent
       );
 
-      this._svgSelection.call(
-        this.zoom.transform,
-        zoomIdentity
-          .translate(state.translate[0], state.translate[1])
-          .scale(state.scale)
-      );
+      if (this._svgSelection) {
+        const [x, y] = state.translate;
+        this._svgSelection.call(
+          this.zoom.transform,
+          zoomIdentity
+            .translate(x, y)
+            .scale(state.scale)
+        );
+      }
     }
 
     // if the data has changed, transform it to be consumable by <Layer />
@@ -284,8 +287,6 @@ export default class Choropleth extends React.Component {
 
   renderLayers() {
     return this.props.layers.map((layer) => {
-      if (!layer.visible) return null;
-
       const key = `${layer.type}-${layer.name}`;
 
       switch (layer.type) {
@@ -454,7 +455,7 @@ Choropleth.propTypes = {
    * layers of topojson to include
    * layer description: {Object}
    *  - `className`: className applied to layer
-   *  - `filterFn`: optional function to filter mesh grid, passed adjacent geometries
+   *  - `meshFilter`: optional function to filter mesh grid, passed adjacent geometries
    *      refer to [https://github.com/mbostock/topojson/wiki/API-Reference#mesh](https://github.com/mbostock/topojson/wiki/API-Reference#mesh)
    *  - `name`: (Required) along with layer.type, will be part of the `key` of the layer; therefore, `${layer.type}-${layer.name}` needs to be unique
    *  - `object`: (Required) name corresponding to key within topojson objects collection
@@ -465,7 +466,6 @@ Choropleth.propTypes = {
    *      func: (feature) => style object
    *  - `type`: (Required) whether the layer should be a feature collection or mesh grid
    *      one of: "feature", "mesh"
-   *  - `visible`: whether or not to render layer
    */
   layers: PropTypes.arrayOf(PropTypes.shape({
     className: CommonPropTypes.className,
@@ -474,7 +474,7 @@ Choropleth.propTypes = {
      * optional function to filter mesh grid, passed adjacent geometries
      * refer to https://github.com/mbostock/topojson/wiki/API-Reference#mesh
      */
-    filterFn: PropTypes.func,
+    meshFilter: PropTypes.func,
 
     /**
      * along with layer.type, will be part of the `key` of the layer
@@ -517,13 +517,6 @@ Choropleth.propTypes = {
      * one of: "feature", "mesh"
      */
     type: PropTypes.oneOf(['feature', 'mesh']).isRequired,
-
-    /**
-     * whether or not to render layer
-     * WILL BE DEPRECATED: if you do not want to render the layer,
-     * do not include its description in this array
-     */
-    visible: PropTypes.bool,
   })).isRequired,
 
   /**
