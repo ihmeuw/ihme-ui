@@ -172,10 +172,11 @@ export default class Choropleth extends React.Component {
       );
 
       if (this._svgSelection) {
+        const [x, y] = state.translate;
         this._svgSelection.call(
           this.zoom.transform,
           zoomIdentity
-            .translate(state.translate[0], state.translate[1])
+            .translate(x, y)
             .scale(state.scale)
         );
       }
