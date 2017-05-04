@@ -15,7 +15,7 @@ import Button from '../../button';
 const LAYERS = [
   { name: 'national', object: 'national', type: 'feature' },
   { name: 'subnational', object: 'subnational', type: 'feature' },
-  { name: 'boundary', object: 'national', type: 'mesh', style: { stroke: 'white', strokeWidth: '5px' }, filter: boundaryFilterFn(['101', '102', '130'])},
+  { name: 'boundary', object: 'national', type: 'mesh', style: { stroke: 'white', strokeWidth: '5px' }, meshFilter: boundaryFilterFn(['101', '102', '130'])},
 ];
 
 function boundaryFilterFn(selections) {

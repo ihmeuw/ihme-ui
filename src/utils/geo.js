@@ -8,7 +8,7 @@ const defaultMeshFilter = () => { return true; };
  * extract topojson layers as geoJSON
  * @param {Object} topology -> valid topojson
  * @param {Array} layers -> layers to include
- *   each layer is an object with keys 'name', 'type', and, optionally, 'filter'
+ *   each layer is an object with keys 'name', 'type', and, optionally, 'meshFilter'
  *   'name' must map to a key in topology.objects
  *   'type' is one of 'feature' or 'mesh', defaults to 'feature'
  * @return {Object} -> { mesh: {...}, feature: {...}  }
@@ -27,7 +27,7 @@ export function extractGeoJSON(topology, layers) {
             ...acc.mesh,
             [layer.name]: topojson.mesh(topology,
                                         topology.objects[layer.object],
-                                        layer.filter || defaultMeshFilter),
+                                        layer.meshFilter || defaultMeshFilter),
           },
         };
       case 'feature': // FALL THROUGH

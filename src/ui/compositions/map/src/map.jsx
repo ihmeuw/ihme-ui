@@ -247,21 +247,21 @@ export default class Map extends React.Component {
         object: name,
         style: { stroke: 'black', strokeWidth: '1px', strokeDasharray: '5, 5' },
         type: 'mesh',
-        filter: this.disputedBordersMeshFilter,
+        meshFilter: this.disputedBordersMeshFilter,
       },
       {
         name: `${name}-non-disputed-borders`,
         object: name,
         style: { stroke: 'black', strokeWidth: '1px' },
         type: 'mesh',
-        filter: this.nonDisputedBordersMeshFilter,
+        meshFilter: this.nonDisputedBordersMeshFilter,
       },
       {
         name: `${name}-selected-non-disputed-borders`,
         object: name,
         style: { stroke: 'black', strokeWidth: '2px' },
         type: 'mesh',
-        filter: this.selectedBordersMeshFilter,
+        meshFilter: this.selectedBordersMeshFilter,
       },
     ];
   }
