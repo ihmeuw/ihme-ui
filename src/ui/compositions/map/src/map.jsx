@@ -23,6 +23,7 @@ import ResponsiveContainer from '../../../responsive-container';
 import {
   clampedScale,
   CommonPropTypes,
+  concatTopoJSON,
   linspace,
   numFromPercent,
   propResolver,
@@ -215,43 +216,64 @@ export default class Map extends React.Component {
     );
   }
 
-  createLayers(name) {
-    // guard against creating layers that don't in fact correspond to a topojson object
-    if (!this.props.topology.objects.hasOwnProperty(name)) return [];
+  createLayers(layers, selections) {
+    const { geometryKeyField } = this.props;
 
     const styleReset = { stroke: 'none' };
-
-    // array is used to maintain layer order
-    return [
+    const features = map(layers, layer => (
       {
-        name,
-        object: name,
+        name: layer,
+        object: layer,
         style: styleReset,
         selectedStyle: styleReset,
         type: 'feature',
-      },
+      }
+    ));
+
+    const concatenatedLayers = memoizeByLastCall(
+      topoObjects => concatTopoJSON(topoObjects, layers)
+    );
+
+    const selectedConcatenatedLayers = memoizeByLastCall(
+      topoObjects => {
+        const concatenatedTopology = concatenatedLayers(topoObjects);
+        return {
+          type: concatenatedTopology.type,
+          geometries: filter(concatenatedTopology.geometries, geometry => {
+            const geometryKey = toString(propResolver(geometry, geometryKeyField));
+            const disputes = getValue(geometry, ['properties', 'disputes'], []);
+
+            return includes(selections, geometryKey) || disputes.length;
+          }),
+        };
+      }
+    );
+
+    const meshes = [
       {
-        name: `${name}-disputed-borders`,
-        object: name,
+        name: 'disputed-borders',
+        object: concatenatedLayers,
         style: { stroke: 'black', strokeWidth: '1px', strokeDasharray: '5, 5' },
         type: 'mesh',
         meshFilter: this.disputedBordersMeshFilter,
       },
       {
-        name: `${name}-non-disputed-borders`,
-        object: name,
+        name: 'non-disputed-borders',
+        object: concatenatedLayers,
         style: { stroke: 'black', strokeWidth: '1px' },
         type: 'mesh',
         meshFilter: this.nonDisputedBordersMeshFilter,
       },
       {
-        name: `${name}-selected-non-disputed-borders`,
-        object: name,
+        name: 'selected-non-disputed-borders',
+        object: selectedConcatenatedLayers,
         style: { stroke: 'black', strokeWidth: '2px' },
         type: 'mesh',
         meshFilter: this.selectedBordersMeshFilter,
       },
     ];
+
+    return [...features, ...meshes];
   }
 
   renderTitle() {
@@ -602,6 +624,8 @@ Map.propTypes = {
   /**
    * array of keys on topology.objects (e.g., ['national', 'ADM1', 'health_districts']);
    * if a key on topology.objects is omitted, it will not be rendered
+   * if including disputed territories as separate layers, the disputes layer must be either
+   * first or last in the array. E.g.: ['admin0', 'admin1', 'admin2', 'admin2_disputes']
    */
   topojsonObjects: PropTypes.arrayOf(PropTypes.string),
 
@@ -691,16 +715,16 @@ Map.propUpdates = {
     }
     return state;
   },
-  selections: (state, _, prevProps, nextProps) => {
+  selections: (state, _, prevProps, nextProps, context) => {
     if (isEqual(nextProps.selectedLocations, prevProps.selectedLocations)) return state;
+    const keysOfSelectedLocations = map(nextProps.selectedLocations, datum =>
+      toString(propResolver(datum, nextProps.keyField))
+    );
+    const layers = context.createLayers(nextProps.topojsonObjects, keysOfSelectedLocations);
+
     return assign({}, state, {
-      keysOfSelectedLocations: map(nextProps.selectedLocations, datum =>
-        toString(propResolver(datum, nextProps.keyField))
-      ),
-      // spread state.layers array into new array to ensure they are not referentially equal
-      // this is for the benefit of ensuring that the layers are re-rendered by <Choropleth />
-      // see Choropleth::componentWillReceiveProps
-      layers: [...state.layers],
+      keysOfSelectedLocations,
+      layers,
     });
   },
   topojsonObjects: (state, _, prevProps, nextProps, context) => {
@@ -710,7 +734,10 @@ Map.propUpdates = {
     if (isEqual(prevProps.topojsonObjects, nextProps.topojsonObjects)) return state;
 
     // evaluate visibility of each layer
-    const layers = flatMap(nextProps.topojsonObjects, context.createLayers);
+    const selections = map(nextProps.selectedLocations, datum =>
+      toString(propResolver(datum, nextProps.keyField))
+    );
+    const layers = context.createLayers(nextProps.topojsonObjects, selections);
     return assign({}, state, {
       layers,
       locationIdsOnMap: context.getGeometryIds(nextProps.topology, layers),
