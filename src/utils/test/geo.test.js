@@ -1,16 +1,19 @@
 import { expect } from 'chai';
+import reduce from 'lodash/reduce';
 
 import { getTopoJSON } from '../../test-utils';
 
 import {
   extractGeoJSON,
-  concatGeoJSON,
   computeBounds,
+  concatTopoJSON,
+  concatGeoJSON,
 } from '../geo';
 
 describe('Geo utils', () => {
   const layers = [
     { name: 'country', object: 'country', type: 'feature' },
+    { name: 'countryWithFunc', object: topoObjects => topoObjects.country, type: 'feature' },
     { name: 'states', object: 'states', type: 'mesh', filterFn(a, b) { return a !== b; } },
     { name: 'nonExistent' },
   ];
@@ -30,6 +33,9 @@ describe('Geo utils', () => {
       .that.is.an('object')
       .that.has.property('type', 'FeatureCollection');
 
+    expect(extractedGeoJSON.feature.countryWithFunc).to.be.an('object')
+      .that.has.property('type', 'FeatureCollection');
+
     // neither mesh nor feature should have key 'nonExistent'
     expect(extractedGeoJSON.mesh).to.not.have.property('nonExistent');
     expect(extractedGeoJSON.feature).to.not.have.property('nonExistent');
@@ -37,7 +43,7 @@ describe('Geo utils', () => {
 
   it('concatenates the results of extractGeoJSON into a single array', () => {
     // only Features are supported by `d3.geo.path` functions.
-    expect(concatenatedGeoJSON).to.be.an('array').of.length(1);
+    expect(concatenatedGeoJSON).to.be.an('array').of.length(2);
     concatenatedGeoJSON.forEach((obj) => {
       expect(obj).to.be.an('object')
         .and.to.have.property('type');
