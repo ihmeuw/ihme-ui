@@ -15,6 +15,7 @@ function customizer(objValue, srcValue) {
 
 module.exports = function(directory) {
   const demoConfig = {
+    devtool: 'source-map',
     entry: path.resolve(directory, 'app.jsx'),
     output: {
       path: directory,
