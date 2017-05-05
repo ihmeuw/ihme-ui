@@ -91,7 +91,7 @@ export default class Map extends React.Component {
   constructor(props) {
     super(props);
 
-    const { colorSteps, domain, extentPct, topojsonObjects } = props;
+    const { colorSteps, domain, extentPct } = props;
     const rangeExtent = getRangeExtent(extentPct, domain);
 
     bindAll(this, [
@@ -104,14 +104,11 @@ export default class Map extends React.Component {
       'onResetScale',
     ]);
 
-    const layers = flatMap(topojsonObjects, this.createLayers);
-
     const state = {
       colorScale: clampedScale('#ccc', 0.000001)
         .base(scaleLinear())
         .domain(linspace(rangeExtent, colorSteps.length))
         .range(colorSteps),
-      layers,
       render: !props.loading,
     };
 
