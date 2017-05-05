@@ -53,6 +53,21 @@ export function extractGeoJSON(topology, layers) {
 }
 
 /**
+ * Combine all TopoJSON objects into one GeometryCollection
+ * @param {Object} objects
+ * @param {Array} order
+ * @return {{type: string, geometries: array}}
+ */
+export function concatTopoJSON(objects, order) {
+  return {
+    type: 'GeometryCollection',
+    geometries: reduce(order, (collection, layer) =>
+      concat(collection, objects[layer].geometries)
+    , []),
+  };
+}
+
+/**
  * Combine and return all GeoJSON 'features' in one array.
  * @param {Object} extractedGeoJSON -> expect type of object returned by extractGeoJSON
  * @returns {Array} array of features

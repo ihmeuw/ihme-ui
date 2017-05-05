@@ -1,5 +1,7 @@
 import { expect } from 'chai';
 import reduce from 'lodash/reduce';
+import head from 'lodash/head';
+import last from 'lodash/last';
 
 import { getTopoJSON } from '../../test-utils';
 
@@ -20,6 +22,21 @@ describe('Geo utils', () => {
   const geo = getTopoJSON();
   const extractedGeoJSON = extractGeoJSON(geo, layers);
   const concatenatedGeoJSON = concatGeoJSON(extractedGeoJSON);
+
+  it('concatenates topojson objects together, in order', () => {
+    const expectedNumGeometries = reduce(geo.objects, (accum, object) =>
+      accum + object.geometries.length
+    , 0);
+
+    const concatenated = concatTopoJSON(geo.objects, ['country', 'states']);
+    expect(concatenated).to.be.an('object')
+      .with.property('geometries')
+      .that.is.an('array')
+      .of.length(expectedNumGeometries);
+
+    expect(head(concatenated.geometries)).to.equal(head(geo.objects.country.geometries));
+    expect(last(concatenated.geometries)).to.equal(last(geo.objects.states.geometries));
+  });
 
   it('extracts topojson objects into geoJSON', () => {
     // mesh and feature are objects that hold geoJSON
