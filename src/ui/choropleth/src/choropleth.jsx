@@ -497,20 +497,14 @@ Choropleth.propTypes = {
      * if a function, passed geometry feature;
      * signature: (feature) => {}
      */
-    selectedStyle: PropTypes.oneOfType([
-      PropTypes.object,
-      PropTypes.func,
-    ]),
+    selectedStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
 
     /**
      * inline styles applied to layer
      * if a function, passed geometry feature;
      * signature: (feature) => style object
      */
-    style: PropTypes.oneOfType([
-      PropTypes.object,
-      PropTypes.func,
-    ]),
+    style: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
 
     /**
      * whether the layer should be a feature collection or mesh grid
