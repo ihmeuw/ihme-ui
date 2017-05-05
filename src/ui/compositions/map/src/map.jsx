@@ -9,6 +9,7 @@ import {
   filter,
   get as getValue,
   includes,
+  intersection,
   intersectionWith,
   isEqual,
   map,
@@ -202,26 +203,16 @@ export default class Map extends React.Component {
       'disputes',
     ], []).map(toString);
 
+    const keys = [geometryKey, neighborGeometryKey];
+    const disputes = [...geometryDisputes, ...neighborGeometryDisputes];
+
+    const geometrySelected = Boolean(intersection(keysOfSelectedLocations, keys).length);
+    const disputeSelected = Boolean(intersection(keysOfSelectedLocations, disputes).length);
+
     return (
-        // geometry is one of the geometries selected
-        includes(keysOfSelectedLocations, geometryKey)
-
-        // neighborGeometry is one of the geometries selected
-        || includes(keysOfSelectedLocations, neighborGeometryKey)
-
-        // or one of the selections disputed by geometry or neighborGeometry
-        || keysOfSelectedLocations.some(locId =>
-          includes(geometryDisputes, locId) || includes(neighborGeometryDisputes, locId)
-        )
-      )
-
-      && !(
-        includes(keysOfSelectedLocations, geometryKey)
-        && includes(neighborGeometryDisputes, geometryKey)
-
-        || includes(keysOfSelectedLocations, neighborGeometryKey)
-        && includes(geometryDisputes, neighborGeometryKey)
-      );
+      (geometrySelected && !disputeSelected) ||
+      (!geometrySelected && disputeSelected)
+    );
   }
 
   createLayers(name) {
