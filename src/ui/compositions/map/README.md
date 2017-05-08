@@ -43,7 +43,7 @@ Property | Required | Type(s) | Defaults | Description
 `title` |  | string |  | title positioned on top of choropleth<br />in semi-opaque div that spans the full width of the component
 `titleClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to div wrapping the title
 `titleStyle` |  | object |  | inline styles applied to div wrapping the title
-`topojsonObjects` |  | array of string | ['national'] | array of keys on topology.objects (e.g., ['national', 'ADM1', 'health_districts']);<br />if a key on topology.objects is omitted, it will not be rendered
+`topojsonObjects` |  | array of string | ['national'] | array of keys on topology.objects (e.g., ['national', 'ADM1', 'health_districts']);<br />if a key on topology.objects is omitted, it will not be rendered<br />if including disputed territories as separate layers, the disputes layer must be either<br />first or last in the array. E.g.: ['admin0', 'admin1', 'admin2', 'admin2_disputes']
 `topology` | true | object |  | preprojected topojson;<br />for more information, see the [topojson wiki](https://github.com/topojson/topojson/wiki)
 `unit` |  | string |  | unit of data;<br />used as axis label in choropleth legend
 `valueField` | true | string, func |  | key of datum that holds the value to display (e.g., 'mean')<br />if a function, signature: (data, feature) => value
