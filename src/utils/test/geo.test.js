@@ -24,9 +24,9 @@ describe('Geo utils', () => {
   const concatenatedGeoJSON = concatGeoJSON(extractedGeoJSON);
 
   it('concatenates topojson objects together, in order', () => {
-    const expectedNumGeometries = reduce(geo.objects, (accum, object) =>
+    const expectedNumGeometries = reduce(geo.objects, (accum, object) => (
       accum + object.geometries.length
-    , 0);
+    ), 0);
 
     const concatenated = concatTopoJSON(geo.objects, ['country', 'states']);
     expect(concatenated).to.be.an('object')
