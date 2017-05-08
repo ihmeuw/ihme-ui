@@ -458,7 +458,7 @@ Choropleth.propTypes = {
    *  - `meshFilter`: optional function to filter mesh grid, passed adjacent geometries
    *      refer to [https://github.com/mbostock/topojson/wiki/API-Reference#mesh](https://github.com/mbostock/topojson/wiki/API-Reference#mesh)
    *  - `name`: (Required) along with layer.type, will be part of the `key` of the layer; therefore, `${layer.type}-${layer.name}` needs to be unique
-   *  - `object`: (Required) name corresponding to key within topojson objects collection
+   *  - `object`: (Required) name corresponding to key within topojson objects collection; if function, passed topojson.objects
    *  - `selectedClassName`: className applied to selected paths
    *  - `selectedStyle`: inline styles applied to selected paths
    *      func: (feature) => style object
@@ -484,8 +484,9 @@ Choropleth.propTypes = {
 
     /**
      * name corresponding to key within topojson objects collection
+     * if function, passed topojson.objects
      */
-    object: PropTypes.string.isRequired,
+    object: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired,
 
     /**
      * applied to selected paths
@@ -497,20 +498,14 @@ Choropleth.propTypes = {
      * if a function, passed geometry feature;
      * signature: (feature) => {}
      */
-    selectedStyle: PropTypes.oneOfType([
-      PropTypes.object,
-      PropTypes.func,
-    ]),
+    selectedStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
 
     /**
      * inline styles applied to layer
      * if a function, passed geometry feature;
      * signature: (feature) => style object
      */
-    style: PropTypes.oneOfType([
-      PropTypes.object,
-      PropTypes.func,
-    ]),
+    style: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
 
     /**
      * whether the layer should be a feature collection or mesh grid

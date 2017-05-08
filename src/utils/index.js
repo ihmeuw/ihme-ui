@@ -27,6 +27,7 @@ export {
   computeBounds,
   concatAndComputeGeoJSONBounds,
   concatGeoJSON,
+  concatTopoJSON,
   extractGeoJSON,
 } from './geo';
 

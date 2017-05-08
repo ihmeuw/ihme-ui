@@ -1,8 +1,13 @@
 import * as topojson from 'topojson';
-import { reduce } from 'lodash';
+import {
+  concat,
+  reduce,
+} from 'lodash';
 import { geoPath } from 'd3';
 
-const defaultMeshFilter = () => { return true; };
+import { propResolver } from './objects';
+
+const defaultMeshFilter = () => true;
 
 /**
  * extract topojson layers as geoJSON
@@ -16,7 +21,13 @@ const defaultMeshFilter = () => { return true; };
 export function extractGeoJSON(topology, layers) {
   return reduce(layers, (acc, layer) => {
     // make certain the layer exists on the topojson
-    if (!topology.objects.hasOwnProperty(layer.object)) return acc;
+    // there is a possibility that layer.object is a function,
+    // so only use hasOwnProp guard statement if it is a string
+    if (!layer.object
+      || (typeof layer.object === 'string' && !topology.objects.hasOwnProperty(layer.object))
+    ) {
+      return acc;
+    }
 
     switch (layer.type) {
       case 'mesh':
@@ -26,21 +37,37 @@ export function extractGeoJSON(topology, layers) {
           mesh: {
             ...acc.mesh,
             [layer.name]: topojson.mesh(topology,
-                                        topology.objects[layer.object],
+                                        propResolver(topology.objects, layer.object),
                                         layer.meshFilter || defaultMeshFilter),
           },
         };
-      case 'feature': // FALL THROUGH
-      default:
+      case 'feature':
         return {
           ...acc,
           feature: {
             ...acc.feature,
-            [layer.name]: topojson.feature(topology, topology.objects[layer.object]),
+            [layer.name]: topojson.feature(topology, propResolver(topology.objects, layer.object)),
           },
         };
+      default:
+        return acc;
     }
   }, {});
+}
+
+/**
+ * Combine all TopoJSON objects into one GeometryCollection
+ * @param {Object} objects
+ * @param {Array} order
+ * @return {{type: string, geometries: array}}
+ */
+export function concatTopoJSON(objects, order) {
+  return {
+    type: 'GeometryCollection',
+    geometries: reduce(order, (collection, layer) => (
+      concat(collection, objects[layer].geometries)
+    ), []),
+  };
 }
 
 /**
