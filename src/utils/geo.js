@@ -21,6 +21,8 @@ const defaultMeshFilter = () => true;
 export function extractGeoJSON(topology, layers) {
   return reduce(layers, (acc, layer) => {
     // make certain the layer exists on the topojson
+    // there is a possibility that layer.object is a function,
+    // so only use hasOwnProp guard statement if it is a string
     if (!layer.object
       || (typeof layer.object === 'string' && !topology.objects.hasOwnProperty(layer.object))) {
       return acc;
