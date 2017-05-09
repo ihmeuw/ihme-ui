@@ -4,7 +4,6 @@ import bindAll from 'lodash/bindAll';
 import pick from 'lodash/pick';
 import { CommonPropTypes, CommonDefaultProps, PureComponent } from '../../../utils';
 import { getBackgroundColor } from '../../../utils/window';
-import { eventHandleWrapper } from '../../../utils/events';
 
 import { containerStore } from './ExpansionContainer';
 import styles from './expansion-container.css';
@@ -56,6 +55,9 @@ export default class Expandable extends PureComponent {
     bindAll(this, [
       'onExpand',
       'onHide',
+      'onIconMouseLeave',
+      'onIconMouseMove',
+      'onIconMouseOver',
       'onRestore',
       'onResize',
       'onTransitionEnd',
@@ -131,6 +133,18 @@ export default class Expandable extends PureComponent {
     this.setState({
       hidden: true,
     });
+  }
+
+  onIconMouseLeave(event) {
+    this.props.onMouseLeave(event, this);
+  }
+
+  onIconMouseMove(event) {
+    this.props.onMouseMove(event, this);
+  }
+
+  onIconMouseOver(event) {
+    this.props.onMouseOver(event, this);
   }
 
   onRestore() {
@@ -228,14 +242,13 @@ export default class Expandable extends PureComponent {
 
   renderExpandIcon(hideIcon) {
     if (hideIcon) return null;
+
     const {
       iconClassName,
       iconSize,
       iconStyle,
-      onMouseLeave,
-      onMouseMove,
-      onMouseOver,
     } = this.props;
+
     const {
       expanded,
       restored,
@@ -249,9 +262,9 @@ export default class Expandable extends PureComponent {
         onClick={this.wrappedEvent((expanded && this.restore) || (restored && this.expand))}
         viewBox="-16 -16 32 32"
         width="1em" height="1em"
-        onMouseLeave={eventHandleWrapper(onMouseLeave, this)}
-        onMouseMove={eventHandleWrapper(onMouseMove, this)}
-        onMouseOver={eventHandleWrapper(onMouseOver, this)}
+        onMouseLeave={this.onIconMouseLeave}
+        onMouseMove={this.onIconMouseMove}
+        onMouseOver={this.onIconMouseOver}
       >
         <circle
           r="15"
