@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import Select, { propTypes as baseProps } from 'ihme-react-select';
+import { default as BaseSelect, propTypes as baseProps } from 'ihme-react-select';
 import { assign } from 'lodash';
 
 import { stateFromPropUpdates, propsChanged, PureComponent } from '../../../utils';
@@ -11,27 +11,19 @@ import { menuWrapper } from './menu';
 import Value from './value';
 import multiValueRenderer from './multi-value-renderer';
 
-export default class MultiSelect extends PureComponent {
+export default class Select extends PureComponent {
   constructor(props) {
     super(props);
-    console.warn(
-      `Deprecated: MultiSelect will not be available in future versions. 
-      Please use Select with prop "multi".`
-    );
-    this.state = stateFromPropUpdates(MultiSelect.propUpdates, {}, props, {});
+    this.state = stateFromPropUpdates(Select.propUpdates, {}, props, {});
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState(
-      stateFromPropUpdates(MultiSelect.propUpdates, this.props, nextProps, {})
+      stateFromPropUpdates(Select.propUpdates, this.props, nextProps, {})
     );
   }
 
-  render() {
-    const {
-      resetValue,
-    } = this.props;
-
+  renderSingleSelect() {
     const {
       menuContainerStyle,
       menuRenderer,
@@ -40,17 +32,43 @@ export default class MultiSelect extends PureComponent {
     } = this.state;
 
     return (
-      <Select
+      <BaseSelect
+        {...this.props}
+        autofocus
+        autosize={false}
+        className={classNames(style.select, this.props.className)}
+        menuContainerStyle={menuContainerStyle}
+        menuRenderer={menuRenderer}
+        menuStyle={menuStyle}
+        placeholder={this.props.placeholder || 'Select...'}
+        resetValue={this.props.resetValue || null}
+        searchable
+        wrapperStyle={wrapperStyle}
+      />
+    );
+  }
+
+  renderMultiSelect() {
+    const {
+      menuContainerStyle,
+      menuRenderer,
+      menuStyle,
+      wrapperStyle,
+    } = this.state;
+
+    return (
+      <BaseSelect
         {...this.props}
         autofocus
         autosize={false}
         className={classNames(style.select, this.props.className)}
         clearable
-        menuRenderer={menuRenderer}
-        multi
         menuContainerStyle={menuContainerStyle}
+        menuRenderer={menuRenderer}
         menuStyle={menuStyle}
-        resetValue={resetValue}
+        multi
+        placeholder={this.props.placeholder || 'Add/Remove...'}
+        resetValue={this.props.resetValue || []}
         searchable
         valueComponent={Value}
         valueRenderer={multiValueRenderer}
@@ -58,11 +76,22 @@ export default class MultiSelect extends PureComponent {
       />
     );
   }
+
+  render() {
+    if (this.props.multi) {
+      return this.renderMultiSelect();
+    }
+
+    return this.renderSingleSelect();
+  }
 }
 
-const multiSelectPropTypes = {
+const selectPropTypes = {
   /* drop down will flip up */
   menuUpward: PropTypes.bool,
+
+  /* allow multiple selections */
+  multi: PropTypes.bool,
 
   /* width applied to outermost wrapper */
   width: PropTypes.number,
@@ -71,15 +100,13 @@ const multiSelectPropTypes = {
   widthPad: PropTypes.number,
 };
 
-MultiSelect.propTypes = assign({}, baseProps, multiSelectPropTypes);
+Select.propTypes = assign({}, baseProps, selectPropTypes);
 
-MultiSelect.defaultProps = {
-  placeholder: 'Add/remove',
-  resetValue: [],
+Select.defaultProps = {
   widthPad: 60,
 };
 
-MultiSelect.propUpdates = {
+Select.propUpdates = {
   menu(state, _, prevProps, nextProps) {
     if (!propsChanged(prevProps, nextProps, [
       'hierarchical',
@@ -93,11 +120,13 @@ MultiSelect.propUpdates = {
     }
 
     const menuWidth = getWidestLabel(
-      nextProps.options,
-      nextProps.labelKey,
-      nextProps.hierarchical
-    ) + nextProps.widthPad;
+        nextProps.options,
+        nextProps.labelKey,
+        nextProps.hierarchical
+      ) + nextProps.widthPad;
 
+    // if menu width changes, also set menuStyle and menuContainerStyle
+    // also create new HoC for menuRenderer
     return assign(
       {},
       state,
@@ -117,7 +146,6 @@ MultiSelect.propUpdates = {
       }
     );
   },
-
   wrapperStyle(state, _, prevProps, nextProps) {
     if (!propsChanged(prevProps, nextProps, ['width', 'wrapperStyle'])) {
       return state;

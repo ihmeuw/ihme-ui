@@ -1,2 +1,9 @@
-export { default as MultiSelect } from './src/multi-select';
-export { default as SingleSelect } from './src/single-select';
+import MultiSelect from './src/multi-select';
+import SingleSelect from './src/single-select';
+import Select from './src/select';
+
+export {
+  MultiSelect,
+  Select,
+  SingleSelect,
+};

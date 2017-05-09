@@ -9,7 +9,11 @@ import Group, { Option } from './group';
 import HtmlLabel from './html-label';
 import Legend from './legend';
 import ResponsiveContainer from './responsive-container';
-import { SingleSelect, MultiSelect } from './select';
+import {
+  MultiSelect,
+  Select,
+  SingleSelect,
+} from './select';
 import {
   Area,
   Line,
@@ -43,6 +47,7 @@ export {
   Option,
   ResponsiveContainer,
   Scatter,
+  Select,
   SingleSelect,
   Slider,
   Spinner,
