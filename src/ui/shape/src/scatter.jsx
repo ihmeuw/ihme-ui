@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import { scaleLinear } from 'd3';
 import {
   assign,
   findIndex,
@@ -201,7 +202,7 @@ Scatter.propTypes = {
   scales: PropTypes.shape({
     x: PropTypes.func,
     y: PropTypes.func,
-  }).isRequired,
+  }),
 
   /**
    * className applied to `<Shape />`s if selected
@@ -248,6 +249,7 @@ Scatter.defaultProps = {
   onMouseLeave: CommonDefaultProps.noop,
   onMouseMove: CommonDefaultProps.noop,
   onMouseOver: CommonDefaultProps.noop,
+  scales: { x: scaleLinear(), y: scaleLinear() },
   size: 64,
   shapeType: 'circle',
 };

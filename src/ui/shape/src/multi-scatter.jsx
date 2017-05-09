@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import { scaleLinear } from 'd3';
 import { castArray, map, pick } from 'lodash';
 import Scatter from './scatter';
 
@@ -193,7 +194,7 @@ MultiScatter.propTypes = {
   scales: PropTypes.shape({
     x: PropTypes.func,
     y: PropTypes.func,
-  }).isRequired,
+  }),
 
   /**
    * className applied to `<Scatter />`'s outermost wrapping `<g>`.
@@ -262,6 +263,7 @@ MultiScatter.defaultProps = {
     data: 'values',
     key: 'key',
   },
+  scales: { x: scaleLinear(), y: scaleLinear() },
   scatterValuesIteratee: CommonDefaultProps.identity,
   size: 64,
   shapeField: 'type',
