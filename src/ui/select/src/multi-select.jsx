@@ -15,8 +15,8 @@ export default class MultiSelect extends PureComponent {
   constructor(props) {
     super(props);
     console.warn(
-      'Deprecated: MultiSelect will not be available in future versions.'
-      + ' Please use Select with prop `multi`.'
+      `Deprecated: MultiSelect will not be available in future versions. 
+      Please use Select with prop "multi".`
     );
     this.state = stateFromPropUpdates(MultiSelect.propUpdates, {}, props, {});
   }
