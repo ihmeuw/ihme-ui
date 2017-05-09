@@ -147,7 +147,7 @@ Scatter.propTypes = {
   scales: PropTypes.shape({
     x: PropTypes.func,
     y: PropTypes.func,
-  }).isRequired,
+  }),
 
   /* a symbol that is selected, or an array of symbols selected */
   selection: PropTypes.array,

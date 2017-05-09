@@ -147,7 +147,7 @@ MultiScatter.propTypes = {
   scales: PropTypes.shape({
     x: PropTypes.func,
     y: PropTypes.func,
-  }).isRequired,
+  }),
 
   /*
    classname to apply to Scatter's <g> wrapper;
