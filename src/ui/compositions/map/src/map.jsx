@@ -25,6 +25,7 @@ import {
   CommonPropTypes,
   concatTopoJSON,
   linspace,
+  memoizeByLastCall,
   numFromPercent,
   propResolver,
   stateFromPropUpdates,
@@ -32,30 +33,6 @@ import {
 } from '../../../../utils';
 
 import styles from './style.css';
-
-/**
- * this function is a direct copy of `defaultMemoize` from reselect (https://github.com/reactjs/reselect)
- * copied here to avoid dependency for the benefit of a single utility function
- * memoize a function based on most recently passed-in arguments
- * @param {function} func
- * @return {function(...[*])}
- */
-function memoizeByLastCall(func) {
-  let lastArgs = null;
-  let lastResult = null;
-  return (...args) => {
-    if (
-      lastArgs !== null &&
-      lastArgs.length === args.length &&
-      args.every((value, index) => value === lastArgs[index])
-    ) {
-      return lastResult;
-    }
-    lastResult = func(...args);
-    lastArgs = args;
-    return lastResult;
-  };
-}
 
 /**
  * @param {Array} extentPct

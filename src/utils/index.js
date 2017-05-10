@@ -37,6 +37,7 @@ export {
 } from './numbers';
 
 export {
+  memoizeByLastCall,
   propResolver,
   quickMerge,
 } from './objects';
