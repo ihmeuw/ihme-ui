@@ -266,7 +266,7 @@ Shape.propUpdates = {
   path: (accum, propName, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, ['shapeType', 'size'])) return accum;
     const [shapeType, rotate] = nextProps.shapeType.split(' ', 2);
-    return assign(accum, {
+    return assign({}, accum, {
       path: Shape.getPath(shapeType, nextProps.size),
       rotate: SYMBOL_ROTATE[rotate] || 0,
     });
