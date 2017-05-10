@@ -1,80 +1,110 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { propResolver, eventHandleWrapper } from '../../../utils';
+import bindAll from 'lodash/bindAll';
+
+import {
+  CommonDefaultProps,
+  propResolver,
+} from '../../../utils';
 
 import styles from './legend-item.css';
 import { Shape } from '../../shape';
 
-/**
- * label renderer
- */
-function renderLabel(props) {
-  /* eslint-disable react/prop-types */
-  const {
-    item,
-    LabelComponent,
-    labelKey
-  } = props;
+export default class LegendItem extends React.Component {
+  constructor(props) {
+    super(props);
 
-  // if a custom label component is passed in, render it
-  if (LabelComponent) return <LabelComponent item={item} />;
+    bindAll(this, [
+      'onClear',
+      'onClick',
+    ]);
+  }
 
-  // if labelKey is a function, call it with the current item
-  // otherwise, object access
-  return propResolver(item, labelKey);
-}
+  onClear(event) {
+    const {
+      item,
+      onClear,
+    } = this.props;
 
-export default function LegendItem(props) {
-  /* eslint-disable max-len */
-  const {
-    item,
-    itemClassName,
-    itemStyles,
-    onClear,
-    onClick,
-    renderClear,
-    shapeColorKey,
-    shapeTypeKey
-  } = props;
-  const fill = propResolver(item, shapeColorKey);
-  const type = propResolver(item, shapeTypeKey);
+    onClear(event, item, this);
+  }
 
-  const inlineStyles = typeof itemStyles === 'function' ? itemStyles(item) : itemStyles;
+  onClick(event) {
+    const {
+      item,
+      onClick,
+    } = this.props;
 
-  return (
-    <li
-      style={inlineStyles}
-      className={classNames(styles.li, itemClassName)}
-    >
-      {renderClear ? (
-        <svg
-          viewBox="-8 -8 16 16"
-          width="1em" height="1em"
-          className={classNames(styles.clickable, styles.svg)}
-          onClick={onClear ? eventHandleWrapper(onClear, item) : null}
-        >
-          <path d="M-3,-3L3,3 M-3,3L3,-3" stroke="black" strokeWidth="1.5" />
-        </svg>
-      ) : null}
-      <div
-        className={classNames(styles['label-shape-wrapper'], {
-          [styles.clickable]: typeof onClick === 'function',
-        })}
-        onClick={onClick ? eventHandleWrapper(onClick, item) : null}
+    // want to check below if item is clickable, so should not provide noop default
+    if (!onClick) return;
+    onClick(event, item, this);
+  }
+
+  renderLabel() {
+    const {
+      item,
+      LabelComponent,
+      labelKey
+    } = this.props;
+
+    // if a custom label component is passed in, render it
+    if (LabelComponent) return <LabelComponent item={item} />;
+
+    // if labelKey is a function, call it with the current item
+    // otherwise, object access
+    return propResolver(item, labelKey);
+  }
+
+  render() {
+    const {
+      item,
+      itemClassName,
+      itemStyles,
+      onClick,
+      renderClear,
+      shapeColorKey,
+      shapeTypeKey
+    } = this.props;
+    const fill = propResolver(item, shapeColorKey);
+    const type = propResolver(item, shapeTypeKey);
+
+    const inlineStyles = typeof itemStyles === 'function' ? itemStyles(item) : itemStyles;
+
+    return (
+      <li
+        style={inlineStyles}
+        className={classNames(styles.li, itemClassName)}
       >
-        <svg
-          viewBox="-8 -8 16 16" // bounds of <Shape /> with default size of 64 (8x8)
-          width="1em" height="1em"
-          className={styles.svg}
+        {renderClear ? (
+          <svg
+            viewBox="-8 -8 16 16"
+            width="1em" height="1em"
+            className={classNames(styles.clickable, styles.svg)}
+            onClick={this.onClear}
+          >
+            <path d="M-3,-3L3,3 M-3,3L3,-3" stroke="black" strokeWidth="1.5" />
+          </svg>
+        ) : null}
+        <div
+          className={classNames(styles['label-shape-wrapper'], {
+            [styles.clickable]: typeof onClick === 'function',
+          })}
+          onClick={this.onClick}
         >
-          <Shape shapeType={type} fill={fill} />
-        </svg>
-        <span className={styles.label}>
-          {renderLabel(props)}
-        </span>
-      </div>
-    </li>
-  );
+          <svg
+            viewBox="-8 -8 16 16" // bounds of <Shape /> with default size of 64 (8x8)
+            width="1em" height="1em"
+            className={styles.svg}
+          >
+            <Shape shapeType={type} fill={fill} />
+          </svg>
+          <span className={styles.label}>
+            {this.renderLabel()}
+          </span>
+        </div>
+      </li>
+    );
+  }
 }
 
 LegendItem.propTypes = {
@@ -132,4 +162,8 @@ LegendItem.propTypes = {
     /* or a function to resolve the shape type, passed the current item */
     PropTypes.func
   ]).isRequired
+};
+
+LegendItem.defaultProps = {
+  onClear: CommonDefaultProps.noop,
 };
