@@ -5,13 +5,16 @@ import assign from 'lodash/assign';
 import bindAll from 'lodash/bindAll';
 
 import {
+  combineStyles,
   CommonDefaultProps,
   CommonPropTypes,
+  getShape,
+  memoizeByLastCall,
   propsChanged,
   PureComponent,
+  shapeTypes,
   stateFromPropUpdates,
 } from '../../../utils';
-import { getShape, shapeTypes } from '../../../utils/shape';
 
 const SYMBOL_ROTATE = {
   down: 180,
@@ -34,35 +37,10 @@ export default class Shape extends PureComponent {
     return symbol().type(shapeType).size(size)();
   }
 
-  /**
-   * Calculate style given base style, selected style, and focused style
-   * @param {Object}
-   * @return {Object} computed style
-   */
-  static getStyle({ datum, fill, focused, focusedStyle, selected, selectedStyle, style }) {
-    const baseStyle = { fill };
-    const computedStyle = typeof style === 'function' ? style(datum) : style;
-    let computedSelectedStyle = {};
-    let computedFocusedStyle = {};
-
-    // if shape is selected, compute selectedStyle
-    if (selected) {
-      computedSelectedStyle = typeof selectedStyle === 'function' ?
-        selectedStyle(datum) : selectedStyle;
-    }
-
-    // if shape is focused, compute focusedStyle
-    if (focused) {
-      computedFocusedStyle = typeof focusedStyle === 'function' ?
-        focusedStyle(datum) : focusedStyle;
-    }
-
-    return assign({}, baseStyle, computedStyle, computedSelectedStyle, computedFocusedStyle);
-  }
-
   constructor(props) {
     super(props);
 
+    this.combineStyles = memoizeByLastCall(combineStyles);
     this.state = stateFromPropUpdates(Shape.propUpdates, {}, props, {});
 
     bindAll(this, [
@@ -117,6 +95,7 @@ export default class Shape extends PureComponent {
     const {
       className,
       clipPathId,
+      datum,
       focused,
       focusedClassName,
       selected,
@@ -124,7 +103,7 @@ export default class Shape extends PureComponent {
       translateX,
       translateY,
     } = this.props;
-    const { path, rotate, style } = this.state;
+    const { path, rotate, styles } = this.state;
 
     return (
       <path
@@ -138,7 +117,7 @@ export default class Shape extends PureComponent {
         onMouseLeave={this.onMouseLeave}
         onMouseMove={this.onMouseMove}
         onMouseOver={this.onMouseOver}
-        style={style}
+        style={this.combineStyles(styles, datum)}
         transform={`translate(${translateX}, ${translateY}) rotate(${rotate})`}
       />
     );
@@ -294,9 +273,8 @@ Shape.propUpdates = {
   },
 
   // update style if datum, focused, focusedStyle, selected, selectedStyle, or style have changed
-  style: (accum, propName, prevProps, nextProps) => {
+  styles: (accum, propName, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, [
-      'datum',
       'fill',
       'focused',
       'focusedStyle',
@@ -306,16 +284,19 @@ Shape.propUpdates = {
     ])) {
       return accum;
     }
-    return assign(accum, {
-      style: Shape.getStyle({
-        datum: nextProps.datum,
-        fill: nextProps.fill,
-        focused: nextProps.focused,
-        focusedStyle: nextProps.focusedStyle,
-        selected: nextProps.selected,
-        selectedStyle: nextProps.selectedStyle,
-        style: nextProps.style,
-      }),
+
+    const styles = [{ fill: nextProps.fill }, nextProps.style];
+
+    if (nextProps.selected) {
+      styles.push(nextProps.selectedStyle);
+    }
+
+    if (nextProps.focused) {
+      styles.push(nextProps.focusedStyle);
+    }
+
+    return assign({}, accum, {
+      styles,
     });
   },
 };
