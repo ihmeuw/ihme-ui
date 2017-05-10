@@ -8,6 +8,7 @@ import ExpansionContainer, { Expandable } from './expansion-container';
 import Group, { Option } from './group';
 import HtmlLabel from './html-label';
 import Legend from './legend';
+import LoadingIndicator from './loading-indicator';
 import ResponsiveContainer from './responsive-container';
 import {
   MultiSelect,
@@ -23,7 +24,6 @@ import {
   Shape,
 } from './shape';
 import Slider from './slider';
-import Spinner from './spinner';
 import SvgText from './svg-text';
 import Tooltip from './tooltip';
 
@@ -40,6 +40,7 @@ export {
   HtmlLabel,
   Legend,
   Line,
+  LoadingIndicator,
   Map,
   MultiLine,
   MultiScatter,
@@ -50,7 +51,6 @@ export {
   Select,
   SingleSelect,
   Slider,
-  Spinner,
   SvgText,
   Shape,
   Tooltip,
