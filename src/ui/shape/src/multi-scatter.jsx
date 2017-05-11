@@ -23,6 +23,7 @@ export default class MultiScatter extends PureComponent {
     super(props);
 
     this.combineStyles = memoizeByLastCall(combineStyles);
+    this.castSelectionAsArray = memoizeByLastCall((selection) => castArray(selection));
   }
 
   render() {
@@ -89,7 +90,7 @@ export default class MultiScatter extends PureComponent {
                 data={scatterValues}
                 fill={color}
                 key={`scatter:${key}`}
-                selection={castArray(selection)}
+                selection={this.castSelectionAsArray(selection)}
                 style={scatterStyle}
                 shapeType={shapeType}
                 {...childProps}
