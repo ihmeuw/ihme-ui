@@ -50,6 +50,7 @@ describe('<Scatter />', () => {
       selectedClassName="selected"
       selectedStyle={{ stroke: 'aqua' }}
       shapeClassName="symbol"
+      shapeStyle={{ fill: 'bluesteel' }}
       shapeType="circle"
     />
   );
@@ -68,6 +69,7 @@ describe('<Scatter />', () => {
       'scales',
       'selection',
       'shapeClassName',
+      'shapeStyle',
     ];
     const assertion = (shape) => {
       nonInheritedProps.forEach(prop => {
@@ -91,6 +93,7 @@ describe('<Scatter />', () => {
       'selectedStyle',
       'size',
       'shapeType',
+      'style',
     ];
     const assertion = (shape) => {
       inheritedProps.forEach(prop => {
