@@ -4,7 +4,14 @@ import { scaleLinear } from 'd3';
 import { castArray, map, pick } from 'lodash';
 import Scatter from './scatter';
 
-import { propResolver, PureComponent, CommonDefaultProps, CommonPropTypes } from '../../../utils';
+import {
+  combineStyles,
+  CommonDefaultProps,
+  CommonPropTypes,
+  memoizeByLastCall,
+  propResolver,
+  PureComponent,
+} from '../../../utils';
 
 /**
  * `import { MultiScatter } from 'ihme-ui'`
@@ -12,6 +19,12 @@ import { propResolver, PureComponent, CommonDefaultProps, CommonPropTypes } from
  * This is a convenience component intended to make it easier to render many `<Scatter />`s on a single chart.
  */
 export default class MultiScatter extends PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.combineStyles = memoizeByLastCall(combineStyles);
+  }
+
   render() {
     const {
       className,
@@ -20,11 +33,11 @@ export default class MultiScatter extends PureComponent {
       data,
       fieldAccessors,
       scatterClassName,
+      scatterStyle,
       scatterValuesIteratee,
       selection,
       style,
       shapeScale,
-      shapeStyle,
     } = this.props;
 
     const {
@@ -50,13 +63,14 @@ export default class MultiScatter extends PureComponent {
       'size',
       'shapeClassName',
       'shapeScale',
+      'shapeStyle',
     ]);
 
     return (
       <g
         className={className && classNames(className)}
         clipPath={clipPathId && `url(#${clipPathId})`}
-        style={style}
+        style={this.combineStyles(style)}
       >
         {
           map(data, (datum) => {
@@ -76,7 +90,7 @@ export default class MultiScatter extends PureComponent {
                 fill={color}
                 key={`scatter:${key}`}
                 selection={castArray(selection)}
-                style={shapeStyle}
+                style={scatterStyle}
                 shapeType={shapeType}
                 {...childProps}
               />
@@ -200,6 +214,11 @@ MultiScatter.propTypes = {
    * className applied to `<Scatter />`'s outermost wrapping `<g>`.
    */
   scatterClassName: CommonPropTypes.className,
+
+  /**
+   * inline styles applied to `<Scatter />`'s outermost wrapping `<g>`.
+   */
+  scatterStyle: CommonDefaultProps.style,
 
   /**
    * function to apply to the datum to transform scatter values. default: _.identity

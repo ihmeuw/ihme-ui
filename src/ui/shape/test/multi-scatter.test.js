@@ -81,6 +81,7 @@ describe('<MultiScatter />', () => {
           selectedClassName="selected"
           selectedStyle={{ stroke: 'red' }}
           scatterClassName="scatter"
+          scatterStyle={{ pointerEvents: 'none' }}
           scales={{ x: xScale, y: yScale }}
           shapeClassName="symbol"
           shapeScale={shapeScale}
@@ -99,6 +100,7 @@ describe('<MultiScatter />', () => {
     it('does not pass specified properties to its children', () => {
       const nonInheritedProps = [
         'scatterClassName',
+        'scatterStyle',
       ];
 
       const assertion = (shape) => {
@@ -131,6 +133,7 @@ describe('<MultiScatter />', () => {
         'style',
         'shapeClassName',
         'shapeScale',
+        'shapeStyle',
         'shapeType',
       ];
 
