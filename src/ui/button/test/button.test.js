@@ -5,7 +5,7 @@ import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 
 import Button from '../src/button';
-import Spinner from '../../spinner';
+import LoadingIndicator from '../../loading-indicator';
 import styles from '../src/button.css';
 
 chai.use(chaiEnzyme());
@@ -28,7 +28,7 @@ describe('<Button />', () => {
 
   it('shows a spinner when showSpinner is true', () => {
     const wrapper = shallow(<Button showSpinner />);
-    expect(wrapper).to.contain(<Spinner inline size="small" />);
+    expect(wrapper).to.contain(<LoadingIndicator inline />);
   });
 
   it('displays text', () => {
@@ -49,7 +49,7 @@ describe('<Button />', () => {
 
   it('shows a spinner instead of icon', () => {
     const wrapper = shallow(<Button icon="image.png" showSpinner />);
-    expect(wrapper).to.contain(<Spinner inline size="small" />)
+    expect(wrapper).to.contain(<LoadingIndicator inline />)
       .and.to.not.have.descendants('img');
   });
 

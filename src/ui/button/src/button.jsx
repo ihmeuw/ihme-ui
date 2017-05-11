@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { CommonPropTypes, PureComponent, propsChanged, stateFromPropUpdates } from '../../../utils';
 
 import styles from './button.css';
-import Spinner from '../../spinner';
+import LoadingIndicator from '../../loading-indicator';
 
 /**
  * `import { Button } from 'ihme-ui'`
@@ -56,7 +56,7 @@ export default class Button extends PureComponent {
         onClick={showSpinner ? null : onClick}
         type="button"
       >
-        {showSpinner && <Spinner inline size="small" />}
+        {showSpinner && <LoadingIndicator inline />}
         {!showSpinner && icon && <img className={styles.icon} alt="" src={icon} />}
         {!showSpinner && (children || text)}
       </button>
