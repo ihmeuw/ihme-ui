@@ -53,7 +53,7 @@ export default class Button extends PureComponent {
         disabled={disabled}
         id={id}
         name={name}
-        onClick={showSpinner ? null : onClick}
+        onClick={onClick}
         type="button"
       >
         {showSpinner && <LoadingIndicator inline />}

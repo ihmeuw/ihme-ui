@@ -12,13 +12,19 @@ class App extends React.Component {
     super(props);
 
     this.state = { isLoading: false };
-    this.showIsLoading = this.showIsLoading.bind(this);
+    this.onClickAsync = this.onClickAsync.bind(this);
+    this.toggleLoading = this.toggleLoading.bind(this);
   }
 
-  showIsLoading() {
+  toggleLoading() {
     this.setState({
       isLoading: !this.state.isLoading,
     });
+  }
+
+  onClickAsync() {
+    this.toggleLoading();
+    setTimeout(this.toggleLoading, 2000);
   }
 
   render() {
@@ -53,9 +59,9 @@ class App extends React.Component {
 
 </code></pre> */}
           <Button
+            onClick={onClick}
             theme="green"
             text="Click me!"
-            onClick={onClick}
           />
         </section>
         <section>
@@ -69,9 +75,9 @@ class App extends React.Component {
 
 </code></pre> */}
           <Button
-            text="Click me!"
             disabled
             onClick={onClick}
+            text="Click me!"
           />
         </section>
         <section>
@@ -90,8 +96,8 @@ class App extends React.Component {
             text="A button "
           >
             <Button
-              text="Click me!"
               onClick={onClick}
+              text="Click me!"
             />
           </HtmlLabel>
         </section>
@@ -107,9 +113,10 @@ class App extends React.Component {
 </code></pre> */}
           <div>
             <Button
-              text="Delete all files"
+              disabled={this.state.isLoading}
+              onClick={this.onClickAsync}
               showSpinner={this.state.isLoading}
-              onClick={this.showIsLoading}
+              text="Delete all files"
             />
           </div>
         </section>
@@ -124,9 +131,9 @@ class App extends React.Component {
 
 </code></pre> */}
           <Button
-            text="Click me!"
-            onClick={onClick}
             icon="home3.png"
+            onClick={onClick}
+            text="Click me!"
           />
         </section>
         <section>
@@ -141,10 +148,11 @@ class App extends React.Component {
 
 </code></pre> */}
           <Button
-            text="Click me!"
+            disabled={this.state.isLoading}
             icon="home3.png"
+            onClick={this.onClickAsync}
             showSpinner={this.state.isLoading}
-            onClick={this.showIsLoading}
+            text="Click me!"
           />
         </section>
       </div>
