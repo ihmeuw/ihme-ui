@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { symbol } from 'd3';
-import { assign } from 'lodash';
+import assign from 'lodash/assign';
+import bindAll from 'lodash/bindAll';
 
-import { eventHandleWrapper } from '../../../utils/events';
 import {
   CommonDefaultProps,
   CommonPropTypes,
@@ -62,24 +62,63 @@ export default class Shape extends PureComponent {
 
   constructor(props) {
     super(props);
+
     this.state = stateFromPropUpdates(Shape.propUpdates, {}, props, {});
+
+    bindAll(this, [
+      'onClick',
+      'onMouseLeave',
+      'onMouseMove',
+      'onMouseOver',
+    ]);
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState(stateFromPropUpdates(Shape.propUpdates, this.props, nextProps, {}));
   }
 
+  onClick(event) {
+    const {
+      datum,
+      onClick,
+    } = this.props;
+
+    onClick(event, datum, this);
+  }
+
+  onMouseLeave(event) {
+    const {
+      datum,
+      onMouseLeave,
+    } = this.props;
+
+    onMouseLeave(event, datum, this);
+  }
+
+  onMouseMove(event) {
+    const {
+      datum,
+      onMouseMove,
+    } = this.props;
+
+    onMouseMove(event, datum, this);
+  }
+
+  onMouseOver(event) {
+    const {
+      datum,
+      onMouseOver,
+    } = this.props;
+
+    onMouseOver(event, datum, this);
+  }
+
   render() {
     const {
       className,
       clipPathId,
-      datum,
       focused,
       focusedClassName,
-      onClick,
-      onMouseLeave,
-      onMouseMove,
-      onMouseOver,
       selected,
       selectedClassName,
       translateX,
@@ -95,10 +134,10 @@ export default class Shape extends PureComponent {
           [focusedClassName]: focused && focusedClassName,
         }) || (void 0)}
         clipPath={clipPathId && `url(#${clipPathId})`}
-        onClick={eventHandleWrapper(onClick, datum, this)}
-        onMouseLeave={eventHandleWrapper(onMouseLeave, datum, this)}
-        onMouseMove={eventHandleWrapper(onMouseMove, datum, this)}
-        onMouseOver={eventHandleWrapper(onMouseOver, datum, this)}
+        onClick={this.onClick}
+        onMouseLeave={this.onMouseLeave}
+        onMouseMove={this.onMouseMove}
+        onMouseOver={this.onMouseOver}
         style={style}
         transform={`translate(${translateX}, ${translateY}) rotate(${rotate})`}
       />

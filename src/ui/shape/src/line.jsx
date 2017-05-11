@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { line } from 'd3';
+import bindAll from 'lodash/bindAll';
 
-import { eventHandleWrapper } from '../../../utils/events';
 import {
   CommonPropTypes,
   CommonDefaultProps,
@@ -20,21 +20,59 @@ export default class Line extends PureComponent {
     super(props);
 
     this.state = stateFromPropUpdates(Line.propUpdates, {}, props, {});
+
+    bindAll(this, [
+      'onClick',
+      'onMouseLeave',
+      'onMouseMove',
+      'onMouseOver',
+    ]);
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState(stateFromPropUpdates(Line.propUpdates, this.props, nextProps, {}));
   }
 
+  onClick(event) {
+    const {
+      data,
+      onClick,
+    } = this.props;
+
+    onClick(event, data, this);
+  }
+
+  onMouseLeave(event) {
+    const {
+      data,
+      onMouseLeave,
+    } = this.props;
+
+    onMouseLeave(event, data, this);
+  }
+
+  onMouseMove(event) {
+    const {
+      data,
+      onMouseMove,
+    } = this.props;
+
+    onMouseMove(event, data, this);
+  }
+
+  onMouseOver(event) {
+    const {
+      data,
+      onMouseOver,
+    } = this.props;
+
+    onMouseOver(event, data, this);
+  }
+
   render() {
     const {
       className,
       clipPathId,
-      data,
-      onClick,
-      onMouseLeave,
-      onMouseMove,
-      onMouseOver,
       style,
     } = this.props;
 
@@ -48,10 +86,10 @@ export default class Line extends PureComponent {
         clipPath={clipPathId && `url(#${clipPathId})`}
         d={path}
         fill="none"
-        onClick={eventHandleWrapper(onClick, data, this)}
-        onMouseLeave={eventHandleWrapper(onMouseLeave, data, this)}
-        onMouseMove={eventHandleWrapper(onMouseMove, data, this)}
-        onMouseOver={eventHandleWrapper(onMouseOver, data, this)}
+        onClick={this.onClick}
+        onMouseLeave={this.onMouseLeave}
+        onMouseMove={this.onMouseMove}
+        onMouseOver={this.onMouseOver}
         style={style}
       />
     );

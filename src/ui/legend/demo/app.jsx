@@ -117,8 +117,8 @@ class App extends React.Component {
       shapeTypeKey={(item) => item.shapeType}
       title="Estimate types"
       renderClear
-      onClear={(event, item) => {}}
-      onClick={(event, item) => {}}
+      onClear={(event, item, instance) => {}}
+      onClick={(event, item, instance) => {}}
     />
 </code></pre> */}
           <Legend

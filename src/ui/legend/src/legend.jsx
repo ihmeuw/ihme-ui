@@ -113,13 +113,13 @@ Legend.propTypes = {
 
   /**
    * callback when 'clear' icon is clicked;
-   * signature: (SyntheticEvent, item) => {}
+   * signature: (SyntheticEvent, item, instance) => {}
    */
   onClear: PropTypes.func,
 
   /**
    * callback when legend item is clicked;
-   * signature: (SyntheticEvent, item) => {}
+   * signature: (SyntheticEvent, item, instance) => {}
    */
   onClick: PropTypes.func,
 
