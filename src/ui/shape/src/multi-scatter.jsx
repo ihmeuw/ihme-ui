@@ -71,7 +71,7 @@ export default class MultiScatter extends PureComponent {
       <g
         className={className && classNames(className)}
         clipPath={clipPathId && `url(#${clipPathId})`}
-        style={this.combineStyles(style)}
+        style={this.combineStyles(style, data)}
       >
         {
           map(data, (datum) => {

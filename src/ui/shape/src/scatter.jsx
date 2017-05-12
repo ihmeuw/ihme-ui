@@ -43,6 +43,7 @@ export default class Scatter extends PureComponent {
       className,
       clipPathId,
       colorScale,
+      data,
       dataAccessors,
       fill,
       focus,
@@ -72,7 +73,7 @@ export default class Scatter extends PureComponent {
       <g
         className={className && classNames(className)}
         clipPath={clipPathId && `url(#${clipPathId})`}
-        style={this.combineStyles(style)}
+        style={this.combineStyles(style, data)}
       >
         {
           map(sortedData, (datum) => {
