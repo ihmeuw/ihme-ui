@@ -258,7 +258,7 @@ MultiScatter.propTypes = {
   /**
    * inline style applied to outermost wrapping `<g>`
    */
-  style: PropTypes.object,
+  style: CommonPropTypes.style,
 
   /**
    * className applied to each `<Shape />`
