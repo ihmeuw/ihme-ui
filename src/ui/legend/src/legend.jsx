@@ -55,15 +55,16 @@ export default class Legend extends React.Component {
 
   render() {
     const {
-      wrapperClassName,
-      wrapperStyles,
-      ulClassName
+      className,
+      listClassName,
+      listStyle,
+      style,
     } = this.props;
 
     return (
-      <div className={classNames(styles.container, wrapperClassName)} style={wrapperStyles}>
+      <div className={classNames(styles.container, className)} style={style}>
         {this.renderTitle()}
-        <ul className={classNames(styles.list, ulClassName)}>
+        <ul className={classNames(styles.list, listClassName)} style={listStyle}>
           {this.renderItemList()}
         </ul>
       </div>
@@ -72,6 +73,12 @@ export default class Legend extends React.Component {
 }
 
 Legend.propTypes = {
+
+  /**
+   * className applied to outermost, wrapping `<div>`
+   */
+  className: CommonPropTypes.className,
+
   /**
    * legend items
    */
@@ -112,6 +119,16 @@ Legend.propTypes = {
   ]).isRequired,
 
   /**
+   * className applied to `<ul>`, which wraps legend items
+   */
+  listClassName: CommonPropTypes.className,
+
+  /**
+   * inline styles applied to `<ul>`, which wraps legend items
+   */
+  listStyle: PropTypes.object,
+
+  /**
    * callback when 'clear' icon is clicked;
    * signature: (SyntheticEvent, item, instance) => {}
    */
@@ -150,6 +167,11 @@ Legend.propTypes = {
   ]).isRequired,
 
   /**
+   * inline styles applied to outermost, wrapper `<div>`
+   */
+  style: PropTypes.object,
+
+  /**
    * title for the legend
    */
   title: PropTypes.string,
@@ -170,21 +192,6 @@ Legend.propTypes = {
    * inline styles applied to title component
    */
   titleStyles: PropTypes.object,
-
-  /**
-   * className applied to `<ul>`, which wraps legend items
-   */
-  ulClassName: CommonPropTypes.className,
-
-  /**
-   * className applied to outermost, wrapping `<div>`
-   */
-  wrapperClassName: CommonPropTypes.className,
-
-  /**
-   * inline styles applied to outermost, wrapper `<div>`
-   */
-  wrapperStyles: PropTypes.object
 };
 
 Legend.defaultProps = {

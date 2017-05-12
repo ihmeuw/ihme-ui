@@ -121,12 +121,12 @@ describe('<Legend />', () => {
   });
 
   it('adds an additional class to the outer most wrapper', () => {
-    const wrapper = shallow(<Legend items={items} wrapperClassName="foobar" labelKey={labelKey} />);
+    const wrapper = shallow(<Legend items={items} className="foobar" labelKey={labelKey} />);
     expect(wrapper).to.have.className('foobar');
   });
 
   it('adds an additional class to the ul', () => {
-    const wrapper = shallow(<Legend items={items} ulClassName="barfoo" labelKey={labelKey} />);
+    const wrapper = shallow(<Legend items={items} listClassName="barfoo" labelKey={labelKey} />);
     expect(wrapper.find('ul')).to.have.className('barfoo');
   });
 });
