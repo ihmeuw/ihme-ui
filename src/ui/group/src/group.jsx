@@ -1,7 +1,13 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import memoize from 'lodash/memoize';
-import { CommonPropTypes, eventHandleWrapper, PureComponent } from '../../../utils';
+import noop from 'lodash/noop';
+
+import {
+  CommonPropTypes,
+  eventHandleWrapper,
+  PureComponent,
+} from '../../../utils';
 
 import styles from './option.css';
 
@@ -62,7 +68,7 @@ Group.propTypes = {
    * implicitly depends on child components having a `value` prop
    * signature: (SyntheticEvent, selectedValue) {...}
    */
-  onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
 
   /**
    * inline styles applied to outermost wrapping div
@@ -72,4 +78,5 @@ Group.propTypes = {
 
 Group.defaultProps = {
   className: styles.group,
+  onClick: noop,
 };
