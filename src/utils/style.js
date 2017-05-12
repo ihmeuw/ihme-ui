@@ -7,6 +7,7 @@ import reduce from 'lodash/reduce';
  * return single inline-style object
  * @param {array} [styles=[]] - inline-style objects and/or functions that resolve to objects
  * @param {...any} [args] - any arguments to call style functions with
+ * @returns {object}
  */
 export function combineStyles(styles = [], ...args) {
   return reduce(castArray(styles), (accum, style) => {
