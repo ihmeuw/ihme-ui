@@ -10,9 +10,12 @@ import {
   pick,
   sortBy,
 } from 'lodash';
+
 import {
+  combineStyles,
   CommonDefaultProps,
   CommonPropTypes,
+  memoizeByLastCall,
   propResolver,
   propsChanged,
   PureComponent,
@@ -27,6 +30,7 @@ import Shape from './shape';
 export default class Scatter extends PureComponent {
   constructor(props) {
     super(props);
+    this.combineStyles = memoizeByLastCall(combineStyles);
     this.state = stateFromPropUpdates(Scatter.propUpdates, {}, props, {});
   }
 
@@ -39,13 +43,16 @@ export default class Scatter extends PureComponent {
       className,
       clipPathId,
       colorScale,
+      data,
       dataAccessors,
       fill,
       focus,
       scales,
       shapeClassName,
       shapeScale,
+      shapeStyle,
       shapeType,
+      style,
     } = this.props;
 
     const { selectedDataMappedToKeys, sortedData } = this.state;
@@ -60,13 +67,13 @@ export default class Scatter extends PureComponent {
       'selectedClassName',
       'selectedStyle',
       'size',
-      'style',
     ]);
 
     return (
       <g
         className={className && classNames(className)}
         clipPath={clipPathId && `url(#${clipPathId})`}
+        style={this.combineStyles(style, data)}
       >
         {
           map(sortedData, (datum) => {
@@ -93,6 +100,7 @@ export default class Scatter extends PureComponent {
                 focused={focusedDatumKey === key}
                 selected={selectedDataMappedToKeys.hasOwnProperty(key)}
                 shapeType={resolvedShapeType}
+                style={shapeStyle}
                 translateX={scales.x && isFinite(xValue) ? scales.x(xValue) : 0}
                 translateY={scales.y && isFinite(yValue) ? scales.y(yValue) : 0}
                 {...childProps}
@@ -221,7 +229,7 @@ Scatter.propTypes = {
   size: PropTypes.number,
 
   /**
-   * Inline styles passed to each `<Shape />`
+   * Inline styles applied to wrapping element (`<g>`) of scatter shapes
    */
   style: CommonPropTypes.style,
 
@@ -235,6 +243,11 @@ Scatter.propTypes = {
    * to determine type of shape to render
    */
   shapeScale: PropTypes.func,
+
+  /**
+   * Inline styles passed to each `<Shape />`
+   */
+  shapeStyle: CommonDefaultProps.style,
 
   /**
    * Type of shape to render; use in lieu of `props.shapeScale`

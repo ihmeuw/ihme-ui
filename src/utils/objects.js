@@ -1,6 +1,59 @@
 import { get as getValue, reduce } from 'lodash';
 
 /**
+ * direct copy of `defaultEqualityCheck` from reselect (https://github.com/reactjs/reselect)
+ * @param {any} a
+ * @param {any} b
+ * @return {boolean}
+ */
+function defaultEqualityCheck(a, b) {
+  return a === b;
+}
+
+/**
+ * direct copy of `areArgumentsShallowlyEqual` from reselect (https://github.com/reactjs/reselect)
+ * @param {Function} equalityCheck
+ * @param {any} prev
+ * @param {any} next
+ * @return {boolean}
+ */
+function argumentsAreShallowlyEqual(equalityCheck, prev, next) {
+  if (prev === null || next === null || prev.length !== next.length) {
+    return false;
+  }
+
+  // Do this in a for loop (and not a `forEach` or an `every`) so we can determine equality as fast as possible.
+  const length = prev.length;
+  for (let i = 0; i < length; i++) {
+    if (!equalityCheck(prev[i], next[i])) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/**
+ * this function is a direct copy of `defaultMemoize` from reselect (https://github.com/reactjs/reselect)
+ * memoize a function based on most recently passed-in arguments
+ * @param {function} func
+ * @return {function(...[*])}
+ */
+export function memoizeByLastCall(func, equalityCheck = defaultEqualityCheck) {
+  let lastArgs = null;
+  let lastResult = null;
+
+  return (...rest) => {
+    if (!argumentsAreShallowlyEqual(equalityCheck, lastArgs, rest)) {
+      lastResult = func.apply(null, rest);
+    }
+
+    lastArgs = rest;
+    return lastResult;
+  };
+}
+
+/**
  * if given property is a function, call it with given obj
  * otherwise, plain old object access
  * @param obj

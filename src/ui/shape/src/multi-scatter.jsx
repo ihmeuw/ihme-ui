@@ -4,7 +4,14 @@ import { scaleLinear } from 'd3';
 import { castArray, map, pick } from 'lodash';
 import Scatter from './scatter';
 
-import { propResolver, PureComponent, CommonDefaultProps, CommonPropTypes } from '../../../utils';
+import {
+  combineStyles,
+  CommonDefaultProps,
+  CommonPropTypes,
+  memoizeByLastCall,
+  propResolver,
+  PureComponent,
+} from '../../../utils';
 
 /**
  * `import { MultiScatter } from 'ihme-ui'`
@@ -12,6 +19,13 @@ import { propResolver, PureComponent, CommonDefaultProps, CommonPropTypes } from
  * This is a convenience component intended to make it easier to render many `<Scatter />`s on a single chart.
  */
 export default class MultiScatter extends PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.combineStyles = memoizeByLastCall(combineStyles);
+    this.castSelectionAsArray = memoizeByLastCall((selection) => castArray(selection));
+  }
+
   render() {
     const {
       className,
@@ -20,11 +34,11 @@ export default class MultiScatter extends PureComponent {
       data,
       fieldAccessors,
       scatterClassName,
+      scatterStyle,
       scatterValuesIteratee,
       selection,
       style,
       shapeScale,
-      shapeStyle,
     } = this.props;
 
     const {
@@ -50,13 +64,14 @@ export default class MultiScatter extends PureComponent {
       'size',
       'shapeClassName',
       'shapeScale',
+      'shapeStyle',
     ]);
 
     return (
       <g
         className={className && classNames(className)}
         clipPath={clipPathId && `url(#${clipPathId})`}
-        style={style}
+        style={this.combineStyles(style, data)}
       >
         {
           map(data, (datum) => {
@@ -75,8 +90,8 @@ export default class MultiScatter extends PureComponent {
                 data={scatterValues}
                 fill={color}
                 key={`scatter:${key}`}
-                selection={castArray(selection)}
-                style={shapeStyle}
+                selection={this.castSelectionAsArray(selection)}
+                style={scatterStyle}
                 shapeType={shapeType}
                 {...childProps}
               />
@@ -202,6 +217,11 @@ MultiScatter.propTypes = {
   scatterClassName: CommonPropTypes.className,
 
   /**
+   * inline styles applied to `<Scatter />`'s outermost wrapping `<g>`.
+   */
+  scatterStyle: CommonDefaultProps.style,
+
+  /**
    * function to apply to the datum to transform scatter values. default: _.identity
    * signature: (data, key) => {...}
    */
@@ -238,7 +258,7 @@ MultiScatter.propTypes = {
   /**
    * inline style applied to outermost wrapping `<g>`
    */
-  style: PropTypes.object,
+  style: CommonPropTypes.style,
 
   /**
    * className applied to each `<Shape />`
