@@ -30,9 +30,7 @@ describe('<LegendItem />', () => {
   });
 
   it('accepts a labelKey that is a function that is called with the item', () => {
-    const spy = sinon.spy((itemObj) => {
-      return itemObj.estimateStage;
-    });
+    const spy = sinon.spy((itemObj) => itemObj.estimateStage);
 
     const wrapper = shallow(<LegendItem item={item} labelKey={spy} />);
     expect(wrapper.find('span')).to.have.text('GBD final');
@@ -46,9 +44,7 @@ describe('<LegendItem />', () => {
   });
 
   it('accepts a shapeTypeKey that is a function that is called with the item', () => {
-    const spy = sinon.spy((itemObj) => {
-      return itemObj.shapeType;
-    });
+    const spy = sinon.spy((itemObj) => itemObj.shapeType);
     const wrapper = shallow(<LegendItem item={item} shapeTypeKey={spy} />);
 
     expect(wrapper).to.contain(<Shape shapeType="triangle" />);
@@ -62,9 +58,7 @@ describe('<LegendItem />', () => {
   });
 
   it('accepts a shapeColorKey that is a function that is called with the item', () => {
-    const spy = sinon.spy((itemObj) => {
-      return itemObj.shapeColor;
-    });
+    const spy = sinon.spy((itemObj) => itemObj.shapeColor);
     const wrapper = shallow(<LegendItem item={item} shapeColorKey={spy} />);
 
     expect(wrapper).to.contain(<Shape fill="red" />);
