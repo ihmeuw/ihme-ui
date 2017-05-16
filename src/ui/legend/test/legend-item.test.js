@@ -95,23 +95,23 @@ describe('<LegendItem />', () => {
     expect(wrapper).to.not.have.descendants(`.${itemStyle.clear}`);
   });
 
-  it('calls onClick with event and item', () => {
+  it('calls onClick with event, item, and instance', () => {
     const spy = sinon.spy();
 
     const wrapper = shallow(<LegendItem item={item} onClick={spy} />);
     expect(spy.called).to.be.false;
     wrapper.find('div').simulate('click', mockEvent);
     expect(spy.called).to.be.true;
-    expect(spy.calledWith(mockEvent, item)).to.be.true;
+    expect(spy.calledWith(mockEvent, item, wrapper.instance())).to.be.true;
   });
 
-  it('calls onClear with event and item', () => {
+  it('calls onClear with event, item, and instance', () => {
     const spy = sinon.spy();
 
     const wrapper = shallow(<LegendItem item={item} renderClear onClear={spy} />);
     expect(spy.called).to.be.false;
     wrapper.find('svg').first().simulate('click', mockEvent);
     expect(spy.called).to.be.true;
-    expect(spy.calledWith(mockEvent, item)).to.be.true;
+    expect(spy.calledWith(mockEvent, item, wrapper.instance())).to.be.true;
   });
 });
