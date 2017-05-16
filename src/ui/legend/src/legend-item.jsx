@@ -3,7 +3,10 @@ import classNames from 'classnames';
 import bindAll from 'lodash/bindAll';
 
 import {
+  combineStyles,
   CommonDefaultProps,
+  CommonPropTypes,
+  memoizeByLastCall,
   propResolver,
 } from '../../../utils';
 
@@ -13,6 +16,8 @@ import { Shape } from '../../shape';
 export default class LegendItem extends React.Component {
   constructor(props) {
     super(props);
+
+    this.combineItemStyles = memoizeByLastCall(combineStyles);
 
     bindAll(this, [
       'onClear',
@@ -57,23 +62,22 @@ export default class LegendItem extends React.Component {
 
   render() {
     const {
+      className,
       item,
-      itemClassName,
-      itemStyles,
       onClick,
       renderClear,
       shapeColorKey,
-      shapeTypeKey
+      shapeTypeKey,
+      style,
     } = this.props;
+
     const fill = propResolver(item, shapeColorKey);
     const type = propResolver(item, shapeTypeKey);
 
-    const inlineStyles = typeof itemStyles === 'function' ? itemStyles(item) : itemStyles;
-
     return (
       <li
-        style={inlineStyles}
-        className={classNames(styles.li, itemClassName)}
+        className={classNames(styles.li, className)}
+        style={this.combineItemStyles(style, item)}
       >
         {renderClear ? (
           <svg
@@ -108,60 +112,59 @@ export default class LegendItem extends React.Component {
 }
 
 LegendItem.propTypes = {
-  /* legend item to render */
+  /**
+   * classname(s) to apply to li
+   */
+  className: CommonPropTypes.className,
+
+  /**
+   * legend item to render
+   */
   item: PropTypes.object.isRequired,
 
-  /* classname(s) to apply to li */
-  itemClassName: PropTypes.oneOfType([
-    PropTypes.array,
-    PropTypes.string,
-    PropTypes.object
-  ]),
-
-  /* inline-styles to be applied to individual legend item <li> */
-  itemStyles: PropTypes.oneOfType([
-    // if passed an object, will be applied directly inline to the li
-    PropTypes.object,
-
-    // if passed a function, will be called with the current item
-    PropTypes.func,
-  ]),
-
-  /* custom component to render for each label, passed current item */
+  /**
+   * custom component to render for each label, passed current item
+   */
   LabelComponent: PropTypes.func,
 
-  labelKey: PropTypes.oneOfType([
-    /* either the path of label in the item objects */
-    PropTypes.string,
+  /**
+   * either the path of label in the item objects
+   * or a function to resolve the label, passed the current item
+   */
+  labelKey: CommonPropTypes.dataAccessor.isRequired,
 
-    /* or a function to resolve the label, passed the current item */
-    PropTypes.func
-  ]).isRequired,
-
-  /* callback when 'clear' icon is clicked; see props.renderClear */
+  /**
+   * callback when 'clear' icon is clicked; see props.renderClear
+   */
   onClear: PropTypes.func,
 
-  /* callback when legend item is clicked */
+  /**
+   * callback when legend item is clicked
+   */
   onClick: PropTypes.func,
 
-  /* whether to render a 'clear' icon ('x') inline with each legend item */
+  /**
+   * whether to render a 'clear' icon ('x') inline with each legend item
+   */
   renderClear: PropTypes.bool,
 
-  shapeColorKey: PropTypes.oneOfType([
-    /* either the path of shape color in the item objects */
-    PropTypes.string,
+  /**
+   * either the path of shape color in the item objects
+   * or a function to resolve the shape color, passed the current item
+   */
+  shapeColorKey: CommonPropTypes.dataAccessor.isRequired,
 
-    /* or a function to resolve the shape color, passed the current item */
-    PropTypes.func
-  ]).isRequired,
+  /**
+   * either the path of shape type in the item objects
+   * or a function to resolve the shape type, passed the current item
+   */
+  shapeTypeKey: CommonPropTypes.dataAccessor.isRequired,
 
-  shapeTypeKey: PropTypes.oneOfType([
-    /* either the path of shape type in the item objects */
-    PropTypes.string,
-
-    /* or a function to resolve the shape type, passed the current item */
-    PropTypes.func
-  ]).isRequired
+  /**
+   * inline-styles to be applied to individual legend item <li>
+   * if a function, passed items as argument. Signature: (items): {} => { ... }.
+   */
+  style: CommonPropTypes.style,
 };
 
 LegendItem.defaultProps = {

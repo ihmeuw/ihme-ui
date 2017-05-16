@@ -31,10 +31,15 @@ export default class Legend extends React.Component {
   }
 
   renderItemList() {
-    const { items, ItemComponent, labelKey } = this.props;
+    const {
+      itemClassName,
+      items,
+      ItemComponent,
+      itemStyle,
+      labelKey,
+    } = this.props;
+
     const itemProps = pick(this.props, [
-      'itemClassName',
-      'itemStyles',
       'labelKey',
       'LabelComponent',
       'onClear',
@@ -46,8 +51,10 @@ export default class Legend extends React.Component {
 
     return map(items, item =>
       <ItemComponent
+        className={itemClassName}
         key={propResolver(item, labelKey)}
         item={item}
+        style={itemStyle}
         {...itemProps}
       />
     );
@@ -86,7 +93,7 @@ Legend.propTypes = {
 
   /**
    * component (must be passable to React.createElement) to render for each item;
-   * passed props `item`, `itemClassName`, `itemStyles`, `labelKey`, `LabelComponent`, `onClear`, `onClick`, `renderClear`, `shapeColorKey`, `shapeTypeKey`
+   * passed props `item`, `className`, `style`, `labelKey`, `LabelComponent`, `onClear`, `onClick`, `renderClear`, `shapeColorKey`, `shapeTypeKey`
    * defaults to [LegendItem](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/legend/src/legend-item.jsx)
    */
   ItemComponent: PropTypes.func,
@@ -101,7 +108,7 @@ Legend.propTypes = {
    * if passed an object, will be applied directly inline to the `<li>`
    * if passed a function, will be called with the current item obj
    */
-  itemStyles: CommonPropTypes.style,
+  itemStyle: CommonPropTypes.style,
 
   /**
    * custom component to render for each label, passed current item;
