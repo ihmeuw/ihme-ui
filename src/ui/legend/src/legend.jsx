@@ -4,7 +4,13 @@ import {
   map,
   pick,
 } from 'lodash';
-import { CommonPropTypes, propResolver } from '../../../utils';
+
+import {
+  combineStyles,
+  CommonPropTypes,
+  memoizeByLastCall,
+  propResolver,
+} from '../../../utils';
 
 import styles from './legend.css';
 
@@ -17,6 +23,12 @@ import LegendTitle from './legend-title';
  *
  */
 export default class Legend extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.combineWrapperStyles = memoizeByLastCall(combineStyles);
+    this.combineListStyles = memoizeByLastCall(combineStyles);
+  }
 
   renderTitle() {
     const { title, TitleComponent, titleClassName, titleStyles } = this.props;
@@ -65,13 +77,20 @@ export default class Legend extends React.Component {
       className,
       listClassName,
       listStyle,
+      items,
       style,
     } = this.props;
 
     return (
-      <div className={classNames(styles.container, className)} style={style}>
+      <div
+        className={classNames(styles.container, className)}
+        style={this.combineWrapperStyles(style, items)}
+      >
         {this.renderTitle()}
-        <ul className={classNames(styles.list, listClassName)} style={listStyle}>
+        <ul
+          className={classNames(styles.list, listClassName)}
+          style={this.combineListStyles(listStyle, items)}
+        >
           {this.renderItemList()}
         </ul>
       </div>
@@ -132,8 +151,9 @@ Legend.propTypes = {
 
   /**
    * inline styles applied to `<ul>`, which wraps legend items
+   * if a function, passed items as argument. Signature: (items): {} => { ... }.
    */
-  listStyle: PropTypes.object,
+  listStyle: CommonPropTypes.style,
 
   /**
    * callback when 'clear' icon is clicked;
@@ -175,8 +195,9 @@ Legend.propTypes = {
 
   /**
    * inline styles applied to outermost, wrapper `<div>`
+   * if a function, passed items as argument. Signature: (items): {} => { ... }.
    */
-  style: PropTypes.object,
+  style: CommonPropTypes.style,
 
   /**
    * title for the legend
