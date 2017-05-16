@@ -41,7 +41,7 @@
     "lint:fix": "$(npm bin)/eslint src --fix --ext .js,.jsx --quiet",
     "preversion": "npm run lint && npm run test",
     "postversion": "git push && git push --tags",
-    "test": "BABEL_ENV=test $(npm bin)/babel-node $(npm bin)/_mocha --require ./scripts/setup-jsdom.js `./scripts/get-test-directories.sh`",
+    "test": "NODE_ENV=production BABEL_ENV=test $(npm bin)/babel-node $(npm bin)/_mocha --require ./scripts/setup-jsdom.js `./scripts/get-test-directories.sh`",
     "test:travis": "npm run lint && npm run coverage:travis && npm run coverage:token",
     "version": "npm run build:all && git add ."
   },
