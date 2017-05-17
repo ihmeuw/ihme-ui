@@ -31,13 +31,20 @@ export default class Legend extends React.Component {
   }
 
   renderTitle() {
-    const { title, TitleComponent, titleClassName, titleStyles } = this.props;
-    if (!title) return null;
+    const {
+      items,
+      title,
+      TitleComponent,
+      titleClassName,
+      titleStyles,
+    } = this.props;
+
     return (
       <TitleComponent
-        title={title}
-        className={classNames(titleClassName)}
+        className={titleClassName}
+        items={items}
         style={titleStyles}
+        title={title}
       />
     );
   }
@@ -198,7 +205,7 @@ Legend.propTypes = {
 
   /**
    * component (must be passable to React.createElement) to render for the title;
-   * passed props `title`, `className`, `style`
+   * passed props `className`, `items`, `style`, `title`
    * defaults to [LegendTitle](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/legend/src/legend-title.jsx)
    */
   TitleComponent: PropTypes.func,
@@ -210,8 +217,10 @@ Legend.propTypes = {
 
   /**
    * inline styles applied to title component
+   * if a function, passed items as argument.
+   * Signature: (items): {} => { ... }.
    */
-  titleStyles: PropTypes.object,
+  titleStyles: CommonPropTypes.style,
 };
 
 Legend.defaultProps = {
