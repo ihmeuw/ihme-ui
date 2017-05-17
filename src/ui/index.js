@@ -7,7 +7,7 @@ import { Map } from './compositions';
 import ExpansionContainer, { Expandable } from './expansion-container';
 import Group, { Option } from './group';
 import HtmlLabel from './html-label';
-import Legend from './legend';
+import Legend, { LegendItem, LegendTitle } from './legend';
 import LoadingIndicator from './loading-indicator';
 import ResponsiveContainer from './responsive-container';
 import {
@@ -39,6 +39,8 @@ export {
   Group,
   HtmlLabel,
   Legend,
+  LegendItem,
+  LegendTitle,
   Line,
   LoadingIndicator,
   Map,
