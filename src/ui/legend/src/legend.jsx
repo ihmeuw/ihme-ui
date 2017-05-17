@@ -108,7 +108,7 @@ Legend.propTypes = {
   /**
    * legend items
    */
-  items: PropTypes.arrayOf(PropTypes.object).isRequired,
+  items: PropTypes.arrayOf(PropTypes.object),
 
   /**
    * component (must be passable to React.createElement) to render for each item;
@@ -137,12 +137,10 @@ Legend.propTypes = {
 
   /**
    * path to label in item objects (e.g., 'name', 'properties.label')
-   * or a function to resolve the label (signature: function (item) {...})
+   * or a function to resolve the label
+   * signature: function (item) {...}
    */
-  labelKey: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.func,
-  ]).isRequired,
+  labelKey: CommonPropTypes.dataAccessor.isRequired,
 
   /**
    * className applied to `<ul>`, which wraps legend items
@@ -177,10 +175,7 @@ Legend.propTypes = {
    * or a function to resolve the color
    * signature: (item) => {...}
    */
-  shapeColorKey: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.func,
-  ]).isRequired,
+  shapeColorKey: CommonPropTypes.dataAccessor.isRequired,
 
   /**
    * path to shape type in item objects (e.g., 'type', 'properties.type')
@@ -188,10 +183,7 @@ Legend.propTypes = {
    * if a function: signature: (item) => {...}
    * must be one of [supported shape types](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/shape.js#L23)
    */
-  shapeTypeKey: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.func,
-  ]).isRequired,
+  shapeTypeKey: CommonPropTypes.dataAccessor.isRequired,
 
   /**
    * inline styles applied to outermost, wrapper `<div>`
