@@ -34,7 +34,9 @@ Property | Required | Type(s) | Defaults | Description
 ---
 
 ### \<LegendItem />
+import { LegendItem } from 'ihme-ui';
 
+Default ItemComponent used by `<Legend />`.
 
 
 Property | Required | Type(s) | Defaults | Description
@@ -55,7 +57,9 @@ Property | Required | Type(s) | Defaults | Description
 ---
 
 ### \<LegendTitle />
+import { LegendTitle } from 'ihme-ui';
 
+Default TitleComponent used by `<Legend />`.
 
 
 Property | Required | Type(s) | Defaults | Description

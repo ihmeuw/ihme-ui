@@ -14,6 +14,11 @@ import {
 import styles from './legend-item.css';
 import { Shape } from '../../shape';
 
+/**
+ * import { LegendItem } from 'ihme-ui';
+ *
+ * Default ItemComponent used by `<Legend />`.
+ */
 export default class LegendItem extends PureComponent {
   constructor(props) {
     super(props);

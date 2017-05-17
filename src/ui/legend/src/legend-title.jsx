@@ -11,6 +11,11 @@ import styles from './legend-title.css';
 
 const resolveTitleStyles = memoizeByLastCall(combineStyles);
 
+/**
+ * import { LegendTitle } from 'ihme-ui';
+ *
+ * Default TitleComponent used by `<Legend />`.
+ */
 export default function LegendTitle(props) {
   const {
     className,
