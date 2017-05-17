@@ -22,6 +22,9 @@ export default class LegendItem extends React.Component {
     bindAll(this, [
       'onClear',
       'onClick',
+      'onMouseLeave',
+      'onMouseMove',
+      'onMouseOver',
     ]);
   }
 
@@ -45,6 +48,33 @@ export default class LegendItem extends React.Component {
     onClick(event, item, this);
   }
 
+  onMouseLeave(event) {
+    const {
+      item,
+      onMouseLeave,
+    } = this.props;
+
+    onMouseLeave(event, item, this);
+  }
+
+  onMouseMove(event) {
+    const {
+      item,
+      onMouseMove,
+    } = this.props;
+
+    onMouseMove(event, item, this);
+  }
+
+  onMouseOver(event) {
+    const {
+      item,
+      onMouseOver,
+    } = this.props;
+
+    onMouseOver(event, item, this);
+  }
+
   renderLabel() {
     const {
       item,
@@ -65,7 +95,7 @@ export default class LegendItem extends React.Component {
       className,
       item,
       onClick,
-      renderClear,
+      onClear,
       shapeColorKey,
       shapeTypeKey,
       style,
@@ -77,14 +107,18 @@ export default class LegendItem extends React.Component {
     return (
       <li
         className={classNames(styles.li, className)}
+        onMouseLeave={this.onMouseLeave}
+        onMouseMove={this.onMouseMove}
+        onMouseOver={this.onMouseOver}
         style={this.combineItemStyles(style, item)}
       >
-        {renderClear ? (
+        {typeof onClear === 'function' ? (
           <svg
-            viewBox="-8 -8 16 16"
-            width="1em" height="1em"
             className={classNames(styles.clickable, styles.svg)}
+            height="1em"
             onClick={this.onClear}
+            viewBox="-8 -8 16 16"
+            width="1em"
           >
             <path d="M-3,-3L3,3 M-3,3L3,-3" stroke="black" strokeWidth="1.5" />
           </svg>
@@ -148,9 +182,22 @@ LegendItem.propTypes = {
   onClick: PropTypes.func,
 
   /**
-   * whether to render a 'clear' icon ('x') inline with each legend item
+   * onMouseLeave callback
+   * signature: (SyntheticEvent, item, instance) => {...}
    */
-  renderClear: PropTypes.bool,
+  onMouseLeave: PropTypes.func,
+
+  /**
+   * onMouseMove callback
+   * signature: (SyntheticEvent, item, instance) => {...}
+   */
+  onMouseMove: PropTypes.func,
+
+  /**
+   * onMouseOver callback
+   * signature: (SyntheticEvent, item, instance) => {...}
+   */
+  onMouseOver: PropTypes.func,
 
   /**
    * path to shape color in item objects (e.g., 'color', 'properties.color')
@@ -175,6 +222,7 @@ LegendItem.propTypes = {
 };
 
 LegendItem.defaultProps = {
-  onClear: CommonDefaultProps.noop,
-  renderClear: false,
+  onMouseLeave: CommonDefaultProps.noop,
+  onMouseMove: CommonDefaultProps.noop,
+  onMouseOver: CommonDefaultProps.noop,
 };

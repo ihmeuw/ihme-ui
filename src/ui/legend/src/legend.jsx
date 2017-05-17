@@ -7,6 +7,7 @@ import {
 
 import {
   combineStyles,
+  CommonDefaultProps,
   CommonPropTypes,
   memoizeByLastCall,
   propResolver,
@@ -63,7 +64,9 @@ export default class Legend extends React.Component {
       'LabelComponent',
       'onClear',
       'onClick',
-      'renderClear',
+      'onMouseLeave',
+      'onMouseMove',
+      'onMouseOver',
       'shapeColorKey',
       'shapeTypeKey'
     ]);
@@ -119,7 +122,8 @@ Legend.propTypes = {
 
   /**
    * component (must be passable to React.createElement) to render for each item;
-   * passed props `item`, `className`, `style`, `labelKey`, `LabelComponent`, `onClear`, `onClick`, `renderClear`, `shapeColorKey`, `shapeTypeKey`
+   * passed props `className`, `item`, `labelKey`, `LabelComponent`, `onClear`, `onClick`,
+   * `onMouseLeave`, `onMouseMove`, `onMouseOver`, `shapeColorKey`, `shapeTypeKey`, `style`
    * defaults to [LegendItem](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/legend/src/legend-item.jsx)
    */
   ItemComponent: PropTypes.func,
@@ -173,9 +177,22 @@ Legend.propTypes = {
   onClick: PropTypes.func,
 
   /**
-   * whether to render a 'clear' icon ('x') inline with each legend item
+   * onMouseLeave callback registered on each item.
+   * signature: (SyntheticEvent, item, instance) => {...}
    */
-  renderClear: PropTypes.bool,
+  onMouseLeave: PropTypes.func,
+
+  /**
+   * onMouseMove callback registered on each item.
+   * signature: (SyntheticEvent, item, instance) => {...}
+   */
+  onMouseMove: PropTypes.func,
+
+  /**
+   * onMouseOver callback registered on each item.
+   * signature: (SyntheticEvent, item, instance) => {...}
+   */
+  onMouseOver: PropTypes.func,
 
   /**
    * path to shape color in item objects (e.g., 'color', 'properties.color')
@@ -226,5 +243,8 @@ Legend.propTypes = {
 Legend.defaultProps = {
   items: [],
   ItemComponent: LegendItem,
+  onMouseLeave: CommonDefaultProps.noop,
+  onMouseMove: CommonDefaultProps.noop,
+  onMouseOver: CommonDefaultProps.noop,
   TitleComponent: LegendTitle,
 };
