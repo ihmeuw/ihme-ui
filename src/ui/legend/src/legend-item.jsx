@@ -123,23 +123,27 @@ LegendItem.propTypes = {
   item: PropTypes.object.isRequired,
 
   /**
-   * custom component to render for each label, passed current item
+   * custom component to render for each label, passed current item;
+   * must be passable to React.createElement
    */
   LabelComponent: PropTypes.func,
 
   /**
-   * either the path of label in the item objects
-   * or a function to resolve the label, passed the current item
+   * path to label in item objects (e.g., 'name', 'properties.label')
+   * or a function to resolve the label
+   * signature: function (item) {...}
    */
   labelKey: CommonPropTypes.dataAccessor.isRequired,
 
   /**
-   * callback when 'clear' icon is clicked; see props.renderClear
+   * callback when 'clear' icon is clicked;
+   * signature: (SyntheticEvent, item, instance) => {}
    */
   onClear: PropTypes.func,
 
   /**
-   * callback when legend item is clicked
+   * callback when legend item is clicked;
+   * signature: (SyntheticEvent, item, instance) => {}
    */
   onClick: PropTypes.func,
 
@@ -149,24 +153,28 @@ LegendItem.propTypes = {
   renderClear: PropTypes.bool,
 
   /**
-   * either the path of shape color in the item objects
-   * or a function to resolve the shape color, passed the current item
+   * path to shape color in item objects (e.g., 'color', 'properties.color')
+   * or a function to resolve the color
+   * signature: (item) => {...}
    */
   shapeColorKey: CommonPropTypes.dataAccessor.isRequired,
 
   /**
-   * either the path of shape type in the item objects
-   * or a function to resolve the shape type, passed the current item
+   * path to shape type in item objects (e.g., 'type', 'properties.type')
+   * or a function to resolve the type
+   * if a function: signature: (item) => {...}
+   * must be one of [supported shape types](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/shape.js#L23)
    */
   shapeTypeKey: CommonPropTypes.dataAccessor.isRequired,
 
   /**
    * inline-styles to be applied to individual legend item <li>
-   * if a function, passed items as argument. Signature: (items): {} => { ... }.
+   * if a function, passed item as argument. Signature: (item): {} => { ... }.
    */
   style: CommonPropTypes.style,
 };
 
 LegendItem.defaultProps = {
   onClear: CommonDefaultProps.noop,
+  renderClear: false,
 };
