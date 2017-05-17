@@ -8,12 +8,13 @@ import {
   CommonPropTypes,
   memoizeByLastCall,
   propResolver,
+  PureComponent,
 } from '../../../utils';
 
 import styles from './legend-item.css';
 import { Shape } from '../../shape';
 
-export default class LegendItem extends React.Component {
+export default class LegendItem extends PureComponent {
   constructor(props) {
     super(props);
 
