@@ -2,14 +2,13 @@
 import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
-import { shallow, mount } from 'enzyme';
+import { shallow } from 'enzyme';
 import sinon from 'sinon';
 
 chai.use(chaiEnzyme());
 
 import LegendItem from '../src/legend-item';
 import { Shape } from '../../shape';
-import itemStyle from '../src/legend-item.css';
 
 describe('<LegendItem />', () => {
   const item = {
@@ -30,9 +29,7 @@ describe('<LegendItem />', () => {
   });
 
   it('accepts a labelKey that is a function that is called with the item', () => {
-    const spy = sinon.spy((itemObj) => {
-      return itemObj.estimateStage;
-    });
+    const spy = sinon.spy((itemObj) => itemObj.estimateStage);
 
     const wrapper = shallow(<LegendItem item={item} labelKey={spy} />);
     expect(wrapper.find('span')).to.have.text('GBD final');
@@ -46,9 +43,7 @@ describe('<LegendItem />', () => {
   });
 
   it('accepts a shapeTypeKey that is a function that is called with the item', () => {
-    const spy = sinon.spy((itemObj) => {
-      return itemObj.shapeType;
-    });
+    const spy = sinon.spy((itemObj) => itemObj.shapeType);
     const wrapper = shallow(<LegendItem item={item} shapeTypeKey={spy} />);
 
     expect(wrapper).to.contain(<Shape shapeType="triangle" />);
@@ -62,9 +57,7 @@ describe('<LegendItem />', () => {
   });
 
   it('accepts a shapeColorKey that is a function that is called with the item', () => {
-    const spy = sinon.spy((itemObj) => {
-      return itemObj.shapeColor;
-    });
+    const spy = sinon.spy((itemObj) => itemObj.shapeColor);
     const wrapper = shallow(<LegendItem item={item} shapeColorKey={spy} />);
 
     expect(wrapper).to.contain(<Shape fill="red" />);
@@ -79,39 +72,47 @@ describe('<LegendItem />', () => {
       return <span id="custom">{props.item.arbitraryField}</span>;
     }
 
-    const wrapper = mount(<LegendItem item={item} LabelComponent={CustomComponent} />);
-    const labelNode = wrapper.find('span').first();
-    expect(labelNode).to.have.descendants('span');
-    expect(labelNode.find('#custom')).to.have.text(String(item.arbitraryField));
+    const wrapper = shallow(<LegendItem item={item} LabelComponent={CustomComponent} />);
+    expect(wrapper).to.contain(<CustomComponent item={item} />);
   });
 
-  it('renders a "clear" icon when renderClear is truthy', () => {
-    const wrapper = shallow(<LegendItem item={item} renderClear />);
-    expect(wrapper).to.have.descendants('span');
+  it('renders a "clear" icon when given an onClear func', () => {
+    const wrapper = shallow(<LegendItem item={item} onClear={() => {}} />);
+    expect(wrapper).to.have.descendants('li > svg');
   });
 
-  it('does not render a "clear" icon when renderClear is falsey', () => {
+  it('does not render a "clear" icon when not given an onClear func', () => {
     const wrapper = shallow(<LegendItem item={item} />);
-    expect(wrapper).to.not.have.descendants(`.${itemStyle.clear}`);
+    expect(wrapper).to.not.have.descendants('li > svg');
   });
 
-  it('calls onClick with event and item', () => {
-    const spy = sinon.spy();
+  describe('event handlers', () => {
+    const handlers = [
+      { name: 'onClick', action: 'click', selector: 'div' },
+      { name: 'onClear', action: 'click', selector: 'li > svg' },
+      { name: 'onMouseLeave', action: 'mouseLeave', selector: 'li' },
+      { name: 'onMouseMove', action: 'mouseMove', selector: 'li' },
+      { name: 'onMouseOver', action: 'mouseOver', selector: 'li' },
+    ];
 
-    const wrapper = shallow(<LegendItem item={item} onClick={spy} />);
-    expect(spy.called).to.be.false;
-    wrapper.find('div').simulate('click', mockEvent);
-    expect(spy.called).to.be.true;
-    expect(spy.calledWith(mockEvent, item)).to.be.true;
-  });
+    handlers.forEach(handler =>
+      it(`calls ${handler.name} with event, item, and instance`, () => {
+        const spy = sinon.spy();
+        const props = {
+          [handler.name]: spy,
+        };
 
-  it('calls onClear with event and item', () => {
-    const spy = sinon.spy();
-
-    const wrapper = shallow(<LegendItem item={item} renderClear onClear={spy} />);
-    expect(spy.called).to.be.false;
-    wrapper.find('svg').first().simulate('click', mockEvent);
-    expect(spy.called).to.be.true;
-    expect(spy.calledWith(mockEvent, item)).to.be.true;
+        const wrapper = shallow(
+          <LegendItem
+            item={item}
+            {...props}
+          />
+        );
+        expect(spy.called).to.be.false;
+        wrapper.find(handler.selector).simulate(handler.action, mockEvent);
+        expect(spy.called).to.be.true;
+        expect(spy.calledWith(mockEvent, item, wrapper.instance())).to.be.true;
+      })
+    );
   });
 });

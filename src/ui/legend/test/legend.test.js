@@ -107,7 +107,7 @@ describe('<Legend />', () => {
 
   it('renders a list of items with the default LegendItem', () => {
     const wrapper = mount(<Legend items={items} labelKey={labelKey} />);
-    expect(wrapper.find('ul')).to.have.exactly(items.length).descendants('li');
+    expect(wrapper.find('ul')).to.have.exactly(items.length).descendants('LegendItem');
   });
 
   it('renders a list of items with a custom item renderer', () => {
@@ -117,16 +117,16 @@ describe('<Legend />', () => {
     }
 
     const wrapper = mount(<Legend items={items} ItemComponent={Item} labelKey={labelKey} />);
-    expect(wrapper.find('ul')).to.have.exactly(items.length).descendants('li');
+    expect(wrapper.find('ul')).to.have.exactly(items.length).descendants('Item');
   });
 
   it('adds an additional class to the outer most wrapper', () => {
-    const wrapper = shallow(<Legend items={items} wrapperClassName="foobar" labelKey={labelKey} />);
+    const wrapper = shallow(<Legend items={items} className="foobar" labelKey={labelKey} />);
     expect(wrapper).to.have.className('foobar');
   });
 
   it('adds an additional class to the ul', () => {
-    const wrapper = shallow(<Legend items={items} ulClassName="barfoo" labelKey={labelKey} />);
+    const wrapper = shallow(<Legend items={items} listClassName="barfoo" labelKey={labelKey} />);
     expect(wrapper.find('ul')).to.have.className('barfoo');
   });
 });

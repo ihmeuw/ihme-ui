@@ -1,20 +1,61 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { CommonPropTypes } from '../../../utils';
+
+import {
+  combineStyles,
+  CommonPropTypes,
+  memoizeByLastCall,
+} from '../../../utils';
 
 import styles from './legend-title.css';
 
+const resolveTitleStyles = memoizeByLastCall(combineStyles);
+
+/**
+ * import { LegendTitle } from 'ihme-ui';
+ *
+ * Default TitleComponent used by `<Legend />`.
+ */
 export default function LegendTitle(props) {
-  const { className, style, title } = props;
+  const {
+    className,
+    items,
+    style,
+    title,
+  } = props;
+
+  if (!title) return null;
+
   return (
-    <h3 className={classNames(styles.title, className)} style={style}>
+    <h3
+      className={classNames(styles.title, className)}
+      style={resolveTitleStyles(style, items)}
+    >
       {title}
     </h3>
   );
 }
 
 LegendTitle.propTypes = {
+  /**
+   * classname applied to `<h3>`
+   */
   className: CommonPropTypes.className,
-  style: PropTypes.object,
+
+  /**
+   * legend items
+   */
+  items: PropTypes.arrayOf(PropTypes.object).isRequired,
+
+  /**
+   * inline styles applied to title component
+   * if a function, passed items as argument.
+   * Signature: (items): {} => { ... }.
+   */
+  style: CommonPropTypes.style,
+
+  /**
+   * title for the legend
+   */
   title: PropTypes.string,
 };

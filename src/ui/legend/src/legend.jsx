@@ -4,7 +4,15 @@ import {
   map,
   pick,
 } from 'lodash';
-import { CommonPropTypes, propResolver } from '../../../utils';
+
+import {
+  combineStyles,
+  CommonDefaultProps,
+  CommonPropTypes,
+  memoizeByLastCall,
+  propResolver,
+  PureComponent,
+} from '../../../utils';
 
 import styles from './legend.css';
 
@@ -16,38 +24,60 @@ import LegendTitle from './legend-title';
  * `import { Legend } from 'ihme-ui'`
  *
  */
-export default class Legend extends React.Component {
+export default class Legend extends PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.combineWrapperStyles = memoizeByLastCall(combineStyles);
+    this.combineListStyles = memoizeByLastCall(combineStyles);
+  }
 
   renderTitle() {
-    const { title, TitleComponent, titleClassName, titleStyles } = this.props;
-    if (!title) return null;
+    const {
+      items,
+      title,
+      TitleComponent,
+      titleClassName,
+      titleStyles,
+    } = this.props;
+
     return (
       <TitleComponent
-        title={title}
-        className={classNames(titleClassName)}
+        className={titleClassName}
+        items={items}
         style={titleStyles}
+        title={title}
       />
     );
   }
 
   renderItemList() {
-    const { items, ItemComponent, labelKey } = this.props;
+    const {
+      itemClassName,
+      items,
+      ItemComponent,
+      itemStyle,
+      labelKey,
+    } = this.props;
+
     const itemProps = pick(this.props, [
-      'itemClassName',
-      'itemStyles',
       'labelKey',
       'LabelComponent',
       'onClear',
       'onClick',
-      'renderClear',
+      'onMouseLeave',
+      'onMouseMove',
+      'onMouseOver',
       'shapeColorKey',
       'shapeTypeKey'
     ]);
 
     return map(items, item =>
       <ItemComponent
+        className={itemClassName}
         key={propResolver(item, labelKey)}
         item={item}
+        style={itemStyle}
         {...itemProps}
       />
     );
@@ -55,15 +85,23 @@ export default class Legend extends React.Component {
 
   render() {
     const {
-      wrapperClassName,
-      wrapperStyles,
-      ulClassName
+      className,
+      listClassName,
+      listStyle,
+      items,
+      style,
     } = this.props;
 
     return (
-      <div className={classNames(styles.container, wrapperClassName)} style={wrapperStyles}>
+      <div
+        className={classNames(styles.container, className)}
+        style={this.combineWrapperStyles(style, items)}
+      >
         {this.renderTitle()}
-        <ul className={classNames(styles.list, ulClassName)}>
+        <ul
+          className={classNames(styles.list, listClassName)}
+          style={this.combineListStyles(listStyle, items)}
+        >
           {this.renderItemList()}
         </ul>
       </div>
@@ -72,14 +110,21 @@ export default class Legend extends React.Component {
 }
 
 Legend.propTypes = {
+
+  /**
+   * className applied to outermost, wrapping `<div>`
+   */
+  className: CommonPropTypes.className,
+
   /**
    * legend items
    */
-  items: PropTypes.arrayOf(PropTypes.object).isRequired,
+  items: PropTypes.arrayOf(PropTypes.object),
 
   /**
    * component (must be passable to React.createElement) to render for each item;
-   * passed props `item`, `itemClassName`, `itemStyles`, `labelKey`, `LabelComponent`, `onClear`, `onClick`, `renderClear`, `shapeColorKey`, `shapeTypeKey`
+   * passed props `className`, `item`, `labelKey`, `LabelComponent`, `onClear`, `onClick`,
+   * `onMouseLeave`, `onMouseMove`, `onMouseOver`, `shapeColorKey`, `shapeTypeKey`, `style`
    * defaults to [LegendItem](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/legend/src/legend-item.jsx)
    */
   ItemComponent: PropTypes.func,
@@ -94,7 +139,7 @@ Legend.propTypes = {
    * if passed an object, will be applied directly inline to the `<li>`
    * if passed a function, will be called with the current item obj
    */
-  itemStyles: CommonPropTypes.style,
+  itemStyle: CommonPropTypes.style,
 
   /**
    * custom component to render for each label, passed current item;
@@ -104,12 +149,21 @@ Legend.propTypes = {
 
   /**
    * path to label in item objects (e.g., 'name', 'properties.label')
-   * or a function to resolve the label (signature: function (item) {...})
+   * or a function to resolve the label
+   * signature: function (item) {...}
    */
-  labelKey: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.func,
-  ]).isRequired,
+  labelKey: CommonPropTypes.dataAccessor.isRequired,
+
+  /**
+   * className applied to `<ul>`, which wraps legend items
+   */
+  listClassName: CommonPropTypes.className,
+
+  /**
+   * inline styles applied to `<ul>`, which wraps legend items
+   * if a function, passed items as argument. Signature: (items): {} => { ... }.
+   */
+  listStyle: CommonPropTypes.style,
 
   /**
    * callback when 'clear' icon is clicked;
@@ -124,19 +178,29 @@ Legend.propTypes = {
   onClick: PropTypes.func,
 
   /**
-   * whether to render a 'clear' icon ('x') inline with each legend item
+   * onMouseLeave callback registered on each item.
+   * signature: (SyntheticEvent, item, instance) => {...}
    */
-  renderClear: PropTypes.bool,
+  onMouseLeave: PropTypes.func,
+
+  /**
+   * onMouseMove callback registered on each item.
+   * signature: (SyntheticEvent, item, instance) => {...}
+   */
+  onMouseMove: PropTypes.func,
+
+  /**
+   * onMouseOver callback registered on each item.
+   * signature: (SyntheticEvent, item, instance) => {...}
+   */
+  onMouseOver: PropTypes.func,
 
   /**
    * path to shape color in item objects (e.g., 'color', 'properties.color')
    * or a function to resolve the color
    * signature: (item) => {...}
    */
-  shapeColorKey: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.func,
-  ]).isRequired,
+  shapeColorKey: CommonPropTypes.dataAccessor.isRequired,
 
   /**
    * path to shape type in item objects (e.g., 'type', 'properties.type')
@@ -144,10 +208,13 @@ Legend.propTypes = {
    * if a function: signature: (item) => {...}
    * must be one of [supported shape types](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/shape.js#L23)
    */
-  shapeTypeKey: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.func,
-  ]).isRequired,
+  shapeTypeKey: CommonPropTypes.dataAccessor.isRequired,
+
+  /**
+   * inline styles applied to outermost, wrapper `<div>`
+   * if a function, passed items as argument. Signature: (items): {} => { ... }.
+   */
+  style: CommonPropTypes.style,
 
   /**
    * title for the legend
@@ -156,7 +223,7 @@ Legend.propTypes = {
 
   /**
    * component (must be passable to React.createElement) to render for the title;
-   * passed props `title`, `className`, `style`
+   * passed props `className`, `items`, `style`, `title`
    * defaults to [LegendTitle](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/legend/src/legend-title.jsx)
    */
   TitleComponent: PropTypes.func,
@@ -168,27 +235,17 @@ Legend.propTypes = {
 
   /**
    * inline styles applied to title component
+   * if a function, passed items as argument.
+   * Signature: (items): {} => { ... }.
    */
-  titleStyles: PropTypes.object,
-
-  /**
-   * className applied to `<ul>`, which wraps legend items
-   */
-  ulClassName: CommonPropTypes.className,
-
-  /**
-   * className applied to outermost, wrapping `<div>`
-   */
-  wrapperClassName: CommonPropTypes.className,
-
-  /**
-   * inline styles applied to outermost, wrapper `<div>`
-   */
-  wrapperStyles: PropTypes.object
+  titleStyles: CommonPropTypes.style,
 };
 
 Legend.defaultProps = {
   items: [],
   ItemComponent: LegendItem,
+  onMouseLeave: CommonDefaultProps.noop,
+  onMouseMove: CommonDefaultProps.noop,
+  onMouseOver: CommonDefaultProps.noop,
   TitleComponent: LegendTitle,
 };

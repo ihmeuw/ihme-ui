@@ -3,20 +3,34 @@ import classNames from 'classnames';
 import bindAll from 'lodash/bindAll';
 
 import {
+  combineStyles,
   CommonDefaultProps,
+  CommonPropTypes,
+  memoizeByLastCall,
   propResolver,
+  PureComponent,
 } from '../../../utils';
 
 import styles from './legend-item.css';
 import { Shape } from '../../shape';
 
-export default class LegendItem extends React.Component {
+/**
+ * import { LegendItem } from 'ihme-ui';
+ *
+ * Default ItemComponent used by `<Legend />`.
+ */
+export default class LegendItem extends PureComponent {
   constructor(props) {
     super(props);
+
+    this.combineItemStyles = memoizeByLastCall(combineStyles);
 
     bindAll(this, [
       'onClear',
       'onClick',
+      'onMouseLeave',
+      'onMouseMove',
+      'onMouseOver',
     ]);
   }
 
@@ -40,6 +54,33 @@ export default class LegendItem extends React.Component {
     onClick(event, item, this);
   }
 
+  onMouseLeave(event) {
+    const {
+      item,
+      onMouseLeave,
+    } = this.props;
+
+    onMouseLeave(event, item, this);
+  }
+
+  onMouseMove(event) {
+    const {
+      item,
+      onMouseMove,
+    } = this.props;
+
+    onMouseMove(event, item, this);
+  }
+
+  onMouseOver(event) {
+    const {
+      item,
+      onMouseOver,
+    } = this.props;
+
+    onMouseOver(event, item, this);
+  }
+
   renderLabel() {
     const {
       item,
@@ -57,30 +98,33 @@ export default class LegendItem extends React.Component {
 
   render() {
     const {
+      className,
       item,
-      itemClassName,
-      itemStyles,
       onClick,
-      renderClear,
+      onClear,
       shapeColorKey,
-      shapeTypeKey
+      shapeTypeKey,
+      style,
     } = this.props;
+
     const fill = propResolver(item, shapeColorKey);
     const type = propResolver(item, shapeTypeKey);
 
-    const inlineStyles = typeof itemStyles === 'function' ? itemStyles(item) : itemStyles;
-
     return (
       <li
-        style={inlineStyles}
-        className={classNames(styles.li, itemClassName)}
+        className={classNames(styles.li, className)}
+        onMouseLeave={this.onMouseLeave}
+        onMouseMove={this.onMouseMove}
+        onMouseOver={this.onMouseOver}
+        style={this.combineItemStyles(style, item)}
       >
-        {renderClear ? (
+        {typeof onClear === 'function' ? (
           <svg
-            viewBox="-8 -8 16 16"
-            width="1em" height="1em"
             className={classNames(styles.clickable, styles.svg)}
+            height="1em"
             onClick={this.onClear}
+            viewBox="-8 -8 16 16"
+            width="1em"
           >
             <path d="M-3,-3L3,3 M-3,3L3,-3" stroke="black" strokeWidth="1.5" />
           </svg>
@@ -108,62 +152,83 @@ export default class LegendItem extends React.Component {
 }
 
 LegendItem.propTypes = {
-  /* legend item to render */
+  /**
+   * classname(s) to apply to li
+   */
+  className: CommonPropTypes.className,
+
+  /**
+   * legend item to render
+   */
   item: PropTypes.object.isRequired,
 
-  /* classname(s) to apply to li */
-  itemClassName: PropTypes.oneOfType([
-    PropTypes.array,
-    PropTypes.string,
-    PropTypes.object
-  ]),
-
-  /* inline-styles to be applied to individual legend item <li> */
-  itemStyles: PropTypes.oneOfType([
-    // if passed an object, will be applied directly inline to the li
-    PropTypes.object,
-
-    // if passed a function, will be called with the current item
-    PropTypes.func,
-  ]),
-
-  /* custom component to render for each label, passed current item */
+  /**
+   * custom component to render for each label, passed current item;
+   * must be passable to React.createElement
+   */
   LabelComponent: PropTypes.func,
 
-  labelKey: PropTypes.oneOfType([
-    /* either the path of label in the item objects */
-    PropTypes.string,
+  /**
+   * path to label in item objects (e.g., 'name', 'properties.label')
+   * or a function to resolve the label
+   * signature: function (item) {...}
+   */
+  labelKey: CommonPropTypes.dataAccessor.isRequired,
 
-    /* or a function to resolve the label, passed the current item */
-    PropTypes.func
-  ]).isRequired,
-
-  /* callback when 'clear' icon is clicked; see props.renderClear */
+  /**
+   * callback when 'clear' icon is clicked;
+   * signature: (SyntheticEvent, item, instance) => {}
+   */
   onClear: PropTypes.func,
 
-  /* callback when legend item is clicked */
+  /**
+   * callback when legend item is clicked;
+   * signature: (SyntheticEvent, item, instance) => {}
+   */
   onClick: PropTypes.func,
 
-  /* whether to render a 'clear' icon ('x') inline with each legend item */
-  renderClear: PropTypes.bool,
+  /**
+   * onMouseLeave callback
+   * signature: (SyntheticEvent, item, instance) => {...}
+   */
+  onMouseLeave: PropTypes.func,
 
-  shapeColorKey: PropTypes.oneOfType([
-    /* either the path of shape color in the item objects */
-    PropTypes.string,
+  /**
+   * onMouseMove callback
+   * signature: (SyntheticEvent, item, instance) => {...}
+   */
+  onMouseMove: PropTypes.func,
 
-    /* or a function to resolve the shape color, passed the current item */
-    PropTypes.func
-  ]).isRequired,
+  /**
+   * onMouseOver callback
+   * signature: (SyntheticEvent, item, instance) => {...}
+   */
+  onMouseOver: PropTypes.func,
 
-  shapeTypeKey: PropTypes.oneOfType([
-    /* either the path of shape type in the item objects */
-    PropTypes.string,
+  /**
+   * path to shape color in item objects (e.g., 'color', 'properties.color')
+   * or a function to resolve the color
+   * signature: (item) => {...}
+   */
+  shapeColorKey: CommonPropTypes.dataAccessor.isRequired,
 
-    /* or a function to resolve the shape type, passed the current item */
-    PropTypes.func
-  ]).isRequired
+  /**
+   * path to shape type in item objects (e.g., 'type', 'properties.type')
+   * or a function to resolve the type
+   * if a function: signature: (item) => {...}
+   * must be one of [supported shape types](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/shape.js#L23)
+   */
+  shapeTypeKey: CommonPropTypes.dataAccessor.isRequired,
+
+  /**
+   * inline-styles to be applied to individual legend item <li>
+   * if a function, passed item as argument. Signature: (item): {} => { ... }.
+   */
+  style: CommonPropTypes.style,
 };
 
 LegendItem.defaultProps = {
-  onClear: CommonDefaultProps.noop,
+  onMouseLeave: CommonDefaultProps.noop,
+  onMouseMove: CommonDefaultProps.noop,
+  onMouseOver: CommonDefaultProps.noop,
 };
