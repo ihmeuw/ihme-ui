@@ -95,13 +95,14 @@ Property | Required | Type(s) | Defaults | Description
 `onMouseLeave` |  | func | CommonDefaultProps.noop | onMouseLeave callback.<br />signature: (SyntheticEvent, datum, instance) => {...}
 `onMouseMove` |  | func | CommonDefaultProps.noop | onMouseMove callback.<br />signature: (SyntheticEvent, datum, instance) => {...}
 `onMouseOver` |  | func | CommonDefaultProps.noop | onMouseOver callback.<br />signature: (SyntheticEvent, datum, instance) => {...}
-`scales` | true | object |  | `x` and `y` scales for positioning `<Shape />`s.<br />Object with keys: `x`, and `y`.
+`scales` |  | object | { x: scaleLinear(), y: scaleLinear() } | `x` and `y` scales for positioning `<Shape />`s.<br />Object with keys: `x`, and `y`.
 `selectedClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to `<Shape />`s if selected
 `selection` |  | array |  | Array of datum objects corresponding to selected `<Shape />`s
 `size` |  | number | 64 | Size of `<Shape />`s; area in square pixels.<br />If not provided, `<Shape />` provides a default of 64 (8px x 8px).
-`style` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L16) |  | Inline styles passed to each `<Shape />`
+`style` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L16) |  | Inline styles applied to wrapping element (`<g>`) of scatter shapes
 `shapeClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to each `<Shape />`
 `shapeScale` |  | func |  | If provided, used in conjunction with `dataAccessors.shape` (or `dataAccessors.key` if not provided)<br />to determine type of shape to render
+`shapeStyle` |  | CommonDefaultProps.style |  | Inline styles passed to each `<Shape />`
 `shapeType` |  | string | 'circle' | Type of shape to render; use in lieu of `props.shapeScale`<br />if you want all `<Shape />` to be of the same type.
 
 ---
