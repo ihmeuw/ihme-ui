@@ -185,7 +185,7 @@ export default class Slider extends PureComponent {
   }
 
   updateValueFromEvent(event, index, key, callback) {
-    if (index !== this.state.indexes[key] && this.state.range[index]) {
+    if (index !== this.state.indexes[key] && this.state.range[index] !== undefined) {
       const indexes = { ...this.state.indexes, [key]: index };
       const values = getValuesForIndexes(indexes, this.state.range);
 
