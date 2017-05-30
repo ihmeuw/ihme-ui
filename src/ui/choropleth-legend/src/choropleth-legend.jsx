@@ -3,6 +3,7 @@ import { assign } from 'lodash';
 import { scaleLinear } from 'd3';
 
 import {
+  colorSteps as defaultColorSteps,
   numberFormat,
   propsChanged,
   CommonPropTypes,
@@ -160,7 +161,7 @@ ChoroplethLegend.propTypes = {
   /**
    * color steps, e.g. ['#fff', '#ccc', '\#000', ...]
    */
-  colorSteps: PropTypes.array.isRequired,
+  colorSteps: PropTypes.array,
 
   /**
    * array of datum objects
@@ -315,6 +316,7 @@ ChoroplethLegend.defaultProps = {
     x: 0,
     y: 20
   },
+  colorSteps: defaultColorSteps,
   margins: {
     top: 50,
     right: 100,
