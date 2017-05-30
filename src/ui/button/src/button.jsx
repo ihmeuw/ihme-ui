@@ -22,6 +22,7 @@ export default class Button extends PureComponent {
     super(props);
 
     this.combineStyles = memoizeByLastCall(combineStyles);
+    this.iconCombineStyles = memoizeByLastCall(combineStyles);
     this.state = stateFromPropUpdates(Button.propUpdates, {}, props, {});
   }
 
@@ -45,6 +46,7 @@ export default class Button extends PureComponent {
       theme,
     } = this.props;
     const {
+      iconStyleList,
       styleList,
     } = this.state;
 
@@ -68,6 +70,7 @@ export default class Button extends PureComponent {
             className={classNames(styles.icon, iconClassName)}
             alt=""
             src={icon}
+            style={this.iconCombineStyles(iconStyleList)}
           />
         }
         {!showSpinner && (children || text)}
@@ -106,6 +109,11 @@ Button.propTypes = {
    * className applied to icon
    */
   iconClassName: CommonPropTypes.className,
+
+  /**
+   * inline styles to apply to icon
+   */
+  iconStyle: CommonPropTypes.style,
 
   /**
    * id value for button
@@ -166,6 +174,18 @@ Button.propUpdates = {
 
     return assign({}, accum, {
       styleList,
+    });
+  },
+  // update iconStyleList if icon or iconStyle have changed
+  iconStyleList: (accum, propName, prevProps, nextProps) => {
+    const propsToCheck = [
+      'icon',
+      'iconStyle',
+    ];
+    if (!propsChanged(prevProps, nextProps, propsToCheck)) return accum;
+
+    return assign({}, accum, {
+      iconStyleList: [nextProps.iconStyle],
     });
   },
 };
