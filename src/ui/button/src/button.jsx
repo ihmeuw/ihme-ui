@@ -36,6 +36,7 @@ export default class Button extends PureComponent {
       disabled,
       disabledClassName,
       icon,
+      iconClassName,
       id,
       name,
       onClick,
@@ -60,7 +61,15 @@ export default class Button extends PureComponent {
         type="button"
       >
         {showSpinner && <LoadingIndicator inline />}
-        {!showSpinner && icon && <img className={styles.icon} alt="" src={icon} />}
+        {
+          !showSpinner
+          && icon
+          && <img
+            className={classNames(styles.icon, iconClassName)}
+            alt=""
+            src={icon}
+          />
+        }
         {!showSpinner && (children || text)}
       </button>
     );
@@ -92,6 +101,11 @@ Button.propTypes = {
    * path to image to render within button tag
    */
   icon: PropTypes.string,
+
+  /**
+   * className applied to icon
+   */
+  iconClassName: CommonPropTypes.className,
 
   /**
    * id value for button
