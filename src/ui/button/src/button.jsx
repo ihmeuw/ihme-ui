@@ -1,6 +1,15 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { CommonPropTypes, PureComponent, propsChanged, stateFromPropUpdates } from '../../../utils';
+import assign from 'lodash/assign';
+
+import {
+  CommonPropTypes,
+  PureComponent,
+  combineStyles,
+  memoizeByLastCall,
+  propsChanged,
+  stateFromPropUpdates,
+} from '../../../utils';
 
 import styles from './button.css';
 import LoadingIndicator from '../../loading-indicator';
@@ -9,16 +18,10 @@ import LoadingIndicator from '../../loading-indicator';
  * `import { Button } from 'ihme-ui'`
  */
 export default class Button extends PureComponent {
-  static calculateStyle(props) {
-    return {
-      ...props.style,
-      ...(props.disabled ? props.disabledStyle : {}),
-    };
-  }
-
   constructor(props) {
     super(props);
 
+    this.combineStyles = memoizeByLastCall(combineStyles);
     this.state = stateFromPropUpdates(Button.propUpdates, {}, props, {});
   }
 
@@ -41,12 +44,12 @@ export default class Button extends PureComponent {
       theme,
     } = this.props;
     const {
-      style,
+      styleList,
     } = this.state;
 
     return (
       <button
-        style={style}
+        style={this.combineStyles(styleList)}
         className={classNames(styles.common, styles[theme], className, {
           [disabledClassName]: disabled,
         })}
@@ -114,7 +117,7 @@ Button.propTypes = {
   /**
    * inline styles to apply to button
    */
-  style: PropTypes.object,
+  style: CommonPropTypes.style,
 
   /**
    * text to render within button tag
@@ -132,10 +135,23 @@ Button.defaultProps = {
 };
 
 Button.propUpdates = {
-  style: (state, propName, prevProps, nextProps) => {
-    if (propsChanged(prevProps, nextProps, ['style', 'disabled'])) {
-      return { ...state, style: Button.calculateStyle(nextProps) };
+  // update style if disabled, disabledStyle, or style have changed
+  styleList: (accum, propName, prevProps, nextProps) => {
+    const propsToCheck = [
+      'disabled',
+      'disabledStyle',
+      'style',
+    ];
+    if (!propsChanged(prevProps, nextProps, propsToCheck)) return accum;
+
+    const styleList = [nextProps.style];
+
+    if (nextProps.disabled) {
+      styleList.push(nextProps.disabledStyle);
     }
-    return state;
+
+    return assign({}, accum, {
+      styleList,
+    });
   },
 };
