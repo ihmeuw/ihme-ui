@@ -111,14 +111,10 @@ Option.propTypes = {
     PropTypes.string,
     PropTypes.func,
   ]),
-
-  /**
-   * used by `<Group />` to generate proper onClick handlers
-   */
-  value: PropTypes.any.required,
 };
 
 Option.defaultProps = {
+  className: styles.option,
   disabledClassName: styles.disabled,
   selectedClassName: styles.selected,
   type: Button,
