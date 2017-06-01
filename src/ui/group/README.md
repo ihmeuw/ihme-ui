@@ -5,17 +5,16 @@ Grouped selection controls
 `import { Group } from 'ihme-ui'`
 
 
-A wrapper to group elements, both visually and functionally. Its primary use case is as a buttonset,
-which can be accomplished by wrapping `<Option />` components (or similar, customized components) in a `<Group />`.
-
-If providing a custom component instead of using `<Option />`, component must accept an identifying `value` prop.
+A wrapper to group elements. Its primary use case is as a buttonset, which can be accomplished
+by wrapping `<Option />` components (or similar, customized components) in a `<Group />`.
 
 
 Property | Required | Type(s) | Defaults | Description
 :---    |:---      |:---     |:---      |:---       
 `children` | true | node |  | 
-`className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) | styles.group | className applied to outermost wrapping div
-`onClick` | true | func |  | onClick callback passed to each child<br />implicitly depends on child components having a `value` prop<br />signature: (SyntheticEvent, selectedValue) {...}
+`className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to outermost wrapping div
+`onClick` |  | func | noop | onClick callback passed to each child<br />signature: (SyntheticEvent, selectedValue, optionInstance) {...}
+`optionValueProp` |  | [CommonPropTypes.dataAccessor](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L28) | 'value' | Prop passed to `<Option />` to include in onClick handler<br />If function, passed Option.props as input.<br />Otherwise, uses object access to pull value off Option.props.<br />E.g., if every `<Option />` is provided a `foo` prop that uniquely identifies that option,<br />set `optionValueProp="foo"` to include that value in the onClick handler.
 `style` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L16) |  | inline styles applied to outermost wrapping div
 
 ---
@@ -30,7 +29,7 @@ Any additional props passed to `<Option />` will be passed directly to the rende
 
 Property | Required | Type(s) | Defaults | Description
 :---    |:---      |:---     |:---      |:---       
-`className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | combined with `disabledClassName` and `selectedClassName` (if applicable) and passed to rendered component as `className`
+`className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) | styles.option | combined with `disabledClassName` and `selectedClassName` (if applicable) and passed to rendered component as `className`
 `disabled` |  | bool |  | whether option is disabled
 `disabledClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) | styles.disabled | className applied when disabled
 `disabledStyle` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L16) |  | inline style applied when disabled
@@ -39,4 +38,3 @@ Property | Required | Type(s) | Defaults | Description
 `selectedStyle` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L16) |  | inline style applied when selected
 `style` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L16) |  | inline styles
 `type` |  | string, func | Button | tag name (JSX primitive) or React component to be rendered<br />defaults to [`<Button />`](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/button/src/button.jsx)
-`value` |  | any |  | used by `<Group />` to generate proper onClick handlers

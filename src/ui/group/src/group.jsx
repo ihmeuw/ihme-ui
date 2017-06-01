@@ -65,7 +65,6 @@ Group.propTypes = {
 
   /**
    * onClick callback passed to each child
-   * implicitly depends on child components having a `value` prop
    * signature: (SyntheticEvent, selectedValue, optionInstance) {...}
    */
   onClick: PropTypes.func,
@@ -74,8 +73,8 @@ Group.propTypes = {
    * Prop passed to `<Option />` to include in onClick handler
    * If function, passed Option.props as input.
    * Otherwise, uses object access to pull value off Option.props.
-   * E.g., if every `<Option />` is provided a `value` prop that uniquely identifies that option,
-   * set `optionValueProp="value"` to include that value in the onClick handler.
+   * E.g., if every `<Option />` is provided a `foo` prop that uniquely identifies that option,
+   * set `optionValueProp="foo"` to include that value in the onClick handler.
    */
   optionValueProp: CommonPropTypes.dataAccessor,
 
