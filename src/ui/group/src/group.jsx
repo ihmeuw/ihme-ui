@@ -24,7 +24,7 @@ export default class Group extends PureComponent {
     this.memoizedOnClick = memoize(this.onOptionClick.bind(this));
   }
 
-  onOptionClick(cb, value, instance) {
+  onOptionClick(value, cb, instance) {
     return event => cb(event, value, instance);
   }
 
@@ -32,6 +32,7 @@ export default class Group extends PureComponent {
     const {
       children,
       className,
+      onClick,
       optionValueProp,
       style,
     } = this.props;
@@ -42,8 +43,8 @@ export default class Group extends PureComponent {
           React.Children.map(children, child =>
             React.cloneElement(child, {
               onClick: this.memoizedOnClick(
-                child.props.onClick || this.props.onClick,
                 propResolver(child.props, optionValueProp),
+                child.props.onClick || onClick,
                 child
               ),
             })
