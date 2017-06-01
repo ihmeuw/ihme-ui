@@ -1,6 +1,15 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { CommonPropTypes, PureComponent, propsChanged, stateFromPropUpdates } from '../../../utils';
+import assign from 'lodash/assign';
+
+import {
+  CommonPropTypes,
+  PureComponent,
+  combineStyles,
+  memoizeByLastCall,
+  propsChanged,
+  stateFromPropUpdates,
+} from '../../../utils';
 
 import styles from './button.css';
 import LoadingIndicator from '../../loading-indicator';
@@ -9,16 +18,11 @@ import LoadingIndicator from '../../loading-indicator';
  * `import { Button } from 'ihme-ui'`
  */
 export default class Button extends PureComponent {
-  static calculateStyle(props) {
-    return {
-      ...props.style,
-      ...(props.disabled ? props.disabledStyle : {}),
-    };
-  }
-
   constructor(props) {
     super(props);
 
+    this.combineStyles = memoizeByLastCall(combineStyles);
+    this.iconCombineStyles = memoizeByLastCall(combineStyles);
     this.state = stateFromPropUpdates(Button.propUpdates, {}, props, {});
   }
 
@@ -33,6 +37,7 @@ export default class Button extends PureComponent {
       disabled,
       disabledClassName,
       icon,
+      iconClassName,
       id,
       name,
       onClick,
@@ -41,12 +46,13 @@ export default class Button extends PureComponent {
       theme,
     } = this.props;
     const {
-      style,
+      iconStyleList,
+      styleList,
     } = this.state;
 
     return (
       <button
-        style={style}
+        style={this.combineStyles(styleList)}
         className={classNames(styles.common, styles[theme], className, {
           [disabledClassName]: disabled,
         })}
@@ -57,7 +63,16 @@ export default class Button extends PureComponent {
         type="button"
       >
         {showSpinner && <LoadingIndicator inline />}
-        {!showSpinner && icon && <img className={styles.icon} alt="" src={icon} />}
+        {
+          !showSpinner
+          && icon
+          && <img
+            className={classNames(styles.icon, iconClassName)}
+            alt=""
+            src={icon}
+            style={this.iconCombineStyles(iconStyleList)}
+          />
+        }
         {!showSpinner && (children || text)}
       </button>
     );
@@ -91,6 +106,16 @@ Button.propTypes = {
   icon: PropTypes.string,
 
   /**
+   * className applied to icon
+   */
+  iconClassName: CommonPropTypes.className,
+
+  /**
+   * inline styles to apply to icon
+   */
+  iconStyle: CommonPropTypes.style,
+
+  /**
    * id value for button
    */
   id: PropTypes.string,
@@ -114,7 +139,7 @@ Button.propTypes = {
   /**
    * inline styles to apply to button
    */
-  style: PropTypes.object,
+  style: CommonPropTypes.style,
 
   /**
    * text to render within button tag
@@ -132,10 +157,35 @@ Button.defaultProps = {
 };
 
 Button.propUpdates = {
-  style: (state, propName, prevProps, nextProps) => {
-    if (propsChanged(prevProps, nextProps, ['style', 'disabled'])) {
-      return { ...state, style: Button.calculateStyle(nextProps) };
+  // update style if disabled, disabledStyle, or style have changed
+  styleList: (accum, propName, prevProps, nextProps) => {
+    const propsToCheck = [
+      'disabled',
+      'disabledStyle',
+      'style',
+    ];
+    if (!propsChanged(prevProps, nextProps, propsToCheck)) return accum;
+
+    const styleList = [nextProps.style];
+
+    if (nextProps.disabled) {
+      styleList.push(nextProps.disabledStyle);
     }
-    return state;
+
+    return assign({}, accum, {
+      styleList,
+    });
+  },
+  // update iconStyleList if icon or iconStyle have changed
+  iconStyleList: (accum, propName, prevProps, nextProps) => {
+    const propsToCheck = [
+      'icon',
+      'iconStyle',
+    ];
+    if (!propsChanged(prevProps, nextProps, propsToCheck)) return accum;
+
+    return assign({}, accum, {
+      iconStyleList: [nextProps.iconStyle],
+    });
   },
 };
