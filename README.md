@@ -39,8 +39,8 @@ If not, grab it off of the unoffical NPM CDN, [unpkg](https://unpkg.com/#/).
   <script src="//unpkg.com/ihme-ui/dist/ihme-ui.min.js"></script>
   -->
   <script>
-    var chart = React.createElement(ihmeUI.ui.AxisChart, {
-      domain: ihmeUI.utils.linspace([3, 10], 200),
+    var chart = React.createElement(ihmeUI.AxisChart, {
+      domain: ihmeUI.linspace([3, 10], 200),
       ...
     });
     
@@ -78,6 +78,7 @@ For a more detailed example of how to use this library, see [`starter-app/`](htt
   * [\<Group /\> and \<Option /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/group/README.md)
   * [\<HtmlLabel /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/html-label/README.md)
   * [\<Legend /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/legend/README.md)
+  * [\<LoadingIndicator /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/loading-indicator/README.md)
   * \<Select /\> - docs coming soon!
   * [\<ResponsiveContainer /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/responsive-container/README.md)
   * [Shape](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/shape/README.md)
@@ -87,7 +88,6 @@ For a more detailed example of how to use this library, see [`starter-app/`](htt
     * \<Scatter /\>
     * \<Shape /\>
   * [\<Slider /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/slider/README.md)
-  * [\<Spinner /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/spinner/README.md)
   * [\<SvgText /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/svg-text/README.md)
   * [\<Tooltip /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/tooltip/README.md)
 * [Utilities](https://github.com/ihmeuw/ihme-ui/tree/master/src/utils) - docs coming soon!
