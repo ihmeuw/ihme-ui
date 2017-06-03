@@ -3,8 +3,8 @@ import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 
-import { dataGenerator } from '../../../test-utils';
-import { colorSteps } from '../../../utils';
+import { dataGenerator } from '../../../../test-utils';
+import { colorSteps } from '../../../../utils';
 import { maxBy, minBy, noop } from 'lodash';
 import { scaleLinear, scalePow, scaleLog } from 'd3';
 

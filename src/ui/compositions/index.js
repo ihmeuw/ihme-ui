@@ -1,5 +1,7 @@
+import ChoroplethLegend from './choropleth-legend';
 import Map from './map';
 
 export {
-  Map
+  ChoroplethLegend,
+  Map,
 };
