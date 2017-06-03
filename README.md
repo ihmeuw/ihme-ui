@@ -27,16 +27,16 @@ If not, grab it off of the unoffical NPM CDN, [unpkg](https://unpkg.com/#/).
 <head>
   <meta charset="UTF-8">
   <title>IHME-UI Starter</title>
-  <link rel="stylesheet" href="node_modules/ihme-ui/dist/ihme-ui.min.css"/>
+  <link rel="stylesheet" href="node_modules/ihme-ui/dist/ihme-ui.css"/>
   <!-- OR from unkpk CDN
-  <link rel="stylesheet" href="//unpkg.com/ihme-ui/dist/ihme-ui.min.css">
+  <link rel="stylesheet" href="//unpkg.com/ihme-ui/dist/ihme-ui.css">
   -->
 </head>
 <body>
   <main id="app">...</main>
-  <script src="node_modules/ihme-ui/dist/ihme-ui.min.js"></script>
+  <script src="node_modules/ihme-ui/dist/ihme-ui.js"></script>
   <!-- OR from unkpk CDN
-  <script src="//unpkg.com/ihme-ui/dist/ihme-ui.min.js"></script>
+  <script src="//unpkg.com/ihme-ui/dist/ihme-ui.js"></script>
   -->
   <script>
     var chart = React.createElement(ihmeUI.AxisChart, {
@@ -51,17 +51,13 @@ If not, grab it off of the unoffical NPM CDN, [unpkg](https://unpkg.com/#/).
 ```
 
 In most cases, however, you'll be importing ihme-ui into your project, and bundling it with a module bundler like [Webpack](https://webpack.github.io/) or [Rollup](http://rollupjs.org/). 
-In support of this, `ihme-ui` exposes both a CommonJS (i.e., `var ihmeUI = require('ihme-ui')`) and an ES2015 (i.e., `import ihmeUI from 'ihme-ui'`) target.
+In support of this, `ihme-ui` exposes both a CommonJS (i.e., `var ihmeUI = require('ihme-ui')`) and an ES module (i.e., `import ihmeUI from 'ihme-ui'`) target.
 ```javascript
 // index.js
 import { AxisChart, linspace } from 'ihme-ui';
 ...
 
 ```
-If you're using [Webpack 2](https://github.com/webpack/webpack#module-formats) or [Rollup](https://github.com/rollup/rollup/wiki/pkg.module), 
-you'll automatically pull in the ES2015 build, which allows the module bundler to be [much smarter](http://www.2ality.com/2015/12/webpack-tree-shaking.html) about how it includes this dependecy.
-
-For a more detailed example of how to use this library, see [`starter-app/`](https://github.com/ihmeuw/ihme-ui/tree/master/starter-app).
 
 ---
 
