@@ -1,8 +1,16 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import assign from 'lodash/assign';
 import omit from 'lodash/omit';
-import { CommonPropTypes, PureComponent, propsChanged, stateFromPropUpdates } from '../../../utils';
 
+import {
+  combineStyles,
+  CommonPropTypes,
+  memoizeByLastCall,
+  PureComponent,
+  propsChanged,
+  stateFromPropUpdates,
+} from '../../../utils';
 import Button from '../../button';
 import styles from './option.css';
 
@@ -14,17 +22,10 @@ import styles from './option.css';
  * Any additional props passed to `<Option />` will be passed directly to the rendered component.
  */
 export default class Option extends PureComponent {
-  static calculateStyle(props) {
-    return {
-      ...props.style,
-      ...(props.selected ? props.selectedStyle : {}),
-      ...(props.disabled ? props.disabledStyle : {}),
-    };
-  }
-
   constructor(props) {
     super(props);
 
+    this.combineStyles = memoizeByLastCall(combineStyles);
     this.state = stateFromPropUpdates(Option.propUpdates, {}, props, {});
   }
 
@@ -55,7 +56,7 @@ export default class Option extends PureComponent {
         }),
         disabled,
         selected,
-        style,
+        style: this.combineStyles(style),
         ...omit(this.props, Object.keys(Option.propTypes)),
       }
     );
@@ -111,14 +112,10 @@ Option.propTypes = {
     PropTypes.string,
     PropTypes.func,
   ]),
-
-  /**
-   * used by `<Group />` to generate proper onClick handlers
-   */
-  value: PropTypes.any.required,
 };
 
 Option.defaultProps = {
+  className: styles.option,
   disabledClassName: styles.disabled,
   selectedClassName: styles.selected,
   type: Button,
@@ -126,9 +123,30 @@ Option.defaultProps = {
 
 Option.propUpdates = {
   style: (state, propName, prevProps, nextProps) => {
-    if (propsChanged(prevProps, nextProps, ['style', 'selected', 'disabled'])) {
-      return { ...state, style: Option.calculateStyle(nextProps) };
+    const propsToCheck = [
+      'style',
+      'selected',
+      'selectedStyle',
+      'disabled',
+      'disabledStyle',
+    ];
+
+    if (!propsChanged(prevProps, nextProps, propsToCheck)) {
+      return state;
     }
-    return state;
+
+    const style = [nextProps.style];
+
+    if (nextProps.selected) {
+      style.push(nextProps.selectedStyle);
+    }
+
+    if (nextProps.disabled) {
+      style.push(nextProps.disabledStyle);
+    }
+
+    return assign({}, state, {
+      style,
+    });
   },
 };

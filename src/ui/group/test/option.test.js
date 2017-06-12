@@ -2,6 +2,7 @@ import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
+import kebabCase from 'lodash/kebabCase';
 
 import { Option } from '../';
 import styles from '../src/option.css';
@@ -22,46 +23,68 @@ describe('<Option />', () => {
   });
 
   describe('styles', () => {
-    it('applies disabled styles, when disabled', () => {
-      const wrapper = shallow(
-        <Option disabledStyle={{ opacity: '0.5' }} disabled />
-      );
-      expect(wrapper).to.have.style('opacity', '0.5');
-    });
+    const tests = [
+      {
+        prop: 'disabled',
+        style: { disabledStyle: { opacity: '0.5' } },
+      },
+      {
+        prop: 'selected',
+        style: { selectedStyle: { fontWeight: 'bold' } },
+      },
+    ];
 
-    it('does not apply disabled styles, when not disabled', () => {
-      const wrapper = shallow(
-        <Option disabledStyle={{ opacity: '0.5' }} />
-      );
-      expect(wrapper).to.not.have.style('opacity', '0.5');
-    });
+    tests.forEach(test => {
+      const [stylePropName] = Object.keys(test.style);
+      const [inlineStyleName] = Object.keys(test.style[stylePropName]);
+      const kebabedInlineStyleName = kebabCase(inlineStyleName);
+      const inlineStyleValue = test.style[stylePropName][inlineStyleName];
 
-    it('applies disabled styles, when disabled prop is changed', () => {
-      const wrapper = shallow(
-        <Option disabledStyle={{ opacity: '0.5' }} />
-      );
-      expect(wrapper).to.not.have.style('opacity', '0.5');
-      wrapper.setProps({ disabled: true });
-      expect(wrapper).to.have.style('opacity', '0.5');
-      wrapper.setProps({ disabled: false });
-      expect(wrapper).to.not.have.style('opacity', '0.5');
+      it(`applies ${stylePropName} when ${test.prop}`, () => {
+        const wrapper = shallow(<Option {...test.style} {...{ [test.prop]: true }} />);
+
+        expect(wrapper).to.have.style(kebabedInlineStyleName, inlineStyleValue);
+      });
+
+      it(`does not apply ${stylePropName} when not ${test.prop}`, () => {
+        const wrapper = shallow(<Option {...test.style} />);
+
+        expect(wrapper).to.not.have.style(kebabedInlineStyleName, inlineStyleValue);
+      });
+
+      it(`toggles ${stylePropName} when ${test.prop} prop is toggled`, () => {
+        const wrapper = shallow(<Option {...test.style} />);
+
+        expect(wrapper).to.not.have.style(kebabedInlineStyleName, inlineStyleValue);
+        wrapper.setProps({ [test.prop]: true });
+        expect(wrapper).to.have.style(kebabedInlineStyleName, inlineStyleValue);
+        wrapper.setProps({ [test.prop]: false });
+        expect(wrapper).to.not.have.style(kebabedInlineStyleName, inlineStyleValue);
+      });
     });
   });
 
   describe('classNames', () => {
-    it('applies default disabled style, when disabled', () => {
-      const wrapper = shallow(
-        <Option disabled />
-      );
-      expect(wrapper).to.have.className(styles.disabled);
-    });
+    const tests = [
+      { prop: 'disabled', className: { disabledClassName: 'foo' } },
+      { prop: 'selected', className: { selectedClassName: 'bar' } },
+    ];
 
-    it('applies provided disabled style, when disabled', () => {
-      const wrapper = shallow(
-        <Option disabledClassName="disabled-test" disabled />
-      );
-      expect(wrapper).to.have.className('disabled-test');
-      expect(wrapper).to.not.have.className(styles.disabled);
+    tests.forEach(test => {
+      const [classNamePropName] = Object.keys(test.className);
+
+      it(`applies default ${classNamePropName} when ${test.prop}`, () => {
+        const wrapper = shallow(<Option {...{ [test.prop]: true }} />);
+
+        expect(wrapper).to.have.className(styles[test.prop]);
+      });
+
+      it(`applies provided ${classNamePropName} when ${test.prop}`, () => {
+        const wrapper = shallow(<Option {...test.className} {...{ [test.prop]: true }} />);
+
+        expect(wrapper).to.have.className(test.className[classNamePropName]);
+        expect(wrapper).to.not.have.className(styles[test.prop]);
+      });
     });
   });
 
