@@ -18,7 +18,7 @@ import {
 import { scaleLinear } from 'd3';
 import Button from '../../../button';
 import Choropleth from '../../../choropleth';
-import ChoroplethLegend from '../../../choropleth-legend';
+import ChoroplethLegend from '../../choropleth-legend';
 import ResponsiveContainer from '../../../responsive-container';
 import {
   clampedScale,

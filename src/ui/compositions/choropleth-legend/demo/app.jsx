@@ -4,14 +4,18 @@ import { render } from 'react-dom';
 
 // component
 import ChoroplethLegend from '../';
-import Button from '../../button';
+import Button from '../../../button';
 
 // utils
 import { scaleLinear } from 'd3';
 import { maxBy, minBy, range } from 'lodash';
-import { dataGenerator } from '../../../test-utils';
-import { colorSteps } from '../../../utils';
-import { linspace, isWithinRange, numFromPercent } from '../../../utils';
+import { dataGenerator } from '../../../../test-utils';
+import {
+  colorSteps,
+  linspace,
+  isWithinRange,
+  numFromPercent
+} from '../../../../utils';
 
 const valueField = 'value';
 const keyField = 'loc_id';

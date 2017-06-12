@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import interact from 'interact.js';
-import SvgText from '../../svg-text';
+import SvgText from '../../../svg-text';
 
 import style from './slider-handle.css';
 

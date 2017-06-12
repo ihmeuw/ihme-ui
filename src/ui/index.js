@@ -2,8 +2,10 @@ import Axis, { XAxis, YAxis } from './axis';
 import AxisChart from './axis-chart';
 import Button from './button';
 import Choropleth from './choropleth';
-import ChoroplethLegend from './choropleth-legend';
-import { Map } from './compositions';
+import {
+  ChoroplethLegend,
+  Map,
+} from './compositions';
 import ExpansionContainer, { Expandable } from './expansion-container';
 import Group, { Option } from './group';
 import HtmlLabel from './html-label';

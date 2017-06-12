@@ -9,12 +9,12 @@ import {
   CommonPropTypes,
   PureComponent,
   stateFromPropUpdates,
-} from '../../../utils';
+} from '../../../../utils';
 
 import LinearGradient from './linear-gradient';
-import { Scatter } from '../../shape';
+import { Scatter } from '../../../shape';
 import Slider from './slider';
-import { XAxis } from '../../axis';
+import { XAxis } from '../../../axis';
 
 import styles from './choropleth-legend.css';
 
