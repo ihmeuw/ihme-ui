@@ -5,7 +5,7 @@ import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 import { tail } from 'lodash';
 
-import { dataGenerator } from '../../../test-utils';
+import { dataGenerator } from '../../../utils';
 import { topology, getLocationIds } from './utils';
 
 import Choropleth from '../src/choropleth';

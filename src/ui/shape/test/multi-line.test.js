@@ -5,7 +5,7 @@ import { shallow } from 'enzyme';
 import { maxBy, minBy, map, uniqBy } from 'lodash';
 import { scalePoint, scaleLinear, scaleOrdinal } from 'd3';
 
-import { dataGenerator } from '../../../test-utils';
+import { dataGenerator } from '../../../utils';
 import { MultiLine } from '../';
 
 chai.use(chaiEnzyme());

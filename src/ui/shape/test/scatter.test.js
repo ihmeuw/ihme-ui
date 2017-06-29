@@ -6,7 +6,7 @@ import { shallow } from 'enzyme';
 import { drop, forEach, minBy, maxBy, uniqBy, map } from 'lodash';
 import { scaleLinear, scalePoint } from 'd3';
 import sinon from 'sinon';
-import { dataGenerator } from '../../../test-utils';
+import { dataGenerator } from '../../../utils';
 
 import { Scatter, Shape } from '../';
 

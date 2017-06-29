@@ -4,8 +4,7 @@ import { render } from 'react-dom';
 import { bindAll, filter, find, flatMap, forEach, includes, values, xor } from 'lodash';
 import { json, scaleLinear } from 'd3';
 
-import { dataGenerator } from '../../../test-utils/data';
-import { colorSteps, linspace } from '../../../utils';
+import { colorSteps, dataGenerator, linspace } from '../../../utils';
 
 import ResponsiveContainer from '../../responsive-container';
 import Choropleth from '../';

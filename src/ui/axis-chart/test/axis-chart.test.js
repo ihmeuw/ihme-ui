@@ -4,7 +4,7 @@ import chaiEnzyme from 'chai-enzyme';
 import { mount, shallow } from 'enzyme';
 import { maxBy, minBy, map, uniqBy } from 'lodash';
 
-import { dataGenerator } from '../../../test-utils';
+import { dataGenerator } from '../../../utils';
 import AxisChart from '../';
 
 chai.use(chaiEnzyme());

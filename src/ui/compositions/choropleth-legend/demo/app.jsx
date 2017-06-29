@@ -9,9 +9,9 @@ import Button from '../../../button';
 // utils
 import { scaleLinear } from 'd3';
 import { maxBy, minBy, range } from 'lodash';
-import { dataGenerator } from '../../../../test-utils';
 import {
   colorSteps,
+  dataGenerator,
   linspace,
   isWithinRange,
   numFromPercent

@@ -5,7 +5,7 @@ import { shallow } from 'enzyme';
 import { minBy, maxBy, noop, uniqBy, map } from 'lodash';
 import { scalePoint, scaleLinear, scaleOrdinal } from 'd3';
 
-import { dataGenerator } from '../../../test-utils';
+import { dataGenerator } from '../../../utils';
 
 import { MultiScatter, Scatter } from '../';
 

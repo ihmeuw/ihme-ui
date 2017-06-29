@@ -9,6 +9,10 @@ export {
 } from './colors';
 
 export {
+  dataGenerator,
+} from './data';
+
+export {
   percentOfRange,
   numFromPercent,
   domainFromPercent,

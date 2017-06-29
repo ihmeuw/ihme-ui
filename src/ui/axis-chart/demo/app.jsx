@@ -3,7 +3,7 @@ import { render } from 'react-dom';
 import { maxBy, minBy, map, uniqBy } from 'lodash';
 import { scaleOrdinal } from 'd3';
 
-import { dataGenerator } from '../../../test-utils';
+import { dataGenerator } from '../../../utils';
 import AxisChart from '../';
 import { MultiLine } from '../../shape';
 import { XAxis, YAxis } from '../../axis';
