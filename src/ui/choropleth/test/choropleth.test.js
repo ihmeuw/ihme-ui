@@ -5,7 +5,8 @@ import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 import { tail } from 'lodash';
 
-import { dataGenerator, getTopoJSON, getLocationIds } from '../../../test-utils';
+import { dataGenerator } from '../../../utils';
+import { topology, getLocationIds } from './utils';
 
 import Choropleth from '../src/choropleth';
 
@@ -18,8 +19,7 @@ describe('<Choropleth />', () => {
     { name: 'country', object: 'country', type: 'feature' },
     { name: 'states', object: 'states', type: 'mesh', meshFilter: (a, b) => a !== b },
   ];
-  const geo = getTopoJSON();
-  const locIds = [102, ...getLocationIds(geo.objects.states.geometries)];
+  const locIds = [102, ...getLocationIds(topology.objects.states.geometries)];
   const data = dataGenerator({
     primaryKeys: [{ name: keyField, values: locIds }],
     valueKeys: [
@@ -75,7 +75,7 @@ describe('<Choropleth />', () => {
           height={500}
           keyField={keyField}
           layers={layers}
-          topology={geo}
+          topology={topology}
           valueField={valueField}
           width={960}
         />
@@ -93,7 +93,7 @@ describe('<Choropleth />', () => {
           height={500}
           keyField={keyField}
           layers={layers}
-          topology={geo}
+          topology={topology}
           valueField={valueField}
           width={960}
         />
@@ -111,7 +111,7 @@ describe('<Choropleth />', () => {
           height={500}
           keyField={keyField}
           layers={tail(layers)}
-          topology={geo}
+          topology={topology}
           valueField={valueField}
           width={960}
         />
@@ -133,7 +133,7 @@ describe('<Choropleth />', () => {
           height={500}
           keyField={keyField}
           layers={[{ name: 'fake', object: 'nonexistent' }, ...layers]}
-          topology={geo}
+          topology={topology}
           valueField={valueField}
           width={960}
         />

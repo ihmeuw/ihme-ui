@@ -6,7 +6,7 @@ import sinon from 'sinon';
 import { maxBy, minBy } from 'lodash';
 import { line, scalePoint, scaleLinear } from 'd3';
 
-import { dataGenerator } from '../../../test-utils';
+import { dataGenerator } from '../../../utils';
 import { Line } from '../';
 
 chai.use(chaiEnzyme());

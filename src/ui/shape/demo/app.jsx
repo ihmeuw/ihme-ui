@@ -5,7 +5,7 @@ import { schemeCategory10, scaleOrdinal } from 'd3';
 
 import { bindAll, maxBy, minBy, map, slice, uniqBy, without, xor } from 'lodash';
 
-import { dataGenerator } from '../../../test-utils';
+import { dataGenerator } from '../../../utils';
 import AxisChart from '../../axis-chart';
 import { XAxis, YAxis } from '../../axis';
 import { MultiScatter, Scatter } from '../';

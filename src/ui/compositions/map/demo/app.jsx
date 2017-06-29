@@ -11,8 +11,7 @@ import {
 
 import Map from '../';
 import Button from '../../../button';
-import { dataGenerator } from '../../../../test-utils/data';
-import { numberFormat } from '../../../../utils';
+import { dataGenerator, numberFormat } from '../../../../utils';
 
 const keyField = 'loc_id';
 const valueField = (data, feature) => {
