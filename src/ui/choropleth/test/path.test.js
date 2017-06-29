@@ -5,7 +5,7 @@ import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import { geoPath } from 'd3';
-import { getGeoJSON } from '../../../test-utils';
+import { getGeoJSON } from './utils';
 
 import Path from '../src/path';
 

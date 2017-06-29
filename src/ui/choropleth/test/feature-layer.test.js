@@ -4,11 +4,12 @@ import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 import { geoPath } from 'd3';
 import { drop, find, omit } from 'lodash';
-import { getGeoJSON, getLocationIds } from '../../../test-utils';
 import { baseColorScale } from '../../../utils';
 
 import FeatureLayer from '../src/feature-layer';
 import Path from '../src/path';
+
+import { getGeoJSON, getLocationIds } from './utils';
 
 chai.use(chaiEnzyme());
 

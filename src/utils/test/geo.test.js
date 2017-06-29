@@ -3,8 +3,6 @@ import reduce from 'lodash/reduce';
 import head from 'lodash/head';
 import last from 'lodash/last';
 
-import { getTopoJSON } from '../../test-utils';
-
 import {
   extractGeoJSON,
   computeBounds,
@@ -13,13 +11,80 @@ import {
 } from '../geo';
 
 describe('Geo utils', () => {
+  const geo = {
+    arcs: [
+      [[0, 1], [-1, 0], [0, -1], [1, 0]],
+      [[0, 1], [1, 0]],
+      [[0, 1], [1, 2]],
+      [[1, 0], [2, 1]],
+      [[1, 2], [2, 1]],
+      [[1, 2], [2, 3], [3, 2], [2, 1]],
+    ],
+    type: 'Topology',
+    objects: {
+      states: {
+        type: 'GeometryCollection',
+        geometries: [
+          {
+            arcs: [[0], [1]],
+            id: 1,
+            properties: {
+              loc_id: 1,
+            },
+            type: 'MultiLineString',
+          },
+          {
+            arcs: [[1], [2], [3], [4]],
+            id: 2,
+            properties: {
+              loc_id: 2,
+            },
+            type: 'MultiLineString',
+          },
+          {
+            arcs: [[4], [5]],
+            id: 3,
+            properties: {
+              loc_id: 3,
+            },
+            type: 'MultiLineString',
+          },
+        ]
+      },
+      country: {
+        type: 'GeometryCollection',
+        geometries: [
+          {
+            type: 'LineString',
+            arcs: [[0]],
+          },
+          {
+            type: 'LineString',
+            arcs: [[2]],
+          },
+          {
+            type: 'LineString',
+            arcs: [[5]],
+          },
+          {
+            type: 'LineString',
+            arcs: [[3]],
+          },
+        ],
+        id: 4,
+        properties: {
+          loc_id: 4,
+        },
+      }
+    },
+  };
+
   const layers = [
     { name: 'country', object: 'country', type: 'feature' },
     { name: 'countryWithFunc', object: topoObjects => topoObjects.country, type: 'feature' },
     { name: 'states', object: 'states', type: 'mesh', filterFn(a, b) { return a !== b; } },
     { name: 'nonExistent' },
   ];
-  const geo = getTopoJSON();
   const extractedGeoJSON = extractGeoJSON(geo, layers);
   const concatenatedGeoJSON = concatGeoJSON(extractedGeoJSON);
 
@@ -60,7 +125,7 @@ describe('Geo utils', () => {
 
   it('concatenates the results of extractGeoJSON into a single array', () => {
     // only Features are supported by `d3.geo.path` functions.
-    expect(concatenatedGeoJSON).to.be.an('array').of.length(2);
+    expect(concatenatedGeoJSON).to.be.an('array');
     concatenatedGeoJSON.forEach((obj) => {
       expect(obj).to.be.an('object')
         .and.to.have.property('type');
