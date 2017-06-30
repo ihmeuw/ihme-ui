@@ -12,6 +12,7 @@ module.exports = {
     "max-len": [2, 100, 2, { "ignoreUrls": true, "ignoreComments": true }]
   },
   "env": {
+    "browser": true,
     "mocha": true
   },
   "ecmaFeatures": {

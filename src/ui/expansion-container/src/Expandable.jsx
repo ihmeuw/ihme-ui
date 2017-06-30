@@ -1,6 +1,9 @@
+/* global window */
+
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import bindAll from 'lodash/bindAll';
+import { default as getValue } from 'lodash/get';
 import pick from 'lodash/pick';
 import { CommonPropTypes, CommonDefaultProps, PureComponent } from '../../../utils';
 import { getBackgroundColor } from '../../../utils/window';
@@ -8,10 +11,7 @@ import { getBackgroundColor } from '../../../utils/window';
 import { containerStore } from './ExpansionContainer';
 import styles from './expansion-container.css';
 
-/* Adapted from is.js */
-const userAgent = (navigator && navigator.userAgent || '').toLowerCase();
-
-function isFirefox() {
+function isFirefox(userAgent) {
   const match = userAgent.match(/(?:firefox|fxios)\/(\d+)/);
   return !!match;
 }
@@ -40,6 +40,7 @@ const LAYOUT_STYLES = [
 export default class Expandable extends PureComponent {
   constructor(props) {
     super(props);
+
     this._expansionContainer = containerStore[props.group];
     this._expansionContainer.subscribe(this);
     this.state = {
@@ -50,6 +51,8 @@ export default class Expandable extends PureComponent {
       restored: true,
       transitioning: false,
       containerStyle: props.style,
+      /* Adapted from is.js */
+      userAgent: getValue(window, ['navigator', 'userAgent'], '').toLowerCase(),
     };
 
     bindAll(this, [
@@ -155,7 +158,7 @@ export default class Expandable extends PureComponent {
         hidden: false,
         restored: false,
         restoring: true,
-        transitioning: (!isFirefox() && !!this.props.transition),
+        transitioning: (!isFirefox(this.state.userAgent) && !!this.props.transition),
         innerStyle: {
           ...this.calcInnerStyle(this.boundingClientRect),
           transition: this.props.transition,
@@ -167,14 +170,16 @@ export default class Expandable extends PureComponent {
   }
 
   onResize(boundingClientRect) {
+    const browserIsFirefox = isFirefox(this.state.userAgent);
     const state = {
       innerStyle: {
         ...this.calcInnerStyle(boundingClientRect),
-        transition: !this.state.expanded && (!isFirefox() && this.props.transition),
+        transition: !this.state.expanded &&
+                    (!browserIsFirefox && this.props.transition),
       },
-      expanded: this.state.expanded || (isFirefox() || !this.props.transition),
-      expanding: !this.state.expanded && (!isFirefox() && !!this.props.transition),
-      transitioning: !this.state.expanded && (!isFirefox() && !!this.props.transition),
+      expanded: this.state.expanded || (browserIsFirefox || !this.props.transition),
+      expanding: !this.state.expanded && (!browserIsFirefox && !!this.props.transition),
+      transitioning: !this.state.expanded && (!browserIsFirefox && !!this.props.transition),
     };
     setTimeout(this.setState, 0, state);
   }
