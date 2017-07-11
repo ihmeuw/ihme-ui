@@ -30,6 +30,7 @@ import Shape from './shape';
 export default class Scatter extends PureComponent {
   constructor(props) {
     super(props);
+
     this.combineStyles = memoizeByLastCall(combineStyles);
     this.state = stateFromPropUpdates(Scatter.propUpdates, {}, props, {});
   }

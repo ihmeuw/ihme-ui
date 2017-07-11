@@ -7,18 +7,20 @@ import {
   combineStyles,
   CommonDefaultProps,
   CommonPropTypes,
-  getShape,
   memoizeByLastCall,
   propsChanged,
   PureComponent,
-  shapeTypes,
   stateFromPropUpdates,
 } from '../../../utils';
 
 
-export class Bar extends React.Component {
+export class Bar extends PureComponent {
   constructor(props) {
     super(props);
+
+    this.combineStyles = memoizeByLastCall(combineStyles);
+    this.state = stateFromPropUpdates(Bar.propUpdates, {}, props, {});
+
 
     bindAll(this, [
       'onClick',
@@ -106,9 +108,6 @@ export class Bar extends React.Component {
       </svg>
     );
   }
-
-
-
 }
 
 
@@ -189,6 +188,13 @@ Bar.defaultProps = {
   onMouseOver: CommonDefaultProps.noop,
   translateX: 0,
   translateY: 0
+
+};
+
+Shape.propUpdates = {
+
+
+
 
 };
 
