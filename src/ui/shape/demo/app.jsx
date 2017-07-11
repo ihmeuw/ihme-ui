@@ -44,12 +44,16 @@ const shapeScale = scaleOrdinal()
 
 const colorScale = scaleOrdinal(schemeCategory10);
 
+
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       selectedItems: [],
     }
+
+    console.log("hi");
+
 
     bindAll(this, [
       'onClick',
@@ -130,48 +134,48 @@ class App extends React.Component {
    />
  </AxisChart>
 </code></pre> */}
-            <AxisChart
-              height={300}
-              width={500}
-              xDomain={keyFieldDomain}
-              xScaleType="point"
-              yDomain={valueFieldDomain}
-              yScaleType="linear"
-            >
-              <XAxis />
-              <YAxis />
-              <MultiScatter
-                colorScale={colorScale}
-                data={locationData}
-                dataAccessors={{
-                  fill: keyField,
-                  key: 'id',
-                  x: keyField,
-                  y: valueField,
-                  shape: 'location',
-                }}
-                fieldAccessors={{
-                  data: 'values',
-                  key: 'location',
-                }}
-                focus={this.state.focus}
-                focusedStyle={{
-                  stroke: '#000',
-                  strokeWidth: 2,
-                }}
-                onClick={this.onClick}
-                onMouseLeave={this.onMouseLeave}
-                onMouseMove={this.onMouseMove}
-                onMouseOver={this.onMouseOver}
-                selection={this.state.selectedItems}
-                selectedStyle={{
-                  stroke: '#000',
-                  strokeWidth: 1,
-                }}
-                shapeField="location"
-                shapeScale={shapeScale}
-              />
-            </AxisChart>
+            {/*<AxisChart*/}
+              {/*height={300}*/}
+              {/*width={500}*/}
+              {/*xDomain={keyFieldDomain}*/}
+              {/*xScaleType="point"*/}
+              {/*yDomain={valueFieldDomain}*/}
+              {/*yScaleType="linear"*/}
+            {/*>*/}
+              {/*<XAxis />*/}
+              {/*<YAxis />*/}
+              {/*<MultiScatter*/}
+                {/*colorScale={colorScale}*/}
+                {/*data={locationData}*/}
+                {/*dataAccessors={{*/}
+                  {/*fill: keyField,*/}
+                  {/*key: 'id',*/}
+                  {/*x: keyField,*/}
+                  {/*y: valueField,*/}
+                  {/*shape: 'location',*/}
+                {/*}}*/}
+                {/*fieldAccessors={{*/}
+                  {/*data: 'values',*/}
+                  {/*key: 'location',*/}
+                {/*}}*/}
+                {/*focus={this.state.focus}*/}
+                {/*focusedStyle={{*/}
+                  {/*stroke: '#000',*/}
+                  {/*strokeWidth: 2,*/}
+                {/*}}*/}
+                {/*onClick={this.onClick}*/}
+                {/*onMouseLeave={this.onMouseLeave}*/}
+                {/*onMouseMove={this.onMouseMove}*/}
+                {/*onMouseOver={this.onMouseOver}*/}
+                {/*selection={this.state.selectedItems}*/}
+                {/*selectedStyle={{*/}
+                  {/*stroke: '#000',*/}
+                  {/*strokeWidth: 1,*/}
+                {/*}}*/}
+                {/*shapeField="location"*/}
+                {/*shapeScale={shapeScale}*/}
+              {/*/>*/}
+            {/*</AxisChart>*/}
         </section>
         <section>
           <h3>One Dataset</h3>
