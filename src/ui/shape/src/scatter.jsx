@@ -82,7 +82,6 @@ export default class Scatter extends PureComponent {
             // use dataAccessors.x as fail-over for backward compatibility
             const key = propResolver(datum, dataAccessors.key);
             const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x);
-
             const focusedDatumKey = focus ? propResolver(focus, dataAccessors.key) : null;
 
             const resolvedShapeType = dataAccessors.shape ?
