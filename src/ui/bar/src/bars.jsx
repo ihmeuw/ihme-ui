@@ -49,6 +49,7 @@ export default class Bars extends PureComponent {
       rectClassName,
       rectStyle,
       style,
+      height,
     } = this.props;
 
     const { selectedDataMappedToKeys, sortedData } = this.state;
@@ -65,6 +66,11 @@ export default class Bars extends PureComponent {
     ]);
 
     console.log(sortedData);
+    console.log(height);
+    console.log(scales.y(0));
+
+    // scales.x.domain(xDomain).rangeRound([0, 500]);
+    // scales.y.rangeRound([300, 0]).domain(yDomain);
 
     return (
       <g
@@ -82,16 +88,14 @@ export default class Bars extends PureComponent {
             const xValue = propResolver(datum, dataAccessors.x);
             const yValue = propResolver(datum, dataAccessors.y);
 
-
-
             return (
               <Bar
                 className={rectClassName}
                 key={key}
                 datum={datum}
-                x={scales.x(xValue)}
-                y={scales.y(0)}
-                height={yValue - scales.y(0)}
+                x={scales.x(key)}
+                y={scales.y(yValue)}
+                height={height - scales.y(yValue)}
                 width={scales.x.bandwidth()}
                 focused={focusedDatumKey === key}
                 selected={selectedDataMappedToKeys.hasOwnProperty(key)}
@@ -100,7 +104,6 @@ export default class Bars extends PureComponent {
                 translateY={scales.y && isFinite(yValue) ? scales.y(yValue) : 0}
                 {...childProps}
               />
-
             );
           })
         }
@@ -234,7 +237,9 @@ Bars.propTypes = {
    */
   rectStyle: CommonDefaultProps.style,
 
+
 };
+
 
 
 Bars.defaultProps = {
