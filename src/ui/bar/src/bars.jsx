@@ -24,13 +24,15 @@ import {
 
 import Bar from './bar';
 
+/**
+ * `import { Bars } from 'ihme-ui'`
+ */
 export default class Bars extends PureComponent {
   constructor(props) {
     super(props);
 
     this.combineStyles = memoizeByLastCall(combineStyles);
     this.state = stateFromPropUpdates(Bars.propUpdates, {}, props, {});
-
   }
 
   componentWillReceiveProps(nextProps) {
@@ -40,16 +42,19 @@ export default class Bars extends PureComponent {
   render() {
     const {
       className,
+      clipPathId,
       colorScale,
       data,
       dataAccessors,
       fill,
       focus,
+      height,
+      width,
       scales,
       rectClassName,
       rectStyle,
       style,
-      height,
+      paddingInner,
     } = this.props;
 
     const { selectedDataMappedToKeys, sortedData } = this.state;
@@ -69,16 +74,16 @@ export default class Bars extends PureComponent {
     console.log(height);
     console.log(scales.y(0));
 
-    // scales.x.domain(xDomain).rangeRound([0, 500]);
-    // scales.y.rangeRound([300, 0]).domain(yDomain);
+    scales.x.rangeRound([0, width]).paddingInner(paddingInner);
+    scales.y.rangeRound([height, 0]);
 
     return (
       <g
         className={className && classNames(className)}
+        clipPath={clipPathId && `url(#${clipPathId})`}
         style={this.combineStyles(style, data)}
       >
         {
-
           map(sortedData, (datum) => {
 
             const key = propResolver(datum, dataAccessors.key);
@@ -97,6 +102,7 @@ export default class Bars extends PureComponent {
                 y={scales.y(yValue)}
                 height={height - scales.y(yValue)}
                 width={scales.x.bandwidth()}
+                fill={colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill}
                 focused={focusedDatumKey === key}
                 selected={selectedDataMappedToKeys.hasOwnProperty(key)}
                 style={rectStyle}
@@ -118,6 +124,12 @@ Bars.propTypes = {
    * className applied to outermost wrapping `<g>`.
    */
   className: CommonPropTypes.className,
+
+  /**
+   * If a clip path is applied to a container element (e.g., an `<AxisChart />`),
+   * clip all children of `<Bars />` to that container by passing in the clip path URL id.
+   */
+  clipPathId: PropTypes.string,
 
   /**
    * If provided will determine color of rendered `<Bar />`s
@@ -149,24 +161,24 @@ Bars.propTypes = {
   }).isRequired,
 
   /**
-   * If `props.colorScale` is undefined, each `<Shape />` will be given this same fill value.
+   * If `props.colorScale` is undefined, each `<Bar />` will be given this same fill value.
    */
   fill: PropTypes.string,
 
   /**
-   * The datum object corresponding to the `<Shape />` currently focused.
+   * The datum object corresponding to the `<Bar />` currently focused.
    */
   focus: PropTypes.object,
 
   /**
-   * className applied if `<Shape />` has focus.
+   * className applied if `<Bar />` has focus.
    */
   focusedClassName: CommonPropTypes.className,
 
   /**
-   * inline styles applied to focused `<Shape />`
+   * inline styles applied to focused `<Bar />`
    * If an object, spread into inline styles.
-   * If a function, passed underlying datum corresponding to its `<Shape />`,
+   * If a function, passed underlying datum corresponding to its `<Bar />`,
    * and return value is spread into inline styles;
    * signature: (datum) => obj
    */
@@ -197,7 +209,7 @@ Bars.propTypes = {
   onMouseOver: PropTypes.func,
 
   /**
-   * `x` and `y` scales for positioning `<Shape />`s.
+   * `x` and `y` scales for positioning `<Bar />`s.
    * Object with keys: `x`, and `y`.
    */
   scales: PropTypes.shape({
@@ -206,12 +218,12 @@ Bars.propTypes = {
   }),
 
   /**
-   * className applied to `<Shape />`s if selected
+   * className applied to `<Bar />`s if selected
    */
   selectedClassName: CommonPropTypes.className,
 
   /**
-   * Array of datum objects corresponding to selected `<Shape />`s
+   * Array of datum objects corresponding to selected `<Bar />`s
    */
   selection: PropTypes.array,
 
@@ -222,24 +234,49 @@ Bars.propTypes = {
   style: CommonPropTypes.style,
 
   /**
-   * className applied to each `<Shape />`
+   * className applied to each `<Bar />`
    */
   rectClassName: CommonPropTypes.className,
 
   /**
-   * If provided, used in conjunction with `dataAccessors.shape` (or `dataAccessors.key` if not provided)
-   * to determine type of shape to render
-   */
-  shapeScale: PropTypes.func,
-
-  /**
-   * Inline styles passed to each `<Shape />`
+   * Inline styles passed to each `<Bar />`
    */
   rectStyle: CommonDefaultProps.style,
 
 
-};
+  /**
+   * Ordinal scaleBand paddingInner property. Sets the inner padding of `<Bars />`s to the
+   * specified value which must be in the range [0, 1].
+   * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
+   */
+  paddingInner: PropTypes.number,
 
+  /**
+   * Ordinal scaleBand paddingOuter property. Sets the outer padding of `<Bars />`s to the
+   * specified value which must be in the range [0, 1].
+   * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
+   */
+  paddingOuter: PropTypes.number,
+
+  /**
+   * Ordinal scaleBand padding property. A convenience method for setting the inner and
+   * outer padding of `<Bars />`s to the same padding value
+   * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
+   */
+  padding: PropTypes.number,
+
+  /**
+   * Ordinal scaleBand align property. Sets the alignment of `<Bars />`s to the to the
+   * specified value which must be in the range [0, 1].
+   * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
+   */
+  align: PropTypes.number,
+
+
+
+
+
+};
 
 
 Bars.defaultProps = {
@@ -249,6 +286,7 @@ Bars.defaultProps = {
   onMouseMove: CommonDefaultProps.noop,
   onMouseOver: CommonDefaultProps.noop,
   scales: { x: scaleBand(), y: scaleLinear() },
+  paddingInner: 0.05
 };
 
 Bars.propUpdates = {
