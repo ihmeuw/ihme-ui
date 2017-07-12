@@ -22,7 +22,6 @@ const SYMBOL_ROTATE = {
 /**
  * `import { Bar } from 'ihme-ui'`
  */
-
 export default class Bar extends PureComponent {
   constructor(props) {
     super(props);
@@ -44,48 +43,40 @@ export default class Bar extends PureComponent {
   }
 
   onClick(event) {
-    // const {
-    //   datum,
-    //   onClick,
-    // } = this.props;
-    //
-    // onClick(event, datum, this);
-    console.log("click");
+    const {
+      datum,
+      onClick,
+    } = this.props;
+
+    onClick(event, datum, this);
   }
 
   onMouseLeave(event) {
-    // const {
-    //   datum,
-    //   onMouseLeave,
-    // } = this.props;
-    //
-    // onMouseLeave(event, datum, this);
-    console.log("leave");
+    const {
+      datum,
+      onMouseLeave,
+    } = this.props;
 
+    onMouseLeave(event, datum, this);
   }
 
   onMouseMove(event) {
-    // const {
-    //   datum,
-    //   onMouseMove,
-    // } = this.props;
-    //
-    // onMouseMove(event, datum, this);
-    console.log("move");
+    const {
+      datum,
+      onMouseMove,
+    } = this.props;
 
+    onMouseMove(event, datum, this);
   }
 
   onMouseOver(event) {
-    // const {
-    //   datum,
-    //   onMouseOver,
-    // } = this.props;
-    //
-    // onMouseOver(event, datum, this);
-    console.log("over");
+    const {
+      datum,
+      onMouseOver,
+    } = this.props;
 
+    onMouseOver(event, datum, this);
   }
-
 
   render() {
     const {
@@ -95,6 +86,7 @@ export default class Bar extends PureComponent {
       height,
       width,
       datum,
+      fill,
       focused,
       focusedClassName,
       selected,
@@ -118,7 +110,7 @@ export default class Bar extends PureComponent {
           y={y}
           height={height}
           width={width}
-          fill={"#000000"}
+          fill={fill}
           onClick={this.onClick}
           onMouseLeave={this.onMouseLeave}
           onMouseMove={this.onMouseMove}
@@ -137,6 +129,12 @@ Bar.propTypes = {
    * Class name applied to path.
    */
   className: CommonPropTypes.className,
+
+  /**
+   * If a clip path is applied to a container element (e.g., an `<AxisChart />`),
+   * clip this path to that container by passing in the clip path URL id.
+   */
+  clipPathId: PropTypes.string,
 
   /**
    * Initial x position of svg element rect.
@@ -221,9 +219,9 @@ Bar.propTypes = {
   selectedClassName: CommonPropTypes.className,
 
   /**
-   * Inline styles applied to selected `<Shape />`s.
+   * Inline styles applied to selected `<Bar />`s.
    * If an object, spread into inline styles.
-   * If a function, passed underlying datum corresponding to its `<Shape />`
+   * If a function, passed underlying datum corresponding to its `<Bar />`
    * and return value spread into line styles;
    * signature: (datum) => obj
    */

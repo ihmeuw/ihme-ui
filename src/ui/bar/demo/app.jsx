@@ -105,8 +105,6 @@ class App extends React.Component {
                 x: keyField,    // year_id
                 y: valueField   // population
               }}
-              xDomain={keyFieldDomain}
-              yDomain={valueFieldDomain}
               focus={this.state.focus}
               onClick={this.onClick}
               onMouseLeave={this.onMouseLeave}
@@ -119,7 +117,6 @@ class App extends React.Component {
     );
   }
 }
-
 
 ReactDOM.render(<App />, document.getElementById('app'));
 
