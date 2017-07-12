@@ -54,7 +54,6 @@ export default class Bars extends PureComponent {
       rectClassName,
       rectStyle,
       style,
-      paddingInner,
     } = this.props;
 
     const { selectedDataMappedToKeys, sortedData } = this.state;
@@ -70,12 +69,15 @@ export default class Bars extends PureComponent {
       'selectedStyle',
     ]);
 
-    console.log(sortedData);
-    console.log(height);
-    console.log(scales.y(0));
+    // Get props for rangeRound?
 
-    scales.x.rangeRound([0, width]).paddingInner(paddingInner);
-    scales.y.rangeRound([height, 0]);
+
+    // need to clean up and write functions that work for all potential paddingCase
+    if ('paddingInner' in this.props) {
+      console.log("in?")
+      scales.x.paddingInner(this.props.paddingInner);
+    }
+    // scales.y.rangeRound([height, 0]);
 
     return (
       <g
@@ -271,10 +273,6 @@ Bars.propTypes = {
    * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
    */
   align: PropTypes.number,
-
-
-
-
 
 };
 
