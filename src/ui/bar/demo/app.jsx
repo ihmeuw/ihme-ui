@@ -111,8 +111,30 @@ class App extends React.Component {
               onMouseMove={this.onMouseMove}
               onMouseOver={this.onMouseOver}
               selection={this.state.selectedItems}
+              paddingInner={0.5}
             />
         </AxisChart>
+
+
+        <AxisChart
+          height={500}
+          width={300}
+          xDomain={keyFieldDomain}
+          yDomain={valueFieldDomain}
+          xScaleType="band"
+          yScaleType="linear"
+        >
+          <XAxis
+            orientation="left"
+          />
+          <YAxis
+            orientation="bottom"
+
+          />
+
+
+        </AxisChart>
+
       </div>
     );
   }

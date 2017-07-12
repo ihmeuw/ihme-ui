@@ -116,7 +116,7 @@ export default class Bar extends PureComponent {
           onMouseMove={this.onMouseMove}
           onMouseOver={this.onMouseOver}
           style={this.combineStyles(styles, datum)}
-          transform={`translate(${translateX}, 0)`}
+          transform={`translate(${translateX}, 0) rotate(0)`}
         />
       </g>
     );
@@ -230,7 +230,7 @@ Bar.propTypes = {
   /**
    * Base inline styles applied to `<Shape />`s.
    * If an object, spread into inline styles.
-   * If a function, passed underlying datum corresponding to its `<Shape />`.
+   * If a function, passed underlying datum corresponding to its `<Bar />`.
    */
   style: CommonPropTypes.style,
 
@@ -245,7 +245,6 @@ Bar.propTypes = {
   translateY: PropTypes.number
 
 };
-
 
 Bar.defaultProps = {
   fill: 'steelblue',
