@@ -91,14 +91,12 @@ class App extends React.Component {
           width={500}
           xDomain={keyFieldDomain}
           yDomain={valueFieldDomain}
-          xScaleType="point"
+          xScaleType="band"
           yScaleType="linear"
         >
           <XAxis />
           <YAxis />
-          <g>
             <Bars
-              // className={"testingrect"}
               fill="steelblue"
               data={data.filter((datum) => { return datum.location === 'India'; })}
               dataAccessors={{
@@ -107,6 +105,8 @@ class App extends React.Component {
                 x: keyField,    // year_id
                 y: valueField   // population
               }}
+              xDomain={keyFieldDomain}
+              yDomain={valueFieldDomain}
               focus={this.state.focus}
               onClick={this.onClick}
               onMouseLeave={this.onMouseLeave}
@@ -114,8 +114,6 @@ class App extends React.Component {
               onMouseOver={this.onMouseOver}
               selection={this.state.selectedItems}
             />
-
-          </g>
         </AxisChart>
       </div>
     );
