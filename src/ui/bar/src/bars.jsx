@@ -12,6 +12,7 @@ import {
 } from 'lodash';
 
 import {
+  isVertical,
   combineStyles,
   CommonDefaultProps,
   CommonPropTypes,
@@ -21,6 +22,8 @@ import {
   PureComponent,
   stateFromPropUpdates,
 } from '../../../utils';
+
+// import { isVertical } from '../../../utils';
 
 import Bar from './bar';
 
@@ -38,6 +41,8 @@ export default class Bars extends PureComponent {
   componentWillReceiveProps(nextProps) {
     this.state = stateFromPropUpdates(Bars.propUpdates, this.props, nextProps, this.state);
   }
+
+
 
   render() {
     const {
@@ -76,9 +81,9 @@ export default class Bars extends PureComponent {
       // console.log(orientation);
       scales.y.padding(0.05);
 
-      // const ordinal = (orientation === "vertical" ? scales.x : scales.y);
+      // const ordinal = (isVertical() ? scales.x : scales.y);
       // const linear = (orientation === "horizontal" ? scales.y : scales.x);
-
+      console.log(isVertical(orientation));
 
 
     // need to clean up and write functions that work for all potential paddingCase
@@ -118,10 +123,12 @@ export default class Bars extends PureComponent {
                 y={scales.y(xValue)}
                 height={scales.y.bandwidth()}
                 width={scales.x(yValue)}
-                // x={orientation == "vertical" ? scales.x(key) : scales.y(key)}
-                // y={orientation == "vertical" ? scales.y(yValue) : scales.x(yValue)}
-                // height={orientation == "vertical" ? height - scales.y(yValue) : height - scales.x(yValue)}
-                // width={orientation == "vertical" ? scales.x.bandwidth() : scales.y.bandwidth()}
+
+                // x={}
+                // y={}
+                // height={}
+                // width={}
+
                 fill={colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill}
                 focused={focusedDatumKey === key}
                 selected={selectedDataMappedToKeys.hasOwnProperty(key)}
