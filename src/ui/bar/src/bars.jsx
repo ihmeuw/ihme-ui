@@ -12,18 +12,16 @@ import {
 } from 'lodash';
 
 import {
-  isVertical,
   combineStyles,
   CommonDefaultProps,
   CommonPropTypes,
+  isVertical,
   memoizeByLastCall,
   propResolver,
   propsChanged,
   PureComponent,
   stateFromPropUpdates,
 } from '../../../utils';
-
-// import { isVertical } from '../../../utils';
 
 import Bar from './bar';
 
@@ -42,8 +40,6 @@ export default class Bars extends PureComponent {
     this.state = stateFromPropUpdates(Bars.propUpdates, this.props, nextProps, this.state);
   }
 
-
-
   render() {
     const {
       className,
@@ -54,12 +50,14 @@ export default class Bars extends PureComponent {
       fill,
       focus,
       height,
-      width,
       scales,
       rectClassName,
       rectStyle,
       style,
-      orientation
+      orientation,
+      bandPadding,
+      bandPaddingInner,
+      bandPaddingOuter,
     } = this.props;
 
     const { selectedDataMappedToKeys, sortedData } = this.state;
@@ -78,9 +76,27 @@ export default class Bars extends PureComponent {
     // Sets these constants to the correct scales based on whether the orientation
     // is default at vertical. (i.e. having  x axis contains the bands and y axis be
     // linear, vice versa)
-      const ordinal = (isVertical(orientation) ? scales.x : scales.y);
-      const linear = (isVertical(orientation) ? scales.y : scales.x);
-      ordinal.padding(0.05);
+    const ordinal = (isVertical(orientation) ? scales.x : scales.y);
+    const linear = (isVertical(orientation) ? scales.y : scales.x);
+
+
+    // check padding proptypes and set accordingly, need to clean up code
+    if (bandPaddingOuter != undefined) {
+      ordinal.paddingOuter(bandPaddingOuter);
+    } else if (bandPaddingInner != undefined) {
+      ordinal.paddingInner(bandPaddingInner);
+    } else {
+      ordinal.padding(bandPadding);
+    }
+
+
+    //
+    // console.log(bandPaddingOuter);
+    // ordinal.padding(bandPadding);
+      // ordinal.paddingInner(bandPaddingInner);
+      // ordinal.paddingOuter(bandPaddingOuter);
+
+
 
 
     // need to clean up and write functions that work for all potential paddingCase
@@ -100,7 +116,7 @@ export default class Bars extends PureComponent {
           map(sortedData, (datum) => {
 
             const key = propResolver(datum, dataAccessors.key);
-            const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x)
+            const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x);
             const focusedDatumKey = focus ? propResolver(focus, dataAccessors.key) : null;
 
             const xValue = propResolver(datum, dataAccessors.x);
@@ -262,21 +278,21 @@ Bars.propTypes = {
    * specified value which must be in the range [0, 1].
    * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
    */
-  paddingInner: PropTypes.number,
+  bandPaddingInner: PropTypes.number,
 
   /**
    * Ordinal scaleBand paddingOuter property. Sets the outer padding of `<Bars />`s to the
    * specified value which must be in the range [0, 1].
    * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
    */
-  paddingOuter: PropTypes.number,
+  bandPaddingOuter: PropTypes.number,
 
   /**
    * Ordinal scaleBand padding property. A convenience method for setting the inner and
    * outer padding of `<Bars />`s to the same padding value
    * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
    */
-  padding: PropTypes.number,
+  bandPadding: PropTypes.number,
 
   /**
    * Ordinal scaleBand align property. Sets the alignment of `<Bars />`s to the to the
@@ -301,8 +317,8 @@ Bars.defaultProps = {
   onMouseMove: CommonDefaultProps.noop,
   onMouseOver: CommonDefaultProps.noop,
   scales: { x: scaleBand(), y: scaleLinear() },
-  paddingInner: 0.05,
-  orientation: 'vertical'
+  bandPadding: 0.05,
+  orientation: 'vertical',
 };
 
 Bars.propUpdates = {

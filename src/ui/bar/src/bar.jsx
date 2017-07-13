@@ -13,12 +13,6 @@ import {
   stateFromPropUpdates,
 } from '../../../utils';
 
-const SYMBOL_ROTATE = {
-  down: 180,
-  left: 270,
-  right: 90
-};
-
 /**
  * `import { Bar } from 'ihme-ui'`
  */
@@ -81,6 +75,7 @@ export default class Bar extends PureComponent {
   render() {
     const {
       className,
+      clipPathId,
       x,
       y,
       height,
@@ -95,11 +90,9 @@ export default class Bar extends PureComponent {
       translateY
     } = this.props;
 
-    const { rotate, styles } = this.state;
+    const { styles } = this.state;
 
     return (
-      // add transform
-      // add option for stacked/grouped
       <g>
         <rect
           className={classNames(className, {
@@ -111,11 +104,14 @@ export default class Bar extends PureComponent {
           height={height}
           width={width}
           fill={fill}
+          clipPath={clipPathId && `url(#${clipPathId})`}
           onClick={this.onClick}
           onMouseLeave={this.onMouseLeave}
           onMouseMove={this.onMouseMove}
           onMouseOver={this.onMouseOver}
           style={this.combineStyles(styles, datum)}
+          // Rotation of bar is not neccessary. Upon further exploration, feature
+          // can be added to support rotation of bar
           transform={`translate(${translateX}, ${translateY}) rotate(0)`}
         />
       </g>
@@ -162,7 +158,7 @@ Bar.propTypes = {
   datum: PropTypes.object,
 
   /**
-   * Fill color for path.
+   * Fill color for svg element rect.
    */
   fill: PropTypes.string,
 
