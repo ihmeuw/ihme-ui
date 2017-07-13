@@ -75,15 +75,12 @@ export default class Bars extends PureComponent {
       'selectedStyle',
     ]);
 
-    // Get props for rangeRound?
-
-      // scales.x.padding(0.05);
-      // console.log(orientation);
-      scales.y.padding(0.05);
-
-      // const ordinal = (isVertical() ? scales.x : scales.y);
-      // const linear = (orientation === "horizontal" ? scales.y : scales.x);
-      console.log(isVertical(orientation));
+    // Sets these constants to the correct scales based on whether the orientation
+    // is default at vertical. (i.e. having  x axis contains the bands and y axis be
+    // linear, vice versa)
+      const ordinal = (isVertical(orientation) ? scales.x : scales.y);
+      const linear = (isVertical(orientation) ? scales.y : scales.x);
+      ordinal.padding(0.05);
 
 
     // need to clean up and write functions that work for all potential paddingCase
@@ -109,34 +106,21 @@ export default class Bars extends PureComponent {
             const xValue = propResolver(datum, dataAccessors.x);
             const yValue = propResolver(datum, dataAccessors.y);
 
-
             return (
               <Bar
                 className={rectClassName}
                 key={key}
                 datum={datum}
-                // x={scales.x(key)}
-                // y={scales.y(yValue)}
-                // height={height - scales.y(yValue)}
-                // width={scales.x.bandwidth()}
-                x={0}
-                y={scales.y(xValue)}
-                height={scales.y.bandwidth()}
-                width={scales.x(yValue)}
-
-                // x={}
-                // y={}
-                // height={}
-                // width={}
-
+                x={isVertical(orientation) ? ordinal(key) : 0}
+                y={isVertical(orientation) ? linear(yValue) : ordinal(xValue)}
+                height={isVertical(orientation) ? (height - linear(yValue)) : ordinal.bandwidth()}
+                width={isVertical(orientation) ? ordinal.bandwidth() : linear(yValue)}
                 fill={colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill}
                 focused={focusedDatumKey === key}
                 selected={selectedDataMappedToKeys.hasOwnProperty(key)}
                 style={rectStyle}
-                // translateX={scales.x && isFinite(xValue) ? scales.x(xValue) : 0}
-                // translateY={scales.y && isFinite(yValue) ? scales.y(yValue) : 0}
-                translateX={scales.x && isFinite(xValue) ? scales.x(xValue) : 0}
-                translateY={scales.y && isFinite(yValue) ? scales.y(yValue) : 0}
+                translateX={isVertical(orientation) && isFinite(xValue) ? ordinal(xValue) : 0}
+                translateY={isVertical(orientation) && isFinite(yValue) ? 0 : ordinal(yValue)}
                 {...childProps}
               />
             );
