@@ -116,7 +116,7 @@ export default class Bar extends PureComponent {
           onMouseMove={this.onMouseMove}
           onMouseOver={this.onMouseOver}
           style={this.combineStyles(styles, datum)}
-          transform={`translate(${translateX}, 0) rotate(0)`}
+          transform={`translate(0, ${translateY}) rotate(0)`}
         />
       </g>
     );
