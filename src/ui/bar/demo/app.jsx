@@ -99,24 +99,23 @@ class App extends React.Component {
         >
           <XAxis />
           <YAxis />
-            {/*<Bars*/}
-              {/*fill="steelblue"*/}
-              {/*data={data.filter((datum) => { return datum.location === 'India'; })}*/}
-              {/*dataAccessors={{*/}
-                {/*fill: keyField,*/}
-                {/*key: 'id',*/}
-                {/*x: keyField,    // year_id*/}
-                {/*y: valueField   // population*/}
-              {/*}}*/}
-              {/*focus={this.state.focus}*/}
-              {/*onClick={this.onClick}*/}
-              {/*onMouseLeave={this.onMouseLeave}*/}
-              {/*onMouseMove={this.onMouseMove}*/}
-              {/*onMouseOver={this.onMouseOver}*/}
-              {/*selection={this.state.selectedItems}*/}
-              {/*orientation="vertical"*/}
-              {/*// paddingInner={0.5}*/}
-            {/*/>*/}
+            <Bars
+              fill="steelblue"
+              data={data.filter((datum) => { return datum.location === 'India'; })}
+              dataAccessors={{
+                fill: keyField,
+                key: 'id',
+                x: keyField,    // year_id
+                y: valueField   // population
+              }}
+              focus={this.state.focus}
+              onClick={this.onClick}
+              onMouseLeave={this.onMouseLeave}
+              onMouseMove={this.onMouseMove}
+              onMouseOver={this.onMouseOver}
+              selection={this.state.selectedItems}
+              // paddingInner={0.5}
+            />
         </AxisChart>
 
 
@@ -128,12 +127,8 @@ class App extends React.Component {
           xScaleType="linear"
           yScaleType="band"
         >
-          <XAxis
-            // orientation="left"
-          />
-          <YAxis
-            // orientation="bottom"
-          />
+          <XAxis/>
+          <YAxis/>
           <Bars
             fill="steelblue"
             data={data.filter((datum) => { return datum.location === 'India'; })}
@@ -149,7 +144,7 @@ class App extends React.Component {
             onMouseMove={this.onMouseMove}
             onMouseOver={this.onMouseOver}
             selection={this.state.selectedItems}
-            // orientation="horizontal"
+            orientation="horizontal"
             // paddingInner={0.5}
           />
 

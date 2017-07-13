@@ -100,3 +100,7 @@ export {
 export {
   getBackgroundColor,
 } from './window';
+
+export {
+  isVertical,
+} from './bar';

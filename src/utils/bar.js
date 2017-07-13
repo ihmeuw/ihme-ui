@@ -3,6 +3,6 @@
  */
 
 export function isVertical(orientation) {
-  return "Hi";
-  // return (orientation.toLowerCase().equals("vertical".toLocaleLowerCase()));
+  // return "Hi";
+  return (orientation.toLowerCase()  === "vertical".toLocaleLowerCase());
 }
