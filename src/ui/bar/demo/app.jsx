@@ -149,6 +149,7 @@ class App extends React.Component {
             onMouseMove={this.onMouseMove}
             onMouseOver={this.onMouseOver}
             selection={this.state.selectedItems}
+            // orientation="horizontal"
             // paddingInner={0.5}
           />
 
