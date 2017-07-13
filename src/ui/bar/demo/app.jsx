@@ -33,6 +33,9 @@ const locationData = [
 const valueFieldDomain = [minBy(data, valueField)[valueField], maxBy(data, valueField)[valueField]];
 const keyFieldDomain = map(uniqBy(data, keyField), (obj) => { return (obj[keyField]); });
 
+console.log(valueFieldDomain);
+console.log(keyFieldDomain);
+debugger;
 
 console.log("hello");
 console.log(locationData);
@@ -87,7 +90,7 @@ class App extends React.Component {
 
 
         <AxisChart
-          height={300}
+          height={500}
           width={500}
           xDomain={keyFieldDomain}
           yDomain={valueFieldDomain}
@@ -96,41 +99,59 @@ class App extends React.Component {
         >
           <XAxis />
           <YAxis />
-            <Bars
-              fill="steelblue"
-              data={data.filter((datum) => { return datum.location === 'India'; })}
-              dataAccessors={{
-                fill: keyField,
-                key: 'id',
-                x: keyField,    // year_id
-                y: valueField   // population
-              }}
-              focus={this.state.focus}
-              onClick={this.onClick}
-              onMouseLeave={this.onMouseLeave}
-              onMouseMove={this.onMouseMove}
-              onMouseOver={this.onMouseOver}
-              selection={this.state.selectedItems}
-              paddingInner={0.5}
-            />
+            {/*<Bars*/}
+              {/*fill="steelblue"*/}
+              {/*data={data.filter((datum) => { return datum.location === 'India'; })}*/}
+              {/*dataAccessors={{*/}
+                {/*fill: keyField,*/}
+                {/*key: 'id',*/}
+                {/*x: keyField,    // year_id*/}
+                {/*y: valueField   // population*/}
+              {/*}}*/}
+              {/*focus={this.state.focus}*/}
+              {/*onClick={this.onClick}*/}
+              {/*onMouseLeave={this.onMouseLeave}*/}
+              {/*onMouseMove={this.onMouseMove}*/}
+              {/*onMouseOver={this.onMouseOver}*/}
+              {/*selection={this.state.selectedItems}*/}
+              {/*orientation="vertical"*/}
+              {/*// paddingInner={0.5}*/}
+            {/*/>*/}
         </AxisChart>
 
 
         <AxisChart
           height={500}
-          width={300}
-          xDomain={keyFieldDomain}
-          yDomain={valueFieldDomain}
-          xScaleType="band"
-          yScaleType="linear"
+          width={500}
+          xDomain={valueFieldDomain}
+          yDomain={keyFieldDomain}
+          xScaleType="linear"
+          yScaleType="band"
         >
           <XAxis
-            orientation="left"
+            // orientation="left"
           />
           <YAxis
-            orientation="bottom"
-
+            // orientation="bottom"
           />
+          <Bars
+            fill="steelblue"
+            data={data.filter((datum) => { return datum.location === 'India'; })}
+            dataAccessors={{
+              fill: keyField,
+              key: 'id',
+              x: keyField,    // year_id
+              y: valueField   // population
+            }}
+            focus={this.state.focus}
+            onClick={this.onClick}
+            onMouseLeave={this.onMouseLeave}
+            onMouseMove={this.onMouseMove}
+            onMouseOver={this.onMouseOver}
+            selection={this.state.selectedItems}
+            // paddingInner={0.5}
+          />
+
 
 
         </AxisChart>

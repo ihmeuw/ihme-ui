@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import classNames from 'classNames';
+import classNames from 'classnames';
 import {scaleLinear, scaleBand} from 'd3';
 import {
   assign,
@@ -54,6 +54,7 @@ export default class Bars extends PureComponent {
       rectClassName,
       rectStyle,
       style,
+      orientation
     } = this.props;
 
     const { selectedDataMappedToKeys, sortedData } = this.state;
@@ -71,12 +72,20 @@ export default class Bars extends PureComponent {
 
     // Get props for rangeRound?
 
+      // scales.x.padding(0.05);
+      // console.log(orientation);
+      scales.y.padding(0.05);
+
+      // const ordinal = (orientation === "vertical" ? scales.x : scales.y);
+      // const linear = (orientation === "horizontal" ? scales.y : scales.x);
+
+
 
     // need to clean up and write functions that work for all potential paddingCase
-    if ('paddingInner' in this.props) {
-      console.log("in?")
-      scales.x.paddingInner(this.props.paddingInner);
-    }
+    // if ('paddingInner' in this.props) {
+    //   console.log("in?")
+    //   scales.x.paddingInner(this.props.paddingInner);
+    // }
     // scales.y.rangeRound([height, 0]);
 
     return (
@@ -95,19 +104,30 @@ export default class Bars extends PureComponent {
             const xValue = propResolver(datum, dataAccessors.x);
             const yValue = propResolver(datum, dataAccessors.y);
 
+
             return (
               <Bar
                 className={rectClassName}
                 key={key}
                 datum={datum}
-                x={scales.x(key)}
-                y={scales.y(yValue)}
-                height={height - scales.y(yValue)}
-                width={scales.x.bandwidth()}
+                // x={scales.x(key)}
+                // y={scales.y(yValue)}
+                // height={height - scales.y(yValue)}
+                // width={scales.x.bandwidth()}
+                x={0}
+                y={scales.y(xValue)}
+                height={scales.y.bandwidth()}
+                width={scales.x(yValue)}
+                // x={orientation == "vertical" ? scales.x(key) : scales.y(key)}
+                // y={orientation == "vertical" ? scales.y(yValue) : scales.x(yValue)}
+                // height={orientation == "vertical" ? height - scales.y(yValue) : height - scales.x(yValue)}
+                // width={orientation == "vertical" ? scales.x.bandwidth() : scales.y.bandwidth()}
                 fill={colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill}
                 focused={focusedDatumKey === key}
                 selected={selectedDataMappedToKeys.hasOwnProperty(key)}
                 style={rectStyle}
+                // translateX={scales.x && isFinite(xValue) ? scales.x(xValue) : 0}
+                // translateY={scales.y && isFinite(yValue) ? scales.y(yValue) : 0}
                 translateX={scales.x && isFinite(xValue) ? scales.x(xValue) : 0}
                 translateY={scales.y && isFinite(yValue) ? scales.y(yValue) : 0}
                 {...childProps}
@@ -274,6 +294,12 @@ Bars.propTypes = {
    */
   align: PropTypes.number,
 
+  /**
+   * Horizontal or Vertical Bars.
+   * Add additional comment later.
+   */
+  orientation: PropTypes.string,
+
 };
 
 
@@ -284,7 +310,8 @@ Bars.defaultProps = {
   onMouseMove: CommonDefaultProps.noop,
   onMouseOver: CommonDefaultProps.noop,
   scales: { x: scaleBand(), y: scaleLinear() },
-  paddingInner: 0.05
+  paddingInner: 0.05,
+  orientation: 'vertical'
 };
 
 Bars.propUpdates = {
