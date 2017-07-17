@@ -37,7 +37,7 @@ export default class Bars extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.state = stateFromPropUpdates(Bars.propUpdates, this.props, nextProps, this.state);
+    this.setState(stateFromPropUpdates(Bars.propUpdates, this.props, nextProps, this.state));
   }
 
   render() {
@@ -58,6 +58,8 @@ export default class Bars extends PureComponent {
       bandPadding,
       bandPaddingInner,
       bandPaddingOuter,
+      categoryTranslate,
+      outerOrdinal,
     } = this.props;
 
     const { selectedDataMappedToKeys, sortedData } = this.state;
@@ -71,6 +73,7 @@ export default class Bars extends PureComponent {
       'onMouseOver',
       'selectedClassName',
       'selectedStyle',
+      'categoryTranslate'
     ]);
 
     // Sets these constants to the correct scales based on whether the orientation
@@ -78,7 +81,6 @@ export default class Bars extends PureComponent {
     // linear, vice versa)
     const ordinal = (isVertical(orientation) ? scales.x : scales.y);
     const linear = (isVertical(orientation) ? scales.y : scales.x);
-
 
     // check padding proptypes and set accordingly, need to clean up code
     if (bandPaddingOuter != undefined) {
@@ -88,15 +90,6 @@ export default class Bars extends PureComponent {
     } else {
       ordinal.padding(bandPadding);
     }
-
-
-    //
-    // console.log(bandPaddingOuter);
-    // ordinal.padding(bandPadding);
-      // ordinal.paddingInner(bandPaddingInner);
-      // ordinal.paddingOuter(bandPaddingOuter);
-
-
 
 
     // need to clean up and write functions that work for all potential paddingCase
@@ -111,9 +104,12 @@ export default class Bars extends PureComponent {
         className={className && classNames(className)}
         clipPath={clipPathId && `url(#${clipPathId})`}
         style={this.combineStyles(style, data)}
+        transform={`translate(${categoryTranslate}, 0)`}
       >
         {
           map(sortedData, (datum) => {
+
+            console.log(sortedData);
 
             const key = propResolver(datum, dataAccessors.key);
             const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x);
@@ -127,10 +123,13 @@ export default class Bars extends PureComponent {
                 className={rectClassName}
                 key={key}
                 datum={datum}
-                x={isVertical(orientation) ? ordinal(key) : 0}
+                // x={isVertical(orientation) ? ordinal(key) : 0}
+                x={outerOrdinal(key)}
                 y={isVertical(orientation) ? linear(yValue) : ordinal(xValue)}
-                height={isVertical(orientation) ? (height - linear(yValue)) : ordinal.bandwidth()}
-                width={isVertical(orientation) ? ordinal.bandwidth() : linear(yValue)}
+                // height={isVertical(orientation) ? (height - linear(yValue)) : ordinal.bandwidth()}
+                height={height - linear(yValue)}
+                // width={isVertical(orientation) ? ordinal.bandwidth() : linear(yValue)}
+                width={outerOrdinal.bandwidth()}
                 fill={colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill}
                 focused={focusedDatumKey === key}
                 selected={selectedDataMappedToKeys.hasOwnProperty(key)}
@@ -149,6 +148,11 @@ export default class Bars extends PureComponent {
 }
 
 Bars.propTypes = {
+
+  outerOrdinal: PropTypes.func,
+
+  categoryTranslate: PropTypes.number,
+
   /**
    * className applied to outermost wrapping `<g>`.
    */
@@ -319,6 +323,8 @@ Bars.defaultProps = {
   scales: { x: scaleBand(), y: scaleLinear() },
   bandPadding: 0.05,
   orientation: 'vertical',
+  categoryTranslate: 0,
+  outerOrdinal: scaleBand(),
 };
 
 Bars.propUpdates = {

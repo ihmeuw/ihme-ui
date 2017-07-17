@@ -10,6 +10,10 @@ export {
 } from './array';
 
 export {
+  isVertical,
+} from './bar';
+
+export {
   colorSteps,
   baseColorScale,
   getRandomColor,
@@ -101,6 +105,3 @@ export {
   getBackgroundColor,
 } from './window';
 
-export {
-  isVertical,
-} from './bar';
