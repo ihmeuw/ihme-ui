@@ -44,6 +44,7 @@ const shapeScale = scaleOrdinal()
 
 const colorScale = scaleOrdinal(schemeCategory10);
 
+console.log(locationData);
 
 class App extends React.Component {
   constructor(props) {
@@ -259,28 +260,28 @@ class App extends React.Component {
   />
 </AxisChart>
 </code></pre> */}
-            <AxisChart
-              height={50}
-              width={500}
-              xDomain={valueFieldDomain}
-              xScaleType="linear"
-              yDomain={[0, 1]}
-              yScaleType="linear"
-            >
-              <XAxis />
-              <Scatter
-                fill="tomato"
-                data={data.filter((datum) => { return datum.location === 'India'; })}
-                dataAccessors={{ x: valueField, key: 'id' }}
-                focus={this.state.focus}
-                onClick={this.onClick}
-                onMouseLeave={this.onMouseLeave}
-                onMouseMove={this.onMouseMove}
-                onMouseOver={this.onMouseOver}
-                selection={this.state.selectedItems}
-                shapeType="circle"
-              />
-            </AxisChart>
+            {/*<AxisChart*/}
+              {/*height={50}*/}
+              {/*width={500}*/}
+              {/*xDomain={valueFieldDomain}*/}
+              {/*xScaleType="linear"*/}
+              {/*yDomain={[0, 1]}*/}
+              {/*yScaleType="linear"*/}
+            {/*>*/}
+              {/*<XAxis />*/}
+              {/*<Scatter*/}
+                {/*fill="tomato"*/}
+                {/*data={data.filter((datum) => { return datum.location === 'India'; })}*/}
+                {/*dataAccessors={{ x: valueField, key: 'id' }}*/}
+                {/*focus={this.state.focus}*/}
+                {/*onClick={this.onClick}*/}
+                {/*onMouseLeave={this.onMouseLeave}*/}
+                {/*onMouseMove={this.onMouseMove}*/}
+                {/*onMouseOver={this.onMouseOver}*/}
+                {/*selection={this.state.selectedItems}*/}
+                {/*shapeType="circle"*/}
+              {/*/>*/}
+            {/*</AxisChart>*/}
         </section>
         <section>
           <h3>One dimensional dataset: vertical</h3>
@@ -306,28 +307,28 @@ class App extends React.Component {
   />
 </AxisChart>
 </code></pre> */}
-            <AxisChart
-              width={100}
-              height={500}
-              xDomain={[0, 1]}
-              xScaleType="linear"
-              yDomain={valueFieldDomain}
-              yScaleType="linear"
-            >
-              <YAxis />
-              <Scatter
-                fill="cornflowerblue"
-                data={data.filter((datum) => { return datum.location === 'India'; })}
-                dataAccessors={{ y: valueField, key: 'id' }}
-                focus={this.state.focus}
-                onClick={this.onClick}
-                onMouseLeave={this.onMouseLeave}
-                onMouseMove={this.onMouseMove}
-                onMouseOver={this.onMouseOver}
-                selection={this.state.selectedItems}
-                shapeType="circle"
-              />
-            </AxisChart>
+            {/*<AxisChart*/}
+              {/*width={100}*/}
+              {/*height={500}*/}
+              {/*xDomain={[0, 1]}*/}
+              {/*xScaleType="linear"*/}
+              {/*yDomain={valueFieldDomain}*/}
+              {/*yScaleType="linear"*/}
+            {/*>*/}
+              {/*<YAxis />*/}
+              {/*<Scatter*/}
+                {/*fill="cornflowerblue"*/}
+                {/*data={data.filter((datum) => { return datum.location === 'India'; })}*/}
+                {/*dataAccessors={{ y: valueField, key: 'id' }}*/}
+                {/*focus={this.state.focus}*/}
+                {/*onClick={this.onClick}*/}
+                {/*onMouseLeave={this.onMouseLeave}*/}
+                {/*onMouseMove={this.onMouseMove}*/}
+                {/*onMouseOver={this.onMouseOver}*/}
+                {/*selection={this.state.selectedItems}*/}
+                {/*shapeType="circle"*/}
+              {/*/>*/}
+            {/*</AxisChart>*/}
         </section>
         <section>
           <h3>One dimensional dataset with color scale</h3>
@@ -353,28 +354,28 @@ class App extends React.Component {
   />
 </AxisChart>
 </code></pre> */}
-            <AxisChart
-              height={50}
-              width={500}
-              xDomain={valueFieldDomain}
-              xScaleType="linear"
-              yDomain={[0, 1]}
-              yScaleType="linear"
-            >
-              <XAxis />
-              <Scatter
-                colorScale={colorScale}
-                data={data.filter((datum) => { return datum.location === 'India'; })}
-                dataAccessors={{ fill: valueField, key: 'id', x: valueField }}
-                focus={this.state.focus}
-                onClick={this.onClick}
-                onMouseLeave={this.onMouseLeave}
-                onMouseMove={this.onMouseMove}
-                onMouseOver={this.onMouseOver}
-                selection={this.state.selectedItems}
-                shapeType="circle"
-              />
-            </AxisChart>
+            {/*<AxisChart*/}
+              {/*height={50}*/}
+              {/*width={500}*/}
+              {/*xDomain={valueFieldDomain}*/}
+              {/*xScaleType="linear"*/}
+              {/*yDomain={[0, 1]}*/}
+              {/*yScaleType="linear"*/}
+            {/*>*/}
+              {/*<XAxis />*/}
+              {/*<Scatter*/}
+                {/*colorScale={colorScale}*/}
+                {/*data={data.filter((datum) => { return datum.location === 'India'; })}*/}
+                {/*dataAccessors={{ fill: valueField, key: 'id', x: valueField }}*/}
+                {/*focus={this.state.focus}*/}
+                {/*onClick={this.onClick}*/}
+                {/*onMouseLeave={this.onMouseLeave}*/}
+                {/*onMouseMove={this.onMouseMove}*/}
+                {/*onMouseOver={this.onMouseOver}*/}
+                {/*selection={this.state.selectedItems}*/}
+                {/*shapeType="circle"*/}
+              {/*/>*/}
+            {/*</AxisChart>*/}
         </section>
       </div>
     );

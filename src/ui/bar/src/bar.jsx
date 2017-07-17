@@ -111,7 +111,7 @@ export default class Bar extends PureComponent {
           onMouseOver={this.onMouseOver}
           style={this.combineStyles(styles, datum)}
           // Rotation of bar is not neccessary. Upon further exploration, feature
-          // can be added to support rotation of bar
+          // can be added to support rotation of bar.
           transform={`translate(${translateX}, ${translateY}) rotate(0)`}
         />
       </g>

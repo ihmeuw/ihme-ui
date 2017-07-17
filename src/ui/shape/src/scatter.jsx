@@ -70,6 +70,8 @@ export default class Scatter extends PureComponent {
       'size',
     ]);
 
+    console.log(sortedData);
+
     return (
       <g
         className={className && classNames(className)}
@@ -78,6 +80,8 @@ export default class Scatter extends PureComponent {
       >
         {
           map(sortedData, (datum) => {
+
+
             // value passed into colorScale
             // use dataAccessors.x as fail-over for backward compatibility
             const key = propResolver(datum, dataAccessors.key);

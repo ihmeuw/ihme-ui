@@ -4,6 +4,10 @@ export {
 } from './array';
 
 export {
+  isVertical,
+} from './bar';
+
+export {
   colorSteps,
   baseColorScale,
 } from './colors';
@@ -86,6 +90,3 @@ export {
   getBackgroundColor,
 } from './window';
 
-export {
-  isVertical,
-} from './bar';
