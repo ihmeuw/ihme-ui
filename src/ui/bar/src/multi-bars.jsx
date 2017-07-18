@@ -35,10 +35,11 @@ export default class MultiBars extends PureComponent {
       barsValueIteratee,
       selection,
       style,
-      outerDomain,
-      outerOrdinal,
+      innerDomain,
+      innerOrdinal,
       scales,
-      orientation
+      orientation,
+      height,
     } = this.props;
 
     const {
@@ -48,11 +49,9 @@ export default class MultiBars extends PureComponent {
     } = fieldAccessors;
 
 
-    // const ordinal = (isVertical(orientation) ? scales.x : scales.y);
-    const ordinal = (isVertical(orientation) ? scales.x : scales.y);
-    // const linear = (isVertical(orientation) ? scales.y : scales.x);
+    const outerOrdinal = (isVertical(orientation) ? scales.x : scales.y);
 
-    outerOrdinal.domain(outerDomain).range([0, ordinal.bandwidth()]);
+    innerOrdinal.domain(innerDomain).range([0, outerOrdinal.bandwidth()]);
 
 
     const childProps = pick(this.props, [
@@ -71,13 +70,9 @@ export default class MultiBars extends PureComponent {
       'rectClassName',
       'rectStyle',
       'orientation',
-      'outerOrdinal',
+      'innerOrdinal',
       'height',
-      'orientation'
     ]);
-
-
-    // console.log(childProps);
 
     return (
       <g
@@ -92,8 +87,11 @@ export default class MultiBars extends PureComponent {
             const color = colorScale(colorField ? propResolver(datum, colorField) : key);
             // const barsValues = barsValueIteratee(values, key); //useless code?
             // console.log(barsValues);
+
+            // Key should be from list of outer categorie
             const translate = outerOrdinal(key);
 
+            console.log(datum);
             return (
               <Bars
                 className={barsClassName}
@@ -116,6 +114,24 @@ export default class MultiBars extends PureComponent {
 
 
 MultiBars.propTypes = {
+
+  /**
+   * className applied to `<Bars />`'s outermost wrapping `<g>`.
+   */
+  barsClassName: CommonPropTypes.className,
+
+  /**
+   * inline styles applied to `<Bars />`'s outermost wrapping `<g>`.
+   */
+  barsStyle: CommonDefaultProps.style,
+
+  /**
+   * function to apply to the datum to transform bars values. default: _.identity
+   * signature: (data, key) => {...}
+   */
+  barsValueIteratee: PropTypes.func,
+
+
   /**
    * className applied to outermost wrapping `<g>`.
    */
@@ -219,21 +235,6 @@ MultiBars.propTypes = {
     y: PropTypes.func,
   }),
 
-  /**
-   * className applied to `<Bars />`'s outermost wrapping `<g>`.
-   */
-  barsClassName: CommonPropTypes.className,
-
-  /**
-   * inline styles applied to `<Bars />`'s outermost wrapping `<g>`.
-   */
-  barsStyle: CommonDefaultProps.style,
-
-  /**
-   * function to apply to the datum to transform scatter values. default: _.identity
-   * signature: (data, key) => {...}
-   */
-  barsValueIteratee: PropTypes.func,
 
   /**
    * className applied to `<Bar />`s if selected
@@ -278,6 +279,11 @@ MultiBars.propTypes = {
 
   type: PropTypes.string,
 
+  innerOrdinal: PropTypes.func,
+
+  innerDomain: PropTypes.array,
+
+
 };
 
 MultiBars.defaultProps = {
@@ -287,7 +293,7 @@ MultiBars.defaultProps = {
     key: 'key',
   },
   scales: {x: scaleBand(), y: scaleLinear() },
-  outerOrdinal: scaleBand(),
+  innerOrdinal: scaleBand(),
   barsValueIteratee: CommonDefaultProps.identity,
   orientation: 'vertical',
   type: 'grouped'

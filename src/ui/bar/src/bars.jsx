@@ -60,8 +60,9 @@ export default class Bars extends PureComponent {
       bandPaddingInner,
       bandPaddingOuter,
       categoryTranslate,
-      outerOrdinal,
+      innerOrdinal,
       type,
+      innerDomain
     } = this.props;
 
     const { selectedDataMappedToKeys, sortedData } = this.state;
@@ -93,7 +94,6 @@ export default class Bars extends PureComponent {
       ordinal.padding(bandPadding);
     }
 
-
     // need to clean up and write functions that work for all potential paddingCase
     // if ('paddingInner' in this.props) {
     //   console.log("in?")
@@ -118,18 +118,31 @@ export default class Bars extends PureComponent {
             const xValue = propResolver(datum, dataAccessors.x);
             const yValue = propResolver(datum, dataAccessors.y);
 
+            // console.log(datum.location);
+            // console.log(outerOrdinal.bandwidth());
+            // console.log(innerOrdinal(key));
+
+
+            // const xPosition =
+            //             isVertical(orientation) ?
+            //               isDefault(type) ? ordinal(key)
+            //               : outerOrdinal(key)
+            //             : 0;
+
+
             return (
               <Bar
                 className={rectClassName}
                 key={key}
                 datum={datum}
-                // x={isVertical(orientation) ? ordinal(key) : 0}
-                x={outerOrdinal(key)}
+                x={innerOrdinal(key)}
+                // x={outerOrdinal(key)}
+                //x={xPosition}
                 y={isVertical(orientation) ? linear(yValue) : ordinal(xValue)}
                 // height={isVertical(orientation) ? (height - linear(yValue)) : ordinal.bandwidth()}
                 height={height - linear(yValue)}
                 // width={isVertical(orientation) ? ordinal.bandwidth() : linear(yValue)}
-                width={outerOrdinal.bandwidth()}
+                width={innerOrdinal.bandwidth()}
                 fill={colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill}
                 focused={focusedDatumKey === key}
                 selected={selectedDataMappedToKeys.hasOwnProperty(key)}
@@ -149,7 +162,7 @@ export default class Bars extends PureComponent {
 
 Bars.propTypes = {
 
-  outerOrdinal: PropTypes.func,
+  innerOrdinal: PropTypes.func,
 
   categoryTranslate: PropTypes.number,
 
@@ -327,7 +340,7 @@ Bars.defaultProps = {
   bandPadding: 0.05,
   orientation: 'vertical',
   categoryTranslate: 0,
-  outerOrdinal: scaleBand(),
+  innerOrdinal: scaleBand(),
   type: 'default'
 };
 
