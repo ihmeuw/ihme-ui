@@ -21,8 +21,6 @@ export default class MultiBars extends PureComponent {
 
     this.combineStyles = memoizeByLastCall(combineStyles);
     this.castSelectionAsArray = memoizeByLastCall((selection) => castArray(selection));
-
-
   }
 
   render() {
@@ -39,7 +37,8 @@ export default class MultiBars extends PureComponent {
       style,
       outerDomain,
       outerOrdinal,
-      scales
+      scales,
+      orientation
     } = this.props;
 
     const {
@@ -50,8 +49,11 @@ export default class MultiBars extends PureComponent {
 
 
     // const ordinal = (isVertical(orientation) ? scales.x : scales.y);
+    const ordinal = (isVertical(orientation) ? scales.x : scales.y);
+    // const linear = (isVertical(orientation) ? scales.y : scales.x);
 
-    outerOrdinal.domain(outerDomain).range([0, scales.x.bandwidth()]);
+    outerOrdinal.domain(outerDomain).range([0, ordinal.bandwidth()]);
+
 
     const childProps = pick(this.props, [
       'colorScale',
@@ -70,11 +72,12 @@ export default class MultiBars extends PureComponent {
       'rectStyle',
       'orientation',
       'outerOrdinal',
-      'height'
+      'height',
+      'orientation'
     ]);
 
 
-    console.log(childProps);
+    // console.log(childProps);
 
     return (
       <g
@@ -87,22 +90,22 @@ export default class MultiBars extends PureComponent {
             const key = propResolver(datum, keyField);
             const values = propResolver(datum, dataField);
             const color = colorScale(colorField ? propResolver(datum, colorField) : key);
-            const barsValues = barsValueIteratee(values, key);
+            // const barsValues = barsValueIteratee(values, key); //useless code?
+            // console.log(barsValues);
+            const translate = outerOrdinal(key);
 
-            const translateX = outerOrdinal(key);
-
-            return !!barsValues ? (
+            return (
               <Bars
                 className={barsClassName}
-                data={barsValues}
+                data={values}
                 fill={color}
                 key={`bars:${key}`}
                 selection={this.castSelectionAsArray(selection)}
                 style={barsStyle}
-                categoryTranslate={translateX}
+                categoryTranslate={translate}
                 {...childProps}
               />
-            ) : null;
+            );
           })
         }
       </g>
@@ -269,6 +272,12 @@ MultiBars.propTypes = {
    * Inline styles applied to `<Bar />`s.
    */
   barStyle: CommonPropTypes.style,
+
+
+  orientation: PropTypes.string,
+
+  type: PropTypes.string,
+
 };
 
 MultiBars.defaultProps = {
@@ -277,8 +286,10 @@ MultiBars.defaultProps = {
     data: 'values',
     key: 'key',
   },
-  // scales: {x: scaleBand(), y: scaleLinear() },
+  scales: {x: scaleBand(), y: scaleLinear() },
   outerOrdinal: scaleBand(),
   barsValueIteratee: CommonDefaultProps.identity,
+  orientation: 'vertical',
+  type: 'grouped'
 };
 

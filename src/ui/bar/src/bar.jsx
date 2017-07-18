@@ -248,7 +248,7 @@ Bar.defaultProps = {
   focusedClassName: 'focused',
   focusedStyle: {
     stroke: '#AAF',
-    strokeWidth: 1,
+    strokeWidth: .5,
   },
   onClick: CommonDefaultProps.noop,
   onMouseLeave: CommonDefaultProps.noop,
@@ -258,7 +258,7 @@ Bar.defaultProps = {
   selectedClassName: 'selected',
   selectedStyles: {
     stroke: '#000',
-    strokeWidth: 1,
+    strokeWidth: .5,
   },
   translateX: 0,
   translateY: 0,
