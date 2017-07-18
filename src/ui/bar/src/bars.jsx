@@ -43,6 +43,10 @@ export default class Bars extends PureComponent {
 
   render() {
     const {
+      bandPadding,
+      bandPaddingInner,
+      bandPaddingOuter,
+      categoryTranslate,
       className,
       clipPathId,
       colorScale,
@@ -51,23 +55,20 @@ export default class Bars extends PureComponent {
       fill,
       focus,
       height,
+      innerDomain,
+      innerOrdinal,
+      orientation,
       scales,
       rectClassName,
       rectStyle,
       style,
-      orientation,
-      bandPadding,
-      bandPaddingInner,
-      bandPaddingOuter,
-      categoryTranslate,
-      innerOrdinal,
       type,
-      innerDomain
     } = this.props;
 
     const { selectedDataMappedToKeys, sortedData } = this.state;
 
     const childProps = pick(this.props, [
+      'categoryTranslate',
       'focusedClassName',
       'focusedStyle',
       'onClick',
@@ -76,7 +77,6 @@ export default class Bars extends PureComponent {
       'onMouseOver',
       'selectedClassName',
       'selectedStyle',
-      'categoryTranslate'
     ]);
 
     // Sets these constants to the correct scales based on whether the orientation
@@ -169,8 +169,38 @@ export default class Bars extends PureComponent {
 
 Bars.propTypes = {
 
-  innerOrdinal: PropTypes.func,
+  /**
+   * Ordinal scaleBand align property. Sets the alignment of `<Bars />`s to the to the
+   * specified value which must be in the range [0, 1].
+   * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
+   */
+  align: PropTypes.number,
 
+  /**
+   * Ordinal scaleBand padding property. A convenience method for setting the inner and
+   * outer padding of `<Bars />`s to the same padding value
+   * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
+   */
+  bandPadding: PropTypes.number,
+
+  /**
+   * Ordinal scaleBand paddingInner property. Sets the inner padding of `<Bars />`s to the
+   * specified value which must be in the range [0, 1].
+   * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
+   */
+  bandPaddingInner: PropTypes.number,
+
+  /**
+   * Ordinal scaleBand paddingOuter property. Sets the outer padding of `<Bars />`s to the
+   * specified value which must be in the range [0, 1].
+   * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
+   */
+  bandPaddingOuter: PropTypes.number,
+
+  /**
+   * Translation value scaled appropriately for the inner categorical data within a
+   * grouped bar chart.
+   */
   categoryTranslate: PropTypes.number,
 
   /**
@@ -238,6 +268,11 @@ Bars.propTypes = {
   focusedStyle: CommonPropTypes.style,
 
   /**
+   * Inner ordinal scale for categorical data within a grouped bar chart.
+   */
+  innerOrdinal: PropTypes.func,
+
+  /**
    * onClick callback.
    * signature: (SyntheticEvent, datum, instance) => {...}
    */
@@ -260,6 +295,23 @@ Bars.propTypes = {
    * signature: (SyntheticEvent, datum, instance) => {...}
    */
   onMouseOver: PropTypes.func,
+
+  /**
+   * Orientation in which bars should be created.
+   * Defaults to vertical, but option for horizontal orientation supported.
+   */
+  orientation: PropTypes.string,
+
+  /**
+   * className applied to each `<Bar />`
+   */
+  rectClassName: CommonPropTypes.className,
+
+  /**
+   * Inline styles passed to each `<Bar />`
+   */
+  rectStyle: CommonDefaultProps.style,
+
 
   /**
    * `x` and `y` scales for positioning `<Bar />`s.
@@ -287,53 +339,11 @@ Bars.propTypes = {
   style: CommonPropTypes.style,
 
   /**
-   * className applied to each `<Bar />`
+   * Type of bar chart to be created.
+   * Default is a simple vertically oriented bar graph. Options for grouped and
+   * stacked are also supported.
    */
-  rectClassName: CommonPropTypes.className,
-
-  /**
-   * Inline styles passed to each `<Bar />`
-   */
-  rectStyle: CommonDefaultProps.style,
-
-
-  /**
-   * Ordinal scaleBand paddingInner property. Sets the inner padding of `<Bars />`s to the
-   * specified value which must be in the range [0, 1].
-   * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
-   */
-  bandPaddingInner: PropTypes.number,
-
-  /**
-   * Ordinal scaleBand paddingOuter property. Sets the outer padding of `<Bars />`s to the
-   * specified value which must be in the range [0, 1].
-   * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
-   */
-  bandPaddingOuter: PropTypes.number,
-
-  /**
-   * Ordinal scaleBand padding property. A convenience method for setting the inner and
-   * outer padding of `<Bars />`s to the same padding value
-   * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
-   */
-  bandPadding: PropTypes.number,
-
-  /**
-   * Ordinal scaleBand align property. Sets the alignment of `<Bars />`s to the to the
-   * specified value which must be in the range [0, 1].
-   * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
-   */
-  align: PropTypes.number,
-
-  /**
-   * Horizontal or Vertical Bars.
-   * Add additional comment later.
-   */
-  orientation: PropTypes.string,
-
   type: PropTypes.string,
-
-
 };
 
 

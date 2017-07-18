@@ -7,8 +7,8 @@ import { schemeCategory10, scaleOrdinal } from 'd3';
 import { XAxis, YAxis } from '../../axis';
 import MultiBars from '../src/multi-bars';
 
-const yearField = 'year_id'; // was key
-const populationField = 'population'; // was value
+const yearField = 'year_id';
+const populationField = 'population';
 const locationField = 'location';
 
 import Bars from '../src/bars';
@@ -102,7 +102,6 @@ class App extends React.Component {
          <XAxis />
          <YAxis />
          <Bars
-         fill="steelblue"
          data={[]}
          dataAccessors={{
          fill: keyField,
@@ -110,6 +109,7 @@ class App extends React.Component {
          x: keyField,    // year_id
          y: valueField   // population
          }}
+         fill="steelblue"
          focus={this.state.focus}
          onClick={this.onClick}
          onMouseLeave={this.onMouseLeave}
@@ -161,7 +161,6 @@ class App extends React.Component {
          <XAxis/>
          <YAxis/>
          <Bars
-         fill="steelblue"
          data={[]}
          dataAccessors={{
          fill: keyField,
@@ -169,13 +168,14 @@ class App extends React.Component {
          x: keyField,    // year_id
          y: valueField   // population
          }}
+         fill="steelblue"
          focus={this.state.focus}
          onClick={this.onClick}
          onMouseLeave={this.onMouseLeave}
          onMouseMove={this.onMouseMove}
          onMouseOver={this.onMouseOver}
-         selection={this.state.selectedItems}
          orientation="horizontal"
+         selection={this.state.selectedItems}
          />
          </AxisChart>
          </code></pre> */}
@@ -210,6 +210,49 @@ class App extends React.Component {
       </section>
       <section>
         <h3>Grouped Bar Chart</h3>
+        {/* <pre><code>
+         <AxisChart
+         height={300}
+         width={500}
+         xDomain={locationFieldDomain}
+         yDomain={populationFieldDomain}
+         xScaleType="band"
+         yScaleType="linear"
+         >
+         <XAxis/>
+         <YAxis/>
+         <MultiBars
+         colorScale={colorScale}
+         data={locationData}
+         dataAccessors={{
+         fill: yearField,
+         key: 'id', // rename to relate to inner grouping
+         x: yearField, // field of nested data
+         y: populationField,
+         }}
+         fieldAccessors={{
+         data: 'values',
+         key: 'location',
+         }}
+         focus={this.state.focus}
+         focusedStyle={{
+         stroke: '#000',
+         strokeWidth: 2,
+         }}
+         innerDomain={yearFieldDomain}
+         onClick={this.onClick}
+         onMouseLeave={this.onMouseLeave}
+         onMouseMove={this.onMouseMove}
+         onMouseOver={this.onMouseOver}
+         selection={this.state.selectedItems}
+         selectedStyle={{
+         stroke: '#000',
+         strokeWidth: 1,
+         }}
+         type="grouped"
+         />
+         </AxisChart>
+         </code></pre> */}
         <AxisChart
           height={300}
           width={500}
