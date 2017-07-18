@@ -114,7 +114,6 @@ export default class MultiBars extends PureComponent {
 
 
 MultiBars.propTypes = {
-
   /**
    * className applied to `<Bars />`'s outermost wrapping `<g>`.
    */
@@ -203,6 +202,16 @@ MultiBars.propTypes = {
   focusedStyle: CommonPropTypes.style,
 
   /**
+   * Domain use for the innderOrdinal prop that scales the inner categorical data together.
+   */
+  innerDomain: PropTypes.array,
+
+  /**
+   * Inner ordinal scale for categorical data within a grouped bar chart.
+   */
+  innerOrdinal: PropTypes.func,
+
+  /**
    * onClick callback.
    * signature: (SyntheticEvent, datum, instance) => {...}
    */
@@ -227,6 +236,12 @@ MultiBars.propTypes = {
   onMouseOver: PropTypes.func,
 
   /**
+   * Orientation in which bars should be created.
+   * Defaults to vertical, but option for horizontal orientation supported.
+   */
+  orientation: PropTypes.string,
+
+  /**
    * `x` and `y` scales for positioning `<Bar />`s.
    * Object with keys: `x`, and `y`.
    */
@@ -234,7 +249,6 @@ MultiBars.propTypes = {
     x: PropTypes.func,
     y: PropTypes.func,
   }),
-
 
   /**
    * className applied to `<Bar />`s if selected
@@ -264,25 +278,11 @@ MultiBars.propTypes = {
   style: CommonPropTypes.style,
 
   /**
-   * className applied to each `<Bar />`
+   * Type of bar chart to be created.
+   * Default is a simple vertically oriented bar graph. Options for grouped and
+   * stacked are also supported.
    */
-  barClassName: CommonPropTypes.className,
-
-
-  /**
-   * Inline styles applied to `<Bar />`s.
-   */
-  barStyle: CommonPropTypes.style,
-
-
-  orientation: PropTypes.string,
-
   type: PropTypes.string,
-
-  innerOrdinal: PropTypes.func,
-
-  innerDomain: PropTypes.array,
-
 
 };
 
@@ -294,8 +294,8 @@ MultiBars.defaultProps = {
   },
   scales: {x: scaleBand(), y: scaleLinear() },
   innerOrdinal: scaleBand(),
-  barsValueIteratee: CommonDefaultProps.identity,
+  barsValueIteratee: CommonDefaultProps.identity, // get rid because don't readlly need
   orientation: 'vertical',
-  type: 'grouped'
+  type: 'default'
 };
 
