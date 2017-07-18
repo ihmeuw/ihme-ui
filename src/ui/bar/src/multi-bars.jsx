@@ -25,21 +25,22 @@ export default class MultiBars extends PureComponent {
 
   render() {
     const {
+      barsClassName,
+      barsStyle,
+      barsValueIteratee,
       className,
       clipPathId,
       colorScale,
       data,
       fieldAccessors,
-      barsClassName,
-      barsStyle,
-      barsValueIteratee,
-      selection,
-      style,
+      height,
       innerDomain,
       innerOrdinal,
-      scales,
       orientation,
-      height,
+      scales,
+      selection,
+      style,
+      type,
     } = this.props;
 
     const {
@@ -60,18 +61,19 @@ export default class MultiBars extends PureComponent {
       'focus',
       'focusedClassName',
       'focusedStyle',
+      'height',
+      'innerOrdinal',
       'onClick',
       'onMouseLeave',
       'onMouseMove',
       'onMouseOver',
+      'orientation',
       'selectedClassName',
       'selectedStyle',
       'scales',
       'rectClassName',
       'rectStyle',
-      'orientation',
-      'innerOrdinal',
-      'height',
+      'type',
     ]);
 
     return (
@@ -91,7 +93,6 @@ export default class MultiBars extends PureComponent {
             // Key should be from list of outer categorie
             const translate = outerOrdinal(key);
 
-            console.log(datum);
             return (
               <Bars
                 className={barsClassName}
