@@ -118,31 +118,38 @@ export default class Bars extends PureComponent {
             const xValue = propResolver(datum, dataAccessors.x);
             const yValue = propResolver(datum, dataAccessors.y);
 
-            // console.log(datum.location);
-            // console.log(outerOrdinal.bandwidth());
-            // console.log(innerOrdinal(key));
+            const xPosition =
+                        isVertical(orientation) ?
+                          isDefault(type) ? ordinal(xValue)
+                          : innerOrdinal(xValue)
+                        : 0;
+            const yPosition = isVertical(orientation) ? linear(yValue) : ordinal(xValue);
 
 
-            // const xPosition =
-            //             isVertical(orientation) ?
-            //               isDefault(type) ? ordinal(key)
-            //               : outerOrdinal(key)
-            //             : 0;
+            const barHeight = isVertical(orientation) ? (height - linear(yValue)) : ordinal.bandwidth();
 
-
+            const barWidth =
+                        isVertical(orientation) ?
+                          isDefault(type) ? ordinal.bandwidth()
+                          : innerOrdinal.bandwidth()
+                        : linear(yValue);
             return (
               <Bar
                 className={rectClassName}
                 key={key}
                 datum={datum}
-                x={innerOrdinal(key)}
-                // x={outerOrdinal(key)}
-                //x={xPosition}
-                y={isVertical(orientation) ? linear(yValue) : ordinal(xValue)}
+                // x={innerOrdinal(xValue)}
+                // x={isVertical(orientation) ? ordinal(xValue) : 0}
+                x={xPosition}
+                // y={isVertical(orientation) ? linear(yValue) : ordinal(xValue)}
+                // y={linear(yValue)}
+                y={yPosition}
                 // height={isVertical(orientation) ? (height - linear(yValue)) : ordinal.bandwidth()}
-                height={height - linear(yValue)}
+                // height={height - linear(yValue)}
+                height={barHeight}
                 // width={isVertical(orientation) ? ordinal.bandwidth() : linear(yValue)}
-                width={innerOrdinal.bandwidth()}
+                // width={innerOrdinal.bandwidth()}
+                width={barWidth}
                 fill={colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill}
                 focused={focusedDatumKey === key}
                 selected={selectedDataMappedToKeys.hasOwnProperty(key)}

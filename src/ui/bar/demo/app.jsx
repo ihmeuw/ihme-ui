@@ -129,22 +129,22 @@ class App extends React.Component {
         >
           <XAxis />
           <YAxis />
-          {/*<Bars*/}
-          {/*fill="steelblue"*/}
-          {/*data={data.filter((datum) => { return datum.location === 'India'; })}*/}
-          {/*dataAccessors={{*/}
-            {/*fill: keyField,*/}
-            {/*key: 'id',*/}
-            {/*x: keyField,    // year_id*/}
-            {/*y: valueField   // population*/}
-          {/*}}*/}
-          {/*focus={this.state.focus}*/}
-          {/*onClick={this.onClick}*/}
-          {/*onMouseLeave={this.onMouseLeave}*/}
-          {/*onMouseMove={this.onMouseMove}*/}
-          {/*onMouseOver={this.onMouseOver}*/}
-          {/*selection={this.state.selectedItems}*/}
-        {/*/>*/}
+          <Bars
+          fill="steelblue"
+          data={data.filter((datum) => { return datum.location === 'India'; })}
+          dataAccessors={{
+            fill: yearField,
+            key: 'id',
+            x: yearField,    // year_id
+            y: populationField   // population
+          }}
+          focus={this.state.focus}
+          onClick={this.onClick}
+          onMouseLeave={this.onMouseLeave}
+          onMouseMove={this.onMouseMove}
+          onMouseOver={this.onMouseOver}
+          selection={this.state.selectedItems}
+        />
         </AxisChart>
       </section>
       <section>
@@ -189,23 +189,23 @@ class App extends React.Component {
         >
           <XAxis/>
           <YAxis/>
-          {/*<Bars*/}
-            {/*fill="steelblue"*/}
-            {/*data={data.filter((datum) => { return datum.location === 'India'; })}*/}
-            {/*dataAccessors={{*/}
-              {/*fill: keyField,*/}
-              {/*key: 'id',*/}
-              {/*x: keyField,    // year_id*/}
-              {/*y: valueField   // population*/}
-            {/*}}*/}
-            {/*focus={this.state.focus}*/}
-            {/*onClick={this.onClick}*/}
-            {/*onMouseLeave={this.onMouseLeave}*/}
-            {/*onMouseMove={this.onMouseMove}*/}
-            {/*onMouseOver={this.onMouseOver}*/}
-            {/*selection={this.state.selectedItems}*/}
-            {/*orientation="horizontal"*/}
-          {/*/>*/}
+          <Bars
+            fill="steelblue"
+            data={data.filter((datum) => { return datum.location === 'India'; })}
+            dataAccessors={{
+              fill: yearField,
+              key: 'id',
+              x: yearField,    // year_id
+              y: populationField   // population
+            }}
+            focus={this.state.focus}
+            onClick={this.onClick}
+            onMouseLeave={this.onMouseLeave}
+            onMouseMove={this.onMouseMove}
+            onMouseOver={this.onMouseOver}
+            selection={this.state.selectedItems}
+            orientation="horizontal"
+          />
         </AxisChart>
       </section>
       <section>
@@ -221,34 +221,35 @@ class App extends React.Component {
           <XAxis/>
           <YAxis/>
           <MultiBars
-            colorScale={colorScale}
-            data={locationData}
-            innerDomain={yearFieldDomain}
-            dataAccessors={{
-              fill: yearField,
-              key: yearField, // rename to relate to inner grouping
-              x: yearField,
-              y: populationField,
-            }}
-            fieldAccessors={{
-              data: 'values',
-              key: 'location',
-            }}
-            focus={this.state.focus}
-            focusedStyle={{
-              stroke: '#000',
-              strokeWidth: 2,
-            }}
-            onClick={this.onClick}
-            onMouseLeave={this.onMouseLeave}
-            onMouseMove={this.onMouseMove}
-            onMouseOver={this.onMouseOver}
-            selection={this.state.selectedItems}
-            selectedStyle={{
-              stroke: '#000',
-              strokeWidth: 1,
-            }}
-          />
+          colorScale={colorScale}
+          data={locationData}
+          innerDomain={yearFieldDomain}
+          dataAccessors={{
+            fill: yearField,
+            key: 'id', // rename to relate to inner grouping
+            x: yearField, // field of nested data
+            y: populationField,
+          }}
+          fieldAccessors={{
+            data: 'values',
+            key: 'location',
+          }}
+          focus={this.state.focus}
+          focusedStyle={{
+            stroke: '#000',
+            strokeWidth: 2,
+          }}
+          onClick={this.onClick}
+          onMouseLeave={this.onMouseLeave}
+          onMouseMove={this.onMouseMove}
+          onMouseOver={this.onMouseOver}
+          selection={this.state.selectedItems}
+          selectedStyle={{
+            stroke: '#000',
+            strokeWidth: 1,
+          }}
+          type="grouped"
+        />
         </AxisChart>
       </section>
       </div>

@@ -70,8 +70,6 @@ export default class Scatter extends PureComponent {
       'size',
     ]);
 
-    console.log(sortedData);
-
     return (
       <g
         className={className && classNames(className)}
