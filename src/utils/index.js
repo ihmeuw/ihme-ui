@@ -4,6 +4,7 @@ export {
 } from './array';
 
 export {
+  isDefault,
   isVertical,
 } from './bar';
 

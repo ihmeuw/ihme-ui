@@ -7,18 +7,18 @@ import { schemeCategory10, scaleOrdinal } from 'd3';
 import { XAxis, YAxis } from '../../axis';
 import MultiBars from '../src/multi-bars';
 
-const keyField = 'year_id';
-const valueField = 'population';
-import Bars from '../src/bars';
+const yearField = 'year_id'; // was key
+const populationField = 'population'; // was value
+const locationField = 'location';
 
-const outerField = 'location';
+import Bars from '../src/bars';
 
 const data = dataGenerator({
   primaryKeys: [
     { name: 'location', values: ['Brazil', 'Russia', 'India', 'China', 'Mexico', 'Indonesia', 'Nigeria', 'Vietnam'] }
   ],
   valueKeys: [
-    { name: valueField, range: [100, 900], uncertainty: true }
+    { name: populationField, range: [100, 900], uncertainty: true }
   ]
 });
 
@@ -33,23 +33,18 @@ const locationData = [
   { location: 'Vietnam', values: data.filter((datum) => { return datum.location === 'Vietnam'; }) }
 ];
 
-const valueFieldDomain = [minBy(data, valueField)[valueField], maxBy(data, valueField)[valueField]];
-const keyFieldDomain = map(uniqBy(data, keyField), (obj) => { return (obj[keyField]); });
-const outerKeyDomain = map(uniqBy(locationData, outerField), (obj) => { return (obj[outerField]); });
-
+const populationFieldDomain = [minBy(data, populationField)[populationField], maxBy(data, populationField)[populationField]];
+const yearFieldDomain = map(uniqBy(data, yearField), (obj) => { return (obj[yearField]); });
+const locationFieldDomain = map(uniqBy(locationData, locationField), (obj) => { return (obj[locationField]); });
 const colorScale = scaleOrdinal(schemeCategory10);
 
-console.log(locationData);
-console.log(outerKeyDomain);
-console.log(keyFieldDomain);
-console.log(valueFieldDomain);
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       selectedItems: [],
-    }
+    };
 
     bindAll(this, [
       'onClick',
@@ -61,25 +56,25 @@ class App extends React.Component {
   }
 
   onClick(event, datum) {
-    console.log(`${event.type}::${datum[keyField]},${datum[valueField]}`);
+    console.log(`${event.type}::${datum[yearField]},${datum[populationField]}`);
     this.setState({
       selectedItems: xor(this.state.selectedItems, [datum]),
     });
   };
 
   onMouseLeave(event, datum) {
-    console.log(`${event.type}::${datum[keyField]},${datum[valueField]}`);
+    console.log(`${event.type}::${datum[yearField]},${datum[populationField]}`);
     this.setState({
       focus: {},
     });
   };
 
   onMouseMove(event, datum) {
-    console.log(`${event.type}::${datum[keyField]},${datum[valueField]}`);
+    console.log(`${event.type}::${datum[yearField]},${datum[populationField]}`);
   };
 
   onMouseOver(event, datum) {
-    console.log(`${event.type}::${datum[keyField]},${datum[valueField]}`);
+    console.log(`${event.type}::${datum[yearField]},${datum[populationField]}`);
     this.setState({
       focus: datum,
     });
@@ -127,8 +122,8 @@ class App extends React.Component {
         <AxisChart
           height={300}
           width={500}
-          xDomain={keyFieldDomain}
-          yDomain={valueFieldDomain}
+          xDomain={yearFieldDomain}
+          yDomain={populationFieldDomain}
           xScaleType="band"
           yScaleType="linear"
         >
@@ -187,8 +182,8 @@ class App extends React.Component {
         <AxisChart
           height={300}
           width={500}
-          xDomain={valueFieldDomain}
-          yDomain={keyFieldDomain}
+          xDomain={populationFieldDomain}
+          yDomain={yearFieldDomain}
           xScaleType="linear"
           yScaleType="band"
         >
@@ -218,8 +213,8 @@ class App extends React.Component {
         <AxisChart
           height={300}
           width={500}
-          xDomain={keyFieldDomain}
-          yDomain={valueFieldDomain}
+          xDomain={locationFieldDomain}
+          yDomain={populationFieldDomain}
           xScaleType="band"
           yScaleType="linear"
         >
@@ -228,12 +223,12 @@ class App extends React.Component {
           <MultiBars
             colorScale={colorScale}
             data={locationData}
-            outerDomain={outerKeyDomain}
+            innerDomain={yearFieldDomain}
             dataAccessors={{
-              fill: 'location',
-              key: 'id',
-              x: keyField,
-              y: valueField,
+              fill: yearField,
+              key: yearField, // rename to relate to inner grouping
+              x: yearField,
+              y: populationField,
             }}
             fieldAccessors={{
               data: 'values',
