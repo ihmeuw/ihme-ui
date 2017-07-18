@@ -15,6 +15,7 @@ import {
   combineStyles,
   CommonDefaultProps,
   CommonPropTypes,
+  isDefault,
   isVertical,
   memoizeByLastCall,
   propResolver,
@@ -60,6 +61,7 @@ export default class Bars extends PureComponent {
       bandPaddingOuter,
       categoryTranslate,
       outerOrdinal,
+      type,
     } = this.props;
 
     const { selectedDataMappedToKeys, sortedData } = this.state;
@@ -108,8 +110,6 @@ export default class Bars extends PureComponent {
       >
         {
           map(sortedData, (datum) => {
-
-            console.log(sortedData);
 
             const key = propResolver(datum, dataAccessors.key);
             const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x);
@@ -311,6 +311,9 @@ Bars.propTypes = {
    */
   orientation: PropTypes.string,
 
+  type: PropTypes.string,
+
+
 };
 
 
@@ -325,6 +328,7 @@ Bars.defaultProps = {
   orientation: 'vertical',
   categoryTranslate: 0,
   outerOrdinal: scaleBand(),
+  type: 'default'
 };
 
 Bars.propUpdates = {

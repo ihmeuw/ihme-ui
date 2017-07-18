@@ -9,6 +9,10 @@
  * @returns {boolean}
  */
 export function isVertical(orientation) {
-  return (orientation.toLowerCase()  === "vertical".toLocaleLowerCase());
+  return (orientation.toLowerCase()  === "vertical".toLowerCase());
+}
+
+export function isDefault(type) {
+  return (type.toLowerCase() === "default".toLowerCase());
 }
 

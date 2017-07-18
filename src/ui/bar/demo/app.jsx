@@ -39,7 +39,6 @@ const outerKeyDomain = map(uniqBy(locationData, outerField), (obj) => { return (
 
 const colorScale = scaleOrdinal(schemeCategory10);
 
-console.log(data);
 console.log(locationData);
 console.log(outerKeyDomain);
 console.log(keyFieldDomain);
@@ -231,7 +230,7 @@ class App extends React.Component {
             data={locationData}
             outerDomain={outerKeyDomain}
             dataAccessors={{
-              fill: outerField,
+              fill: 'location',
               key: 'id',
               x: keyField,
               y: valueField,
@@ -255,8 +254,6 @@ class App extends React.Component {
               strokeWidth: 1,
             }}
           />
-
-
         </AxisChart>
       </section>
       </div>
