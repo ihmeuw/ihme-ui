@@ -39,6 +39,7 @@ const locationFieldDomain = map(uniqBy(locationData, locationField), (obj) => { 
 const colorScale = scaleOrdinal(schemeCategory10);
 
 
+console.log(locationData);
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -293,6 +294,96 @@ class App extends React.Component {
           }}
           type="grouped"
         />
+        </AxisChart>
+      </section>
+
+      <section>
+        <h3>Grouped Bar Chart (Horizontal)</h3>
+        {/* <pre><code>
+         <AxisChart
+         height={500}
+         width={300}
+         xDomain={populationFieldDomain}
+         yDomain={locationFieldDomain}
+         xScaleType="linear"
+         yScaleType="band"
+         >
+         <XAxis/>
+         <YAxis/>
+         <MultiBars
+         colorScale={colorScale}
+         data={locationData}
+         innerDomain={yearFieldDomain}
+         dataAccessors={{
+         fill: yearField,
+         key: 'id', // rename to relate to inner grouping
+         x: yearField, // field of nested data
+         y: populationField,
+         }}
+         fieldAccessors={{
+         data: 'values',
+         key: 'location',
+         }}
+         focus={this.state.focus}
+         focusedStyle={{
+         stroke: '#000',
+         strokeWidth: 2,
+         }}
+         onClick={this.onClick}
+         onMouseLeave={this.onMouseLeave}
+         onMouseMove={this.onMouseMove}
+         onMouseOver={this.onMouseOver}
+         orientation='horizontal'
+         selection={this.state.selectedItems}
+         selectedStyle={{
+         stroke: '#000',
+         strokeWidth: 1,
+         }}
+         type="grouped"
+         />
+         </AxisChart>
+         </code></pre> */}
+        <AxisChart
+          height={500}
+          width={300}
+          xDomain={populationFieldDomain}
+          yDomain={locationFieldDomain}
+          xScaleType="linear"
+          yScaleType="band"
+        >
+          <XAxis/>
+          <YAxis/>
+          <MultiBars
+            colorScale={colorScale}
+            data={locationData}
+            innerDomain={yearFieldDomain}
+            dataAccessors={{
+              fill: yearField,
+              key: 'id', // rename to relate to inner grouping
+              x: yearField, // field of nested data
+              y: populationField,
+            }}
+            fieldAccessors={{
+              data: 'values',
+              key: 'location',
+            }}
+            focus={this.state.focus}
+            focusedStyle={{
+              stroke: '#000',
+              strokeWidth: 2,
+            }}
+            onClick={this.onClick}
+            onMouseLeave={this.onMouseLeave}
+            onMouseMove={this.onMouseMove}
+            onMouseOver={this.onMouseOver}
+            orientation='horizontal'
+            selection={this.state.selectedItems}
+            selectedStyle={{
+              stroke: '#000',
+              strokeWidth: 1,
+            }}
+            type="grouped"
+          />
         </AxisChart>
       </section>
       </div>
