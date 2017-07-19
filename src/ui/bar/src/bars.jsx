@@ -101,12 +101,14 @@ export default class Bars extends PureComponent {
     // }
     // scales.y.rangeRound([height, 0]);
 
+    // const translateDirection = isVertical()
+
     return (
       <g
         className={className && classNames(className)}
         clipPath={clipPathId && `url(#${clipPathId})`}
         style={this.combineStyles(style, data)}
-        transform={`translate(${categoryTranslate}, 0)`}
+        transform={`translate(${isVertical(orientation) ? categoryTranslate : 0}, ${isVertical(orientation) ? 0 : categoryTranslate})`}
       >
         {
           map(sortedData, (datum) => {
@@ -119,20 +121,21 @@ export default class Bars extends PureComponent {
             const yValue = propResolver(datum, dataAccessors.y);
 
             const xPosition =
-                        isVertical(orientation) ?
-                          isDefault(type) ? ordinal(xValue)
-                          : innerOrdinal(xValue)
-                        : 0;
-            const yPosition = isVertical(orientation) ? linear(yValue) : ordinal(xValue);
+                        !isVertical(orientation) ? 0:
+                          isDefault(type) ? ordinal(xValue) : innerOrdinal(xValue);
 
+            const yPosition =
+                        isVertical(orientation) ? linear(yValue) :
+                          isDefault(type) ? ordinal(xValue) : innerOrdinal(xValue)
 
-            const barHeight = isVertical(orientation) ? (height - linear(yValue)) : ordinal.bandwidth();
+            const barHeight =
+                        isVertical(orientation) ? height - linear(yValue) :
+                          isDefault(type) ? ordinal.bandwidth() : innerOrdinal.bandwidth();
 
             const barWidth =
-                        isVertical(orientation) ?
-                          isDefault(type) ? ordinal.bandwidth()
-                          : innerOrdinal.bandwidth()
-                        : linear(yValue);
+                        !isVertical(orientation) ? linear(yValue) :
+                          isDefault(type) ? ordinal.bandwidth() : innerOrdinal.bandwidth();
+
             return (
               <Bar
                 className={rectClassName}
