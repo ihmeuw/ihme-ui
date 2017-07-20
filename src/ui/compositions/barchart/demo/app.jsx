@@ -3,10 +3,13 @@ import { schemeCategory10, scaleOrdinal } from 'd3';
 import ReactDOM from 'react-dom';
 import {
   bindAll,
+  find,
+  flatMap,
   xor,
   maxBy,
   minBy,
   map,
+  slice,
   uniqBy,
 } from 'lodash';
 
@@ -15,8 +18,7 @@ import AxisChart from './../../../axis-chart';
 import ResponsiveContainer from './../../../responsive-container';
 import { XAxis, YAxis } from './../../../axis';
 import Bars from './../../../bar/src/bars';
-import Legend from './../../../legend';
-import Barchart from './../../barchart/src/barchart';
+
 
 import { dataGenerator } from '../../../../utils';
 
@@ -54,15 +56,6 @@ const colorScale = scaleOrdinal(schemeCategory10);
 
 console.log(locationData);
 console.log(data.filter((datum) => { return datum.location === 'India'; }));
-
-// create items given the data and the fields specified
-const items = [
-  {
-    label: 'Total Population',
-    shapeColor: 'steelblue',
-    shapeType: 'square'
-  }
-]
 
 class App extends React.Component {
   constructor(props) {
@@ -105,86 +98,46 @@ class App extends React.Component {
     });
   };
 
-
   render() {
     return (
-      <div id="wrapper">
-        <Barchart
-          title="DIS the Title"
-          legendObject={items}
-          labelKey="label"
-          shapeColorKey="shapeColor"
-          shapeTypeKey="shapeType"
-          xScale="band"
-          yScale="linear"
-          yLabel="y Label"
-          xLabel="x Label"
-          xDomain={yearFieldDomain}
-          yDomain={populationFieldDomain}
-          data={data.filter((datum) => { return datum.location === 'India'; })}
-          // dataAccessors={{
-          //   fill: yearField,
-          //   key: 'id',
-          //   stack: yearField,    // year_id
-          //   value: populationField   // population
-          // }}
-          focus={this.state.focus}
-          onClick={this.onClick}
-          onMouseLeave={this.onMouseLeave}
-          onMouseMove={this.onMouseMove}
-          onMouseOver={this.onMouseOver}
-          selection={this.state.selectedItems}
-        />
-      </div>
+    <div id="wrapper">
+      <h2>Title Goes Here</h2>
+      {/*<div id="auto-resize">*/}
+        <ResponsiveContainer>
+          <AxisChart
+            xDomain={yearFieldDomain}
+            yDomain={populationFieldDomain}
+            xScaleType="band"
+            yScaleType="linear"
+          >
+            <XAxis
+              label={"Years"}
+            />
+            <YAxis
+              label={"Population"}
+            />
+            <Bars
+              fill="steelblue"
+              data={data.filter((datum) => { return datum.location === 'India'; })}
+              dataAccessors={{
+                fill: yearField,
+                key: 'id',
+                x: yearField,    // year_id
+                y: populationField   // population
+              }}
+              focus={this.state.focus}
+              onClick={this.onClick}
+              onMouseLeave={this.onMouseLeave}
+              onMouseMove={this.onMouseMove}
+              onMouseOver={this.onMouseOver}
+              selection={this.state.selectedItems}
+            />
+          </AxisChart>
+        </ResponsiveContainer>
+      {/*</div>*/}
+    </div>
     );
   }
-
-
-  // render() {
-  //   return (
-  //   <div id="wrapper">
-  //     <h2>Title Goes Here</h2>
-  //     {/*<div id="auto-resize">*/}
-  //       <ResponsiveContainer>
-  //         <AxisChart
-  //           xDomain={yearFieldDomain}
-  //           yDomain={populationFieldDomain}
-  //           xScaleType="band"
-  //           yScaleType="linear"
-  //         >
-  //           <XAxis
-  //             label={"Years"}
-  //           />
-  //           <YAxis
-  //             label={"Population"}
-  //           />
-  //           <Bars
-  //             fill="steelblue"
-  //             data={data.filter((datum) => { return datum.location === 'India'; })}
-  //             dataAccessors={{
-  //               fill: yearField,
-  //               key: 'id',
-  //               x: yearField,    // year_id
-  //               y: populationField   // population
-  //             }}
-  //             focus={this.state.focus}
-  //             onClick={this.onClick}
-  //             onMouseLeave={this.onMouseLeave}
-  //             onMouseMove={this.onMouseMove}
-  //             onMouseOver={this.onMouseOver}
-  //             selection={this.state.selectedItems}
-  //           />
-  //         </AxisChart>
-  //       </ResponsiveContainer>
-  //       <Legend
-  //         items={items}
-  //         labelKey="label"
-  //         shapeColorKey="shapeColor"
-  //         shapeTypeKey="shapeType"/>
-  //     {/*</div>*/}
-  //   </div>
-  //   );
-  // }
 }
 
 ReactDOM.render(<App />, document.getElementById('app'));
