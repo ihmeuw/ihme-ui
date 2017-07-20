@@ -55,7 +55,6 @@ export default class Bars extends PureComponent {
       fill,
       focus,
       height,
-      innerDomain,
       innerOrdinal,
       orientation,
       scales,
@@ -79,6 +78,7 @@ export default class Bars extends PureComponent {
       'selectedStyle',
     ]);
 
+
     // Sets these constants to the correct scales based on whether the orientation
     // is default at vertical. (i.e. having  x axis contains the bands and y axis be
     // linear, vice versa)
@@ -86,22 +86,13 @@ export default class Bars extends PureComponent {
     const linear = (isVertical(orientation) ? scales.y : scales.x);
 
     // check padding proptypes and set accordingly, need to clean up code
-    if (bandPaddingOuter != undefined) {
+    if (bandPaddingOuter !== undefined) {
       ordinal.paddingOuter(bandPaddingOuter);
-    } else if (bandPaddingInner != undefined) {
+    } else if (bandPaddingInner !== undefined) {
       ordinal.paddingInner(bandPaddingInner);
     } else {
       ordinal.padding(bandPadding);
     }
-
-    // need to clean up and write functions that work for all potential paddingCase
-    // if ('paddingInner' in this.props) {
-    //   console.log("in?")
-    //   scales.x.paddingInner(this.props.paddingInner);
-    // }
-    // scales.y.rangeRound([height, 0]);
-
-    // const translateDirection = isVertical()
 
     return (
       <g
@@ -141,18 +132,10 @@ export default class Bars extends PureComponent {
                 className={rectClassName}
                 key={key}
                 datum={datum}
-                // x={innerOrdinal(xValue)}
-                // x={isVertical(orientation) ? ordinal(xValue) : 0}
                 x={xPosition}
-                // y={isVertical(orientation) ? linear(yValue) : ordinal(xValue)}
-                // y={linear(yValue)}
                 y={yPosition}
-                // height={isVertical(orientation) ? (height - linear(yValue)) : ordinal.bandwidth()}
-                // height={height - linear(yValue)}
-                height={barHeight}
-                // width={isVertical(orientation) ? ordinal.bandwidth() : linear(yValue)}
-                // width={innerOrdinal.bandwidth()}
-                width={barWidth}
+                rectHeight={barHeight}
+                rectWidth={barWidth}
                 fill={colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill}
                 focused={focusedDatumKey === key}
                 selected={selectedDataMappedToKeys.hasOwnProperty(key)}
@@ -315,7 +298,6 @@ Bars.propTypes = {
    */
   rectStyle: CommonDefaultProps.style,
 
-
   /**
    * `x` and `y` scales for positioning `<Bar />`s.
    * Object with keys: `x`, and `y`.
@@ -334,7 +316,6 @@ Bars.propTypes = {
    * Array of datum objects corresponding to selected `<Bar />`s
    */
   selection: PropTypes.array,
-
 
   /**
    * Inline styles applied to wrapping element (`<g>`) of scatter shapes
@@ -364,6 +345,8 @@ Bars.defaultProps = {
   type: 'default'
 };
 
+
+// Need to reevaluate this portion
 Bars.propUpdates = {
   selections: (state, _, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, ['selection', 'dataAccessors'])) return state;

@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import assign from 'lodash/assign';
 import bindAll from 'lodash/bindAll';
+import { scaleOrdinal } from 'd3';
 
 import {
   combineStyles,
@@ -9,6 +10,7 @@ import {
   CommonPropTypes,
   memoizeByLastCall,
   propsChanged,
+  propResolver,
   PureComponent,
   stateFromPropUpdates,
 } from '../../../utils';
@@ -73,21 +75,22 @@ export default class Bar extends PureComponent {
   }
 
   render() {
+
+
     const {
       className,
       clipPathId,
       x,
       y,
       height,
-      width,
+      rectHeight,
+      rectWidth,
       datum,
       fill,
       focused,
       focusedClassName,
       selected,
       selectedClassName,
-      translateX,
-      translateY
     } = this.props;
 
     const { styles } = this.state;
@@ -96,13 +99,13 @@ export default class Bar extends PureComponent {
       <g>
         <rect
           className={classNames(className, {
-            [selectedClassName]: selected && selectedClassName,
-            [focusedClassName]: focused && focusedClassName,
-          }) || (void 0)}
+             [selectedClassName]: selected && selectedClassName,
+             [focusedClassName]: focused && focusedClassName,
+           }) || (void 0)}
           x={x}
           y={y}
-          height={height}
-          width={width}
+          height={rectHeight}
+          width={rectWidth}
           fill={fill}
           clipPath={clipPathId && `url(#${clipPathId})`}
           onClick={this.onClick}
@@ -110,17 +113,11 @@ export default class Bar extends PureComponent {
           onMouseMove={this.onMouseMove}
           onMouseOver={this.onMouseOver}
           style={this.combineStyles(styles, datum)}
-          // Rotation of bar is not neccessary. Upon further exploration, feature
-          // can be added to support rotation of bar.
-          // transform={`translate(${translateX}, ${translateY}) rotate(0)`}
-          transform={`translate(0, 0) rotate(0)`}
-
         />
       </g>
     );
   }
 }
-
 
 Bar.propTypes = {
   /**
@@ -232,16 +229,6 @@ Bar.propTypes = {
    */
   style: CommonPropTypes.style,
 
-  /**
-   * Move shape away from origin in x direction.
-   */
-  translateX: PropTypes.number,
-
-  /**
-   * Move shape away from origin in y direction.
-   */
-  translateY: PropTypes.number
-
 };
 
 Bar.defaultProps = {
@@ -262,38 +249,51 @@ Bar.defaultProps = {
     stroke: '#000',
     strokeWidth: .5,
   },
-  translateX: 0,
-  translateY: 0,
   style: {},
 };
 
-Bar.propUpdates = {
-  styles: (accum, propName, prevProps, nextProps) => {
-    if (!propsChanged(prevProps, nextProps, [
-        'fill',
-        'focused',
-        'focusedStyle',
-        'selected',
-        'selectedStyle',
-        'style',
-      ])) {
-      return accum;
-    }
-    const styles = [{ fill: nextProps.fill }, nextProps.style];
-
-    if (nextProps.selected) {
-      styles.push(nextProps.selectedStyle);
-    }
-
-    if (nextProps.focused) {
-      styles.push(nextProps.focusedStyle);
-    }
-
-    return assign({}, accum, {
-      styles,
-    });
-  }
-};
-
-
-
+// Bar.propUpdates = {
+//   rect: (acc, propName, prevProps, nextProps) => {
+//     if (!propsChanged(prevProps, nextProps, ['data', 'dataAccessors', 'scales'])) {
+//       return acc;
+//     }
+//
+//     // const pathGenerator = scaleOrdinal()
+//     //   .x((datum) => nextProps.scales.x(propResolver(datum, nextProps.dataAccessors.x)))
+//     //   .y((datum) => nextProps.scales.y(propResolver(datum, nextProps.dataAccessors.y)));
+//
+//     return {
+//       ...acc,
+//       // path: pathGenerator(nextProps.data),
+//     };
+//   },
+//
+//   styles: (accum, propName, prevProps, nextProps) => {
+//     if (!propsChanged(prevProps, nextProps, [
+//         'fill',
+//         'focused',
+//         'focusedStyle',
+//         'selected',
+//         'selectedStyle',
+//         'style',
+//       ])) {
+//       return accum;
+//     }
+//     const styles = [{ fill: nextProps.fill }, nextProps.style];
+//
+//     if (nextProps.selected) {
+//       styles.push(nextProps.selectedStyle);
+//     }
+//
+//     if (nextProps.focused) {
+//       styles.push(nextProps.focusedStyle);
+//     }
+//
+//     return assign({}, accum, {
+//       styles,
+//     });
+//   }
+// };
+//
+//
+//

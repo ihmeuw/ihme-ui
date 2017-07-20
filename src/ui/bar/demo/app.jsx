@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { bindAll, maxBy, minBy, map, slice, uniqBy, without, xor } from 'lodash';
+import { bindAll, maxBy, minBy, map, uniqBy, xor } from 'lodash';
 import { dataGenerator } from '../../../utils';
 import AxisChart from '../../axis-chart';
 import { schemeCategory10, scaleOrdinal } from 'd3';
@@ -40,6 +40,9 @@ const colorScale = scaleOrdinal(schemeCategory10);
 
 
 console.log(locationData);
+console.log(data.filter((datum) => { return datum.location === 'India'; }));
+
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -83,8 +86,6 @@ class App extends React.Component {
 
 
   render() {
-
-
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
 
@@ -355,6 +356,7 @@ class App extends React.Component {
           <YAxis/>
           <MultiBars
             colorScale={colorScale}
+            // data={data.filter((datum) => { return datum.location === 'Indiaa'; })}
             data={locationData}
             innerDomain={yearFieldDomain}
             dataAccessors={{
