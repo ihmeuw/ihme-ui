@@ -50,10 +50,16 @@ export default class MultiBars extends PureComponent {
     } = fieldAccessors;
 
 
-    const outerOrdinal = (isVertical(orientation) ? scales.x : scales.y);
+    // check structure of data and whether prop exist for that certain structure of data
 
+
+
+
+    const outerOrdinal = (isVertical(orientation) ? scales.x : scales.y);
     innerOrdinal.domain(innerDomain).range([0, outerOrdinal.bandwidth()]);
 
+
+    console.log(Object.prototype.hasOwnProperty.call(this.props, 'type'));
 
     const childProps = pick(this.props, [
       'colorScale',
