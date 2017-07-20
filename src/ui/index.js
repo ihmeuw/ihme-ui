@@ -1,5 +1,6 @@
 import Axis, { orientAxis, XAxis, YAxis } from './axis';
 import AxisChart from './axis-chart';
+import { Bar, Bars, MultiBars} from './bar';
 import Button from './button';
 import Choropleth from './choropleth';
 import {
@@ -33,6 +34,9 @@ export {
   Area,
   Axis,
   AxisChart,
+  Bar,
+  Bars,
+  MultiBars,
   Button,
   Choropleth,
   ChoroplethLegend,
