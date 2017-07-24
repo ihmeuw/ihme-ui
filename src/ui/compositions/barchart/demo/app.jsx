@@ -3,13 +3,10 @@ import { schemeCategory10, scaleOrdinal } from 'd3';
 import ReactDOM from 'react-dom';
 import {
   bindAll,
-  find,
-  flatMap,
   xor,
   maxBy,
   minBy,
   map,
-  slice,
   uniqBy,
 } from 'lodash';
 
@@ -18,7 +15,7 @@ import AxisChart from './../../../axis-chart';
 import ResponsiveContainer from './../../../responsive-container';
 import { XAxis, YAxis } from './../../../axis';
 import Bars from './../../../bar/src/bars';
-
+import Legend from './../../../legend';
 
 import { dataGenerator } from '../../../../utils';
 
@@ -56,6 +53,15 @@ const colorScale = scaleOrdinal(schemeCategory10);
 
 console.log(locationData);
 console.log(data.filter((datum) => { return datum.location === 'India'; }));
+
+// create items given the data and the fields specified
+const items = [
+  {
+    label: 'Total Population',
+    shapeColor: 'steelblue',
+    shapeType: 'square'
+  }
+]
 
 class App extends React.Component {
   constructor(props) {
@@ -134,6 +140,11 @@ class App extends React.Component {
             />
           </AxisChart>
         </ResponsiveContainer>
+        <Legend
+          items={items}
+          labelKey="label"
+          shapeColorKey="shapeColor"
+          shapeTypeKey="shapeType"/>
       {/*</div>*/}
     </div>
     );
