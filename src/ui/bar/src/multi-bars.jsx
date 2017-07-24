@@ -32,6 +32,7 @@ export default class MultiBars extends PureComponent {
       clipPathId,
       colorScale,
       data,
+      dataAccessors,
       fieldAccessors,
       height,
       innerDomain,
@@ -41,7 +42,16 @@ export default class MultiBars extends PureComponent {
       selection,
       style,
       type,
+      stack
     } = this.props;
+
+    const {
+      fill: fillField,
+      key: renameLater,
+      x: xField,
+      y: yField,
+
+    } = dataAccessors;
 
     const {
       color: colorField,
@@ -49,14 +59,38 @@ export default class MultiBars extends PureComponent {
       key: keyField
     } = fieldAccessors;
 
+    const outerOrdinal = (isVertical(orientation) ? scales.x : scales.y);
+
 
     // check structure of data and whether prop exist for that certain structure of data
+    // default should be stacked and if not, then grouped
+
+    if (stack) {
+      // change data here
+      console.log("prop worked");
+      const stackedData = (data.map(function (category) {
+        const addObject = {};
+        addObject.location = category.location;
+        category.values.map(function (year) {
+          addObject[] = year.;
+        });
+        return addObject;
+      }));
 
 
 
 
-    const outerOrdinal = (isVertical(orientation) ? scales.x : scales.y);
-    innerOrdinal.domain(innerDomain).range([0, outerOrdinal.bandwidth()]);
+
+
+
+    } else { // grouped bar chart type
+      innerOrdinal.domain(innerDomain).range([0, outerOrdinal.bandwidth()]);
+
+      // update y domain
+
+      // scales.y.domain
+    }
+
 
 
     console.log(Object.prototype.hasOwnProperty.call(this.props, 'type'));
@@ -90,24 +124,24 @@ export default class MultiBars extends PureComponent {
       >
         {
           map(data, (datum) => {
-            const key = propResolver(datum, keyField);
-            const values = propResolver(datum, dataField);
-            const color = colorScale(colorField ? propResolver(datum, colorField) : key);
+            // const key = propResolver(datum, keyField);
+            // const values = propResolver(datum, dataField);
+            // const color = colorScale(colorField ? propResolver(datum, colorField) : key);
             // const barsValues = barsValueIteratee(values, key); //useless code?
             // console.log(barsValues);
 
-            // Key should be from list of outer categorie
-            const translate = outerOrdinal(key);
+            // Key should be from list of outer categories
+            // const translate = outerOrdinal(key);
 
             return (
               <Bars
                 className={barsClassName}
-                data={values}
-                fill={color}
-                key={`bars:${key}`}
+                data={data}
+                // fill={color}
+                // key={`bars:${key}`}
                 selection={this.castSelectionAsArray(selection)}
                 style={barsStyle}
-                categoryTranslate={translate}
+                categoryTranslate={0}
                 {...childProps}
               />
             );

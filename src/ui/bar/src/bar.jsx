@@ -252,48 +252,48 @@ Bar.defaultProps = {
   style: {},
 };
 
-// Bar.propUpdates = {
-//   rect: (acc, propName, prevProps, nextProps) => {
-//     if (!propsChanged(prevProps, nextProps, ['data', 'dataAccessors', 'scales'])) {
-//       return acc;
-//     }
-//
-//     // const pathGenerator = scaleOrdinal()
-//     //   .x((datum) => nextProps.scales.x(propResolver(datum, nextProps.dataAccessors.x)))
-//     //   .y((datum) => nextProps.scales.y(propResolver(datum, nextProps.dataAccessors.y)));
-//
-//     return {
-//       ...acc,
-//       // path: pathGenerator(nextProps.data),
-//     };
-//   },
-//
-//   styles: (accum, propName, prevProps, nextProps) => {
-//     if (!propsChanged(prevProps, nextProps, [
-//         'fill',
-//         'focused',
-//         'focusedStyle',
-//         'selected',
-//         'selectedStyle',
-//         'style',
-//       ])) {
-//       return accum;
-//     }
-//     const styles = [{ fill: nextProps.fill }, nextProps.style];
-//
-//     if (nextProps.selected) {
-//       styles.push(nextProps.selectedStyle);
-//     }
-//
-//     if (nextProps.focused) {
-//       styles.push(nextProps.focusedStyle);
-//     }
-//
-//     return assign({}, accum, {
-//       styles,
-//     });
-//   }
-// };
-//
-//
-//
+Bar.propUpdates = {
+  rect: (acc, propName, prevProps, nextProps) => {
+    if (!propsChanged(prevProps, nextProps, ['data', 'dataAccessors', 'scales'])) {
+      return acc;
+    }
+
+    // const pathGenerator = scaleOrdinal()
+    //   .x((datum) => nextProps.scales.x(propResolver(datum, nextProps.dataAccessors.x)))
+    //   .y((datum) => nextProps.scales.y(propResolver(datum, nextProps.dataAccessors.y)));
+
+    return {
+      ...acc,
+      // path: pathGenerator(nextProps.data),
+    };
+  },
+
+  styles: (accum, propName, prevProps, nextProps) => {
+    if (!propsChanged(prevProps, nextProps, [
+        'fill',
+        'focused',
+        'focusedStyle',
+        'selected',
+        'selectedStyle',
+        'style',
+      ])) {
+      return accum;
+    }
+    const styles = [{ fill: nextProps.fill }, nextProps.style];
+
+    if (nextProps.selected) {
+      styles.push(nextProps.selectedStyle);
+    }
+
+    if (nextProps.focused) {
+      styles.push(nextProps.focusedStyle);
+    }
+
+    return assign({}, accum, {
+      styles,
+    });
+  }
+};
+
+
+

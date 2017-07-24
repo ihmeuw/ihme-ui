@@ -86,13 +86,14 @@ export default class Bars extends PureComponent {
     const linear = (isVertical(orientation) ? scales.y : scales.x);
 
     // check padding proptypes and set accordingly, need to clean up code
-    if (bandPaddingOuter !== undefined) {
-      ordinal.paddingOuter(bandPaddingOuter);
-    } else if (bandPaddingInner !== undefined) {
-      ordinal.paddingInner(bandPaddingInner);
-    } else {
-      ordinal.padding(bandPadding);
-    }
+    // if (bandPaddingOuter !== undefined) {
+    //   ordinal.paddingOuter(bandPaddingOuter);
+    // } else if (bandPaddingInner !== undefined) {
+    //   ordinal.paddingInner(bandPaddingInner);
+    // } else {
+    //   ordinal.padding(bandPadding);
+    // }
+
 
     return (
       <g
@@ -104,47 +105,53 @@ export default class Bars extends PureComponent {
         {
           map(sortedData, (datum) => {
 
-            const key = propResolver(datum, dataAccessors.key);
-            const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x);
-            const focusedDatumKey = focus ? propResolver(focus, dataAccessors.key) : null;
-
-            const xValue = propResolver(datum, dataAccessors.x);
-            const yValue = propResolver(datum, dataAccessors.y);
-
-            const xPosition =
-                        !isVertical(orientation) ? 0:
-                          isDefault(type) ? ordinal(xValue) : innerOrdinal(xValue);
-
-            const yPosition =
-                        isVertical(orientation) ? linear(yValue) :
-                          isDefault(type) ? ordinal(xValue) : innerOrdinal(xValue)
-
-            const barHeight =
-                        isVertical(orientation) ? height - linear(yValue) :
-                          isDefault(type) ? ordinal.bandwidth() : innerOrdinal.bandwidth();
-
-            const barWidth =
-                        !isVertical(orientation) ? linear(yValue) :
-                          isDefault(type) ? ordinal.bandwidth() : innerOrdinal.bandwidth();
-
-            return (
-              <Bar
-                className={rectClassName}
-                key={key}
-                datum={datum}
-                x={xPosition}
-                y={yPosition}
-                rectHeight={barHeight}
-                rectWidth={barWidth}
-                fill={colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill}
-                focused={focusedDatumKey === key}
-                selected={selectedDataMappedToKeys.hasOwnProperty(key)}
-                style={rectStyle}
-                translateX={isVertical(orientation) && isFinite(xValue) ? ordinal(xValue) : 0}
-                translateY={isVertical(orientation) && isFinite(yValue) ? 0 : ordinal(yValue)}
-                {...childProps}
-              />
-            );
+            // const key = propResolver(datum, dataAccessors.key);
+            // const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x);
+            // const focusedDatumKey = focus ? propResolver(focus, dataAccessors.key) : null;
+            //
+            // const xValue = propResolver(datum, dataAccessors.x);
+            // const yValue = propResolver(datum, dataAccessors.y);
+            //
+            // const xPosition =
+            //             !isVertical(orientation) ? 0:
+            //               isDefault(type) ? ordinal(xValue) : innerOrdinal(xValue);
+            //
+            // const yPosition =
+            //             isVertical(orientation) ? linear(yValue) :
+            //               isDefault(type) ? ordinal(xValue) : innerOrdinal(xValue);
+            //
+            // const barHeight =
+            //             isVertical(orientation) ? height - linear(yValue) :
+            //               isDefault(type) ? ordinal.bandwidth() : innerOrdinal.bandwidth();
+            //
+            // const barWidth =
+            //             !isVertical(orientation) ? linear(yValue) :
+            //               isDefault(type) ? ordinal.bandwidth() : innerOrdinal.bandwidth();
+            return map(datum, (dataa) => {
+              return (
+                <Bar
+                  className={rectClassName}
+                  // key={key}
+                  datum={datum}
+                  // x={xPosition}
+                  // y={yPosition}
+                  // rectHeight={barHeight}
+                  // rectWidth={barWidth}
+                  x={ordinal(dataa.data.location)}
+                  y={linear(dataa[1])}
+                  rectHeight={linear(dataa[0]) - linear(dataa[1])}
+                  rectWidth={ordinal.bandwidth()}
+                  fill={'steelblue'}
+                  // fill={colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill}
+                  // focused={focusedDatumKey === key}
+                  // selected={selectedDataMappedToKeys.hasOwnProperty(key)}
+                  style={rectStyle}
+                  // translateX={isVertical(orientation) && isFinite(xValue) ? ordinal(xValue) : 0}
+                  // translateY={isVertical(orientation) && isFinite(yValue) ? 0 : ordinal(yValue)}
+                  {...childProps}
+                />
+              );
+            });
           })
         }
       </g>
