@@ -62,6 +62,10 @@ export default class Bars extends PureComponent {
       rectStyle,
       style,
       type,
+      ordinal,
+      linear,
+      stacked,
+      grouped,
     } = this.props;
 
     const { selectedDataMappedToKeys, sortedData } = this.state;
@@ -79,21 +83,14 @@ export default class Bars extends PureComponent {
     ]);
 
 
-    // Sets these constants to the correct scales based on whether the orientation
-    // is default at vertical. (i.e. having  x axis contains the bands and y axis be
-    // linear, vice versa)
-    const ordinal = (isVertical(orientation) ? scales.x : scales.y);
-    const linear = (isVertical(orientation) ? scales.y : scales.x);
-
     // check padding proptypes and set accordingly, need to clean up code
-    // if (bandPaddingOuter !== undefined) {
-    //   ordinal.paddingOuter(bandPaddingOuter);
-    // } else if (bandPaddingInner !== undefined) {
-    //   ordinal.paddingInner(bandPaddingInner);
-    // } else {
-    //   ordinal.padding(bandPadding);
-    // }
-
+    if (bandPaddingOuter !== undefined) {
+      ordinal.paddingOuter(bandPaddingOuter);
+    } else if (bandPaddingInner !== undefined) {
+      ordinal.paddingInner(bandPaddingInner);
+    } else {
+      ordinal.padding(bandPadding);
+    }
 
     return (
       <g
@@ -104,18 +101,24 @@ export default class Bars extends PureComponent {
       >
         {
           map(sortedData, (datum) => {
-
             // const key = propResolver(datum, dataAccessors.key);
             // const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x);
             // const focusedDatumKey = focus ? propResolver(focus, dataAccessors.key) : null;
-            //
-            // const xValue = propResolver(datum, dataAccessors.x);
-            // const yValue = propResolver(datum, dataAccessors.y);
-            //
-            // const xPosition =
-            //             !isVertical(orientation) ? 0:
-            //               isDefault(type) ? ordinal(xValue) : innerOrdinal(xValue);
-            //
+
+
+            if (stacked) {
+              console.log("stacked");
+            } else {
+              const xValue = propResolver(datum, dataAccessors.x);
+              const yValue = propResolver(datum, dataAccessors.y);
+            }
+
+            const xPosition =
+                        !isVertical(orientation) && !stacked ? 0:
+                          !isVertical(orientation) ? linear(datum[0]):
+                          stacked ? ordinal(datum.data.category):
+                          grouped ? innerOrdinal(xValue) : ordinal(xValue);
+
             // const yPosition =
             //             isVertical(orientation) ? linear(yValue) :
             //               isDefault(type) ? ordinal(xValue) : innerOrdinal(xValue);
@@ -127,31 +130,36 @@ export default class Bars extends PureComponent {
             // const barWidth =
             //             !isVertical(orientation) ? linear(yValue) :
             //               isDefault(type) ? ordinal.bandwidth() : innerOrdinal.bandwidth();
-            return map(datum, (dataa) => {
-              return (
-                <Bar
-                  className={rectClassName}
-                  // key={key}
-                  datum={datum}
-                  // x={xPosition}
-                  // y={yPosition}
-                  // rectHeight={barHeight}
-                  // rectWidth={barWidth}
-                  x={ordinal(dataa.data.location)}
-                  y={linear(dataa[1])}
-                  rectHeight={linear(dataa[0]) - linear(dataa[1])}
-                  rectWidth={ordinal.bandwidth()}
-                  fill={'steelblue'}
-                  // fill={colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill}
-                  // focused={focusedDatumKey === key}
-                  // selected={selectedDataMappedToKeys.hasOwnProperty(key)}
-                  style={rectStyle}
-                  // translateX={isVertical(orientation) && isFinite(xValue) ? ordinal(xValue) : 0}
-                  // translateY={isVertical(orientation) && isFinite(yValue) ? 0 : ordinal(yValue)}
-                  {...childProps}
-                />
-              );
-            });
+           return (
+              <Bar
+                className={rectClassName}
+                // key={key}
+                datum={datum}
+                // x={xPosition}
+                // y={yPosition}
+                // rectHeight={barHeight}
+                // rectWidth={barWidth}
+
+                x={xPosition}
+                y={ordinal(datum.data.category)}
+                rectHeight={ordinal.bandwidth()}
+                rectWidth={linear(datum[1]) - linear(datum[0])}
+                // x={ordinal(datum.data.category)}
+                // y={linear(datum[1])}
+                // rectHeight={linear(datum[0]) - linear(datum[1])}
+                // rectWidth={ordinal.bandwidth()}
+
+
+                // fill={colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill}
+                fill={fill}
+                // focused={focusedDatumKey === key}
+                // selected={selectedDataMappedToKeys.hasOwnProperty(key)}
+                style={rectStyle}
+                // translateX={isVertical(orientation) && isFinite(xValue) ? ordinal(xValue) : 0}
+                // translateY={isVertical(orientation) && isFinite(yValue) ? 0 : ordinal(yValue)}
+                {...childProps}
+              />
+            );
           })
         }
       </g>
