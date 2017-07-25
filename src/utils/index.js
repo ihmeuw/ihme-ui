@@ -12,6 +12,7 @@ export {
 export {
   isDefault,
   isVertical,
+  stackedDataArray,
 } from './bar';
 
 export {

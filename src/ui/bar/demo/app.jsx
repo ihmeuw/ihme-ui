@@ -61,18 +61,13 @@ const dataIntermediate = yearFieldDomain.map(function(key,i){
 
 
 const dataStacked = stack().keys(yearFieldDomain)(stackedData);
-
-
-console.log(dataStacked);
-
 const stackedDomain = [0, max(dataStacked, function(data) {  return max(data, function(d) { return d[1]; });  })];
 
-console.log(stackedDomain);
 
 
-
-//
-// console.log(stackedData);
+console.log(stackedData);
+// console.log(dataStacked);
+// console.log("checkpoint");
 // console.log(locationData);
 // console.log(data.filter((datum) => { return datum.location === 'India'; }));
 
@@ -381,27 +376,28 @@ class App extends React.Component {
         <AxisChart
           height={500}
           width={500}
-          xDomain={locationFieldDomain}
-          yDomain={stackedDomain}
-          xScaleType="band"
-          yScaleType="linear"
+          xDomain={stackedDomain}
+          yDomain={locationFieldDomain}
+          xScaleType="linear"
+          yScaleType="band"
         >
           <XAxis/>
           <YAxis/>
           <MultiBars
             colorScale={colorScale}
             // data={data.filter((datum) => { return datum.location === 'Indiaa'; })}
-            data={dataStacked}
+            data={locationData}
             innerDomain={yearFieldDomain}
             dataAccessors={{
               fill: yearField,
               key: 'id', // rename to relate to inner grouping
               x: yearField, // field of nested data
               y: populationField,
+              otherX: locationField,
             }}
             fieldAccessors={{
               data: 'values',
-              key: 'location',
+              key: 'key',
             }}
             focus={this.state.focus}
             focusedStyle={{
@@ -417,7 +413,9 @@ class App extends React.Component {
               stroke: '#000',
               strokeWidth: 1,
             }}
-            stack
+            orientation='horizontal'
+            stacked
+            xDomain={yearFieldDomain}
           />
         </AxisChart>
       </section>

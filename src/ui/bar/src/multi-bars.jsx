@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { scaleLinear, scaleBand } from 'd3';
+import { scaleLinear, scaleBand, stack, max } from 'd3';
 import { castArray, map, pick } from 'lodash';
 import Bars from './bars';
+
 
 import {
   isVertical,
@@ -12,6 +13,7 @@ import {
   memoizeByLastCall,
   propResolver,
   PureComponent,
+  stackedDataArray,
 } from '../../../utils';
 
 
@@ -42,7 +44,9 @@ export default class MultiBars extends PureComponent {
       selection,
       style,
       type,
-      stack
+      stacked,
+      xDomain,
+      grouped,
     } = this.props;
 
     const {
@@ -50,7 +54,7 @@ export default class MultiBars extends PureComponent {
       key: renameLater,
       x: xField,
       y: yField,
-
+      otherX: otherField,
     } = dataAccessors;
 
     const {
@@ -59,29 +63,21 @@ export default class MultiBars extends PureComponent {
       key: keyField
     } = fieldAccessors;
 
+
+    // Sets these constants to the correct scales based on whether the orientation
+    // is default at vertical. (i.e. having  x axis contains the bands and y axis be
+    // linear, vice versa)
+    const ordinal = (isVertical(orientation) ? scales.x : scales.y);
+    const linear = (isVertical(orientation) ? scales.y : scales.x);
+
     const outerOrdinal = (isVertical(orientation) ? scales.x : scales.y);
 
 
-    // check structure of data and whether prop exist for that certain structure of data
-    // default should be stacked and if not, then grouped
 
-    if (stack) {
-      // change data here
-      console.log("prop worked");
-      const stackedData = (data.map(function (category) {
-        const addObject = {};
-        addObject.location = category.location;
-        category.values.map(function (year) {
-          addObject[] = year.;
-        });
-        return addObject;
-      }));
+    if (stacked) {
+      const stackedDomain = [0, max(stackedDataArray(data, xField, yField, otherField, dataField, xDomain), (data) => { return max(data, (d) => { return d[1]; }); })];
 
-
-
-
-
-
+      linear.domain(stackedDomain);
 
     } else { // grouped bar chart type
       innerOrdinal.domain(innerDomain).range([0, outerOrdinal.bandwidth()]);
@@ -91,8 +87,7 @@ export default class MultiBars extends PureComponent {
       // scales.y.domain
     }
 
-
-
+    console.log(stackedDataArray(data, xField, yField, otherField, dataField, xDomain));
     console.log(Object.prototype.hasOwnProperty.call(this.props, 'type'));
 
     const childProps = pick(this.props, [
@@ -114,6 +109,8 @@ export default class MultiBars extends PureComponent {
       'rectClassName',
       'rectStyle',
       'type',
+      'stacked',
+      'grouped',
     ]);
 
     return (
@@ -123,10 +120,10 @@ export default class MultiBars extends PureComponent {
         style={this.combineStyles(style, data)}
       >
         {
-          map(data, (datum) => {
-            // const key = propResolver(datum, keyField);
-            // const values = propResolver(datum, dataField);
-            // const color = colorScale(colorField ? propResolver(datum, colorField) : key);
+          map(stacked ? stackedDataArray(data, xField, yField, otherField, dataField, xDomain) : data, (datum) => {
+            const key = propResolver(datum, keyField);
+            const values = propResolver(datum, dataField);
+            const color = colorScale(colorField ? propResolver(datum, colorField) : key);
             // const barsValues = barsValueIteratee(values, key); //useless code?
             // console.log(barsValues);
 
@@ -136,12 +133,14 @@ export default class MultiBars extends PureComponent {
             return (
               <Bars
                 className={barsClassName}
-                data={data}
-                // fill={color}
-                // key={`bars:${key}`}
+                data={datum}
+                fill={color}
+                key={`bars:${key}`}
                 selection={this.castSelectionAsArray(selection)}
                 style={barsStyle}
                 categoryTranslate={0}
+                ordinal={ordinal}
+                linear={linear}
                 {...childProps}
               />
             );
