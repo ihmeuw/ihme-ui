@@ -29,6 +29,7 @@ import Controls from './controls';
 
 // slightly pad clip extent so that the boundary of the map does not show borders
 const CLIP_EXTENT_PADDING = 1;
+const ZOOM_TYPENAME = 'zoom.ihme-ui-choropleth';
 
 /**
  * `import { Choropleth } from 'ihme-ui'`
@@ -91,7 +92,7 @@ export default class Choropleth extends React.Component {
 
     this._svgSelection.call(
       this.zoom
-        .on('zoom.ihme-ui-choropleth', this.zoomEvent)
+        .on(ZOOM_TYPENAME, this.zoomEvent)
     );
 
     this._svgSelection.call(
@@ -191,6 +192,11 @@ export default class Choropleth extends React.Component {
     if (Object.keys(state).length) {
       this.setState(state);
     }
+  }
+
+  componentWillUnmount() {
+    this._svgSelection.on(ZOOM_TYPENAME, null);
+    this._svgSelection = null;
   }
 
   /**
