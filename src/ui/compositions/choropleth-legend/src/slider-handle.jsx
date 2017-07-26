@@ -53,7 +53,7 @@ export default class SliderHandle extends React.Component {
   }
 
   componentWillUnmount() {
-    this._interactable.off('dragmove', this.onHandleMove);
+    this._interactable.unset();
   }
 
   onHandleMove(evt) {
