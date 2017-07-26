@@ -42,6 +42,7 @@ export default class ExpansionContainer extends PureComponent {
   }
 
   componentWillUnmount() {
+    containerStore[this.props.group] = null;
     delete containerStore[this.props.group];
   }
 
