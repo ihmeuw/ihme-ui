@@ -55,15 +55,15 @@ export default class Bars extends PureComponent {
       fill,
       focus,
       height,
-      innerOrdinal,
+      layerOrdinal,
       orientation,
       scales,
       rectClassName,
       rectStyle,
       style,
       type,
-      ordinal,
-      linear,
+      // ordinal,
+      // linear,
       stacked,
       grouped,
     } = this.props;
@@ -82,8 +82,14 @@ export default class Bars extends PureComponent {
       'selectedStyle',
     ]);
 
+    const ordinal = (isVertical(orientation) ? scales.x : scales.y);
+    const linear = (isVertical(orientation) ? scales.y : scales.x);
 
-    // check padding proptypes and set accordingly, need to clean up code
+
+    // update Domain
+
+
+    //check padding proptypes and set accordingly, need to clean up code
     if (bandPaddingOuter !== undefined) {
       ordinal.paddingOuter(bandPaddingOuter);
     } else if (bandPaddingInner !== undefined) {
@@ -101,62 +107,110 @@ export default class Bars extends PureComponent {
       >
         {
           map(sortedData, (datum) => {
-            // const key = propResolver(datum, dataAccessors.key);
-            // const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x);
-            // const focusedDatumKey = focus ? propResolver(focus, dataAccessors.key) : null;
+            const key = propResolver(datum, dataAccessors.key);
+            const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x);
+            const focusedDatumKey = focus ? propResolver(focus, dataAccessors.key) : null;
 
+            // Calculates the appropriate x and y inputs or the scaling functions.
+            // May need to add new value since grouped and stack typically has two categorical groups
+            let xValue = propResolver(datum, dataAccessors.stack);
+            // if (isVertical(orientation)) {
+            //   if (stacked) {
+            //     xValue = propResolver(datum.data, dataAccessors.stack);
+            //   } else if (grouped) {
+            //     xValue = propResolver(datum, dataAccessors.layer)
+            //   }
+            // } else {
+            //     xValue = propResolver(datum, dataAccessors.value)
+            //
+            // }
+              // grouped ? propResolver(datum, dataAccessors.layer) :
+              // stacked ? propResolver(datum.data, dataAccessors.stack) : propResolver(datum, dataAccessors.stack);
 
-            if (stacked) {
-              console.log("stacked");
-            } else {
-              const xValue = propResolver(datum, dataAccessors.x);
-              const yValue = propResolver(datum, dataAccessors.y);
-            }
+            const yValue = propResolver(datum, !stacked ? dataAccessors.value : 1);
+
+            console.log(xValue);
+            console.log(ordinal(xValue));
+
 
             const xPosition =
-                        !isVertical(orientation) && !stacked ? 0:
-                          !isVertical(orientation) ? linear(datum[0]):
-                          stacked ? ordinal(datum.data.category):
-                          grouped ? innerOrdinal(xValue) : ordinal(xValue);
+                          !isVertical(orientation) && !stacked ? 0 :
+                            isVertical(orientation) && !grouped ? ordinal(xValue) :
+                            stacked ? linear(datum[0]) : layerOrdinal(xValue);
 
-            // const yPosition =
-            //             isVertical(orientation) ? linear(yValue) :
-            //               isDefault(type) ? ordinal(xValue) : innerOrdinal(xValue);
-            //
-            // const barHeight =
-            //             isVertical(orientation) ? height - linear(yValue) :
-            //               isDefault(type) ? ordinal.bandwidth() : innerOrdinal.bandwidth();
-            //
-            // const barWidth =
-            //             !isVertical(orientation) ? linear(yValue) :
-            //               isDefault(type) ? ordinal.bandwidth() : innerOrdinal.bandwidth();
-           return (
+            const yPosition =
+                          isVertical(orientation) && !stacked ? linear(yValue) :
+                            !isVertical(orientation) && !grouped ? ordinal(xValue) :
+                            stacked ? linear(datum[1]) : layerOrdinal(yValue);
+
+
+            const barHeight =
+                          isVertical(orientation) && !stacked ? height - linear(yValue) :
+                            !isVertical(orientation) && !grouped ? ordinal.bandwidth() :
+                            stacked ? linear(datum[0]) - linear(yValue) : layerOrdinal.bandwidth();
+
+            const barWidth =
+                        !isVertical(orientation) && !stacked ? linear(xValue) :
+                          isVertical(orientation) && !grouped ? ordinal.bandwidth() :
+                          stacked ? linear(yValue) - linear(datum[0]) : layerOrdinal.bandwidth();
+
+
+            return (
               <Bar
                 className={rectClassName}
-                // key={key}
+                key={key}
                 datum={datum}
+
+                // normal vertical bar chart
+
+                // x={ordinal(xValue)}
+                // y={linear(yValue)}
+                // rectHeight={height - linear(yValue)}
+                // rectWidth={ordinal.bandwidth()}
+
+
+                // normal horizontal bar chart
+
+
+                x={ordinal(xValue)}
+                y={0}
+                rectHeight={ordinal.bandwidth()}
+                rectWidth={linear(yValue)}
+
                 // x={xPosition}
                 // y={yPosition}
                 // rectHeight={barHeight}
                 // rectWidth={barWidth}
 
-                x={xPosition}
-                y={ordinal(datum.data.category)}
-                rectHeight={ordinal.bandwidth()}
-                rectWidth={linear(datum[1]) - linear(datum[0])}
+                // grouped vertical bar chart
+                // x={layerOrdinal(xValue)}
+                // y={linear(yValue)}
+                // rectHeight={height - linear(yValue)}
+                // rectWidth={layerOrdinal.bandwidth()}
+
+                // grouped horizontal bar chart
+                // x={0}
+                // y={layerOrdinal(yValue)}
+                // rectHeight={layerOrdinal.bandwidth()}
+                // rectWidth={linear(xValue)}
+
+                // y={ordinal(xValue)}
+                // rectHeight={ordinal.bandwidth()}
+                // rectWidth={linear(datum[1]) - linear(datum[0])}
+
                 // x={ordinal(datum.data.category)}
                 // y={linear(datum[1])}
                 // rectHeight={linear(datum[0]) - linear(datum[1])}
                 // rectWidth={ordinal.bandwidth()}
 
 
-                // fill={colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill}
-                fill={fill}
-                // focused={focusedDatumKey === key}
-                // selected={selectedDataMappedToKeys.hasOwnProperty(key)}
+                fill={colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill}
+                // fill={fill}
+                focused={focusedDatumKey === key}
+                selected={selectedDataMappedToKeys.hasOwnProperty(key)}
                 style={rectStyle}
-                // translateX={isVertical(orientation) && isFinite(xValue) ? ordinal(xValue) : 0}
-                // translateY={isVertical(orientation) && isFinite(yValue) ? 0 : ordinal(yValue)}
+                translateX={isVertical(orientation) && isFinite(xValue) ? ordinal(xValue) : 0}
+                translateY={isVertical(orientation) && isFinite(yValue) ? 0 : ordinal(yValue)}
                 {...childProps}
               />
             );
@@ -271,7 +325,7 @@ Bars.propTypes = {
   /**
    * Inner ordinal scale for categorical data within a grouped bar chart.
    */
-  innerOrdinal: PropTypes.func,
+  layerOrdinal: PropTypes.func,
 
   /**
    * onClick callback.
@@ -356,7 +410,7 @@ Bars.defaultProps = {
   bandPadding: 0.05,
   orientation: 'vertical',
   categoryTranslate: 0,
-  innerOrdinal: scaleBand(),
+  layerOrdinal: scaleBand(),
   type: 'default'
 };
 

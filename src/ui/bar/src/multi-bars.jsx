@@ -29,7 +29,6 @@ export default class MultiBars extends PureComponent {
     const {
       barsClassName,
       barsStyle,
-      barsValueIteratee,
       className,
       clipPathId,
       colorScale,
@@ -37,8 +36,8 @@ export default class MultiBars extends PureComponent {
       dataAccessors,
       fieldAccessors,
       height,
-      innerDomain,
-      innerOrdinal,
+      layerDomain,
+      layerOrdinal,
       orientation,
       scales,
       selection,
@@ -67,28 +66,29 @@ export default class MultiBars extends PureComponent {
     // Sets these constants to the correct scales based on whether the orientation
     // is default at vertical. (i.e. having  x axis contains the bands and y axis be
     // linear, vice versa)
-    const ordinal = (isVertical(orientation) ? scales.x : scales.y);
-    const linear = (isVertical(orientation) ? scales.y : scales.x);
+    // const ordinal = (isVertical(orientation) ? scales.x : scales.y);
+    // const linear = (isVertical(orientation) ? scales.y : scales.x);
 
     const outerOrdinal = (isVertical(orientation) ? scales.x : scales.y);
 
+    const plotData = stacked ? stackedDataArray(data, xField, yField, otherField, dataField, xDomain) : data;
+
+    console.log(Object.prototype.hasOwnProperty.call(this.props, 'stacked'));
 
 
     if (stacked) {
-      const stackedDomain = [0, max(stackedDataArray(data, xField, yField, otherField, dataField, xDomain), (data) => { return max(data, (d) => { return d[1]; }); })];
-
+      const stackedDomain = [0, max(plotData, (data) => { return max(data, (d) => { return d[1]; }); })];
+      const linear = (isVertical(orientation) ? scales.y : scales.x);
       linear.domain(stackedDomain);
 
     } else { // grouped bar chart type
-      innerOrdinal.domain(innerDomain).range([0, outerOrdinal.bandwidth()]);
+      const ordinal = (isVertical(orientation) ? scales.x : scales.y);
+      layerOrdinal.domain(layerDomain).range([0, ordinal.bandwidth()]);
 
       // update y domain
 
       // scales.y.domain
     }
-
-    console.log(stackedDataArray(data, xField, yField, otherField, dataField, xDomain));
-    console.log(Object.prototype.hasOwnProperty.call(this.props, 'type'));
 
     const childProps = pick(this.props, [
       'colorScale',
@@ -97,7 +97,7 @@ export default class MultiBars extends PureComponent {
       'focusedClassName',
       'focusedStyle',
       'height',
-      'innerOrdinal',
+      'layerOrdinal',
       'onClick',
       'onMouseLeave',
       'onMouseMove',
@@ -120,27 +120,34 @@ export default class MultiBars extends PureComponent {
         style={this.combineStyles(style, data)}
       >
         {
-          map(stacked ? stackedDataArray(data, xField, yField, otherField, dataField, xDomain) : data, (datum) => {
+          map(plotData, (datum) => {
             const key = propResolver(datum, keyField);
-            const values = propResolver(datum, dataField);
+
+            // need to account for two types of data set since can be grouped or stacked
+            // change values or get rid since not really needed.
+            const values = stacked ? datum : propResolver(datum, dataField);
+
+            // need to account for te fact that data may be laid out differently between stacked
+            // vs bar chart
+
             const color = colorScale(colorField ? propResolver(datum, colorField) : key);
             // const barsValues = barsValueIteratee(values, key); //useless code?
             // console.log(barsValues);
 
             // Key should be from list of outer categories
-            // const translate = outerOrdinal(key);
+            const translate = outerOrdinal(key);
 
             return (
               <Bars
                 className={barsClassName}
-                data={datum}
+                data={values}
                 fill={color}
                 key={`bars:${key}`}
                 selection={this.castSelectionAsArray(selection)}
                 style={barsStyle}
-                categoryTranslate={0}
-                ordinal={ordinal}
-                linear={linear}
+                categoryTranslate={translate}
+                // ordinal={ordinal}
+                // linear={linear}
                 {...childProps}
               />
             );
@@ -242,14 +249,14 @@ MultiBars.propTypes = {
   focusedStyle: CommonPropTypes.style,
 
   /**
-   * Domain use for the innderOrdinal prop that scales the inner categorical data together.
+   * Domain use for the innderOrdinal prop that scales the layer categorical data together.
    */
-  innerDomain: PropTypes.array,
+  layerDomain: PropTypes.array,
 
   /**
    * Inner ordinal scale for categorical data within a grouped bar chart.
    */
-  innerOrdinal: PropTypes.func,
+  layerOrdinal: PropTypes.func,
 
   /**
    * onClick callback.
@@ -333,8 +340,7 @@ MultiBars.defaultProps = {
     key: 'key',
   },
   scales: {x: scaleBand(), y: scaleLinear() },
-  innerOrdinal: scaleBand(),
-  barsValueIteratee: CommonDefaultProps.identity, // get rid because don't readlly need
+  layerOrdinal: scaleBand(),
   orientation: 'vertical',
   type: 'default'
 };
