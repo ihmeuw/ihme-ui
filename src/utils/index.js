@@ -7,6 +7,8 @@ export {
   isDefault,
   isVertical,
   stackedDataArray,
+  stacked,
+  grouped,
 } from './bar';
 
 export {
