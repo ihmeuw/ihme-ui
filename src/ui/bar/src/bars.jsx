@@ -113,7 +113,8 @@ export default class Bars extends PureComponent {
 
             // Calculates the appropriate x and y inputs or the scaling functions.
             // May need to add new value since grouped and stack typically has two categorical groups
-            let xValue = propResolver(datum, dataAccessors.stack);
+            let xValue = grouped ? propResolver(datum, dataAccessors.layer) :
+              stacked ? propResolver(datum.data, dataAccessors.stack) : propResolver(datum, dataAccessors.stack);
             // if (isVertical(orientation)) {
             //   if (stacked) {
             //     xValue = propResolver(datum.data, dataAccessors.stack);
@@ -122,15 +123,15 @@ export default class Bars extends PureComponent {
             //   }
             // } else {
             //     xValue = propResolver(datum, dataAccessors.value)
-            //
             // }
-              // grouped ? propResolver(datum, dataAccessors.layer) :
-              // stacked ? propResolver(datum.data, dataAccessors.stack) : propResolver(datum, dataAccessors.stack);
 
             const yValue = propResolver(datum, !stacked ? dataAccessors.value : 1);
 
-            console.log(xValue);
-            console.log(ordinal(xValue));
+
+            // console.log(yValue);
+            // //
+            // console.log(xValue);
+            // console.log(linear(xValue));
 
 
             const xPosition =
@@ -149,11 +150,23 @@ export default class Bars extends PureComponent {
                             !isVertical(orientation) && !grouped ? ordinal.bandwidth() :
                             stacked ? linear(datum[0]) - linear(yValue) : layerOrdinal.bandwidth();
 
-            const barWidth =
-                        !isVertical(orientation) && !stacked ? linear(xValue) :
-                          isVertical(orientation) && !grouped ? ordinal.bandwidth() :
-                          stacked ? linear(yValue) - linear(datum[0]) : layerOrdinal.bandwidth();
+           // console.log(barHeight);
+           // console.log(yValue);
 
+            // conditions here needs to be cleaned
+            const barWidth =
+                          isVertical(orientation) && !grouped ? ordinal.bandwidth() :
+                            isVertical(orientation) && grouped ? layerOrdinal.bandwidth() :
+                            !isVertical(orientation) && grouped ? linear(xValue) :
+                            !isVertical(orientation) && stacked ? linear(yValue) - linear(datum[0]) : linear(yValue);
+
+
+                        // !isVertical(orientation) && !stacked ? linear(yValue) :
+                        //   isVertical(orientation) && !grouped ? ordinal.bandwidth() :
+                        //   stacked ? linear(yValue) - linear(datum[0]) : layerOrdinal.bandwidth();
+
+
+            // console.log(datum);
 
             return (
               <Bar
@@ -162,25 +175,16 @@ export default class Bars extends PureComponent {
                 datum={datum}
 
                 // normal vertical bar chart
-
                 // x={ordinal(xValue)}
                 // y={linear(yValue)}
                 // rectHeight={height - linear(yValue)}
                 // rectWidth={ordinal.bandwidth()}
 
-
                 // normal horizontal bar chart
-
-
-                x={ordinal(xValue)}
-                y={0}
-                rectHeight={ordinal.bandwidth()}
-                rectWidth={linear(yValue)}
-
-                // x={xPosition}
-                // y={yPosition}
-                // rectHeight={barHeight}
-                // rectWidth={barWidth}
+                // x={0}
+                // y={ordinal(xValue)}
+                // rectHeight={ordinal.bandwidth()}
+                // rectWidth={linear(yValue)}
 
                 // grouped vertical bar chart
                 // x={layerOrdinal(xValue)}
@@ -194,9 +198,16 @@ export default class Bars extends PureComponent {
                 // rectHeight={layerOrdinal.bandwidth()}
                 // rectWidth={linear(xValue)}
 
-                // y={ordinal(xValue)}
-                // rectHeight={ordinal.bandwidth()}
-                // rectWidth={linear(datum[1]) - linear(datum[0])}
+                x={xPosition}
+                y={yPosition}
+                rectHeight={barHeight}
+                rectWidth={barWidth}
+
+                // stacked vertical bar chart
+                // x={ordinal(datum.data.location)}
+                // y={linear(datum[1])}
+                // rectHeight={linear(datum[0]) - linear(datum[1])}
+                // rectWidth={ordinal.bandwidth()}
 
                 // x={ordinal(datum.data.category)}
                 // y={linear(datum[1])}

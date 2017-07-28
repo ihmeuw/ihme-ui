@@ -50,10 +50,10 @@ export default class MultiBars extends PureComponent {
 
     const {
       fill: fillField,
-      key: renameLater,
-      x: xField,
-      y: yField,
-      otherX: otherField,
+      key: keyIterator,
+      layer: layerField,
+      value: valueField,
+      stack: stackField,
     } = dataAccessors;
 
     const {
@@ -71,7 +71,7 @@ export default class MultiBars extends PureComponent {
 
     const outerOrdinal = (isVertical(orientation) ? scales.x : scales.y);
 
-    const plotData = stacked ? stackedDataArray(data, xField, yField, otherField, dataField, xDomain) : data;
+    const plotData = stacked ? stackedDataArray(data, layerField, valueField, stackField, dataField, xDomain) : data;
 
     console.log(Object.prototype.hasOwnProperty.call(this.props, 'stacked'));
 
@@ -86,7 +86,6 @@ export default class MultiBars extends PureComponent {
       layerOrdinal.domain(layerDomain).range([0, ordinal.bandwidth()]);
 
       // update y domain
-
       // scales.y.domain
     }
 
@@ -170,13 +169,6 @@ MultiBars.propTypes = {
    * inline styles applied to `<Bars />`'s outermost wrapping `<g>`.
    */
   barsStyle: CommonDefaultProps.style,
-
-  /**
-   * function to apply to the datum to transform bars values. default: _.identity
-   * signature: (data, key) => {...}
-   */
-  barsValueIteratee: PropTypes.func,
-
 
   /**
    * className applied to outermost wrapping `<g>`.
