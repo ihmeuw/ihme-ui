@@ -66,6 +66,7 @@ export default class Bars extends PureComponent {
       // linear,
       stacked,
       grouped,
+      layerDomain,
     } = this.props;
 
     const { selectedDataMappedToKeys, sortedData } = this.state;

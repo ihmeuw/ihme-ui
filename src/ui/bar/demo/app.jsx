@@ -40,36 +40,8 @@ const colorScale = scaleOrdinal(schemeCategory10);
 
 
 
-// Create function that transforms the data in order to be appropriately used within a stacked
-// bar chart
-const stackedData = (locationData.map(function (category) {
-  const addObject = {};
-  addObject.location = category.location;
-  category.values.map(function (year) {
-    addObject[year.year_id] = year.population;
-  });
-  return addObject;
-}));
-
-
-
-const dataIntermediate = yearFieldDomain.map(function(key,i){
-  return stackedData.map(function(d,j){
-    return {x: d['location'], y: d[key] };
-  });
-});
-
-
-const dataStacked = stack().keys(yearFieldDomain)(stackedData);
-const stackedDomain = [0, max(dataStacked, function(data) {  return max(data, function(d) { return d[1]; });  })];
-
-
-
-// console.log(stackedData);
-// console.log(dataStacked);
-// console.log("checkpoint");
-console.log(locationData);
-// console.log(data.filter((datum) => { return datum.location === 'India'; }));
+// const dataStacked = stack().keys(yearFieldDomain)(stackedData);
+// const stackedDomain = [0, max(dataStacked, function(data) {  return max(data, function(d) { return d[1]; });  })];
 
 
 class App extends React.Component {
@@ -113,34 +85,31 @@ class App extends React.Component {
     });
   };
 
-
   render() {
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
-
       <section>
-        <h3>One Dataset Default Orientation</h3>
-
+        <h3>Normal Bar Chart Vertical Orientation</h3>
         {/* <pre><code>
          <AxisChart
          height={300}
          width={500}
-         xDomain={keyFieldDomain}
-         yDomain={valueFieldDomain}
+         xDomain={yearFieldDomain}
+         yDomain={populationFieldDomain}
          xScaleType="band"
          yScaleType="linear"
          >
          <XAxis />
          <YAxis />
          <Bars
-         data={[]}
-         dataAccessors={{
-         fill: keyField,
-         key: 'id',
-         x: keyField,    // year_id
-         y: valueField   // population
-         }}
          fill="steelblue"
+         data={data.filter((datum) => { return datum.location === 'India'; })}
+         dataAccessors={{
+         fill: yearField,
+         key: 'id',
+         stack: yearField,    // year_id
+         value: populationField   // population
+         }}
          focus={this.state.focus}
          onClick={this.onClick}
          onMouseLeave={this.onMouseLeave}
@@ -179,27 +148,27 @@ class App extends React.Component {
         </AxisChart>
       </section>
       <section>
-        <h3>One Dataset Horizontal Orientation</h3>
+        <h3>Normal Bar Chart Horizontal Orientation</h3>
         {/* <pre><code>
          <AxisChart
-         height={500}
+         height={300}
          width={500}
-         xDomain={valueFieldDomain}
-         yDomain={keyFieldDomain}
+         xDomain={populationFieldDomain}
+         yDomain={yearFieldDomain}
          xScaleType="linear"
          yScaleType="band"
          >
          <XAxis/>
          <YAxis/>
          <Bars
-         data={[]}
-         dataAccessors={{
-         fill: keyField,
-         key: 'id',
-         x: keyField,    // year_id
-         y: valueField   // population
-         }}
          fill="steelblue"
+         data={data.filter((datum) => { return datum.location === 'India'; })}
+         dataAccessors={{
+         fill: yearField,
+         key: 'id',
+         stack: yearField,    // year_id
+         value: populationField   // population
+         }}
          focus={this.state.focus}
          onClick={this.onClick}
          onMouseLeave={this.onMouseLeave}
@@ -234,13 +203,13 @@ class App extends React.Component {
             onMouseLeave={this.onMouseLeave}
             onMouseMove={this.onMouseMove}
             onMouseOver={this.onMouseOver}
-            selection={this.state.selectedItems}
             orientation="horizontal"
+            selection={this.state.selectedItems}
           />
         </AxisChart>
       </section>
       <section>
-        <h3>Grouped Bar Chart</h3>
+        <h3>Grouped Bar Chart Vertical Orientation</h3>
         {/* <pre><code>
          <AxisChart
          height={300}
@@ -257,20 +226,22 @@ class App extends React.Component {
          data={locationData}
          dataAccessors={{
          fill: yearField,
-         key: 'id', // rename to relate to inner grouping
-         x: yearField, // field of nested data
-         y: populationField,
+         key: 'id',
+         stack: locationField, // stack field
+         layer: yearField,  // x axis
+         value: populationField, // y axis
          }}
          fieldAccessors={{
          data: 'values',
          key: 'location',
+
          }}
          focus={this.state.focus}
          focusedStyle={{
          stroke: '#000',
          strokeWidth: 2,
          }}
-         innerDomain={yearFieldDomain}
+         layerDomain={yearFieldDomain}
          onClick={this.onClick}
          onMouseLeave={this.onMouseLeave}
          onMouseMove={this.onMouseMove}
@@ -280,7 +251,7 @@ class App extends React.Component {
          stroke: '#000',
          strokeWidth: 1,
          }}
-         type="grouped"
+         grouped
          />
          </AxisChart>
          </code></pre> */}
@@ -297,14 +268,12 @@ class App extends React.Component {
           <MultiBars
           colorScale={colorScale}
           data={locationData}
-          // inner Category should be called layer
-          layerDomain={yearFieldDomain}
           dataAccessors={{
             fill: yearField,
             key: 'id',
+            stack: locationField, // stack field
             layer: yearField,  // x axis
             value: populationField, // y axis
-            stack: locationField, // stack field
           }}
           fieldAccessors={{
             data: 'values',
@@ -316,6 +285,7 @@ class App extends React.Component {
             stroke: '#000',
             strokeWidth: 2,
           }}
+          layerDomain={yearFieldDomain}
           onClick={this.onClick}
           onMouseLeave={this.onMouseLeave}
           onMouseMove={this.onMouseMove}
@@ -329,17 +299,16 @@ class App extends React.Component {
         />
         </AxisChart>
       </section>
-
         <section>
-          <h3>Grouped Horizontal Bar Chart</h3>
+          <h3>Grouped Bar Chart Horizontal Orientation</h3>
           {/* <pre><code>
            <AxisChart
            height={300}
            width={500}
-           xDomain={locationFieldDomain}
-           yDomain={populationFieldDomain}
-           xScaleType="band"
-           yScaleType="linear"
+           xDomain={populationFieldDomain}
+           yDomain={locationFieldDomain}
+           xScaleType="linear"
+           yScaleType="band"
            >
            <XAxis/>
            <YAxis/>
@@ -348,9 +317,10 @@ class App extends React.Component {
            data={locationData}
            dataAccessors={{
            fill: yearField,
-           key: 'id', // rename to relate to inner grouping
-           x: yearField, // field of nested data
-           y: populationField,
+           key: 'id',
+           stack: locationField, // stack field
+           layer: populationField, // layer field
+           value: yearField,
            }}
            fieldAccessors={{
            data: 'values',
@@ -361,17 +331,18 @@ class App extends React.Component {
            stroke: '#000',
            strokeWidth: 2,
            }}
-           innerDomain={yearFieldDomain}
+           layerDomain={yearFieldDomain}
            onClick={this.onClick}
            onMouseLeave={this.onMouseLeave}
            onMouseMove={this.onMouseMove}
            onMouseOver={this.onMouseOver}
+           orientation='horizontal'
            selection={this.state.selectedItems}
            selectedStyle={{
            stroke: '#000',
            strokeWidth: 1,
            }}
-           type="grouped"
+           grouped
            />
            </AxisChart>
            </code></pre> */}
@@ -388,14 +359,12 @@ class App extends React.Component {
             <MultiBars
               colorScale={colorScale}
               data={locationData}
-              // inner Category should be called layer
-              layerDomain={yearFieldDomain}
               dataAccessors={{
                 fill: yearField,
                 key: 'id',
+                stack: locationField, // stack field
                 layer: populationField, // layer field
                 value: yearField,
-                stack: locationField, // stack field
               }}
               fieldAccessors={{
                 data: 'values',
@@ -406,65 +375,64 @@ class App extends React.Component {
                 stroke: '#000',
                 strokeWidth: 2,
               }}
-
+              layerDomain={yearFieldDomain}
               onClick={this.onClick}
               onMouseLeave={this.onMouseLeave}
               onMouseMove={this.onMouseMove}
               onMouseOver={this.onMouseOver}
+              orientation='horizontal'
               selection={this.state.selectedItems}
               selectedStyle={{
                 stroke: '#000',
                 strokeWidth: 1,
               }}
               grouped
-              orientation='horizontal'
             />
           </AxisChart>
         </section>
-
       <section>
-        <h3>Stacked Bar Chart</h3>
+        <h3>Stacked Bar Chart Vertical Orientation</h3>
         {/* <pre><code>
          <AxisChart
          height={500}
-         width={300}
-         xDomain={populationFieldDomain}
-         yDomain={locationFieldDomain}
-         xScaleType="linear"
-         yScaleType="band"
+         width={500}
+         xDomain={locationFieldDomain}
+         yDomain={populationFieldDomain}
+         xScaleType="band"
+         yScaleType="linear"
          >
          <XAxis/>
          <YAxis/>
          <MultiBars
          colorScale={colorScale}
          data={locationData}
-         innerDomain={yearFieldDomain}
          dataAccessors={{
          fill: yearField,
-         key: 'id', // rename to relate to inner grouping
-         x: yearField, // field of nested data
-         y: populationField,
+         key: 'id',
+         stack: locationField,
+         layer: yearField,
+         value: populationField,
          }}
          fieldAccessors={{
          data: 'values',
-         key: 'location',
+         key: 'key',
          }}
          focus={this.state.focus}
          focusedStyle={{
          stroke: '#000',
          strokeWidth: 2,
          }}
+         layerDomain={yearFieldDomain}
          onClick={this.onClick}
          onMouseLeave={this.onMouseLeave}
          onMouseMove={this.onMouseMove}
          onMouseOver={this.onMouseOver}
-         orientation='horizontal'
          selection={this.state.selectedItems}
          selectedStyle={{
          stroke: '#000',
          strokeWidth: 1,
          }}
-         type="grouped"
+         stacked
          />
          </AxisChart>
          </code></pre> */}
@@ -480,15 +448,13 @@ class App extends React.Component {
           <YAxis/>
           <MultiBars
             colorScale={colorScale}
-            // data={data.filter((datum) => { return datum.location === 'Indiaa'; })}
             data={locationData}
-            innerDomain={yearFieldDomain}
             dataAccessors={{
               fill: yearField,
-              key: 'id', // rename to relate to inner grouping
+              key: 'id',
+              stack: locationField,
               layer: yearField,
               value: populationField,
-              stack: locationField
             }}
             fieldAccessors={{
               data: 'values',
@@ -499,6 +465,7 @@ class App extends React.Component {
               stroke: '#000',
               strokeWidth: 2,
             }}
+            layerDomain={yearFieldDomain}
             onClick={this.onClick}
             onMouseLeave={this.onMouseLeave}
             onMouseMove={this.onMouseMove}
@@ -509,19 +476,16 @@ class App extends React.Component {
               strokeWidth: 1,
             }}
             stacked
-            xDomain={yearFieldDomain}
           />
         </AxisChart>
       </section>
-
-
 
         <section>
           <h3>Stacked Horizontal Bar Chart</h3>
           {/* <pre><code>
            <AxisChart
            height={500}
-           width={300}
+           width={500}
            xDomain={populationFieldDomain}
            yDomain={locationFieldDomain}
            xScaleType="linear"
@@ -531,34 +495,36 @@ class App extends React.Component {
            <YAxis/>
            <MultiBars
            colorScale={colorScale}
+           // data={data.filter((datum) => { return datum.location === 'Indiaa'; })}
            data={locationData}
-           innerDomain={yearFieldDomain}
            dataAccessors={{
            fill: yearField,
            key: 'id', // rename to relate to inner grouping
-           x: yearField, // field of nested data
-           y: populationField,
+           layer: yearField,
+           value: populationField,
+           stack: locationField
            }}
            fieldAccessors={{
            data: 'values',
-           key: 'location',
+           key: 'key',
            }}
            focus={this.state.focus}
            focusedStyle={{
            stroke: '#000',
            strokeWidth: 2,
            }}
+           layerDomain={yearFieldDomain}
            onClick={this.onClick}
            onMouseLeave={this.onMouseLeave}
            onMouseMove={this.onMouseMove}
            onMouseOver={this.onMouseOver}
-           orientation='horizontal'
+           orientation="horizontal"
            selection={this.state.selectedItems}
            selectedStyle={{
            stroke: '#000',
            strokeWidth: 1,
            }}
-           type="grouped"
+           stacked
            />
            </AxisChart>
            </code></pre> */}
@@ -576,7 +542,6 @@ class App extends React.Component {
               colorScale={colorScale}
               // data={data.filter((datum) => { return datum.location === 'Indiaa'; })}
               data={locationData}
-              innerDomain={yearFieldDomain}
               dataAccessors={{
                 fill: yearField,
                 key: 'id', // rename to relate to inner grouping
@@ -593,18 +558,18 @@ class App extends React.Component {
                 stroke: '#000',
                 strokeWidth: 2,
               }}
+              layerDomain={yearFieldDomain}
               onClick={this.onClick}
               onMouseLeave={this.onMouseLeave}
               onMouseMove={this.onMouseMove}
               onMouseOver={this.onMouseOver}
+              orientation="horizontal"
               selection={this.state.selectedItems}
               selectedStyle={{
                 stroke: '#000',
                 strokeWidth: 1,
               }}
               stacked
-              xDomain={yearFieldDomain}
-              orientation="horizontal"
             />
           </AxisChart>
         </section>
@@ -612,6 +577,5 @@ class App extends React.Component {
     );
   }
 }
-
 ReactDOM.render(<App />, document.getElementById('app'));
 

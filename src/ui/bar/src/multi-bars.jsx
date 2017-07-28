@@ -44,7 +44,7 @@ export default class MultiBars extends PureComponent {
       style,
       type,
       stacked,
-      xDomain,
+      // xDomain,
       grouped,
     } = this.props;
 
@@ -69,11 +69,14 @@ export default class MultiBars extends PureComponent {
     // const ordinal = (isVertical(orientation) ? scales.x : scales.y);
     // const linear = (isVertical(orientation) ? scales.y : scales.x);
 
+
+    console.log(layerDomain);
+
     const outerOrdinal = (isVertical(orientation) ? scales.x : scales.y);
 
-    const plotData = stacked ? stackedDataArray(data, layerField, valueField, stackField, dataField, xDomain) : data;
+    const plotData = stacked ? stackedDataArray(data, layerField, valueField, stackField, dataField,layerDomain) : data;
 
-    console.log(Object.prototype.hasOwnProperty.call(this.props, 'stacked'));
+    // console.log(Object.prototype.hasOwnProperty.call(this.props, 'stacked'));
 
 
     if (stacked) {
@@ -97,6 +100,7 @@ export default class MultiBars extends PureComponent {
       'focusedStyle',
       'height',
       'layerOrdinal',
+      'layerDomain',
       'onClick',
       'onMouseLeave',
       'onMouseMove',
