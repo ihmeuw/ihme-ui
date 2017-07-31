@@ -75,7 +75,7 @@ export default class BarChart extends PureComponent {
       <div className={className(styles['whatever styles goes here'], className)}
            style={style}
       >
-        {/*{this.renderTitle()}*/}
+        {this.renderTitle()}
         {/*{this.renderBarchart()}*/}
         {/*{this.renderLegden()}*/}
         <ResponsiveContainer>

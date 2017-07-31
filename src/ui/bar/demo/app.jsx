@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { bindAll, maxBy, minBy, map, uniqBy, xor } from 'lodash';
 import { dataGenerator } from '../../../utils';
 import AxisChart from '../../axis-chart';
-import { schemeCategory10, scaleOrdinal, stack, max } from 'd3';
+import { schemeCategory10, scaleOrdinal, max } from 'd3';
 import { XAxis, YAxis } from '../../axis';
 import MultiBars from '../src/multi-bars';
 
@@ -135,8 +135,8 @@ class App extends React.Component {
           dataAccessors={{
             fill: yearField,
             key: 'id',
-            stack: yearField,    // year_id
-            value: populationField   // population
+            stack: yearField,
+            value: populationField
           }}
           focus={this.state.focus}
           onClick={this.onClick}
@@ -195,8 +195,8 @@ class App extends React.Component {
             dataAccessors={{
               fill: yearField,
               key: 'id',
-              stack: yearField,    // year_id
-              value: populationField   // population
+              stack: yearField,
+              value: populationField
             }}
             focus={this.state.focus}
             onClick={this.onClick}

@@ -15,7 +15,6 @@ import {
   combineStyles,
   CommonDefaultProps,
   CommonPropTypes,
-  isDefault,
   isVertical,
   memoizeByLastCall,
   propResolver,
@@ -61,12 +60,8 @@ export default class Bars extends PureComponent {
       rectClassName,
       rectStyle,
       style,
-      type,
-      // ordinal,
-      // linear,
       stacked,
       grouped,
-      layerDomain,
     } = this.props;
 
     const { selectedDataMappedToKeys, sortedData } = this.state;
@@ -86,10 +81,6 @@ export default class Bars extends PureComponent {
     const ordinal = (isVertical(orientation) ? scales.x : scales.y);
     const linear = (isVertical(orientation) ? scales.y : scales.x);
 
-
-    // update Domain
-
-
     //check padding proptypes and set accordingly, need to clean up code
     if (bandPaddingOuter !== undefined) {
       ordinal.paddingOuter(bandPaddingOuter);
@@ -108,32 +99,14 @@ export default class Bars extends PureComponent {
       >
         {
           map(sortedData, (datum) => {
-            const key = propResolver(datum, dataAccessors.key);
+            const key = stacked ? propResolver(datum.data, dataAccessors.key) : propResolver(datum, dataAccessors.key);
             const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x);
             const focusedDatumKey = focus ? propResolver(focus, dataAccessors.key) : null;
 
-            // Calculates the appropriate x and y inputs or the scaling functions.
-            // May need to add new value since grouped and stack typically has two categorical groups
-            let xValue = grouped ? propResolver(datum, dataAccessors.layer) :
+            const xValue = grouped ? propResolver(datum, dataAccessors.layer) :
               stacked ? propResolver(datum.data, dataAccessors.stack) : propResolver(datum, dataAccessors.stack);
-            // if (isVertical(orientation)) {
-            //   if (stacked) {
-            //     xValue = propResolver(datum.data, dataAccessors.stack);
-            //   } else if (grouped) {
-            //     xValue = propResolver(datum, dataAccessors.layer)
-            //   }
-            // } else {
-            //     xValue = propResolver(datum, dataAccessors.value)
-            // }
 
             const yValue = propResolver(datum, !stacked ? dataAccessors.value : 1);
-
-
-            // console.log(yValue);
-            // //
-            // console.log(xValue);
-            // console.log(linear(xValue));
-
 
             const xPosition =
                           !isVertical(orientation) && !stacked ? 0 :
@@ -151,73 +124,22 @@ export default class Bars extends PureComponent {
                             !isVertical(orientation) && !grouped ? ordinal.bandwidth() :
                             stacked ? linear(datum[0]) - linear(yValue) : layerOrdinal.bandwidth();
 
-           // console.log(barHeight);
-           // console.log(yValue);
-
-            // conditions here needs to be cleaned
             const barWidth =
                           isVertical(orientation) && !grouped ? ordinal.bandwidth() :
                             isVertical(orientation) && grouped ? layerOrdinal.bandwidth() :
                             !isVertical(orientation) && grouped ? linear(xValue) :
                             !isVertical(orientation) && stacked ? linear(yValue) - linear(datum[0]) : linear(yValue);
 
-
-                        // !isVertical(orientation) && !stacked ? linear(yValue) :
-                        //   isVertical(orientation) && !grouped ? ordinal.bandwidth() :
-                        //   stacked ? linear(yValue) - linear(datum[0]) : layerOrdinal.bandwidth();
-
-
-            // console.log(datum);
-
             return (
               <Bar
                 className={rectClassName}
                 key={key}
                 datum={datum}
-
-                // normal vertical bar chart
-                // x={ordinal(xValue)}
-                // y={linear(yValue)}
-                // rectHeight={height - linear(yValue)}
-                // rectWidth={ordinal.bandwidth()}
-
-                // normal horizontal bar chart
-                // x={0}
-                // y={ordinal(xValue)}
-                // rectHeight={ordinal.bandwidth()}
-                // rectWidth={linear(yValue)}
-
-                // grouped vertical bar chart
-                // x={layerOrdinal(xValue)}
-                // y={linear(yValue)}
-                // rectHeight={height - linear(yValue)}
-                // rectWidth={layerOrdinal.bandwidth()}
-
-                // grouped horizontal bar chart
-                // x={0}
-                // y={layerOrdinal(yValue)}
-                // rectHeight={layerOrdinal.bandwidth()}
-                // rectWidth={linear(xValue)}
-
                 x={xPosition}
                 y={yPosition}
                 rectHeight={barHeight}
                 rectWidth={barWidth}
-
-                // stacked vertical bar chart
-                // x={ordinal(datum.data.location)}
-                // y={linear(datum[1])}
-                // rectHeight={linear(datum[0]) - linear(datum[1])}
-                // rectWidth={ordinal.bandwidth()}
-
-                // x={ordinal(datum.data.category)}
-                // y={linear(datum[1])}
-                // rectHeight={linear(datum[0]) - linear(datum[1])}
-                // rectWidth={ordinal.bandwidth()}
-
-
                 fill={colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill}
-                // fill={fill}
                 focused={focusedDatumKey === key}
                 selected={selectedDataMappedToKeys.hasOwnProperty(key)}
                 style={rectStyle}
@@ -411,7 +333,6 @@ Bars.propTypes = {
   type: PropTypes.string,
 };
 
-
 Bars.defaultProps = {
   fill: 'steelblue',
   onClick: CommonDefaultProps.noop,
@@ -426,8 +347,6 @@ Bars.defaultProps = {
   type: 'default'
 };
 
-
-// Need to reevaluate this portion
 Bars.propUpdates = {
   selections: (state, _, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, ['selection', 'dataAccessors'])) return state;
