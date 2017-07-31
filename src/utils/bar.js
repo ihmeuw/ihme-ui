@@ -19,22 +19,18 @@ export function isDefault(type) {
 }
 
 export function stackedDataArray(obj, xField, yField, otherField, dataField, xDomain) {
-   const categoricalData = obj.map( data => {
+  let i = 0; // generates unique id number for each datum that binds to each rect
+  const categoricalData = obj.map( (data) => {
       const insertObject = {};
-      // insertObject.category = data[otherField];
      insertObject[otherField] = data[otherField];
+     insertObject.id = i;
+     i++;
      data[dataField].map( datum => {
         const year = datum[xField];
         insertObject[year] = datum[yField];
       });
       return insertObject;
     });
-
-  // const spreadData = xDomain.map((key, i) => {
-  //   return categoricalData.map((data,j) => {
-  //       return {x: data[otherField], y:data[key]};
-  //     });
-  //   });
 
    return stack().keys(xDomain)(categoricalData);
 
@@ -47,21 +43,5 @@ export function stacked(props) {
 export function grouped(props) {
   return Object.prototype.hasOwnProperty.call(props, 'grouped');
 }
-
-// Parameters are all of type bool
-// export function getXValue(datum, orientation, grouped, stacked) {
-//   if (orientation) { // if vertical since passing in the result of a isVertical Function
-//     if (grouped) {
-//       return
-//     } else if (stacked) {
-//
-//     } else {
-//
-//     }
-//   } else {
-//
-//   }
-//
-// }
 
 

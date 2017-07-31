@@ -1,9 +1,8 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { scaleLinear, scaleBand, stack, max } from 'd3';
+import { scaleLinear, scaleBand, max } from 'd3';
 import { castArray, map, pick } from 'lodash';
 import Bars from './bars';
-
 
 import {
   isVertical,
@@ -15,7 +14,6 @@ import {
   PureComponent,
   stackedDataArray,
 } from '../../../utils';
-
 
 export default class MultiBars extends PureComponent {
   constructor(props) {
@@ -44,7 +42,6 @@ export default class MultiBars extends PureComponent {
       style,
       type,
       stacked,
-      // xDomain,
       grouped,
     } = this.props;
 
@@ -62,22 +59,8 @@ export default class MultiBars extends PureComponent {
       key: keyField
     } = fieldAccessors;
 
-
-    // Sets these constants to the correct scales based on whether the orientation
-    // is default at vertical. (i.e. having  x axis contains the bands and y axis be
-    // linear, vice versa)
-    // const ordinal = (isVertical(orientation) ? scales.x : scales.y);
-    // const linear = (isVertical(orientation) ? scales.y : scales.x);
-
-
-    console.log(layerDomain);
-
-    const outerOrdinal = (isVertical(orientation) ? scales.x : scales.y);
-
     const plotData = stacked ? stackedDataArray(data, layerField, valueField, stackField, dataField,layerDomain) : data;
-
     // console.log(Object.prototype.hasOwnProperty.call(this.props, 'stacked'));
-
 
     if (stacked) {
       const stackedDomain = [0, max(plotData, (data) => { return max(data, (d) => { return d[1]; }); })];
@@ -88,8 +71,6 @@ export default class MultiBars extends PureComponent {
       const ordinal = (isVertical(orientation) ? scales.x : scales.y);
       layerOrdinal.domain(layerDomain).range([0, ordinal.bandwidth()]);
 
-      // update y domain
-      // scales.y.domain
     }
 
     const childProps = pick(this.props, [
@@ -125,19 +106,9 @@ export default class MultiBars extends PureComponent {
         {
           map(plotData, (datum) => {
             const key = propResolver(datum, keyField);
-
-            // need to account for two types of data set since can be grouped or stacked
-            // change values or get rid since not really needed.
             const values = stacked ? datum : propResolver(datum, dataField);
-
-            // need to account for te fact that data may be laid out differently between stacked
-            // vs bar chart
-
             const color = colorScale(colorField ? propResolver(datum, colorField) : key);
-            // const barsValues = barsValueIteratee(values, key); //useless code?
-            // console.log(barsValues);
-
-            // Key should be from list of outer categories
+            const outerOrdinal = (isVertical(orientation) ? scales.x : scales.y);
             const translate = outerOrdinal(key);
 
             return (
@@ -149,8 +120,6 @@ export default class MultiBars extends PureComponent {
                 selection={this.castSelectionAsArray(selection)}
                 style={barsStyle}
                 categoryTranslate={translate}
-                // ordinal={ordinal}
-                // linear={linear}
                 {...childProps}
               />
             );
@@ -160,8 +129,6 @@ export default class MultiBars extends PureComponent {
     );
   }
 }
-
-
 
 MultiBars.propTypes = {
   /**
@@ -209,8 +176,9 @@ MultiBars.propTypes = {
   dataAccessors: PropTypes.shape({
     fill: CommonPropTypes.dataAccessor,
     key: CommonPropTypes.dataAccessor,
-    x: CommonPropTypes.dataAccessor,
-    y: CommonPropTypes.dataAccessor,
+    stack: CommonPropTypes.dataAccessor,
+    layer: CommonPropTypes.dataAccessor,
+    value: CommonPropTypes.dataAccessor,
   }).isRequired,
 
   /**
@@ -245,12 +213,12 @@ MultiBars.propTypes = {
   focusedStyle: CommonPropTypes.style,
 
   /**
-   * Domain use for the innderOrdinal prop that scales the layer categorical data together.
+   * Domain use for the layerOrdinal prop that scales the layer categorical data together.
    */
   layerDomain: PropTypes.array,
 
   /**
-   * Inner ordinal scale for categorical data within a grouped bar chart.
+   * Layer ordinal scale for categorical data within a grouped/stacked bar chart.
    */
   layerOrdinal: PropTypes.func,
 
@@ -299,7 +267,7 @@ MultiBars.propTypes = {
   selectedClassName: CommonPropTypes.className,
 
   /**
-   * inline styles applied to selected `<Shape />`s.
+   * inline styles applied to selected `<Bar />`s.
    * If an object, spread into inline styles.
    * If a function, passed underlying datum corresponding to its `<Bar />`,
    * and return value is spread into inline styles;

@@ -10,7 +10,6 @@ import {
   CommonPropTypes,
   memoizeByLastCall,
   propsChanged,
-  propResolver,
   PureComponent,
   stateFromPropUpdates,
 } from '../../../utils';
@@ -75,14 +74,11 @@ export default class Bar extends PureComponent {
   }
 
   render() {
-
-
     const {
       className,
       clipPathId,
       x,
       y,
-      height,
       rectHeight,
       rectWidth,
       datum,
@@ -144,15 +140,15 @@ Bar.propTypes = {
   /**
    * Height of svg element rect.
    */
-  height: PropTypes.number,
+  rectHeight: PropTypes.number,
 
   /**
    * Width of svg element rect.
    */
-  width: PropTypes.number,
+  rectWidth: PropTypes.number,
 
   /**
-   * Datum object corresponding to this shape ("bound" data, in the language in D3)
+   * Datum object corresponding to this svg  element rect ("bound" data, in the language in D3)
    */
   datum: PropTypes.object,
 
@@ -162,7 +158,7 @@ Bar.propTypes = {
   fill: PropTypes.string,
 
   /**
-   * Whether shape has focus.
+   * Whether rect has focus.
    */
   focused: PropTypes.bool,
 
@@ -172,7 +168,7 @@ Bar.propTypes = {
   focusedClassName: CommonPropTypes.className,
 
   /**
-   * Inline styles applied if shape has focus.
+   * Inline styles applied if rect has focus.
    * If an object, spread directly into inline styles.
    * If a function, called with `props.datum` as argument and return value is spread into inline styles;
    * signature: (datum) => obj
@@ -223,7 +219,7 @@ Bar.propTypes = {
   selectedStyle: CommonPropTypes.style,
 
   /**
-   * Base inline styles applied to `<Shape />`s.
+   * Base inline styles applied to `<Bar />`s.
    * If an object, spread into inline styles.
    * If a function, passed underlying datum corresponding to its `<Bar />`.
    */
@@ -236,7 +232,7 @@ Bar.defaultProps = {
   foused: false,
   focusedClassName: 'focused',
   focusedStyle: {
-    stroke: '#AAF',
+    stroke: '#000',
     strokeWidth: .5,
   },
   onClick: CommonDefaultProps.noop,
@@ -253,18 +249,14 @@ Bar.defaultProps = {
 };
 
 Bar.propUpdates = {
+  // update rect if bar prop changes
   rect: (acc, propName, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, ['data', 'dataAccessors', 'scales'])) {
       return acc;
     }
 
-    // const pathGenerator = scaleOrdinal()
-    //   .x((datum) => nextProps.scales.x(propResolver(datum, nextProps.dataAccessors.x)))
-    //   .y((datum) => nextProps.scales.y(propResolver(datum, nextProps.dataAccessors.y)));
-
     return {
       ...acc,
-      // path: pathGenerator(nextProps.data),
     };
   },
 
@@ -279,6 +271,7 @@ Bar.propUpdates = {
       ])) {
       return accum;
     }
+
     const styles = [{ fill: nextProps.fill }, nextProps.style];
 
     if (nextProps.selected) {
