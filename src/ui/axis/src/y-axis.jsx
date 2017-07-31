@@ -1,5 +1,7 @@
-import { PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import { scaleLinear } from 'd3';
+import omit from 'lodash/omit';
+
 import { atLeastOneOfProp, propsChanged } from '../../../utils';
 
 import Axis, { AXIS_SCALE_PROP_TYPES } from './axis';
@@ -11,7 +13,7 @@ import Axis, { AXIS_SCALE_PROP_TYPES } from './axis';
  *
  * All props documented on \<Axis /> are available on \<YAxis />.
  */
-export default class YAxis extends Axis {
+export default class YAxis extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -21,8 +23,6 @@ export default class YAxis extends Axis {
   }
 
   componentWillReceiveProps(nextProps) {
-    super.componentWillReceiveProps(nextProps);
-
     this.setState({
       scale: nextProps.scale || nextProps.scales.y,
     });
@@ -34,8 +34,13 @@ export default class YAxis extends Axis {
   }
 
   render() {
-    // super.render call added so that react-docgen will parse this component
-    return super.render();
+    const axisProps = omit(this.props, ['scale', 'scales']);
+    return (
+      <Axis
+        scale={this.state.scale}
+        {...axisProps}
+      />
+    );
   }
 }
 

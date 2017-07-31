@@ -61,7 +61,7 @@
     "babel-preset-react": "~6.22",
     "block-loader": "~2.1",
     "chai": "~3.4",
-    "chai-enzyme": "~0.6",
+    "chai-enzyme": "^0.8.0",
     "codecov.io": "~0.1",
     "css-loader": "~0.28",
     "cssnano-cli": "~1.0",
@@ -95,7 +95,6 @@
     "react-addons-pure-render-mixin": "~15.1",
     "react-addons-shallow-compare": "~15.1",
     "react-dom": "~15.1",
-    "react-faux-dom": "~2.4",
     "react-virtualized": "~7.24",
     "topojson": "~1.6"
   }

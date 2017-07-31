@@ -1,13 +1,27 @@
 import React, { PropTypes } from 'react';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
-import ReactFauxDom from 'react-faux-dom';
 import classNames from 'classnames';
-import { axisBottom, axisLeft, axisRight, axisTop, scaleLinear, select } from 'd3';
+import {
+  axisBottom,
+  axisLeft,
+  axisRight,
+  axisTop,
+  scaleLinear,
+  select,
+} from 'd3';
+import assign from 'lodash/assign';
 import mean from 'lodash/mean';
-import { CommonPropTypes, atLeastOneOfProp, propsChanged } from '../../../utils';
+import reduce from 'lodash/reduce';
+import trim from 'lodash/trim';
+
+import {
+  CommonPropTypes,
+  propsChanged,
+  PureComponent,
+  stateFromPropUpdates,
+} from '../../../utils';
 
 import { calcLabelPosition, calcTranslate } from './utils';
-import style from './axis.css';
+import styles from './axis.css';
 
 export const AXIS_TYPES = {
   top: axisTop,
@@ -19,66 +33,108 @@ export const AXIS_TYPES = {
 /**
  * `import { Axis } from 'ihme-ui'`
  */
-export default class Axis extends React.Component {
+export default class Axis extends PureComponent {
+  static concatStyle(style) {
+    return trim(reduce(style, (accum, value, attr) => `${accum} ${attr}: ${value};`, ''));
+  }
+
   constructor(props) {
     super(props);
-    this.state = {
-      scale: props.scale,
-      translate: props.translate || calcTranslate(props.orientation, props.width, props.height),
-    };
+    this.state = stateFromPropUpdates(Axis.propUpdates, {}, props, {});
+
+    this.storeRef = this.storeRef.bind(this);
+  }
+
+  componentDidMount() {
+    this.drawAxis();
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      scale: nextProps.scale,
-      translate: nextProps.translate ||
-                   (propsChanged(this.props, nextProps, ['orientation', 'width', 'height']) ?
-                     calcTranslate(nextProps.orientation, nextProps.width, nextProps.height) :
-                     this.state.translate),
-    });
+    this.setState(stateFromPropUpdates(Axis.propUpdates, this.props, nextProps, {}));
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return PureRenderMixin.shouldComponentUpdate(this, nextProps, nextState);
+  componentDidUpdate() {
+    this.drawAxis();
+  }
+
+  componentWillUnmount() {
+    this._axisSelection.remove();
+  }
+
+  drawAxis() {
+    const {
+      className,
+      orientation,
+      scale,
+      style,
+      tickArguments,
+      ticks,
+      tickFormat,
+      tickSize,
+      tickSizeInner,
+      tickSizeOuter,
+      tickPadding,
+      tickValues,
+    } = this.props;
+
+    const {
+      translate,
+    } = this.state;
+
+    if (!this._axisSelection) {
+      throw new Error();
+    }
+
+    const axis = AXIS_TYPES[orientation](scale);
+
+    if (ticks) axis.ticks(ticks);
+    if (tickArguments) axis.tickArguments(tickArguments);
+    if (tickFormat) axis.tickFormat(tickFormat);
+    if (tickSize) axis.tickSize(tickSize);
+    if (tickSizeInner) axis.tickSizeInner(tickSizeInner);
+    if (tickSizeOuter) axis.tickSizeOuter(tickSizeOuter);
+    if (tickPadding) axis.tickPadding(tickPadding);
+    if (tickValues) axis.tickValues(tickValues);
+
+    this._axisSelection
+      .attr('class', classNames(styles.common, className))
+      .attr('transform', `translate(${translate.x}, ${translate.y})`)
+      .attr('style', Axis.concatStyle(style))
+      .call(axis);
+  }
+
+  storeRef(axisG) {
+    if (!axisG) {
+      this._axisSelection = null;
+      return;
+    }
+
+    this._axisSelection = select(axisG);
   }
 
   render() {
-    const { props, state } = this;
+    const {
+      label,
+      labelClassName,
+      labelStyle,
+      orientation,
+      padding,
+      scale,
+    } = this.props;
 
-    // create faux DOM element to use as context for D3 side-effects
-    const axisG = ReactFauxDom.createElement('g');
-    const gSelection = select(axisG)
-      .attr('class', classNames(style.common, props.className))
-      .attr('transform', `translate(${state.translate.x}, ${state.translate.y})`);
+    const {
+      translate,
+    } = this.state;
 
-    // axis generator straight outta d3-axis
-    const axisGenerator = AXIS_TYPES[props.orientation](state.scale);
-
-    // if we have configuration for the axis, apply it
-    if (props.ticks) axisGenerator.ticks(props.ticks);
-    if (props.tickArguments) axisGenerator.tickArguments(props.tickArguments);
-    if (props.tickFormat) axisGenerator.tickFormat(props.tickFormat);
-    if (props.tickSize) axisGenerator.tickSize(props.tickSize);
-    if (props.tickSizeInner) axisGenerator.tickSizeInner(props.tickSizeInner);
-    if (props.tickSizeOuter) axisGenerator.tickSizeOuter(props.tickSizeOuter);
-    if (props.tickPadding) axisGenerator.tickPadding(props.tickPadding);
-    if (props.tickValues) axisGenerator.tickValues(props.tickValues);
-
-    axisGenerator(gSelection);
-
-    axisG.setAttribute('style', props.style);
-
-    const center = mean(state.scale.range());
-
-    const labelPosition = props.label &&
-      calcLabelPosition(props.orientation, state.translate, props.padding, center);
+    const labelPosition = label &&
+      calcLabelPosition(orientation, translate, padding, mean(scale.range()));
 
     return (
       <g>
-        {axisG.toReact()}
-        {props.label && <text
-          className={props.labelClassName}
-          style={props.labelStyle}
+        <g ref={this.storeRef}></g>
+        {label && <text
+          className={labelClassName}
+          style={labelStyle}
           x={labelPosition.x}
           y={labelPosition.y}
           dx={labelPosition.dX}
@@ -86,7 +142,7 @@ export default class Axis extends React.Component {
           transform={`rotate(${labelPosition.rotate || 0})`}
           textAnchor="middle"
         >
-          {props.label}
+          {label}
         </text>}
       </g>
     );
@@ -125,7 +181,7 @@ Axis.propTypes = {
    * height of charting area, minus padding
    * required if translate is not provided
    */
-  height: atLeastOneOfProp(HEIGHT_PROP_TYPES),
+  height: PropTypes.number,
 
   /**
    * the axis label
@@ -162,7 +218,7 @@ Axis.propTypes = {
   /**
    *  appropriate scale for axis
    */
-  scale: atLeastOneOfProp(AXIS_SCALE_PROP_TYPES),
+  scale: PropTypes.func,
 
   /**
    * inline styles to apply to outermost group element
@@ -223,11 +279,11 @@ Axis.propTypes = {
    * width of charting area, minus padding
    * required if translate is not specified
   */
-  width: atLeastOneOfProp(WIDTH_PROP_TYPES),
+  width: PropTypes.number,
 };
 
 Axis.defaultProps = {
-  height: 0,
+  height: 30,
   padding: {
     top: 40,
     bottom: 40,
@@ -235,5 +291,18 @@ Axis.defaultProps = {
     right: 50,
   },
   scale: scaleLinear(),
-  width: 0,
+  width: 900,
+};
+
+Axis.propUpdates = {
+  translate: (accum, propName, prevProps, nextProps) => {
+    if (!propsChanged(prevProps, nextProps, ['orientation', 'width', 'height', 'translate'])) {
+      return accum;
+    }
+
+    return assign({}, accum, {
+      translate: nextProps.translate || calcTranslate(nextProps.orientation, nextProps.width,
+                                                      nextProps.height)
+    });
+  },
 };
