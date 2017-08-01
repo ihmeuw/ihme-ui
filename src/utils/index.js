@@ -1,5 +1,5 @@
 export {
-  hasCrappyValues,
+  choose,
   linspace,
 } from './array';
 

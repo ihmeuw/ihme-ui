@@ -1,15 +1,9 @@
-import { isArray, isNaN as _isNaN, isNull, isUndefined, map, range as range_ } from 'lodash';
+import {
+  filter,
+  map,
+  range as range_,
+} from 'lodash';
 import { Float } from './numbers';
-
-/**
- * Check if array contains crappy values (NaN, undefined, null)
- * @param {Array} arr
- * @return {Boolean} true if has crappy values, false otherwise
- */
-export function hasCrappyValues(arr) {
-  if (!arr || !isArray(arr) || !arr.length) return true;
-  return arr.some((val) => _isNaN(val) || isNull(val) || isUndefined(val));
-}
 
 /**
  * turn [min, max] domain into array of length
@@ -27,4 +21,19 @@ export function linspace(domain, length) {
     if (i === length - 1) return max;
     return Float.add(Float.multiply(i, step), min);
   });
+}
+
+/**
+ * filter list of elements to length equal to or less than maxLength
+ * @param {array} list
+ * @param {number} maxLength
+ * @return {array}
+ */
+export function choose(list, maxLength) {
+  // if can only choose 2 items, choose first and last element
+  if (maxLength === 2 && list.length > 2) {
+    return [list[0], list[list.length - 1]];
+  }
+  const mod = Math.ceil(list.length / maxLength);
+  return filter(list, (_, idx) => idx % mod === 0);
 }
