@@ -4,6 +4,7 @@ import { scaleLinear, scaleBand, max } from 'd3';
 import { castArray, map, pick } from 'lodash';
 import Bars from './bars';
 
+
 import {
   isVertical,
   combineStyles,
@@ -33,7 +34,6 @@ export default class MultiBars extends PureComponent {
       data,
       dataAccessors,
       fieldAccessors,
-      height,
       layerDomain,
       layerOrdinal,
       orientation,
@@ -60,7 +60,6 @@ export default class MultiBars extends PureComponent {
     } = fieldAccessors;
 
     const plotData = stacked ? stackedDataArray(data, layerField, valueField, stackField, dataField,layerDomain) : data;
-    // console.log(Object.prototype.hasOwnProperty.call(this.props, 'stacked'));
 
     if (stacked) {
       const stackedDomain = [0, max(plotData, (data) => { return max(data, (d) => { return d[1]; }); })];

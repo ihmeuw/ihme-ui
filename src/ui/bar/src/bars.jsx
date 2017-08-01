@@ -67,7 +67,6 @@ export default class Bars extends PureComponent {
     const { selectedDataMappedToKeys, sortedData } = this.state;
 
     const childProps = pick(this.props, [
-      'categoryTranslate',
       'focusedClassName',
       'focusedStyle',
       'onClick',
@@ -78,13 +77,15 @@ export default class Bars extends PureComponent {
       'selectedStyle',
     ]);
 
+    // Base on orientation, the input scales are different.
     const ordinal = (isVertical(orientation) ? scales.x : scales.y);
     const linear = (isVertical(orientation) ? scales.y : scales.x);
 
-    //check padding proptypes and set accordingly, need to clean up code
-    if (bandPaddingOuter !== undefined) {
+
+    // Checks padding properties and sets it accordingly.
+    if (bandPaddingOuter) {
       ordinal.paddingOuter(bandPaddingOuter);
-    } else if (bandPaddingInner !== undefined) {
+    } else if (bandPaddingInner) {
       ordinal.paddingInner(bandPaddingInner);
     } else {
       ordinal.padding(bandPadding);
@@ -143,8 +144,8 @@ export default class Bars extends PureComponent {
                 focused={focusedDatumKey === key}
                 selected={selectedDataMappedToKeys.hasOwnProperty(key)}
                 style={rectStyle}
-                translateX={isVertical(orientation) && isFinite(xValue) ? ordinal(xValue) : 0}
-                translateY={isVertical(orientation) && isFinite(yValue) ? 0 : ordinal(yValue)}
+                // translateX={isVertical(orientation) && isFinite(xValue) ? ordinal(xValue) : 0}
+                // translateY={isVertical(orientation) && isFinite(yValue) ? 0 : ordinal(yValue)}
                 {...childProps}
               />
             );
@@ -153,11 +154,9 @@ export default class Bars extends PureComponent {
       </g>
     );
   }
-
 }
 
 Bars.propTypes = {
-
   /**
    * Ordinal scaleBand align property. Sets the alignment of `<Bars />`s to the to the
    * specified value which must be in the range [0, 1].
@@ -217,9 +216,9 @@ Bars.propTypes = {
    * Accessors on datum objects
    *   fill: property on datum to provide fill (will be passed to `props.colorScale`)
    *   key: unique dimension of datum (required)
-   *   shape: property on datum used to determine which type of shape to render (will be passed to `props.shapeScale`)
-   *   x: property on datum to position scatter shapes in x-direction
-   *   y: property on datum to position scatter shapes in y-direction
+   *   stack: property on datum to position bars svg element rect in x-direction
+   *   value: property on datum to position bars svg element rect in y-direction
+   *   layer: property on datum to position bars svg element rect in categorical format. (grouped/stacked)
    *
    * Each accessor can either be a string or function. If a string, it is assumed to be the name of a
    * property on datum objects; full paths to nested properties are supported (e.g., { `x`: 'values.year', ... }).
@@ -228,8 +227,9 @@ Bars.propTypes = {
   dataAccessors: PropTypes.shape({
     fill: CommonPropTypes.dataAccessor,
     key: CommonPropTypes.dataAccessor.isRequired,
-    x: CommonPropTypes.dataAccessor,
-    y: CommonPropTypes.dataAccessor,
+    stack: CommonPropTypes.dataAccessor,
+    value: CommonPropTypes.dataAccessor,
+    layer: CommonPropTypes.dataAccessor,
   }).isRequired,
 
   /**
@@ -255,6 +255,11 @@ Bars.propTypes = {
    * signature: (datum) => obj
    */
   focusedStyle: CommonPropTypes.style,
+
+  /**
+   *  Pixel height of bar chart.
+   */
+  height: PropTypes.number,
 
   /**
    * Inner ordinal scale for categorical data within a grouped bar chart.
@@ -332,6 +337,7 @@ Bars.propTypes = {
    */
   type: PropTypes.string,
 };
+
 
 Bars.defaultProps = {
   fill: 'steelblue',
