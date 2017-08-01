@@ -30,7 +30,6 @@ export default class Bar extends PureComponent {
       'onMouseMove',
       'onMouseOver'
     ]);
-
   }
 
   componentWillReceiveProps(nextProps) {
@@ -77,16 +76,16 @@ export default class Bar extends PureComponent {
     const {
       className,
       clipPathId,
-      x,
-      y,
-      rectHeight,
-      rectWidth,
       datum,
       fill,
       focused,
       focusedClassName,
+      rectHeight,
+      rectWidth,
       selected,
       selectedClassName,
+      x,
+      y,
     } = this.props;
 
     const { styles } = this.state;
@@ -117,7 +116,7 @@ export default class Bar extends PureComponent {
 
 Bar.propTypes = {
   /**
-   * Class name applied to path.
+   * Class name applied to svg element rect.
    */
   className: CommonPropTypes.className,
 
@@ -127,28 +126,9 @@ Bar.propTypes = {
    */
   clipPathId: PropTypes.string,
 
-  /**
-   * Initial x position of svg element rect.
-   */
-  x: PropTypes.number,
 
   /**
-   * Initial y position of svg element rect.
-   */
-  y: PropTypes.number,
-
-  /**
-   * Height of svg element rect.
-   */
-  rectHeight: PropTypes.number,
-
-  /**
-   * Width of svg element rect.
-   */
-  rectWidth: PropTypes.number,
-
-  /**
-   * Datum object corresponding to this svg  element rect ("bound" data, in the language in D3)
+   * Datum object corresponding to svg element rect ("bound" data, in the language in D3)
    */
   datum: PropTypes.object,
 
@@ -158,17 +138,17 @@ Bar.propTypes = {
   fill: PropTypes.string,
 
   /**
-   * Whether rect has focus.
+   * Whether svg element rect has focus.
    */
   focused: PropTypes.bool,
 
   /**
-   * Class name applied if shape has focus.
+   * Class name applied if svg element rect has focus.
    */
   focusedClassName: CommonPropTypes.className,
 
   /**
-   * Inline styles applied if rect has focus.
+   * Inline styles applied if svg element rect has focus.
    * If an object, spread directly into inline styles.
    * If a function, called with `props.datum` as argument and return value is spread into inline styles;
    * signature: (datum) => obj
@@ -200,7 +180,17 @@ Bar.propTypes = {
   onMouseOver: PropTypes.func,
 
   /**
-   * Whether shape is selected.
+   * Height of svg element rect.
+   */
+  rectHeight: PropTypes.number,
+
+  /**
+   * Width of svg element rect.
+   */
+  rectWidth: PropTypes.number,
+
+  /**
+   * Whether svg element rect is selected.
    */
   selected: PropTypes.bool,
 
@@ -224,6 +214,16 @@ Bar.propTypes = {
    * If a function, passed underlying datum corresponding to its `<Bar />`.
    */
   style: CommonPropTypes.style,
+
+  /**
+   * Initial x position of svg element rect.
+   */
+  x: PropTypes.number,
+
+  /**
+   * Initial y position of svg element rect.
+   */
+  y: PropTypes.number,
 
 };
 
@@ -250,16 +250,6 @@ Bar.defaultProps = {
 
 Bar.propUpdates = {
   // update rect if bar prop changes
-  rect: (acc, propName, prevProps, nextProps) => {
-    if (!propsChanged(prevProps, nextProps, ['data', 'dataAccessors', 'scales'])) {
-      return acc;
-    }
-
-    return {
-      ...acc,
-    };
-  },
-
   styles: (accum, propName, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, [
         'fill',
@@ -285,7 +275,7 @@ Bar.propUpdates = {
     return assign({}, accum, {
       styles,
     });
-  }
+  },
 };
 
 
