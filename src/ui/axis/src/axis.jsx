@@ -8,10 +8,12 @@ import {
   scaleLinear,
   select,
 } from 'd3';
-import assign from 'lodash/assign';
-import mean from 'lodash/mean';
-import reduce from 'lodash/reduce';
-import trim from 'lodash/trim';
+import {
+  assign,
+  mean,
+  reduce,
+  trim,
+} from 'lodash';
 
 import {
   CommonPropTypes,
@@ -20,7 +22,10 @@ import {
   stateFromPropUpdates,
 } from '../../../utils';
 
-import { calcLabelPosition, calcTranslate } from './utils';
+import {
+  calcLabelPosition,
+  calcTranslate,
+} from './utils';
 import styles from './axis.css';
 
 export const AXIS_TYPES = {
