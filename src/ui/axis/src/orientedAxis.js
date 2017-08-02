@@ -67,7 +67,7 @@ export default function orientAxis(AxisComponent, orientation) {
     ...Axis.propTypes,
 
     /**
-     * if true, will dynmically filter tick values by the available width
+     * if true, will dynamically filter tick values by the available width or height
      */
     autoFilterTickValues: PropTypes.bool,
 
@@ -86,13 +86,14 @@ export default function orientAxis(AxisComponent, orientation) {
 
     /**
      * font-family of axis ticks
-     * used when taking measurement of widest tick
+     * used when taking measurement of widest tick if autoFilterTickValues === true
      */
     tickFontFamily: PropTypes.string,
 
     /**
      * font size of axis ticks, in pixels
-     * used when taking measurement of widest tick
+     * used when taking measurement of widest tick or to determine tick height
+     * if autoFilterTickValues === true
      */
     tickFontSize: PropTypes.number,
   };
