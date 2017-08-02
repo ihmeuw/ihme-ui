@@ -1,16 +1,14 @@
-import { jsdom } from 'jsdom';
+import { JSDOM } from 'jsdom';
 
-const exposedProperties = ['window', 'navigator', 'document'];
-
-global.document = jsdom('');
-global.window = document.defaultView;
-Object.keys(document.defaultView).forEach((property) => {
-  if (typeof global[property] === 'undefined') {
-    exposedProperties.push(property);
-    global[property] = document.defaultView[property];
-  }
+const dom = new JSDOM('<!DOCTYPE html><html><head></head><body></body></html>', {
+  useAgent: 'node.js',
 });
+global.window = dom.window;
+global.document = dom.window.document;
+global.navigator = dom.window.navigator;
 
-global.navigator = {
-  userAgent: 'node.js'
-};
+// needed by interact.js
+global.Element = dom.window.Element;
+
+// needed by <Autosizer />
+global.getComputedStyle = dom.window.getComputedStyle.bind(dom.window);
