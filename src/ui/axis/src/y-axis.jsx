@@ -1,10 +1,9 @@
-import React, { PropTypes } from 'react';
+import { PropTypes } from 'react';
 import { scaleLinear } from 'd3';
-import omit from 'lodash/omit';
+import { assign } from 'lodash';
 
-import { atLeastOneOfProp, propsChanged } from '../../../utils';
-
-import Axis, { AXIS_SCALE_PROP_TYPES } from './axis';
+import Axis from './axis';
+import orientAxis, { Orientation } from './orientedAxis';
 
 /**
  * `import { YAxis } from 'ihme-ui'`
@@ -13,66 +12,13 @@ import Axis, { AXIS_SCALE_PROP_TYPES } from './axis';
  *
  * All props documented on \<Axis /> are available on \<YAxis />.
  */
-export default class YAxis extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      ...this.state,
-      scale: props.scale || props.scales.y,
-    };
-  }
+const YAxis = orientAxis(Axis, Orientation.VERTICAL);
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      scale: nextProps.scale || nextProps.scales.y,
-    });
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return propsChanged(this.props, nextProps, undefined, ['scale', 'scales']) ||
-           propsChanged(this.state, nextState);
-  }
-
-  render() {
-    const axisProps = omit(this.props, ['scale', 'scales']);
-    return (
-      <Axis
-        scale={this.state.scale}
-        {...axisProps}
-      />
-    );
-  }
-}
-
-const Y_AXIS_SCALE_PROP_TYPES = {
-  ...AXIS_SCALE_PROP_TYPES,
-  scales: PropTypes.shape({
-    x: PropTypes.func,
-    y: PropTypes.func.isRequired,
-  }).isRequired,
-};
-
-YAxis.propTypes = {
-  ...Axis.propTypes,
-
-  /**
-   * where to position axis line
-   * one of: 'left', 'right'
-   */
+YAxis.propTypes = assign({}, YAxis.propTypes, {
   orientation: PropTypes.oneOf(['left', 'right']),
+});
 
-  /**
-   * alternative to providing scales object with key 'y' and scale function as value
-   */
-  scale: atLeastOneOfProp(Y_AXIS_SCALE_PROP_TYPES),
-
-  /**
-   *  scales are provided by axis-chart, only y scale is used by YAxis
-   */
-  scales: atLeastOneOfProp(Y_AXIS_SCALE_PROP_TYPES),
-};
-
-YAxis.defaultProps = {
+YAxis.defaultProps = assign({}, YAxis.defaultProps, {
   orientation: 'left',
   scales: { y: scaleLinear() },
   width: 0,
@@ -81,4 +27,6 @@ YAxis.defaultProps = {
     left: 50,
     right: 50,
   },
-};
+});
+
+export default YAxis;

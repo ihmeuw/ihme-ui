@@ -2,15 +2,57 @@ import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { mount } from 'enzyme';
+import { range } from 'lodash';
 import { scaleLinear } from 'd3';
 
-import Axis, { XAxis, YAxis } from '../';
+import Axis from '../';
+import {
+  filterTickValuesByWidth,
+  filterTickValuesByHeight,
+} from '../src/utils';
 
 chai.use(chaiEnzyme());
 
 const dummyScale = scaleLinear();
 
 describe('<Axis />', () => {
+  describe('utils', () => {
+    const tickValues = range(0, 20);
+
+    describe('filterTickValuesByWidth', () => {
+      const tickFontSize = 12;
+      const tickFontFamily = 'Verdana';
+
+      it('returns all ticks given enough width', () => {
+        expect(filterTickValuesByWidth(tickValues, { width: 4000, tickFontSize, tickFontFamily }))
+          .to.be.an('array')
+          .of.length(tickValues.length)
+          .and.to.deep.equal(tickValues);
+      });
+
+      it('returns a filtered list of ticks given not enough width', () => {
+        expect(filterTickValuesByWidth(tickValues, { width: 10, tickFontSize, tickFontFamily }))
+          .to.be.an('array')
+          .of.length.lessThan(tickValues.length);
+      });
+    });
+
+    describe('filterTickValuesByHeight', () => {
+      it('returns all ticks given enough height', () => {
+        expect(filterTickValuesByHeight(tickValues, { height: 4000, tickFontSize: 12 }))
+          .to.be.an('array')
+          .of.length(tickValues.length)
+          .and.to.deep.equal(tickValues);
+      });
+
+      it('returns a filtered list of ticks given not enough height', () => {
+        expect(filterTickValuesByHeight(tickValues, { height: 10, tickFontSize: 12 }))
+          .to.be.an('array')
+          .of.length.lessThan(tickValues.length);
+      });
+    });
+  });
+
   describe('static methods', () => {
     describe('concatStyle', () => {
       it('reduces a styles object to a valid inline style string', () => {
@@ -85,43 +127,5 @@ describe('<Axis />', () => {
       wrapper.setProps({ translate: { x: 40, y: 40 } });
       expect(wrapper.state('translate')).to.be.deep.equal({ x: 40, y: 40 });
     });
-  });
-});
-
-describe('<XAxis />', () => {
-  it('contains an <Axis />', () => {
-    const wrapper = mount(
-      <XAxis
-        scale={dummyScale}
-      />
-    );
-    expect(wrapper).to.contain(
-      <Axis
-        height={0}
-        orientation="bottom"
-        padding={{ top: 40, bottom: 40 }}
-        scale={dummyScale}
-        width={0}
-      />
-    );
-  });
-});
-
-describe('<YAxis />', () => {
-  it('contains an <Axis />', () => {
-    const wrapper = mount(
-      <YAxis
-        scale={dummyScale}
-      />
-    );
-    expect(wrapper).to.contain(
-      <Axis
-        height={0}
-        orientation="left"
-        padding={{ left: 50, right: 50 }}
-        scale={dummyScale}
-        width={0}
-      />
-    );
   });
 });
