@@ -1,4 +1,4 @@
-import Axis, { XAxis, YAxis } from './axis';
+import Axis, { orientAxis, XAxis, YAxis } from './axis';
 import AxisChart from './axis-chart';
 import Button from './button';
 import Choropleth from './choropleth';
@@ -50,6 +50,7 @@ export {
   MultiScatter,
   MultiSelect,
   Option,
+  orientAxis,
   ResponsiveContainer,
   Scatter,
   Select,
