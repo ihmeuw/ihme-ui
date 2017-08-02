@@ -1,7 +1,18 @@
+/* global window */
+
 /**
  * Axis utils
  * @module
  */
+import {
+  map,
+  reduce,
+} from 'lodash';
+
+import {
+  choose,
+  getRenderedStringWidth,
+} from '../../../utils';
 
 /**
  * Calculate translate based on axis orientation.
@@ -76,4 +87,29 @@ export function calcLabelPosition(orientation, translate, padding, center) {
         dY: 0,
       };
   }
+}
+
+export function filterTickValuesByWidth(ticks, {
+  tickFontSize,
+  tickFontFamily,
+  tickFormat,
+  width
+}) {
+  const canvasContext = window && window.document.createElement('canvas').getContext('2d');
+
+  const widestTickLabel = reduce(map(ticks, tickFormat), (widest, tick) =>
+      Math.max(
+        widest,
+        getRenderedStringWidth(String(tick), `${tickFontSize}px ${tickFontFamily}`, canvasContext),
+      )
+    , 0);
+
+  const numTicksThatFit = Math.floor(width / widestTickLabel);
+  return choose(ticks, numTicksThatFit);
+}
+
+export function filterTickValuesByHeight(ticks, { height, tickFontSize }) {
+  const approximateFontHeight = tickFontSize * 1.5;
+  const numTicksThatFit = Math.floor(height / approximateFontHeight);
+  return choose(ticks, numTicksThatFit);
 }
