@@ -125,6 +125,7 @@ export default class ChoroplethLegend extends PureComponent {
               zoom={zoom}
             />
             <XAxis
+              autoFilterTickValues
               label={unit}
               orientation="bottom"
               scales={scatterScaleMap}
