@@ -75,7 +75,7 @@ export {
 } from './shape';
 
 export {
-  getStringWidth,
+  getRenderedStringWidth,
 } from './strings';
 
 export {
