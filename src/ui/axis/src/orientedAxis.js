@@ -117,14 +117,13 @@ export default function orientAxis(AxisComponent, orientation) {
       } = nextProps;
 
       if (!autoFilterTickValues ||
-        tickValues ||
         !propsChanged(prevProps, nextProps, ['scale', 'scales', 'width', 'height'])
       ) {
         return accum;
       }
 
       const scale = scaleProp || getValue(nextProps, AXIS_TYPE_TO_SCALE_PATH[orientation]);
-      const ticks = invoke(scale, 'ticks') || scale.domain();
+      const ticks = tickValues || invoke(scale, 'ticks') || scale.domain();
       const filterFn = AXIS_TYPE_TO_TICK_VALUE_FITLER[orientation] || identity;
 
       return assign({}, accum, {
