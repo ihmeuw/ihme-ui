@@ -1,7 +1,10 @@
 language: node_js
 
-node_js:
-  - stable
+node_js: stable
+
+os: osx
+
+osx_image: xcode8
 
 notifications:
   email: false

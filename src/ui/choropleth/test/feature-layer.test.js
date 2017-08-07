@@ -3,7 +3,7 @@ import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 import { geoPath } from 'd3';
-import { drop, find, omit } from 'lodash';
+import { drop, find, map, omit } from 'lodash';
 import { baseColorScale } from '../../../utils';
 
 import FeatureLayer from '../src/feature-layer';
@@ -16,14 +16,14 @@ chai.use(chaiEnzyme());
 describe('Choropleth <FeatureLayer />', () => {
   const features = getGeoJSON('states', 'feature').features;
 
-  const data = getLocationIds(features).reduce((map, locationId) => {
+  const data = getLocationIds(features).reduce((accum, locationId) => {
     /* eslint-disable no-param-reassign */
-    map[locationId] = {
+    accum[locationId] = {
       id: locationId,
       mean: Math.floor(Math.random() * 100)
     };
 
-    return map;
+    return accum;
     /* eslint-enable no-param-reassign */
   }, {});
 
@@ -93,12 +93,17 @@ describe('Choropleth <FeatureLayer />', () => {
   });
 
   describe('valueField', () => {
-    const featureToTest = features[0];
+    const featuresDecoratedWithData = map(features, (feature) =>
+      Object.assign({}, feature, {
+        properties: Object.assign({}, feature.properties, { mean: data[feature.id] }),
+      })
+    );
+    const featureToTest = featuresDecoratedWithData[0];
 
     it('accepts a string as valueField', () => {
       const wrapper = shallow(
         <FeatureLayer
-          features={features}
+          features={featuresDecoratedWithData}
           data={data}
           geometryKeyField="id"
           keyField="id"
@@ -113,13 +118,13 @@ describe('Choropleth <FeatureLayer />', () => {
         .find(Path)
         .filterWhere(n => n.prop('datum').id === featureToTest.id)
         .first()
-      ).to.have.prop('fill', colorScale(featureToTest.mean));
+      ).to.have.prop('fill', colorScale(featureToTest.properties.mean));
     });
 
     it('accepts a function as valueField', () => {
       const wrapper = shallow(
         <FeatureLayer
-          features={features}
+          features={featuresDecoratedWithData}
           data={data}
           geometryKeyField="id"
           keyField="id"
@@ -134,18 +139,18 @@ describe('Choropleth <FeatureLayer />', () => {
         .find(Path)
         .filterWhere(n => n.prop('datum').id === featureToTest.id)
         .first()
-      ).to.have.prop('fill', colorScale(featureToTest.mean));
+      ).to.have.prop('fill', colorScale(featureToTest.properties.mean));
     });
 
     it('has a fill color when datum value is zero', () => {
-      const testData = getLocationIds(features).reduce((map, locationId) => {
+      const testData = getLocationIds(features).reduce((accum, locationId) => {
         /* eslint-disable no-param-reassign */
-        map[locationId] = {
+        accum[locationId] = {
           id: locationId,
           mean: 0,
         };
 
-        return map;
+        return accum;
         /* eslint-enable no-param-reassign */
       }, {});
       const wrapper = shallow(
@@ -169,14 +174,14 @@ describe('Choropleth <FeatureLayer />', () => {
     });
 
     it('has a gray fill color when datum value is undefined', () => {
-      const testData = getLocationIds(features).reduce((map, locationId) => {
+      const testData = getLocationIds(features).reduce((accum, locationId) => {
         /* eslint-disable no-param-reassign */
-        map[locationId] = {
+        accum[locationId] = {
           id: locationId,
           mean: undefined,
         };
 
-        return map;
+        return accum;
         /* eslint-enable no-param-reassign */
       }, {});
       const wrapper = shallow(

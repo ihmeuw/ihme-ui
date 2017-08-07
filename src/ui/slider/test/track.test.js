@@ -24,13 +24,12 @@ describe('<Track />', () => {
   });
 
   it('renders ticks', () => {
+    const widthGetterStub = sinon.stub(Track.prototype, 'width').get(() => 50);
     const wrapper = mount(
       <Track
         ticks
       />
     );
-
-    wrapper.instance()._track.clientWidth = 50;
 
     // ticks!
     const firstSnapTarget = { x: 10 };
@@ -49,6 +48,7 @@ describe('<Track />', () => {
     expect(wrapper.find('line')).to.have.length(9);
 
     wrapper.unmount();
+    widthGetterStub.restore();
   });
 
   it('handles click events', () => {
@@ -59,7 +59,6 @@ describe('<Track />', () => {
       />
     );
 
-    wrapper.instance()._track.clientWidth = 50;
     wrapper.setProps({ snapTarget: { x: 10 } });
 
     const target = wrapper.instance()._track;

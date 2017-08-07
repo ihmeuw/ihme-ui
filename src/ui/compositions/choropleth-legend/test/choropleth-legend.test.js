@@ -41,7 +41,7 @@ describe('<ChoroplethLegend />', () => {
       width={600}
       xScale={scaleLinear()}
     />);
-    ['Scatter', 'LinearGradient', 'Slider', 'XAxis'].forEach(component => {
+    ['Scatter', 'LinearGradient', 'Slider', 'OrientedAxis'].forEach(component => {
       expect(wrapper.find(component)).to.be.present();
     });
   });

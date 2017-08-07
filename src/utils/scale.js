@@ -1,14 +1,37 @@
-import * as d3Scale from 'd3-scale';
+import {
+  scaleBand,
+  scalePoint,
+  scaleIdentity,
+  scaleLinear,
+  scaleLog,
+  scaleOrdinal,
+  scalePow,
+  scaleSqrt,
+  scaleQuantile,
+  scaleQuantize,
+  scaleSequential,
+  scaleThreshold,
+  scaleTime,
+  scaleUtc,
+} from 'd3';
 import { forOwn } from 'lodash';
 import { isWithinRange } from './index';
 
 const SCALES = {
-  ...Object.keys(d3Scale).reduce((acc, key) => {
-    if (key.match(/scale[A-Z]/)) {
-      return { ...acc, [key.toLowerCase().replace('scale', '')]: d3Scale[key] };
-    }
-    return acc;
-  }, {}),
+  band: scaleBand,
+  identity: scaleIdentity,
+  linear: scaleLinear,
+  log: scaleLog,
+  ordinal: scaleOrdinal,
+  point: scalePoint,
+  pow: scalePow,
+  quantile: scaleQuantile,
+  quantize: scaleQuantize,
+  sqrt: scaleSqrt,
+  sequential: scaleSequential,
+  threshold: scaleThreshold,
+  time: scaleTime,
+  utc: scaleUtc,
 };
 
 /**

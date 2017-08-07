@@ -1,4 +1,6 @@
-import { getStringWidth } from '../../../../utils';
+/* global window */
+
+import { getRenderedStringWidth } from '../../../../utils';
 
 /**
  *
@@ -15,7 +17,8 @@ export const getWidestLabel = (
   levelPadding = 5
 ) => {
   return options.reduce((maxWidth, option) => {
-    const labelWidth = getStringWidth(option[labelKey]);
+    const canvasContext = window && window.document.createElement('canvas').getContext('2d');
+    const labelWidth = getRenderedStringWidth(option[labelKey], '12px Verdana', canvasContext);
 
     // take padding into account for hierarchically displayed list
     const fullWidth = hierarchical

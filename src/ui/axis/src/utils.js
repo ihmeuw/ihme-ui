@@ -1,7 +1,18 @@
+/* global window */
+
 /**
  * Axis utils
  * @module
  */
+import {
+  map,
+  reduce,
+} from 'lodash';
+
+import {
+  getRenderedStringWidth,
+  takeSkipping,
+} from '../../../utils';
 
 /**
  * Calculate translate based on axis orientation.
@@ -76,4 +87,37 @@ export function calcLabelPosition(orientation, translate, padding, center) {
         dY: 0,
       };
   }
+}
+
+export function filterTickValuesByWidth(ticks, {
+  tickFontSize,
+  tickFontFamily,
+  tickFormat,
+  width
+}) {
+  let widestTickLabelLength;
+
+  try {
+    /* eslint-disable max-len */
+    const canvasContext = window && window.document.createElement('canvas').getContext('2d');
+    widestTickLabelLength = reduce(map(ticks, tickFormat), (widest, tick) =>
+        Math.max(
+          widest,
+          getRenderedStringWidth(String(tick), `${tickFontSize}px ${tickFontFamily}`, canvasContext),
+        )
+      , 0);
+    /* eslint-enable max-len */
+  } catch (err) {
+    widestTickLabelLength = reduce(map(ticks, tickFormat), (widest, tick) =>
+        Math.max(widest, String(tick).length * tickFontSize)
+      , 0);
+  }
+
+  const numTicksThatFit = Math.floor(width / widestTickLabelLength);
+  return takeSkipping(ticks, numTicksThatFit);
+}
+
+export function filterTickValuesByHeight(ticks, { height, tickFontSize }) {
+  const numTicksThatFit = Math.floor(height / tickFontSize);
+  return takeSkipping(ticks, numTicksThatFit);
 }

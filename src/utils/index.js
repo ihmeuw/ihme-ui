@@ -1,6 +1,6 @@
 export {
-  hasCrappyValues,
   linspace,
+  takeSkipping,
 } from './array';
 
 export {
@@ -75,7 +75,7 @@ export {
 } from './shape';
 
 export {
-  getStringWidth,
+  getRenderedStringWidth,
 } from './strings';
 
 export {

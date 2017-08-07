@@ -1,8 +1,10 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { scaleLinear } from 'd3';
+import { scaleBand, scaleLinear } from 'd3';
+import range from 'lodash/range';
 
 import { XAxis, YAxis } from '../';
+import { ResponsiveContainer } from '../../';
 
 const padding = {
   top: 40,
@@ -11,15 +13,13 @@ const padding = {
   bottom: 40,
 };
 
-const width = 950;
-const height = 500;
-
-function App() {
+function App({ width, height }) {
   return (
     <svg width={`${width}px`} height={`${height}px`}>
       <g transform={`translate(${padding.left}, ${padding.top})`}>
         <XAxis
-          scale={scaleLinear().domain([1970, 2010]).range([0, width - (padding.right + padding.left)])}
+          autoFilterTickValues
+          scale={scaleBand().domain(range(1970, 2011)).range([0, width - (padding.right + padding.left)])}
           width={width - (padding.right + padding.left)}
           height={height - (padding.bottom + padding.top)}
           orientation="top"
@@ -27,7 +27,8 @@ function App() {
           padding={padding}
         />
         <XAxis
-          scale={scaleLinear().domain([1970, 2010]).range([0, width - (padding.right + padding.left)])}
+          autoFilterTickValues
+          scale={scaleBand().domain(range(1970, 2011)).range([0, width - (padding.right + padding.left)])}
           // translate={{ x: 0, y: 600 - (padding.bottom + padding.top) }}
           width={width - (padding.right + padding.left)}
           height={height - (padding.bottom + padding.top)}
@@ -36,6 +37,7 @@ function App() {
           padding={padding}
         />
         <YAxis
+          autoFilterTickValues
           scale={scaleLinear().range([height - (padding.bottom + padding.top), 0])}
           width={width - (padding.right + padding.left)}
           height={height - (padding.bottom + padding.top)}
@@ -44,6 +46,7 @@ function App() {
           padding={padding}
         />
         <YAxis
+          autoFilterTickValues
           scale={scaleLinear().domain([0, 100]).range([height - (padding.bottom + padding.top), 0])}
           width={width - (padding.right + padding.left)}
           height={height - (padding.bottom + padding.top)}
@@ -56,4 +59,4 @@ function App() {
   );
 }
 
-render(<App />, document.getElementById('app'));
+render(<ResponsiveContainer><App /></ResponsiveContainer>, document.getElementById('app'));
