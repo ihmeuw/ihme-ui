@@ -118,7 +118,6 @@ export function filterTickValuesByWidth(ticks, {
 }
 
 export function filterTickValuesByHeight(ticks, { height, tickFontSize }) {
-  const approximateFontHeight = tickFontSize * 1.5;
-  const numTicksThatFit = Math.floor(height / approximateFontHeight);
+  const numTicksThatFit = Math.floor(height / tickFontSize);
   return takeSkipping(ticks, numTicksThatFit);
 }
