@@ -2,7 +2,7 @@
 import { expect } from 'chai';
 import { range } from 'lodash';
 import {
-  choose,
+  takeSkipping,
   linspace,
 } from '../index';
 
@@ -46,7 +46,7 @@ describe('array helpers', () => {
     });
   });
 
-  describe('choose', () => {
+  describe('takeSkipping', () => {
     it('odd length list, odd target length', () => {
       const tests = [
         { list: [3, 5, 9], length: 3, expect: [3, 5, 9] },
@@ -54,7 +54,7 @@ describe('array helpers', () => {
       ];
 
       tests.forEach((test) => {
-        expect(choose(test.list, test.length))
+        expect(takeSkipping(test.list, test.length))
           .to.be.an('array')
           .and.to.deep.equal(test.expect);
       });
@@ -68,7 +68,7 @@ describe('array helpers', () => {
       ];
 
       tests.forEach((test) => {
-        expect(choose(test.list, test.length))
+        expect(takeSkipping(test.list, test.length))
           .to.be.an('array')
           .and.to.deep.equal(test.expect);
       });
@@ -81,7 +81,7 @@ describe('array helpers', () => {
       ];
 
       tests.forEach((test) => {
-        expect(choose(test.list, test.length))
+        expect(takeSkipping(test.list, test.length))
           .to.be.an('array')
           .and.to.deep.equal(test.expect);
       });
@@ -94,19 +94,19 @@ describe('array helpers', () => {
       ];
 
       tests.forEach((test) => {
-        expect(choose(test.list, test.length))
+        expect(takeSkipping(test.list, test.length))
           .to.be.an('array')
           .and.to.deep.equal(test.expect);
       });
     });
 
     it('returns list if target length is greater than list length', () => {
-      expect(choose([3, 5, 7, 9], 10))
+      expect(takeSkipping([3, 5, 7, 9], 10))
         .to.deep.equal([3, 5, 7, 9]);
     });
 
     it('returns first and last elements if target is 2 and list length is greater than 2', () => {
-      expect(choose(range(51), 2)).to.deep.equal([0, 50]);
+      expect(takeSkipping(range(51), 2)).to.deep.equal([0, 50]);
     });
   });
 });

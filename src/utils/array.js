@@ -24,12 +24,12 @@ export function linspace(domain, length) {
 }
 
 /**
- * filter list of elements to length equal to or less than maxLength
+ * Takes every nth item from an array, where n determined as a ratio of array.length and maxLength
  * @param {array} list
  * @param {number} maxLength
  * @return {array}
  */
-export function choose(list, maxLength) {
+export function takeSkipping(list, maxLength) {
   // if can only choose 2 items, choose first and last element
   if (maxLength === 2 && list.length > 2) {
     return [list[0], list[list.length - 1]];

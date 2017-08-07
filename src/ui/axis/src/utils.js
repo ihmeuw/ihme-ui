@@ -10,8 +10,8 @@ import {
 } from 'lodash';
 
 import {
-  choose,
   getRenderedStringWidth,
+  takeSkipping,
 } from '../../../utils';
 
 /**
@@ -105,11 +105,11 @@ export function filterTickValuesByWidth(ticks, {
     , 0);
 
   const numTicksThatFit = Math.floor(width / widestTickLabel);
-  return choose(ticks, numTicksThatFit);
+  return takeSkipping(ticks, numTicksThatFit);
 }
 
 export function filterTickValuesByHeight(ticks, { height, tickFontSize }) {
   const approximateFontHeight = tickFontSize * 1.5;
   const numTicksThatFit = Math.floor(height / approximateFontHeight);
-  return choose(ticks, numTicksThatFit);
+  return takeSkipping(ticks, numTicksThatFit);
 }

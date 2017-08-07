@@ -1,6 +1,6 @@
 export {
-  choose,
   linspace,
+  takeSkipping,
 } from './array';
 
 export {
