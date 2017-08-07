@@ -95,16 +95,25 @@ export function filterTickValuesByWidth(ticks, {
   tickFormat,
   width
 }) {
-  const canvasContext = window && window.document.createElement('canvas').getContext('2d');
+  let widestTickLabelLength;
 
-  const widestTickLabel = reduce(map(ticks, tickFormat), (widest, tick) =>
-      Math.max(
-        widest,
-        getRenderedStringWidth(String(tick), `${tickFontSize}px ${tickFontFamily}`, canvasContext),
-      )
-    , 0);
+  try {
+    /* eslint-disable max-len */
+    const canvasContext = window && window.document.createElement('canvas').getContext('2d');
+    widestTickLabelLength = reduce(map(ticks, tickFormat), (widest, tick) =>
+        Math.max(
+          widest,
+          getRenderedStringWidth(String(tick), `${tickFontSize}px ${tickFontFamily}`, canvasContext),
+        )
+      , 0);
+    /* eslint-enable max-len */
+  } catch (err) {
+    widestTickLabelLength = reduce(map(ticks, tickFormat), (widest, tick) =>
+        Math.max(widest, String(tick).length * tickFontSize)
+      , 0);
+  }
 
-  const numTicksThatFit = Math.floor(width / widestTickLabel);
+  const numTicksThatFit = Math.floor(width / widestTickLabelLength);
   return takeSkipping(ticks, numTicksThatFit);
 }
 
