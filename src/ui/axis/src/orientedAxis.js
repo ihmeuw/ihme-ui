@@ -55,9 +55,9 @@ export default function orientAxis(AxisComponent, orientation) {
       const axisProps = omit(this.props, ['scale', 'scales']);
       return (
         <AxisComponent
+          {...axisProps}
           tickValues={this.state.tickValues}
           scale={this.props.scale || getValue(this.props, AXIS_TYPE_TO_SCALE_PATH[orientation])}
-          {...axisProps}
         />
       );
     }
