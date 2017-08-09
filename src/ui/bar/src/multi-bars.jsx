@@ -56,17 +56,17 @@ export default class MultiBars extends PureComponent {
       key: keyField
     } = fieldAccessors;
 
+    // If stacked bar chart, the data must be transformed using d3.stack() function.
     const plotData = stacked ? stackedDataArray(data, layerField, valueField, stackField, dataField,layerDomain) : data;
 
+    // Updates specific domains for each type of bar chart
     if (stacked) {
       const stackedDomain = [0, max(plotData, (data) => { return max(data, (d) => { return d[1]; }); })];
       const linear = (isVertical(orientation) ? scales.y : scales.x);
       linear.domain(stackedDomain);
-
-    } else { // grouped bar chart type
+    } else {
       const ordinal = (isVertical(orientation) ? scales.x : scales.y);
       layerOrdinal.domain(layerDomain).range([0, ordinal.bandwidth()]);
-
     }
 
     const childProps = pick(this.props, [

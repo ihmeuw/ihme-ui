@@ -21,6 +21,7 @@ import {
   propsChanged,
   PureComponent,
   stateFromPropUpdates,
+  getRenderingProps,
 } from '../../../utils';
 
 import Bar from './bar';
@@ -77,12 +78,12 @@ export default class Bars extends PureComponent {
       'selectedStyle',
     ]);
 
-    // Base on orientation, the input scales are different.
+    // Given the orientation, set the scales accordingly for the x & y axis
     const ordinal = (isVertical(orientation) ? scales.x : scales.y);
     const linear = (isVertical(orientation) ? scales.y : scales.x);
 
 
-    // Checks padding properties and sets it accordingly.
+    // Check the padding properties and sets it accordingly.
     if (bandPaddingOuter) {
       ordinal.paddingOuter(bandPaddingOuter);
     } else if (bandPaddingInner) {
@@ -109,43 +110,22 @@ export default class Bars extends PureComponent {
 
             const yValue = propResolver(datum, !stacked ? dataAccessors.value : 1);
 
-            const xPosition =
-                          !isVertical(orientation) && !stacked ? 0 :
-                            isVertical(orientation) && !grouped ? ordinal(xValue) :
-                            stacked ? linear(datum[0]) : layerOrdinal(xValue);
-
-            const yPosition =
-                          isVertical(orientation) && !stacked ? linear(yValue) :
-                            !isVertical(orientation) && !grouped ? ordinal(xValue) :
-                            stacked ? linear(datum[1]) : layerOrdinal(yValue);
-
-
-            const barHeight =
-                          isVertical(orientation) && !stacked ? height - linear(yValue) :
-                            !isVertical(orientation) && !grouped ? ordinal.bandwidth() :
-                            stacked ? linear(datum[0]) - linear(yValue) : layerOrdinal.bandwidth();
-
-            const barWidth =
-                          isVertical(orientation) && !grouped ? ordinal.bandwidth() :
-                            isVertical(orientation) && grouped ? layerOrdinal.bandwidth() :
-                            !isVertical(orientation) && grouped ? linear(xValue) :
-                            !isVertical(orientation) && stacked ? linear(yValue) - linear(datum[0]) : linear(yValue);
+            const renderingProps = getRenderingProps(datum, orientation, stacked, grouped, ordinal, linear, layerOrdinal,
+                                                  xValue, yValue, height);
 
             return (
               <Bar
                 className={rectClassName}
                 key={key}
                 datum={datum}
-                x={xPosition}
-                y={yPosition}
-                rectHeight={barHeight}
-                rectWidth={barWidth}
+                x={renderingProps.xPosition}
+                y={renderingProps.yPosition}
+                rectHeight={renderingProps.barHeight}
+                rectWidth={renderingProps.barWidth}
                 fill={colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill}
                 focused={focusedDatumKey === key}
                 selected={selectedDataMappedToKeys.hasOwnProperty(key)}
                 style={rectStyle}
-                // translateX={isVertical(orientation) && isFinite(xValue) ? ordinal(xValue) : 0}
-                // translateY={isVertical(orientation) && isFinite(yValue) ? 0 : ordinal(yValue)}
                 {...childProps}
               />
             );

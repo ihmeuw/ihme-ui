@@ -9,6 +9,7 @@ export {
   stackedDataArray,
   stacked,
   grouped,
+  getRenderingProps,
 } from './bar';
 
 export {

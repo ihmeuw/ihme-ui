@@ -36,6 +36,40 @@ export function stackedDataArray(obj, xField, yField, otherField, dataField, xDo
 
 }
 
+// Logic behind which values to be computed given the configuration of the bar chart
+export function getRenderingProps(datum, orientation, stacked, grouped, ordinal, linear, layerOrdinal,
+                                  xValue, yValue, height) {
+  const result = {};
+
+  const xPosition =
+    !isVertical(orientation) && !stacked ? 0 :
+      isVertical(orientation) &&  !grouped ? ordinal(xValue) :
+        stacked ? linear(datum[0]) : layerOrdinal(xValue);
+
+  const yPosition =
+    isVertical(orientation) && !stacked ? linear(yValue) :
+      !isVertical(orientation) && !grouped ? ordinal(xValue) :
+        stacked ? linear(datum[1]) : layerOrdinal(yValue);
+
+  const barHeight =
+    isVertical(orientation) && !stacked ? height - linear(yValue) :
+      !isVertical(orientation) && !grouped ? ordinal.bandwidth() :
+        stacked ? linear(datum[0]) - linear(yValue) : layerOrdinal.bandwidth();
+
+  const barWidth =
+    isVertical(orientation) && !grouped ? ordinal.bandwidth() :
+      isVertical(orientation) && grouped ? layerOrdinal.bandwidth() :
+        !isVertical(orientation) && grouped ? linear(xValue) :
+          !isVertical(orientation) && stacked ? linear(yValue) - linear(datum[0]) : linear(yValue);
+
+  result.xPosition = xPosition;
+  result.yPosition = yPosition;
+  result.barHeight = barHeight;
+  result.barWidth = barWidth;
+
+  return result;
+}
+
 export function stacked(props) {
   return Object.prototype.hasOwnProperty.call(props, 'stacked');
 }
