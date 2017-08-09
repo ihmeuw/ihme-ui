@@ -40,14 +40,11 @@ export default class MultiBars extends PureComponent {
       scales,
       selection,
       style,
-      type,
       stacked,
       grouped,
     } = this.props;
 
     const {
-      fill: fillField,
-      key: keyIterator,
       layer: layerField,
       value: valueField,
       stack: stackField,
@@ -91,7 +88,6 @@ export default class MultiBars extends PureComponent {
       'scales',
       'rectClassName',
       'rectStyle',
-      'type',
       'stacked',
       'grouped',
     ]);
@@ -103,7 +99,7 @@ export default class MultiBars extends PureComponent {
         style={this.combineStyles(style, data)}
       >
         {
-          map(plotData, (datum) => {
+          map(plotData, (datum) => { // change to data
             const key = propResolver(datum, keyField);
             const values = stacked ? datum : propResolver(datum, dataField);
             const color = colorScale(colorField ? propResolver(datum, colorField) : key);
@@ -165,8 +161,9 @@ MultiBars.propTypes = {
    * Accessors on datum objects
    *   fill: property on datum to provide fill (will be passed to `props.colorScale`)
    *   key: unique dimension of datum (required)
-   *   x: property on datum to position scatter shapes in x-direction
-   *   y: property on datum to position scatter shapes in y-direction
+   *   stack: property on datum to position bars svg element rect in x-direction
+   *   value: property on datum to position bars svg element rect in y-direction
+   *   layer: property on datum to position bars svg element rect in categorical format. (grouped/stacked)
    *
    * Each accessor can either be a string or function. If a string, it is assumed to be the name of a
    * property on datum objects; full paths to nested properties are supported (e.g., { `x`: 'values.year', ... }).
@@ -174,10 +171,10 @@ MultiBars.propTypes = {
    */
   dataAccessors: PropTypes.shape({
     fill: CommonPropTypes.dataAccessor,
-    key: CommonPropTypes.dataAccessor,
+    key: CommonPropTypes.dataAccessor.isRequired,
     stack: CommonPropTypes.dataAccessor,
-    layer: CommonPropTypes.dataAccessor,
     value: CommonPropTypes.dataAccessor,
+    layer: CommonPropTypes.dataAccessor,
   }).isRequired,
 
   /**
@@ -286,13 +283,6 @@ MultiBars.propTypes = {
    * inline style applied to outermost wrapping `<g>`
    */
   style: CommonPropTypes.style,
-
-  /**
-   * Type of bar chart to be created.
-   * Default is a simple vertically oriented bar graph. Options for grouped and
-   * stacked are also supported.
-   */
-  type: PropTypes.string,
 
 };
 

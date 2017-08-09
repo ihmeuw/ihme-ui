@@ -12,6 +12,7 @@ const populationField = 'population';
 const locationField = 'location';
 
 import Bars from '../src/bars';
+import Bar from '../src/bar';
 
 const data = dataGenerator({
   primaryKeys: [
@@ -38,6 +39,9 @@ const yearFieldDomain = map(uniqBy(data, yearField), (obj) => { return (obj[year
 const locationFieldDomain = map(uniqBy(locationData, locationField), (obj) => { return (obj[locationField]); });
 const colorScale = scaleOrdinal(schemeCategory10);
 
+
+console.log(data.filter((datum) => { return datum.location === 'India'; }));
+console.log(locationData);
 
 
 // const dataStacked = stack().keys(yearFieldDomain)(stackedData);
@@ -107,8 +111,8 @@ class App extends React.Component {
          dataAccessors={{
          fill: yearField,
          key: 'id',
-         stack: yearField,    // year_id
-         value: populationField   // population
+         stack: yearField,    // x field
+         value: populationField   // y field
          }}
          focus={this.state.focus}
          onClick={this.onClick}
@@ -278,7 +282,6 @@ class App extends React.Component {
           fieldAccessors={{
             data: 'values',
             key: 'location',
-
           }}
           focus={this.state.focus}
           focusedStyle={{

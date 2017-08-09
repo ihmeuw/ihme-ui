@@ -101,8 +101,8 @@ export default class Bars extends PureComponent {
         {
           map(sortedData, (datum) => {
             const key = stacked ? propResolver(datum.data, dataAccessors.key) : propResolver(datum, dataAccessors.key);
-            const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x);
-            const focusedDatumKey = focus ? propResolver(focus, dataAccessors.key) : null;
+            const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.stack); // take a look at later
+            const focusedDatumKey = focus && propResolver(focus, dataAccessors.key);
 
             const xValue = grouped ? propResolver(datum, dataAccessors.layer) :
               stacked ? propResolver(datum.data, dataAccessors.stack) : propResolver(datum, dataAccessors.stack);
@@ -363,7 +363,7 @@ Bars.propUpdates = {
     });
   },
   sortedData: (state, _, prevProps, nextProps) => {
-    /* eslint-disable max-len, eqeqeq */
+
     if (!propsChanged(prevProps, nextProps, ['selection', 'data'])) return state;
     const keyField = nextProps.dataAccessors.key;
     return assign({}, state, {
@@ -372,7 +372,7 @@ Bars.propUpdates = {
       // similar to, in a path click handler, doing a this.parentNode.appendChild(this)
       sortedData: sortBy(nextProps.data, (datum) =>
         findIndex(nextProps.selection, (selected) =>
-          propResolver(datum, keyField) == propResolver(selected, keyField)
+          propResolver(datum, keyField) === propResolver(selected, keyField) // test case for stable sort and for when selected is last
         )
       ),
     });
