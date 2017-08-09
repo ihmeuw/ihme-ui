@@ -134,7 +134,6 @@ describe('<Bars />', () => {
     shallow(component).find(Bar).forEach(assertion)
   });
 
-
   it('selects a bar', () => {
     const wrapper = shallow(component);
     expect(wrapper.find({ selected: true })).to.have.length(2);
@@ -157,102 +156,6 @@ describe('<Bars />', () => {
     shallow(component).find(Bar).forEach(assertion)
 
   });
-
-  describe('dataAccessors', () => {
-    const stringAccessors = {
-      fill: 'population',
-      key: 'id',
-      stack: 'year_id',
-      value: 'population',
-    };
-
-    const spyMap = {
-      fill: {
-        spy: sinon.spy(colorScale),
-        accessor: stringAccessors.fill,
-      },
-      x: {
-        spy: sinon.spy(ordinalScale),
-        accessor: stringAccessors.stack,
-      },
-      y: {
-        spy: sinon.spy(linearScale),
-        accessor: stringAccessors.value,
-      }
-    };
-
-    beforeEach(() => {
-      forEach(spyMap, (spyConfig) => {
-        spyConfig.spy.reset();
-      });
-    });
-
-    console.log(spyMap);
-
-    it('uses property access if a dataAccessor is not a function', () => {
-      const wrapper = shallow(
-        <Bars
-          colorScale={spyMap.fill.spy}
-          data={dataFiltered}
-          dataAccessors={stringAccessors}
-          scales={{ x: spyMap.x.spy, y: spyMap.y.spy}}
-        />
-      );
-
-      const assertion = (bar, idx) => {
-        expect(bar).to.have.prop('fill').that.is.a('string');
-
-        forEach(spyMap, (spyConfig, key) => {
-          if(!spyConfig.spy.called) {
-            throw new Error(`${key} spy not called; ${bar.prop(spyConfig.prop)}`);
-          }
-
-          const spyCall = spyConfig.spy.getCall(idx);
-          const barDatum = bar.prop('datum');
-
-          // needs fixing
-          // console.log(barDatum);
-          // console.log(spyConfig.accessor);
-          // console.log(spyCall.calledWith(barDatum[spyConfig.accessor]));
-
-          // Not always true
-          // expect(spyCall.calledWith(barDatum[spyMap.accessor])).to.be.true;
-        });
-      };
-      wrapper.find(Bar).forEach(assertion);
-    });
-
-  it('accepts a function of plotDatum as a dataAccessor', () => {
-      const wrapper = shallow(
-        <Bars
-          colorScale={spyMap.fill.spy}
-          data={data}
-          dataAccessors={{
-            fill: (d) => d.population,
-            key: (d) => d.id,
-            x: (d) => d.year_id,
-            y: (d) => d.population,
-          }}
-          scales={{ x: spyMap.x.spy, y: spyMap.y.spy}}
-
-        />);
-
-      const assertion = (bar, idx) => {
-        expect(bar).to.have.prop('fill').that.is.a('string');
-
-        forEach(spyMap, (spyConfig, key) => {
-          if (!spyConfig.spy.called) {
-            throw new Error(`${key} spy not called; ${bar.prop(spyConfig.prop)}`);
-          }
-          const spyCall = spyConfig.spy.getCall(idx);
-          const barDatum = bar.prop('datum');
-          // expect(spyCall.calledWith(barDatum[spyConfig.accessor])).to.be.true;
-        });
-      };
-      wrapper.find(Bar).forEach(assertion);
-    });
-  });
-
 
   describe('selection', () => {
     it('renders selected bar last', () => {
