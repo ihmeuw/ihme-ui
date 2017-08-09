@@ -99,7 +99,7 @@ export default class MultiBars extends PureComponent {
         style={this.combineStyles(style, data)}
       >
         {
-          map(plotData, (datum) => { // change to data
+          map(plotData, (datum) => {
             const key = propResolver(datum, keyField);
             const values = stacked ? datum : propResolver(datum, dataField);
             const color = colorScale(colorField ? propResolver(datum, colorField) : key);
