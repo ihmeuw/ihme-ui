@@ -15,6 +15,7 @@ export {
   stackedDataArray,
   stacked,
   grouped,
+  getPlotValue,
   getRenderingProps,
 } from './bar';
 
