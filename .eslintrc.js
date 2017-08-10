@@ -9,7 +9,9 @@ module.exports = {
     "comma-dangle": 0,
     "no-underscore-dangle": [2, { "allowAfterThis": true }],
     "arrow-body-style": [1, "as-needed"],
-    "max-len": [2, 100, 2, { "ignoreUrls": true, "ignoreComments": true }]
+    "max-len": [2, 100, 2, { "ignoreUrls": true, "ignoreComments": true }],
+    "array-callback-return": 1,
+    "no-nested-ternary": 1,
   },
   "env": {
     "browser": true,
