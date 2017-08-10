@@ -2,8 +2,6 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import assign from 'lodash/assign';
 import bindAll from 'lodash/bindAll';
-import { scaleOrdinal } from 'd3';
-
 import {
   combineStyles,
   CommonDefaultProps,
@@ -94,9 +92,9 @@ export default class Bar extends PureComponent {
       <g>
         <rect
           className={classNames(className, {
-             [selectedClassName]: selected && selectedClassName,
-             [focusedClassName]: focused && focusedClassName,
-           }) || (void 0)}
+            [selectedClassName]: selected && selectedClassName,
+            [focusedClassName]: focused && focusedClassName,
+          }) || (void 0)}
           x={x}
           y={y}
           height={rectHeight}
@@ -252,13 +250,13 @@ Bar.propUpdates = {
   // update rect if bar prop changes
   styles: (accum, propName, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, [
-        'fill',
-        'focused',
-        'focusedStyle',
-        'selected',
-        'selectedStyle',
-        'style',
-      ])) {
+      'fill',
+      'focused',
+      'focusedStyle',
+      'selected',
+      'selectedStyle',
+      'style',
+    ])) {
       return accum;
     }
 
@@ -277,6 +275,3 @@ Bar.propUpdates = {
     });
   },
 };
-
-
-

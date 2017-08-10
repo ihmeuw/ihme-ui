@@ -2,9 +2,8 @@ import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
-import sinon from 'sinon';
-import { drop, forEach, minBy, maxBy, uniqBy, map } from 'lodash';
-import { schemeCategory10, scaleLinear, scaleBand, scaleOrdinal } from 'd3';
+import { drop, minBy, maxBy, uniqBy, map } from 'lodash';
+import { scaleLinear, scaleBand } from 'd3';
 import { dataGenerator } from '../../../utils';
 
 import { Bars, Bar } from '../';
@@ -12,43 +11,31 @@ import { Bars, Bar } from '../';
 chai.use(chaiEnzyme());
 
 describe('<Bars />', () => {
-    const yearField = 'year_id';
-    const populationField = 'population';
-    const locationField = 'location';
+  const yearField = 'year_id';
+  const populationField = 'population';
 
-    const data = dataGenerator({
+  const data = dataGenerator({
     primaryKeys: [
-      { name: 'location', values: ['Brazil', 'Russia', 'India', 'China', 'Mexico', 'Indonesia', 'Nigeria', 'Vietnam'] }
+      { name: 'location', values: ['Brazil', 'Russia', 'India', 'China', 'Mexico',
+        'Indonesia', 'Nigeria', 'Vietnam'] }
     ],
     valueKeys: [
       { name: populationField, range: [100, 900], uncertainty: true }
     ]
   });
 
-  const locationData = [
-    { location: 'Brazil', values: data.filter((datum) => { return datum.location === 'Brazil'; }) },
-    { location: 'Russia', values: data.filter((datum) => { return datum.location === 'Russia'; }) },
-    { location: 'India', values: data.filter((datum) => { return datum.location === 'India'; }) },
-    { location: 'China', values: data.filter((datum) => { return datum.location === 'China'; }) },
-    { location: 'Mexico', values: data.filter((datum) => { return datum.location === 'Mexico'; }) },
-    { location: 'Indonesia', values: data.filter((datum) => { return datum.location === 'Indonesia'; }) },
-    { location: 'Nigeria', values: data.filter((datum) => { return datum.location === 'Nigeria'; }) },
-    { location: 'Vietnam', values: data.filter((datum) => { return datum.location === 'Vietnam'; }) }
-  ];
-
   const chartDimensions = {
     width: 600,
     height: 400
   };
 
-  const populationFieldDomain = [minBy(data, populationField)[populationField], maxBy(data, populationField)[populationField]];
+  const populationFieldDomain =
+    [minBy(data, populationField)[populationField], maxBy(data, populationField)[populationField]];
   const yearFieldDomain = map(uniqBy(data, yearField), (obj) => { return (obj[yearField]); });
-  const locationFieldDomain = map(uniqBy(locationData, locationField), (obj) => { return (obj[locationField]); });
-  const colorScale = scaleLinear().domain(populationFieldDomain).range(['#fc8d59', '#ffffbf', '#91bfdb']);
-
 
   const ordinalScale = scaleBand().domain(yearFieldDomain).range([0, chartDimensions.width]);
-  const linearScale = scaleLinear().domain(populationFieldDomain).range([chartDimensions.height, 0]);
+  const linearScale =
+    scaleLinear().domain(populationFieldDomain).range([chartDimensions.height, 0]);
 
   const dataAccessors = {
     key: 'id',
@@ -61,8 +48,8 @@ describe('<Bars />', () => {
   const component = (
     <Bars
       data={dataFiltered}
-      dataAccessors={ dataAccessors }
-      scales={{ x:ordinalScale, y:linearScale }}
+      dataAccessors={dataAccessors}
+      scales={{ x: ordinalScale, y: linearScale }}
       fill="steelblue"
       focus={dataFiltered[2]}
       focusedClassName="focused"
@@ -131,7 +118,7 @@ describe('<Bars />', () => {
       });
     };
 
-    shallow(component).find(Bar).forEach(assertion)
+    shallow(component).find(Bar).forEach(assertion);
   });
 
   it('selects a bar', () => {
@@ -152,9 +139,7 @@ describe('<Bars />', () => {
       expect(bar).to.have.prop('rectHeight').that.is.a('number');
       expect(bar).to.have.prop('rectWidth').that.is.a('number');
     };
-
-    shallow(component).find(Bar).forEach(assertion)
-
+    shallow(component).find(Bar).forEach(assertion);
   });
 
   describe('selection', () => {
@@ -251,5 +236,4 @@ describe('<Bars />', () => {
       expect(initialState).to.equal(wrapper.state('sortedData'));
     });
   });
-
 });

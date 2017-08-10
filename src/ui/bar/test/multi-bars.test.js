@@ -17,7 +17,9 @@ describe('<MultiBars />', () => {
 
   const data = dataGenerator({
     primaryKeys: [
-      { name: 'location', values: ['Brazil', 'Russia', 'India', 'China', 'Mexico', 'Indonesia', 'Nigeria', 'Vietnam'] }
+      { name: 'location',
+        values: ['Brazil', 'Russia', 'India', 'China', 'Mexico', 'Indonesia', 'Nigeria',
+          'Vietnam'] }
     ],
     valueKeys: [
       { name: populationField, range: [100, 900], uncertainty: true }
@@ -25,14 +27,30 @@ describe('<MultiBars />', () => {
   });
 
   const locationData = [
-    { location: 'Brazil', values: data.filter((datum) => { return datum.location === 'Brazil'; }) },
-    { location: 'Russia', values: data.filter((datum) => { return datum.location === 'Russia'; }) },
-    { location: 'India', values: data.filter((datum) => { return datum.location === 'India'; }) },
-    { location: 'China', values: data.filter((datum) => { return datum.location === 'China'; }) },
-    { location: 'Mexico', values: data.filter((datum) => { return datum.location === 'Mexico'; }) },
-    { location: 'Indonesia', values: data.filter((datum) => { return datum.location === 'Indonesia'; }) },
-    { location: 'Nigeria', values: data.filter((datum) => { return datum.location === 'Nigeria'; }) },
-    { location: 'Vietnam', values: data.filter((datum) => { return datum.location === 'Vietnam'; }) }
+    { location: 'Brazil', values: data.filter((datum) => {
+      return datum.location === 'Brazil';
+    }) },
+    { location: 'Russia', values: data.filter((datum) => {
+      return datum.location === 'Russia';
+    }) },
+    { location: 'India', values: data.filter((datum) => {
+      return datum.location === 'India';
+    }) },
+    { location: 'China', values: data.filter((datum) => {
+      return datum.location === 'China';
+    }) },
+    { location: 'Mexico', values: data.filter((datum) => {
+      return datum.location === 'Mexico';
+    }) },
+    { location: 'Indonesia', values: data.filter((datum) => {
+      return datum.location === 'Indonesia';
+    }) },
+    { location: 'Nigeria', values: data.filter((datum) => {
+      return datum.location === 'Nigeria';
+    }) },
+    { location: 'Vietnam', values: data.filter((datum) => {
+      return datum.location === 'Vietnam';
+    }) }
   ];
 
   const chartDimensions = {
@@ -40,22 +58,17 @@ describe('<MultiBars />', () => {
     height: 400,
   };
 
-  const populationFieldDomain = [minBy(data, populationField)[populationField], maxBy(data, populationField)[populationField]];
+  const populationFieldDomain =
+    [minBy(data, populationField)[populationField], maxBy(data, populationField)[populationField]];
   const yearFieldDomain = map(uniqBy(data, yearField), (obj) => { return (obj[yearField]); });
-  const locationFieldDomain = map(uniqBy(locationData, locationField), (obj) => { return (obj[locationField]); });
+  const locationFieldDomain =
+    map(uniqBy(locationData, locationField), (obj) => { return (obj[locationField]); });
   const colorScale = scaleOrdinal(schemeCategory10);
 
 
   const ordinalScale = scaleBand().domain(locationFieldDomain).range([0, chartDimensions.width]);
-  const linearScale = scaleLinear().domain(populationFieldDomain).range([chartDimensions.height, 0]);
-
-  const dataAccessors = {
-    fill: yearField,
-    key: 'id',
-    stack: locationField,
-    layer: yearField,
-    value: populationField,
-  };
+  const linearScale =
+    scaleLinear().domain(populationFieldDomain).range([chartDimensions.height, 0]);
 
   const component = (
     <MultiBars
@@ -84,7 +97,7 @@ describe('<MultiBars />', () => {
       scatterClassName="scatter"
       scatterStyle={{ pointerEvents: 'none' }}
       layerDomain={yearFieldDomain}
-      scales={{ x: ordinalScale, y: linearScale}}
+      scales={{ x: ordinalScale, y: linearScale }}
       shapeClassName="symbol"
       style={{ strokeWeight: 2 }}
       stacked
