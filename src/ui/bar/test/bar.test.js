@@ -9,8 +9,8 @@ import { Bar } from '../';
 chai.use(chaiEnzme());
 
 describe('<Bar />', () => {
-  it('renders a svg rect element that represents one bar',  () => {
-    const wrapper = shallow( <Bar /> );
+  it('renders a svg rect element that represents one bar', () => {
+    const wrapper = shallow(<Bar />);
     expect(wrapper).to.have.descendants('g');
     expect(wrapper).to.have.descendants('rect');
     expect(wrapper.find('rect'))
@@ -149,7 +149,7 @@ describe('<Bar />', () => {
     });
   });
 
-  describe('classnames',  () => {
+  describe('classnames', () => {
     const wrapper = shallow(
       <Bar
         className="base-classname"
@@ -182,9 +182,7 @@ describe('<Bar />', () => {
     });
   });
 
-
   describe('events', () => {
-
     const eventHandler = sinon.spy();
 
     it(`calls onClick, mouseDown, mouseMove, mouseOut, and mouseOver 
@@ -208,13 +206,12 @@ describe('<Bar />', () => {
       };
 
       const inst = wrapper.instance();
-      ['click', 'mouseLeave', 'mouseMove', 'mouseOver'].forEach((evtName) => {
+      ['click', 'mouseLeave', 'mouseMove', 'mouseOver'].forEach((eventName) => {
         eventHandler.reset();
-        wrapper.find('rect').simulate(evtName, event);
+        wrapper.find('rect').simulate(eventName, event);
         expect(eventHandler.calledOnce).to.be.true;
         expect(eventHandler.calledWith(event, datum, inst)).to.be.true;
       });
     });
   });
-
 });

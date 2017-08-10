@@ -41,7 +41,6 @@ export default class MultiBars extends PureComponent {
       selection,
       style,
       stacked,
-      grouped,
     } = this.props;
 
     const {
@@ -57,11 +56,13 @@ export default class MultiBars extends PureComponent {
     } = fieldAccessors;
 
     // If stacked bar chart, the data must be transformed using d3.stack() function.
-    const plotData = stacked ? stackedDataArray(data, layerField, valueField, stackField, dataField,layerDomain) : data;
+    const plotData = stacked ?
+      stackedDataArray(data, layerField, valueField, stackField, dataField, layerDomain) : data;
 
     // Updates specific domains for each type of bar chart
     if (stacked) {
-      const stackedDomain = [0, max(plotData, (data) => { return max(data, (d) => { return d[1]; }); })];
+      const stackedDomain =
+        [0, max(plotData, (datum) => { return max(datum, (d) => { return d[1]; }); })];
       const linear = (isVertical(orientation) ? scales.y : scales.x);
       linear.domain(stackedDomain);
     } else {
@@ -287,14 +288,13 @@ MultiBars.propTypes = {
 };
 
 MultiBars.defaultProps = {
-  colorScale() {return 'steelblue'; },
+  colorScale() { return 'steelblue'; },
   fieldAccessors: {
     data: 'values',
     key: 'key',
   },
-  scales: {x: scaleBand(), y: scaleLinear() },
+  scales: { x: scaleBand(), y: scaleLinear() },
   layerOrdinal: scaleBand(),
   orientation: 'vertical',
   type: 'default'
 };
-
