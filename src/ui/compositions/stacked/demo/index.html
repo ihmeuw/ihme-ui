@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css">
+  <style>
+
+    html {
+      box-sizing: border-box;
+    }
+
+    *, *:before, *:after {
+      box-sizing: inherit;
+    }
+
+    html, body, #app, #wrapper {
+      width: 100%;
+      height: 100%;
+    }
+
+    #app {
+      padding: 1%;
+    }
+
+    #wrapper {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+    }
+
+    section {
+      margin-bottom: 25px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid black;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    pre {
+      background-color: cornsilk;
+    }
+
+  </style>
+</head>
+<body>
+<main id="app"></main>
+<script src="bundle.js"></script>
+</body>
+</html>
