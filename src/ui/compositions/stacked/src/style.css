@@ -1,0 +1,30 @@
+.legend {
+  height: 100px;
+  width: 100%;
+  /*display: flex;*/
+}
+
+.legend-wrapper {
+  position: absolute;
+  right: 0px;
+  /*flex-direction: row;*/
+}
+
+.chart {
+  flex: 1 0 auto;
+  width: 100%;
+}
+
+.chart-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  position: relative;
+}
+
+.title {
+  text-align: center;
+  /*width: 100%;*/
+}
+
+
