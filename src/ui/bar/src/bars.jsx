@@ -1,6 +1,6 @@
-import React, { PropTypes } from 'react';
+import React, {PropTypes} from 'react';
 import classNames from 'classnames';
-import { scaleLinear, scaleBand } from 'd3';
+import {scaleLinear, scaleBand} from 'd3';
 import {
   assign,
   findIndex,
@@ -21,8 +21,8 @@ import {
   propsChanged,
   PureComponent,
   stateFromPropUpdates,
-  getPlotValue,
   getRenderingProps,
+  setBandProps,
 } from '../../../utils';
 
 import Bar from './bar';
@@ -44,6 +44,7 @@ export default class Bars extends PureComponent {
 
   render() {
     const {
+      align,
       bandPadding,
       bandPaddingInner,
       bandPaddingOuter,
@@ -83,34 +84,29 @@ export default class Bars extends PureComponent {
     const ordinal = (isVertical(orientation) ? scales.x : scales.y);
     const linear = (isVertical(orientation) ? scales.y : scales.x);
 
-
     // Check the padding properties and sets it accordingly.
-    if (bandPaddingOuter) {
-      ordinal.paddingOuter(bandPaddingOuter);
-    } else if (bandPaddingInner) {
-      ordinal.paddingInner(bandPaddingInner);
-    } else {
-      ordinal.padding(bandPadding);
-    }
+    setBandProps(ordinal, align, bandPadding, bandPaddingInner, bandPaddingOuter);
 
     return (
       <g
         className={className && classNames(className)}
         clipPath={clipPathId && `url(#${clipPathId})`}
         style={this.combineStyles(style, data)}
-        transform={`translate(${isVertical(orientation) ? categoryTranslate : 0},
-          ${isVertical(orientation) ? 0 : categoryTranslate})`}
+        transform={`translate(${isVertical(orientation) ? categoryTranslate : 0}, ${isVertical(orientation) ? 0 : categoryTranslate})`}
       >
         {
           map(sortedData, (datum) => {
-            const key = stacked ? propResolver(datum.data, dataAccessors.key) :
-              propResolver(datum, dataAccessors.key);
+            const key = stacked ? propResolver(datum.data, dataAccessors.key) : propResolver(datum, dataAccessors.key);
             const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.stack);
             const focusedDatumKey = focus && propResolver(focus, dataAccessors.key);
-            const xValue = getPlotValue('X', grouped, stacked, datum, dataAccessors);
-            const yValue = getPlotValue('Y', grouped, stacked, datum, dataAccessors);
-            const renderingProps = getRenderingProps(datum, orientation, stacked, grouped, ordinal,
-                                linear, layerOrdinal, xValue, yValue, height);
+
+            const xValue = grouped ? propResolver(datum, dataAccessors.layer) :
+              stacked ? propResolver(datum.data, dataAccessors.stack) : propResolver(datum, dataAccessors.stack);
+
+            const yValue = propResolver(datum, !stacked ? dataAccessors.value : 1);
+
+            const renderingProps = getRenderingProps(datum, grouped, height, layerOrdinal, linear, ordinal, orientation,
+              stacked, xValue, yValue);
 
             return (
               <Bar
@@ -342,6 +338,7 @@ Bars.propUpdates = {
     });
   },
   sortedData: (state, _, prevProps, nextProps) => {
+
     if (!propsChanged(prevProps, nextProps, ['selection', 'data'])) return state;
     const keyField = nextProps.dataAccessors.key;
     return assign({}, state, {

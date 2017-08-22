@@ -39,14 +39,8 @@ const yearFieldDomain = map(uniqBy(data, yearField), (obj) => { return (obj[year
 const locationFieldDomain = map(uniqBy(locationData, locationField), (obj) => { return (obj[locationField]); });
 const colorScale = scaleOrdinal(schemeCategory10);
 
-
-console.log(data.filter((datum) => { return datum.location === 'India'; }));
-console.log(locationData);
-
-
 // const dataStacked = stack().keys(yearFieldDomain)(stackedData);
 // const stackedDomain = [0, max(dataStacked, function(data) {  return max(data, function(d) { return d[1]; });  })];
-
 
 class App extends React.Component {
   constructor(props) {
