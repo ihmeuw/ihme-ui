@@ -4,6 +4,8 @@ import { Bar, Bars, MultiBars } from './bar';
 import Button from './button';
 import Choropleth from './choropleth';
 import {
+  BarChart,
+  Stacked,
   ChoroplethLegend,
   Map,
 } from './compositions';
@@ -37,6 +39,8 @@ export {
   Bars,
   MultiBars,
   Button,
+  BarChart,
+  Stacked,
   Choropleth,
   ChoroplethLegend,
   Expandable,
