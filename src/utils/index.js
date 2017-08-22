@@ -9,9 +9,18 @@ export {
   stackedDataArray,
   stacked,
   grouped,
-  getPlotValue,
   getRenderingProps,
+  setBandProps,
+  getXPosition,
+  getXPositionStack,
+  getYPosition,
+  getYPositionStack,
+  getHeight,
+  getHeightStack,
+  getWidth,
+  getWidthStack,
 } from './bar';
+
 
 export {
   colorSteps,
