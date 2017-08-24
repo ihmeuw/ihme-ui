@@ -11,7 +11,6 @@ module.exports = {
     "arrow-body-style": [1, "as-needed"],
     "max-len": [2, 100, 2, { "ignoreUrls": true, "ignoreComments": true }],
     "array-callback-return": 1,
-    "no-nested-ternary": 1,
   },
   "env": {
     "browser": true,
