@@ -74,6 +74,7 @@ export default class BarChart extends PureComponent {
       dataAccessors,
       fill,
       focus,
+      height,
       labelObject,
       legend,
       onClick,
@@ -83,7 +84,11 @@ export default class BarChart extends PureComponent {
       orientation,
       scaleObject,
       bandObject,
+      width,
     } = this.props;
+
+
+    console.log(classNames(styles.chart, chartStyle));
 
     return (
       <div className={classNames(styles.chart, chartStyle)}>
@@ -91,6 +96,8 @@ export default class BarChart extends PureComponent {
         <ResponsiveContainer>
           {legend ? this.renderLegend() : null}
           <AxisChart
+            width={width ? width : null}
+            height={height ? height : null}
             xDomain={scaleObject.xDomain}
             yDomain={scaleObject.yDomain}
             xScaleType={scaleObject.xScale}
@@ -128,6 +135,10 @@ export default class BarChart extends PureComponent {
 
   render() {
     const {className, style} = this.props;
+
+    console.log(className);
+    console.log(classNames(styles['chart-container'], className));
+
 
     return(
       <div className={classNames(styles['chart-container'], className)} style={style}>

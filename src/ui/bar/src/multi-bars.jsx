@@ -71,6 +71,10 @@ export default class MultiBars extends PureComponent {
     }
 
     const childProps = pick(this.props, [
+      'align',
+      'bandPadding',
+      'bandPaddingInner',
+      'bandPaddingOuter',
       'colorScale',
       'dataAccessors',
       'focus',
