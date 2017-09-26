@@ -1,7 +1,5 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { scaleLinear, scaleBand } from 'd3';
-
 import {
   castArray,
 } from 'lodash';
@@ -42,7 +40,7 @@ export default class StackedBarChart extends PureComponent {
       <div className={classNames(styles.title, titleClassName)} style={titleStyle}>
         {labelObject.title}
       </div>
-    )
+    );
   }
 
   renderLegend() {
@@ -99,10 +97,10 @@ export default class StackedBarChart extends PureComponent {
             yScaleType={scaleObject.yScale}
           >
             <XAxis
-              label={labelObject.xLabel ? labelObject.xLabel: 'X Axis'}
+              label={labelObject.xLabel ? labelObject.xLabel : 'X Axis'}
             />
             <YAxis
-              label={labelObject.yLabel ? labelObject.yLabel: 'Y Axis'}
+              label={labelObject.yLabel ? labelObject.yLabel : 'Y Axis'}
             />
             <MultiBars
               colorScale={colorScale}
@@ -128,9 +126,8 @@ export default class StackedBarChart extends PureComponent {
   }
 
   render() {
-    const {className, style} = this.props;
-
-    return(
+    const { className, style } = this.props;
+    return (
       <div className={classNames(styles['chart-container'], className)} style={style}>
         {this.renderStackedBarChart()}
       </div>
@@ -343,5 +340,5 @@ StackedBarChart.propTypes = {
 };
 
 StackedBarChart.defaultProps = {
-  orientation: "vertical",
+  orientation: 'vertical',
 };

@@ -3,10 +3,7 @@ import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 import { schemeCategory10, scaleOrdinal } from 'd3';
-import ReactDOM from 'react-dom';
 import {
-  bindAll,
-  xor,
   maxBy,
   minBy,
   map,
@@ -15,7 +12,7 @@ import {
 } from 'lodash';
 
 import StackedBarChart from './../src/stacked';
-import { Legend, Bar, Bars } from './../../../';
+import { Legend } from './../../../';
 
 import { dataGenerator } from '../../../../utils';
 
@@ -45,9 +42,11 @@ describe('<StackedBarChart />', () => {
   ];
 
 // Should these be passed or calculated from given dataset within the BarChart component?
-  const populationFieldDomain = [minBy(data, populationField)[populationField], maxBy(data, populationField)[populationField]];
+  const populationFieldDomain =
+    [minBy(data, populationField)[populationField], maxBy(data, populationField)[populationField]];
   const yearFieldDomain = map(uniqBy(data, yearField), (obj) => { return (obj[yearField]); });
-  const locationFieldDomain = map(uniqBy(locationData, locationField), (obj) => { return (obj[locationField]); });
+  const locationFieldDomain =
+    map(uniqBy(locationData, locationField), (obj) => { return (obj[locationField]); });
   const colorScale = scaleOrdinal(schemeCategory10);
 
 // create items given the data and the fields specified
@@ -121,16 +120,17 @@ describe('<StackedBarChart />', () => {
       }}
       focus={noop}
       labelObject={{
-        title: "Population Between 2000-2009",
-        yLabel: "Country",
-        xLabel: "Population"
+        title: 'Population Between 2000-2009',
+        yLabel: 'Country',
+        xLabel: 'Population'
       }}
       layerDomain={yearFieldDomain}
+      legend
       legendObject={items}
       legendKey={{
-        labelKey: "label",
-        shapeColorKey: "shapeColor",
-        shapeTypeKey: "shapeType",
+        labelKey: 'label',
+        shapeColorKey: 'shapeColor',
+        shapeTypeKey: 'shapeType',
       }}
       onClick={noop}
       onMouseLeave={noop}
@@ -138,23 +138,26 @@ describe('<StackedBarChart />', () => {
       onMouseOver={noop}
       orientation="horizontal"
       scaleObject={{
-        xScale: "linear",
-        yScale:"band",
+        xScale: 'linear',
+        yScale: 'band',
         xDomain: populationFieldDomain,
         yDomain: locationFieldDomain
       }}
       selection={noop}
+      titleClassName={'title-class'}
     />
   );
 
-  // it('renders a legend', () => {
-  //   const wrapper = shallow(component);
-  //   expect(wrapper.to.find(Legend)).to.have.length(1)
-  // });
-  //
-  // it('renders 10 bars', () => {
-  //   const wrapper = shallow(component);
-  //   expect(wrapper.to.find(Bars)).to.have.length(10)
-  // });
+  it('renders a legend', () => {
+    const wrapper = shallow(component);
+    expect(wrapper.find(Legend)).to.have.length(1);
+  });
 
+  it('renders appropriate chart title', () => {
+    const wrapper = shallow(component);
+    expect(wrapper.find('.title-class'))
+      .to.have.text('Population Between 2000-2009');
+  });
+
+  // Subsequent test are covered by each individual component itself
 });

@@ -4,7 +4,6 @@ import { scaleLinear, scaleBand, max } from 'd3';
 import { castArray, map, pick } from 'lodash';
 import Bars from './bars';
 
-
 import {
   isVertical,
   combineStyles,
