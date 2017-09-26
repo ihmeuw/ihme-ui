@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { scaleLinear, scaleBand } from 'd3';
 
 import {
   castArray,
@@ -42,7 +41,7 @@ export default class BarChart extends PureComponent {
       <div className={classNames(styles.title, titleClassName)} style={titleStyle}>
         {labelObject.title}
       </div>
-    )
+    );
   }
 
   renderLegend() {
@@ -87,27 +86,24 @@ export default class BarChart extends PureComponent {
       width,
     } = this.props;
 
-
-    console.log(classNames(styles.chart, chartStyle));
-
     return (
       <div className={classNames(styles.chart, chartStyle)}>
         {this.renderTitle()}
         <ResponsiveContainer>
           {legend ? this.renderLegend() : null}
           <AxisChart
-            width={width ? width : null}
-            height={height ? height : null}
+            width={width}
+            height={height}
             xDomain={scaleObject.xDomain}
             yDomain={scaleObject.yDomain}
             xScaleType={scaleObject.xScale}
             yScaleType={scaleObject.yScale}
           >
             <XAxis
-              label={labelObject.xLabel ? labelObject.xLabel: 'X Axis'}
+              label={labelObject.xLabel ? labelObject.xLabel : 'X Axis'}
             />
             <YAxis
-              label={labelObject.yLabel ? labelObject.yLabel: 'Y Axis'}
+              label={labelObject.yLabel ? labelObject.yLabel : 'Y Axis'}
             />
             <Bars
               align={bandObject.align}
@@ -122,11 +118,10 @@ export default class BarChart extends PureComponent {
               onMouseOver={onMouseOver}
               onMouseMove={onMouseMove}
               onMouseLeave={onMouseLeave}
-              orientation={orientation ? orientation : null}
+              orientation={orientation}
               style={chartStyle}
               selection={this.state.selectedItems}
-            >
-            </Bars>
+            />
           </AxisChart>
         </ResponsiveContainer>
       </div>
@@ -134,13 +129,8 @@ export default class BarChart extends PureComponent {
   }
 
   render() {
-    const {className, style} = this.props;
-
-    console.log(className);
-    console.log(classNames(styles['chart-container'], className));
-
-
-    return(
+    const { className, style } = this.props;
+    return (
       <div className={classNames(styles['chart-container'], className)} style={style}>
         {this.renderChart()}
       </div>
