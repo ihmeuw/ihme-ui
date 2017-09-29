@@ -50,7 +50,7 @@ export default class StackedBarChart extends PureComponent {
       legendClassName,
       legendStyle,
     } = this.props;
-
+    if (!legendObject) return null;
     return (
       <div className={classNames(styles.legend, legendClassName)} style={legendStyle}>
         <div className={styles['legend-wrapper']}>
@@ -76,7 +76,6 @@ export default class StackedBarChart extends PureComponent {
       focus,
       labelObject,
       layerDomain,
-      legend,
       onClick,
       onMouseOver,
       onMouseLeave,
@@ -88,8 +87,8 @@ export default class StackedBarChart extends PureComponent {
     return (
       <div className={classNames(styles.chart, chartStyle)}>
         {this.renderTitle()}
-        {legend ? this.renderLegend() : null}
         <ResponsiveContainer>
+          {this.renderLegend()}
           <AxisChart
             xDomain={scaleObject.xDomain}
             yDomain={scaleObject.yDomain}

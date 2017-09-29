@@ -10,7 +10,6 @@ import AxisChart from '../../axis-chart';
 import { XAxis, YAxis } from '../../axis';
 import { MultiScatter, Scatter } from '../';
 
-
 const keyField = 'year_id';
 const valueField = 'population';
 
@@ -43,8 +42,6 @@ const shapeScale = scaleOrdinal()
   .range(['circle', 'cross', 'diamond', 'line', 'square', 'star', 'triangle', 'wye']);
 
 const colorScale = scaleOrdinal(schemeCategory10);
-
-console.log(locationData);
 
 class App extends React.Component {
   constructor(props) {

@@ -78,8 +78,8 @@ export default class Bar extends PureComponent {
       fill,
       focused,
       focusedClassName,
-      rectHeight,
-      rectWidth,
+      height,
+      width,
       selected,
       selectedClassName,
       x,
@@ -89,25 +89,23 @@ export default class Bar extends PureComponent {
     const { styles } = this.state;
 
     return (
-      <g>
-        <rect
-          className={classNames(className, {
-            [selectedClassName]: selected && selectedClassName,
-            [focusedClassName]: focused && focusedClassName,
-          }) || (void 0)}
-          x={x}
-          y={y}
-          height={rectHeight}
-          width={rectWidth}
-          fill={fill}
-          clipPath={clipPathId && `url(#${clipPathId})`}
-          onClick={this.onClick}
-          onMouseLeave={this.onMouseLeave}
-          onMouseMove={this.onMouseMove}
-          onMouseOver={this.onMouseOver}
-          style={this.combineStyles(styles, datum)}
-        />
-      </g>
+      <rect
+        className={classNames(className, {
+          [selectedClassName]: selected && selectedClassName,
+          [focusedClassName]: focused && focusedClassName,
+        }) || (void 0)}
+        x={x}
+        y={y}
+        height={height}
+        width={width}
+        fill={fill}
+        clipPath={clipPathId && `url(#${clipPathId})`}
+        onClick={this.onClick}
+        onMouseLeave={this.onMouseLeave}
+        onMouseMove={this.onMouseMove}
+        onMouseOver={this.onMouseOver}
+        style={this.combineStyles(styles, datum)}
+      />
     );
   }
 }
@@ -154,6 +152,11 @@ Bar.propTypes = {
   focusedStyle: CommonPropTypes.style,
 
   /**
+   * Height of svg element rect.
+   */
+  height: PropTypes.number,
+
+  /**
    * onClick callback.
    * signature: (SyntheticEvent, datum, instance) => {...}
    */
@@ -176,16 +179,6 @@ Bar.propTypes = {
    * signature: (SyntheticEvent, datum, instance) => {...}
    */
   onMouseOver: PropTypes.func,
-
-  /**
-   * Height of svg element rect.
-   */
-  rectHeight: PropTypes.number,
-
-  /**
-   * Width of svg element rect.
-   */
-  rectWidth: PropTypes.number,
 
   /**
    * Whether svg element rect is selected.
@@ -212,6 +205,11 @@ Bar.propTypes = {
    * If a function, passed underlying datum corresponding to its `<Bar />`.
    */
   style: CommonPropTypes.style,
+
+  /**
+   * Width of svg element rect.
+   */
+  width: PropTypes.number,
 
   /**
    * Initial x position of svg element rect.

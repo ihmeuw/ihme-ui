@@ -9,7 +9,6 @@
   display: inline-block;
   margin-right: auto;
   margin-left: auto;
-  /*flex-direction: row;*/
 }
 
 .chart {
@@ -27,7 +26,6 @@
 .title {
   text-align: center;
   display: block;
-  /*width: 100%;*/
 }
 
 
