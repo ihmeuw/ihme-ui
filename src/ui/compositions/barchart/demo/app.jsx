@@ -112,7 +112,6 @@ class App extends React.Component {
             xLabel: "Years",
             yLabel: "Population"
           }}
-          legend
           legendKey={{
             labelKey: "label",
             shapeColorKey: "shapeColor",

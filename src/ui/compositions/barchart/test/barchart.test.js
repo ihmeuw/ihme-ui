@@ -60,7 +60,6 @@ describe('<BarChart />', () => {
         xLabel: 'Years',
         yLabel: 'Population'
       }}
-      legend
       legendKey={{
         labelKey: 'label',
         shapeColorKey: 'shapeColor',

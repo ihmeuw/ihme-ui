@@ -116,8 +116,8 @@ export default class Bars extends PureComponent {
                 datum={datum}
                 x={renderingProps.xPosition}
                 y={renderingProps.yPosition}
-                rectHeight={renderingProps.barHeight}
-                rectWidth={renderingProps.barWidth}
+                height={renderingProps.barHeight}
+                width={renderingProps.barWidth}
                 fill={colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill}
                 focused={focusedDatumKey === key}
                 selected={selectedDataMappedToKeys.hasOwnProperty(key)}
@@ -270,7 +270,7 @@ Bars.propTypes = {
    * Orientation in which bars should be created.
    * Defaults to vertical, but option for horizontal orientation supported.
    */
-  orientation: PropTypes.string,
+  orientation: PropTypes.oneOf(['Horizontal', 'horizontal', 'Vertical', 'vertical']),
 
   /**
    * className applied to each `<Bar />`
@@ -311,7 +311,7 @@ Bars.propTypes = {
    * Default is a simple vertically oriented bar graph. Options for grouped and
    * stacked are also supported.
    */
-  type: PropTypes.string,
+  type: PropTypes.oneOf(['Stacked', 'stacked', 'Grouped', 'grouped']),
 };
 
 
@@ -342,9 +342,6 @@ Bars.propUpdates = {
     if (!propsChanged(prevProps, nextProps, ['selection', 'data'])) return state;
     const keyField = nextProps.dataAccessors.key;
     return assign({}, state, {
-      // sort data by whether or not datum is selected
-      // this is a way of ensuring that selected symbols are rendered last
-      // similar to, in a path click handler, doing a this.parentNode.appendChild(this)
       sortedData: sortBy(nextProps.data, (datum) =>
         findIndex(nextProps.selection, (selected) =>
           propResolver(datum, keyField) === propResolver(selected, keyField) // test case for stable sort and for when selected is last

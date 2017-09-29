@@ -125,7 +125,6 @@ describe('<StackedBarChart />', () => {
         xLabel: 'Population'
       }}
       layerDomain={yearFieldDomain}
-      legend
       legendObject={items}
       legendKey={{
         labelKey: 'label',

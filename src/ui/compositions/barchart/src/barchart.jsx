@@ -51,7 +51,7 @@ export default class BarChart extends PureComponent {
       legendClassName,
       legendStyle,
     } = this.props;
-
+    if (!legendObject) return null;
     return (
       <div className={classNames(styles.legend, legendClassName)} style={legendStyle}>
         <div className={styles['legend-wrapper']}>
@@ -75,7 +75,6 @@ export default class BarChart extends PureComponent {
       focus,
       height,
       labelObject,
-      legend,
       onClick,
       onMouseOver,
       onMouseLeave,
@@ -90,7 +89,7 @@ export default class BarChart extends PureComponent {
       <div className={classNames(styles.chart, chartStyle)}>
         {this.renderTitle()}
         <ResponsiveContainer>
-          {legend ? this.renderLegend() : null}
+          {this.renderLegend()}
           <AxisChart
             width={width}
             height={height}
@@ -166,7 +165,6 @@ BarChart.propTypes = {
    * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
    */
   bandPaddingOuter: PropTypes.number,
-
 
   /**
    * Accessors to d3 scale band properties

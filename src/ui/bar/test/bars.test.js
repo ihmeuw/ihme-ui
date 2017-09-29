@@ -78,7 +78,6 @@ describe('<Bars />', () => {
       'data',
       'dataAccessors',
       'focus',
-      'height',
       'layerOrdinal',
       'orientation',
       'scales',
@@ -136,8 +135,8 @@ describe('<Bars />', () => {
       expect(bar).to.have.prop('fill').that.is.a('string');
       expect(bar).to.have.prop('x').that.is.a('number');
       expect(bar).to.have.prop('y').that.is.a('number');
-      expect(bar).to.have.prop('rectHeight').that.is.a('number');
-      expect(bar).to.have.prop('rectWidth').that.is.a('number');
+      expect(bar).to.have.prop('height').that.is.a('number');
+      expect(bar).to.have.prop('width').that.is.a('number');
     };
     shallow(component).find(Bar).forEach(assertion);
   });
