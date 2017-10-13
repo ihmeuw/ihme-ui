@@ -80,6 +80,7 @@
     "postcss-loader": "~1.2",
     "react-addons-test-utils": "~15.0",
     "react-docgen": "~2.13",
+    "react-test-renderer": "~15.6",
     "sinon": "^2.4.1",
     "style-loader": "~0.17",
     "webpack": "~2.2",
@@ -92,10 +93,10 @@
     "ihme-react-select": "git+https://github.com/ihmeuw/ihme-react-select.git",
     "interact.js": "~1.2",
     "lodash": "~4.5",
-    "react": "~15.1",
-    "react-addons-pure-render-mixin": "~15.1",
-    "react-addons-shallow-compare": "~15.1",
-    "react-dom": "~15.1",
+    "react": "~15.6",
+    "react-addons-pure-render-mixin": "~15.6",
+    "react-addons-shallow-compare": "~15.6",
+    "react-dom": "~15.6",
     "react-virtualized": "~7.24",
     "topojson": "~1.6"
   }
