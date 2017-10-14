@@ -1,4 +1,4 @@
-![travis badge](https://travis-ci.org/ihmeuw/ihme-ui.svg) [![codecov.io](https://codecov.io/github/ihmeuw/ihme-ui/coverage.svg?branch=master)](https://codecov.io/github/ihmeuw/ihme-ui?branch=master)
+[![Build Status](https://travis-ci.org/ihmeuw/ihme-ui.svg?branch=master)](https://travis-ci.org/ihmeuw/ihme-ui) [![codecov.io](https://codecov.io/github/ihmeuw/ihme-ui/coverage.svg?branch=master)](https://codecov.io/github/ihmeuw/ihme-ui?branch=master)
 
 # [IHME-UI](https://github.com/ihmeuw/ihme-ui)
 
