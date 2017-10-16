@@ -78,7 +78,7 @@
     "mustache": "~2.3",
     "postcss": "~5.2",
     "postcss-loader": "~1.2",
-    "react-addons-test-utils": "~15.0",
+    "react-addons-test-utils": "~15.6",
     "react-docgen": "~2.13",
     "react-test-renderer": "~15.6",
     "sinon": "^2.4.1",
