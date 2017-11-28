@@ -11,7 +11,7 @@ describe('<Legend />', () => {
   const labelKey = 'label';
   const shapeColorKey = 'shapeColor';
   const shapeTypeKey = 'shapeType';
-  const items = Array(5).fill(1).map((_, idx) => {
+  const items = new Array(5).fill(1).map((_, idx) => {
     return {
       [labelKey]: idx,
       [shapeColorKey]: 'red',
