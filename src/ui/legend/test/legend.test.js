@@ -28,7 +28,7 @@ describe('<Legend />', () => {
 
   it('renders a title given a string title', () => {
     const title = 'A random title';
-    const wrapper = mount(<Legend items={items} labelKey={labelKey} title={title} />);
+    const wrapper = mount(<Legend items={items} labelKey={labelKey} shapeColorKey="shapeColor" title={title} />);
     expect(wrapper).to.have.descendants('h3');
     expect(wrapper.find('h3')).to.have.text(title);
   });
@@ -45,6 +45,7 @@ describe('<Legend />', () => {
       <Legend
         items={items}
         labelKey={labelKey}
+        shapeColorKey="shapeColor"
         title={title}
         TitleComponent={CustomComponent}
       />
@@ -61,6 +62,7 @@ describe('<Legend />', () => {
       <Legend
         items={items}
         labelKey={labelKey}
+        shapeColorKey="shapeColor"
         title={title}
         titleClassName={className}
       />
@@ -76,6 +78,7 @@ describe('<Legend />', () => {
       <Legend
         items={items}
         labelKey={labelKey}
+        shapeColorKey="shapeColor"
         title={title}
         titleClassName={classNames}
       />
@@ -96,6 +99,7 @@ describe('<Legend />', () => {
       <Legend
         items={items}
         labelKey={labelKey}
+        shapeColorKey="shapeColor"
         title={title}
         titleClassName={classNames}
       />
@@ -106,7 +110,7 @@ describe('<Legend />', () => {
   });
 
   it('renders a list of items with the default LegendItem', () => {
-    const wrapper = mount(<Legend items={items} labelKey={labelKey} />);
+    const wrapper = mount(<Legend items={items} labelKey={labelKey} shapeColorKey="shapeColor" />);
     expect(wrapper.find('ul')).to.have.exactly(items.length).descendants('LegendItem');
   });
 
