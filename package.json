@@ -33,7 +33,7 @@
     "clean": "rm -rf dist es lib",
     "css:minify": "$(npm bin)/cssnano dist/ihme-ui.css dist/ihme-ui.min.css",
     "coverage": "BABEL_ENV=test $(npm bin)/babel-node $(npm bin)/babel-istanbul cover $(npm bin)/_mocha --require ./scripts/setup-jsdom.js -- `scripts/get-test-directories.sh`",
-    "coverage:travis": "BABEL_ENV=test $(npm bin)/babel-node $(npm bin)/babel-istanbul cover $(npm bin)/_mocha --require ./scripts/setup-jsdom.js --report lcovonly -- `scripts/get-test-directories.sh`",
+    "coverage:travis": "NODE_ENV=production BABEL_ENV=test $(npm bin)/babel-node $(npm bin)/babel-istanbul cover $(npm bin)/_mocha --require ./scripts/setup-jsdom.js --report lcovonly -- `scripts/get-test-directories.sh`",
     "coverage:token": "cat ./coverage/coverage.json | ./node_modules/codecov.io/bin/codecov.io.js",
     "demo": "BABEL_ENV=demo scripts/bundle-demos.sh",
     "docs:ui": "find -X ./src \\( -depth 3 -or -depth 4 \\) -type d -name 'src' | xargs $(npm bin)/react-docgen | node ./scripts/build-doc.js",

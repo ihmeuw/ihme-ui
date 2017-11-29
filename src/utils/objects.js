@@ -61,6 +61,7 @@ export function memoizeByLastCall(func, equalityCheck = defaultEqualityCheck) {
  * @returns {*}
  */
 export function propResolver(obj, property) {
+  console.log('inside propResolver', getValue(obj, property));
   return typeof property === 'function' ? property(obj) : getValue(obj, property);
 }
 

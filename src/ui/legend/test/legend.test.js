@@ -8,15 +8,32 @@ chai.use(chaiEnzyme());
 import Legend from '../';
 
 describe('<Legend />', () => {
-  const labelKey = 'label';
-  const shapeColorKey = 'shapeColor';
-  const shapeTypeKey = 'shapeType';
-  const items = new Array(5).fill(1).map((_, idx) => {
-    return {
-      [labelKey]: idx,
-      [shapeColorKey]: 'red',
-      [shapeTypeKey]: 'square'
-    };
+  // const labelKey = 'label';
+  // const shapeColorKey = 'shapeColor';
+  // const shapeTypeKey = 'shapeType';
+  // const items = new Array(5).fill(1).map((_, idx) => {
+  //   return {
+  //     [labelKey]: idx,
+  //     [shapeColorKey]: 'red',
+  //     [shapeTypeKey]: 'square'
+  //   };
+  // });
+  let items;
+  let labelKey;
+  let shapeColorKey;
+  let shapeTypeKey;
+  before((done) => {
+    labelKey = 'label';
+    shapeColorKey = 'shapeColor';
+    shapeTypeKey = 'shapeType';
+    items = new Array(5).fill(1).map((_, idx) => {
+      return {
+        [labelKey]: idx,
+        [shapeColorKey]: 'red',
+        [shapeTypeKey]: 'square'
+      };
+    });
+    done();
   });
 
   it('renders an empty ul if given no legend items', () => {
@@ -33,6 +50,7 @@ describe('<Legend />', () => {
         items={items}
         labelKey={labelKey}
         shapeColorKey="shapeColor"
+        shapeTypeKey="shapeType"
         title={title}
       />);
     expect(wrapper).to.have.descendants('h3');
@@ -52,6 +70,7 @@ describe('<Legend />', () => {
         items={items}
         labelKey={labelKey}
         shapeColorKey="shapeColor"
+        shapeTypeKey="shapeType"
         title={title}
         TitleComponent={CustomComponent}
       />
@@ -69,6 +88,7 @@ describe('<Legend />', () => {
         items={items}
         labelKey={labelKey}
         shapeColorKey="shapeColor"
+        shapeTypeKey="shapeType"
         title={title}
         titleClassName={className}
       />
@@ -85,6 +105,7 @@ describe('<Legend />', () => {
         items={items}
         labelKey={labelKey}
         shapeColorKey="shapeColor"
+        shapeTypeKey="shapeType"
         title={title}
         titleClassName={classNames}
       />
@@ -106,6 +127,7 @@ describe('<Legend />', () => {
         items={items}
         labelKey={labelKey}
         shapeColorKey="shapeColor"
+        shapeTypeKey="shapeType"
         title={title}
         titleClassName={classNames}
       />
@@ -116,7 +138,13 @@ describe('<Legend />', () => {
   });
 
   it('renders a list of items with the default LegendItem', () => {
-    const wrapper = mount(<Legend items={items} labelKey={labelKey} shapeColorKey="shapeColor" />);
+    const wrapper = mount(
+      <Legend
+        items={items}
+        labelKey={labelKey}
+        shapeTypeKey="shapeType"
+        shapeColorKey="shapeColor"
+      />);
     expect(wrapper.find('ul')).to.have.exactly(items.length).descendants('LegendItem');
   });
 
@@ -126,17 +154,38 @@ describe('<Legend />', () => {
       return <li key={Math.random()}>{props.item[props.labelKey]}!</li>;
     }
 
-    const wrapper = mount(<Legend items={items} ItemComponent={Item} labelKey={labelKey} />);
+    const wrapper = mount(
+      <Legend
+        items={items}
+        shapeTypeKey="shapeType"
+        shapeColorKey="shapeColor"
+        ItemComponent={Item}
+        labelKey={labelKey}
+      />);
     expect(wrapper.find('ul')).to.have.exactly(items.length).descendants('Item');
   });
 
   it('adds an additional class to the outer most wrapper', () => {
-    const wrapper = shallow(<Legend items={items} className="foobar" labelKey={labelKey} />);
+    const wrapper = shallow(
+      <Legend
+        items={items}
+        shapeTypeKey="shapeType"
+        shapeColorKey="shapeColor"
+        className="foobar"
+        labelKey={labelKey}
+      />);
     expect(wrapper).to.have.className('foobar');
   });
 
   it('adds an additional class to the ul', () => {
-    const wrapper = shallow(<Legend items={items} listClassName="barfoo" labelKey={labelKey} />);
+    const wrapper = shallow(
+      <Legend
+        items={items}
+        listClassName="barfoo"
+        shapeColorKey="shapeColor"
+        shapeTypeKey="shapeType"
+        labelKey={labelKey}
+      />);
     expect(wrapper.find('ul')).to.have.className('barfoo');
   });
 });
