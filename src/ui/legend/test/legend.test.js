@@ -28,7 +28,13 @@ describe('<Legend />', () => {
 
   it('renders a title given a string title', () => {
     const title = 'A random title';
-    const wrapper = mount(<Legend items={items} labelKey={labelKey} shapeColorKey="shapeColor" title={title} />);
+    const wrapper = mount(
+      <Legend
+        items={items}
+        labelKey={labelKey}
+        shapeColorKey="shapeColor"
+        title={title}
+      />);
     expect(wrapper).to.have.descendants('h3');
     expect(wrapper.find('h3')).to.have.text(title);
   });
