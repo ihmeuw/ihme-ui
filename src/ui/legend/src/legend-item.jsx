@@ -109,7 +109,7 @@ export default class LegendItem extends PureComponent {
 
     const fill = propResolver(item, shapeColorKey);
     const type = propResolver(item, shapeTypeKey);
-    console.log(fill);
+
     return (
       <li
         className={classNames(styles.li, className)}
