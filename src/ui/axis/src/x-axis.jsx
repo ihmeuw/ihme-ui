@@ -1,4 +1,4 @@
-import { PropTypes } from 'react';
+import PropTypes from 'prop-types';
 import { scaleLinear } from 'd3';
 import { assign } from 'lodash';
 

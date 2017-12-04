@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { VirtualScroll } from 'react-virtualized';
 import SelectOption from './select-option';
 
@@ -14,8 +15,8 @@ const menuPropTypes = {
   optionClassName: PropTypes.string,
   optionRenderer: PropTypes.func,
   optionStyle: PropTypes.oneOfType([
-    React.PropTypes.object,
-    React.PropTypes.func,
+    PropTypes.object,
+    PropTypes.func,
   ]),
   selectValue: PropTypes.func,
   valueArray: PropTypes.array,

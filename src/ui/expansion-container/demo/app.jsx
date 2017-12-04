@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { render } from 'react-dom';
 import { AutoSizer } from 'react-virtualized';
 import { CommonPropTypes, PureComponent } from '../../../utils';

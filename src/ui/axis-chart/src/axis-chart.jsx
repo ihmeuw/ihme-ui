@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import { uniqueId } from 'lodash';
 import classNames from 'classnames';
