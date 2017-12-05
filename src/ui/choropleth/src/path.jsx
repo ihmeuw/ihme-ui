@@ -6,11 +6,10 @@ import { assign, noop, bindAll } from 'lodash';
 import {
   CommonPropTypes,
   propsChanged,
-  PureComponent,
   stateFromPropUpdates,
 } from '../../../utils';
 
-export default class Path extends PureComponent {
+export default class Path extends React.PureComponent {
   /**
    * Compute inline-style
    * @param {Object} feature

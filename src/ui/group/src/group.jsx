@@ -7,7 +7,6 @@ import noop from 'lodash/noop';
 import {
   CommonPropTypes,
   propResolver,
-  PureComponent,
 } from '../../../utils';
 
 /**
@@ -18,7 +17,7 @@ import {
  * by wrapping `<Option />` components (or similar, customized components) in a `<Group />`.
  *
  */
-export default class Group extends PureComponent {
+export default class Group extends React.PureComponent {
   constructor(props) {
     super(props);
 

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { assign, bindAll, clamp, get as getValue } from 'lodash';
-import { CommonPropTypes, propsChanged, PureComponent, stateFromPropUpdates } from '../../../utils';
+import { CommonPropTypes, propsChanged, stateFromPropUpdates } from '../../../utils';
 
 import styles from './tooltip.css';
 
@@ -38,7 +38,7 @@ function mapShowPropToVisibilityRule(visible) {
  *
  * A wrapper to provide bounded, absolute positioning for arbitrary content.
  */
-export default class Tooltip extends PureComponent {
+export default class Tooltip extends React.PureComponent {
   /**
    * Calculate the translation of the tooltip with respect to the top-left corner of the screen
    * @param {Object} params

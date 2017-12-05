@@ -9,14 +9,13 @@ import {
   CommonDefaultProps,
   propsChanged,
   propResolver,
-  PureComponent,
   stateFromPropUpdates,
 } from '../../../utils';
 
 /**
  * `import { Area } from 'ihme-ui'`
  */
-export default class Area extends PureComponent {
+export default class Area extends React.PureComponent {
   constructor(props) {
     super(props);
 

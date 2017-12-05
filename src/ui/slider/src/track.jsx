@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import interact from 'interact.js';
 import isEmpty from 'lodash/isEmpty';
-import { CommonPropTypes, PureComponent } from '../../../utils';
+import { CommonPropTypes } from '../../../utils';
 
 import Ticks from './ticks';
 import { getSnapTargetFunc } from './util';
 import styles from './slider.css';
 
-export default class Track extends PureComponent {
+export default class Track extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {};

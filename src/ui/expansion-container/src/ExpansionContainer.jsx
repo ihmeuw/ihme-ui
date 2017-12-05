@@ -7,7 +7,7 @@ import forEach from 'lodash/forEach';
 import includes from 'lodash/includes';
 import pull from 'lodash/pull';
 import without from 'lodash/without';
-import { CommonPropTypes, PureComponent } from '../../../utils';
+import { CommonPropTypes } from '../../../utils';
 
 import styles from './expansion-container.css';
 
@@ -17,7 +17,7 @@ export const containerStore = {};
  * `import { ExpansionContainer } from 'ihme-ui'`
  *
  */
-export default class ExpansionContainer extends PureComponent {
+export default class ExpansionContainer extends React.PureComponent {
   constructor(props) {
     super(props);
     containerStore[props.group] = this;

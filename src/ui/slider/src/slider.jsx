@@ -12,7 +12,7 @@ import range_ from 'lodash/range';
 import reduce from 'lodash/reduce';
 import round from 'lodash/round';
 import zipObject from 'lodash/zipObject';
-import { CommonPropTypes, PureComponent } from '../../../utils';
+import { CommonPropTypes } from '../../../utils';
 import { stateFromPropUpdates, updateFunc } from '../../../utils/props';
 
 import Track from './track';
@@ -73,7 +73,7 @@ function getLowHighValues(value) {
 /**
  * `import { Slider } from 'ihme-ui'`
  */
-export default class Slider extends PureComponent {
+export default class Slider extends React.PureComponent {
   constructor(props) {
     super(props);
 

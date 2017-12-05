@@ -19,7 +19,6 @@ import {
   memoizeByLastCall,
   propResolver,
   propsChanged,
-  PureComponent,
   stateFromPropUpdates,
 } from '../../../utils';
 
@@ -28,7 +27,7 @@ import Shape from './shape';
 /**
  * `import { Scatter } from 'ihme-ui'`
  */
-export default class Scatter extends PureComponent {
+export default class Scatter extends React.PureComponent {
   constructor(props) {
     super(props);
     this.combineStyles = memoizeByLastCall(combineStyles);

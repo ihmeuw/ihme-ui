@@ -19,7 +19,6 @@ import {
 import {
   CommonPropTypes,
   propsChanged,
-  PureComponent,
   stateFromPropUpdates,
 } from '../../../utils';
 
@@ -39,7 +38,7 @@ export const AXIS_TYPES = {
 /**
  * `import { Axis } from 'ihme-ui'`
  */
-export default class Axis extends PureComponent {
+export default class Axis extends React.PureComponent {
   static concatStyle(style) {
     return trim(reduce(style, (accum, value, attr) => `${accum} ${attr}: ${value};`, ''));
   }

@@ -8,7 +8,6 @@ import {
   combineStyles,
   CommonPropTypes,
   memoizeByLastCall,
-  PureComponent,
   propsChanged,
   stateFromPropUpdates,
 } from '../../../utils';
@@ -22,7 +21,7 @@ import styles from './option.css';
  * Component designed to be wrapped by `<Group />`. Renders `props.type` and provides it with computed props `className`, `disabled`, `selected`, and `style`.
  * Any additional props passed to `<Option />` will be passed directly to the rendered component.
  */
-export default class Option extends PureComponent {
+export default class Option extends React.PureComponent {
   constructor(props) {
     super(props);
 

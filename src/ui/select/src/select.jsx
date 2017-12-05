@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { default as BaseSelect, propTypes as baseProps } from 'ihme-react-select';
 import { assign } from 'lodash';
 
-import { stateFromPropUpdates, propsChanged, PureComponent } from '../../../utils';
+import { stateFromPropUpdates, propsChanged } from '../../../utils';
 import { FLIP_MENU_UPWARDS_INLINE_STYLE, getWidestLabel } from './utils';
 
 import style from './select.css';
@@ -12,7 +12,7 @@ import { menuWrapper } from './menu';
 import Value from './value';
 import multiValueRenderer from './multi-value-renderer';
 
-export default class Select extends PureComponent {
+export default class Select extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = stateFromPropUpdates(Select.propUpdates, {}, props, {});

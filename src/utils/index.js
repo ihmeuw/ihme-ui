@@ -44,6 +44,7 @@ export {
   memoizeByLastCall,
   propResolver,
   quickMerge,
+  shallowEqual,
 } from './objects';
 
 export {
@@ -58,7 +59,7 @@ export {
 } from './props';
 
 export {
-  PureComponent,
+  shouldPureComponentUpdate,
 } from './react';
 
 export {

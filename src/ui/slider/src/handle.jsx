@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import interact from 'interact.js';
 import { identity, noop } from 'lodash';
-import { CommonPropTypes, PureComponent } from '../../../utils';
+import { CommonPropTypes } from '../../../utils';
 import { stateFromPropUpdates, updateFunc } from '../../../utils/props';
 
 import { getDimension, getSnapTargetFunc } from './util';
@@ -18,7 +18,7 @@ function getOffset(direction, width) {
   return 0;
 }
 
-export default class Handle extends PureComponent {
+export default class Handle extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = stateFromPropUpdates(Handle.propUpdates, {}, props, {});

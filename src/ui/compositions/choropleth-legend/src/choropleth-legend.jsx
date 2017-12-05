@@ -8,7 +8,6 @@ import {
   numberFormat,
   propsChanged,
   CommonPropTypes,
-  PureComponent,
   stateFromPropUpdates,
 } from '../../../../utils';
 
@@ -24,7 +23,7 @@ const subtractMarginsFromWidth = (width, margins) => width - (margins.left + mar
 /**
  * `import { ChoroplethLegend } from 'ihme-ui'`
  */
-export default class ChoroplethLegend extends PureComponent {
+export default class ChoroplethLegend extends React.PureComponent {
   constructor(props) {
     super(props);
 

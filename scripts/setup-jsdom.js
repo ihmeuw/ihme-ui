@@ -16,3 +16,5 @@ global.Element = dom.window.Element;
 
 // needed by <Autosizer />
 global.getComputedStyle = dom.window.getComputedStyle.bind(dom.window);
+
+global.HTMLElement = () => {};
