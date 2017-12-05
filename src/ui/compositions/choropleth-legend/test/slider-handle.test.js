@@ -1,7 +1,7 @@
 import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
-import { shallow } from 'enzyme';
+import { mount } from 'enzyme';
 import sinon from 'sinon';
 
 import SliderHandle from '../src/slider-handle';
@@ -18,7 +18,7 @@ describe('ChoroplethLegend <SliderHandle />', () => {
   });
 
   it('translates the left handle by 5 pixels', () => {
-    const wrapper = shallow(
+    const wrapper = mount(
       <SliderHandle
         position={5}
         onSliderMove={onSliderMove}
@@ -28,7 +28,7 @@ describe('ChoroplethLegend <SliderHandle />', () => {
   });
 
   it('does not translate the right handle', () => {
-    const wrapper = shallow(
+    const wrapper = mount(
       <SliderHandle
         position={5}
         onSliderMove={onSliderMove}
