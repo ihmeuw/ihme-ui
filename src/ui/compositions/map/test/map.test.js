@@ -18,12 +18,13 @@ describe('<Map />', () => {
       ];
 
       const keysOfVisibleGeometries = [1, 2];
+      console.log(filterData(data, keysOfVisibleGeometries, 'key'));
       expect(filterData(data, keysOfVisibleGeometries, 'key'))
         .to.be.an('array')
         .of.length(2)
-        .to.include({ key: 1 })
-        .and.to.include({ key: 2 })
-        .and.to.not.include({ key: 3 });
+        .to.deep.include({ key: 1 })
+        .and.to.deep.include({ key: 2 })
+        .and.to.not.deep.include({ key: 3 });
     });
   });
 
