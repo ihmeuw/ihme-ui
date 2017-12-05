@@ -15,7 +15,7 @@ describe('data generator', () => {
 
     expect(dataGenerator(config)).to.be.an('array')
       .with.length(200)
-      .and.to.have.deep.property('[0]')
+      .and.to.have.nested.property('[0]')
       .that.is.an('object')
       .with.keys('foo', 'lamp', 'year_id', 'id');
   });
@@ -33,7 +33,7 @@ describe('data generator', () => {
 
     expect(dataGenerator(config)).to.be.an('array')
       .with.length(120)
-      .and.to.have.deep.property('[0]')
+      .and.to.have.nested.property('[0]')
       .that.is.an('object')
       .with.keys('vehical', 'season', 'hat', 'lamp', 'year_id', 'id');
   });
