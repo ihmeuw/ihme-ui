@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { VirtualScroll } from 'react-virtualized';
+import { List } from 'react-virtualized';
 import SelectOption from './select-option';
 
 import style from './menu.css';
@@ -68,7 +68,7 @@ export default function Menu(props) {
   }
 
   return (
-    <VirtualScroll
+    <List
       className={style.menu}
       height={height}
       width={width}
