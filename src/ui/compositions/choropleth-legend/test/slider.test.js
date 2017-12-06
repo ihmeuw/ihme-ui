@@ -65,23 +65,22 @@ describe('ChoroplethLegend <Slider />', () => {
     it('supplied sliderMove evt is triggered by dragmove event on brush handles ', () => {
       expect(onSliderMove.callCount).to.equal(0);
 
-      // trigger dragmove handler
-      wrapper.find(SliderHandle).get(0).onHandleMove({ dx: 10 });
+      wrapper.find(SliderHandle).first().instance().onHandleMove({ dx: 10 });
 
       expect(onSliderMove.callCount).to.equal(1);
     });
 
     it('does not trigger supplied sliderMove evt when handle is moved off slider', () => {
       expect(onSliderMove.callCount).to.equal(0);
-      wrapper.find(SliderHandle).get(1).onHandleMove({ dx: 300 });
+      wrapper.find(SliderHandle).last().instance().onHandleMove({ dx: 300 });
       expect(onSliderMove.callCount).to.equal(0);
     });
 
     it('snaps to bounds of slider within tolerance', () => {
-      wrapper.find(SliderHandle).get(0).onHandleMove({ dx: -248 });
+      wrapper.find(SliderHandle).first().instance().onHandleMove({ dx: -248 });
       expect(onSliderMove.lastCall.args[0]).to.deep.equal([0, 0.75]);
 
-      wrapper.find(SliderHandle).get(1).onHandleMove({ dx: 248 });
+      wrapper.find(SliderHandle).last().instance().onHandleMove({ dx: 248 });
       expect(onSliderMove.lastCall.args[0]).to.deep.equal([0.25, 1]);
     });
   });
