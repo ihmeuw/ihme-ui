@@ -69,7 +69,7 @@
     "cssnano-cli": "~1.0",
     "d3-request": "~0.5",
     "enzyme": "^3.2.0",
-    "enzyme-adapter-react-16": "^1.1.0",
+    "enzyme-adapter-react-15": "^1.0.5",
     "eslint": "~2.10",
     "eslint-config-airbnb": "9.0.1",
     "eslint-plugin-import": "~1.8",
@@ -81,6 +81,7 @@
     "postcss": "~5.2",
     "postcss-loader": "~1.2",
     "react-docgen": "~2.13",
+    "react-test-renderer": "^15.6.0",
     "sinon": "^2.4.1",
     "style-loader": "~0.17",
     "webpack": "~2.2",
@@ -94,9 +95,9 @@
     "interact.js": "~1.2",
     "lodash": "~4.5",
     "prop-types": "^15.6.0",
-    "react": "~16.0",
-    "react-dom": "~16.0",
-    "react-virtualized": "^9.13.0",
+    "react": "~15.6",
+    "react-dom": "~15.6",
+    "react-virtualized": "^9.00",
     "topojson": "~1.6"
   }
 }
