@@ -103,7 +103,7 @@ export default class Map extends React.Component {
     // only update if data is not being currently loaded,
     // and when props have changed,
     return !nextProps.loading
-            && shouldPureComponentUpdate.call(this, nextProps, nextState);
+            && shouldPureComponentUpdate(this.props, this.state, nextProps, nextState);
   }
 
   onSetScale() {

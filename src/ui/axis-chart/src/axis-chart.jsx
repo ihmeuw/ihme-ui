@@ -68,7 +68,8 @@ export default class AxisChart extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !nextProps.loading && shouldPureComponentUpdate(this, nextProps, nextState);
+    return !nextProps.loading &&
+      shouldPureComponentUpdate(this.props, this.state, nextProps, nextState);
   }
 
   render() {
