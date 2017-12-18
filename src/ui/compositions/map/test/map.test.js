@@ -18,7 +18,6 @@ describe('<Map />', () => {
       ];
 
       const keysOfVisibleGeometries = [1, 2];
-      console.log(filterData(data, keysOfVisibleGeometries, 'key'));
       expect(filterData(data, keysOfVisibleGeometries, 'key'))
         .to.be.an('array')
         .of.length(2)
