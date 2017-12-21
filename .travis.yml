@@ -2,9 +2,9 @@ language: node_js
 
 node_js: stable
 
-os: osx
+sudo: false
 
-osx_image: xcode8
+dist: trusty
 
 notifications:
   email: false

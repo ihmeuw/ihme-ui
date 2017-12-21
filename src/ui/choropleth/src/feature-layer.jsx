@@ -79,6 +79,9 @@ export default class FeatureLayer extends React.PureComponent {
               : getValue(datum, valueField);
 
             const fill = isNil(value) ? '#ccc' : colorScale(value);
+            if (typeof valueField === 'function') {
+              console.log("data", data, value, fill, valueField(data, feature));
+            }
 
             return (
               <Path
