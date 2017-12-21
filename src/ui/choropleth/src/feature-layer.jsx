@@ -80,7 +80,7 @@ export default class FeatureLayer extends React.PureComponent {
 
             const fill = isNil(value) ? '#ccc' : colorScale(value);
             if (typeof valueField === 'function') {
-              console.log("data", data, value, fill, valueField(data, feature));
+              console.log(data, value, fill, valueField(data, feature));
             }
 
             return (
