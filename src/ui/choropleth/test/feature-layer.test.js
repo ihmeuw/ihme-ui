@@ -17,15 +17,17 @@ describe('Choropleth <FeatureLayer />', () => {
   const features = getGeoJSON('states', 'feature').features;
 
   const data = getLocationIds(features).reduce((accum, locationId) => {
+    const meanValue = (Math.floor(Math.random() * 100))
     /* eslint-disable no-param-reassign */
     accum[locationId] = {
       id: locationId,
-      mean: Math.floor(Math.random() * 100)
+      mean: (meanValue > 1) ? meanValue : 76,
     };
 
     return accum;
     /* eslint-enable no-param-reassign */
   }, {});
+  console.log(data);
 
   const pathGenerator = geoPath();
   const colorScale = baseColorScale();
