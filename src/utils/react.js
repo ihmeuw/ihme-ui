@@ -1,8 +1,5 @@
 import { shallowEqual } from './objects';
 
-// Export PureComponent for backwards compatibility (introduced before React.PureComponent existed).
-// export { PureComponent } from 'react';
-
 /**
  * Implementation of PureComponent's `shouldComponentUpdate`, copied directly from react (https://github.com/facebook/react).
  *
