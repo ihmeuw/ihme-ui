@@ -1,15 +1,16 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Select, { propTypes as baseProps } from 'ihme-react-select';
 import { assign } from 'lodash';
 
-import { stateFromPropUpdates, propsChanged, PureComponent } from '../../../utils';
+import { stateFromPropUpdates, propsChanged } from '../../../utils';
 import { FLIP_MENU_UPWARDS_INLINE_STYLE, getWidestLabel } from './utils';
 
 import style from './select.css';
 import { menuWrapper } from './menu';
 
-export default class SingleSelect extends PureComponent {
+export default class SingleSelect extends React.PureComponent {
   constructor(props) {
     super(props);
     console.warn(

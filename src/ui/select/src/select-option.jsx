@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { bindAll, includes } from 'lodash';
 
@@ -39,8 +40,8 @@ const propTypes = {
   optionClassName: PropTypes.string,
   optionRenderer: PropTypes.func,
   optionStyle: PropTypes.oneOfType([
-    React.PropTypes.object,
-    React.PropTypes.func,
+    PropTypes.object,
+    PropTypes.func,
   ]),
   selectValue: PropTypes.func,
   valueArray: PropTypes.array,

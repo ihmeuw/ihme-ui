@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { symbol } from 'd3';
 import assign from 'lodash/assign';
@@ -11,7 +12,6 @@ import {
   getShape,
   memoizeByLastCall,
   propsChanged,
-  PureComponent,
   shapeTypes,
   stateFromPropUpdates,
 } from '../../../utils';
@@ -25,7 +25,7 @@ const SYMBOL_ROTATE = {
 /**
  * `import { Shape } from 'ihme-ui'`
  */
-export default class Shape extends PureComponent {
+export default class Shape extends React.PureComponent {
   /**
    * Return path string for given shape type and size
    * @param type {String}

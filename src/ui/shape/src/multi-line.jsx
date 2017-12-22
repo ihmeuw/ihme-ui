@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { scaleLinear } from 'd3';
 import { map, pick } from 'lodash';
@@ -9,7 +10,6 @@ import {
   CommonDefaultProps,
   CommonPropTypes,
   propResolver,
-  PureComponent,
 } from '../../../utils';
 
 /**
@@ -20,7 +20,7 @@ import {
  * are provided, which can be helpful, for example, for showing uncertainty around an estimate represented
  * by a line.
  */
-export default class MultiLine extends PureComponent {
+export default class MultiLine extends React.PureComponent {
   render() {
     const {
       areaClassName,

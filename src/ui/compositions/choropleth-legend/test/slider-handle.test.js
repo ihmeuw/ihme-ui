@@ -22,7 +22,8 @@ describe('ChoroplethLegend <SliderHandle />', () => {
       <SliderHandle
         position={5}
         onSliderMove={onSliderMove}
-      />
+      />,
+      { disableLifecycleMethods: true }
     );
     expect(wrapper.find('rect')).to.have.attr('transform', 'translate(-5, -2.5)');
   });
@@ -33,7 +34,8 @@ describe('ChoroplethLegend <SliderHandle />', () => {
         position={5}
         onSliderMove={onSliderMove}
         which="x2"
-      />
+      />,
+      { disableLifecycleMethods: true }
     );
     expect(wrapper.find('rect')).to.have.attr('transform', 'translate(0, -2.5)');
   });

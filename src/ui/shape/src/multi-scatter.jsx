@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { scaleLinear } from 'd3';
 import { castArray, map, pick } from 'lodash';
@@ -10,7 +11,6 @@ import {
   CommonPropTypes,
   memoizeByLastCall,
   propResolver,
-  PureComponent,
 } from '../../../utils';
 
 /**
@@ -18,7 +18,7 @@ import {
  *
  * This is a convenience component intended to make it easier to render many `<Scatter />`s on a single chart.
  */
-export default class MultiScatter extends PureComponent {
+export default class MultiScatter extends React.PureComponent {
   constructor(props) {
     super(props);
 

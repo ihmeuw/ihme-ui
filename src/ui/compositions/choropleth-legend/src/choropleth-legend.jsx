@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { assign } from 'lodash';
 import { scaleLinear } from 'd3';
 
@@ -7,7 +8,6 @@ import {
   numberFormat,
   propsChanged,
   CommonPropTypes,
-  PureComponent,
   stateFromPropUpdates,
 } from '../../../../utils';
 
@@ -23,7 +23,7 @@ const subtractMarginsFromWidth = (width, margins) => width - (margins.left + mar
 /**
  * `import { ChoroplethLegend } from 'ihme-ui'`
  */
-export default class ChoroplethLegend extends PureComponent {
+export default class ChoroplethLegend extends React.PureComponent {
   constructor(props) {
     super(props);
 

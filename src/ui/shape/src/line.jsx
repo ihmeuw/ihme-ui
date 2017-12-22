@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { line } from 'd3';
 import bindAll from 'lodash/bindAll';
@@ -8,14 +9,13 @@ import {
   CommonDefaultProps,
   propsChanged,
   propResolver,
-  PureComponent,
   stateFromPropUpdates,
 } from '../../../utils';
 
 /**
  * `import { Line } from 'ihme-ui'`
  */
-export default class Line extends PureComponent {
+export default class Line extends React.PureComponent {
   constructor(props) {
     super(props);
 

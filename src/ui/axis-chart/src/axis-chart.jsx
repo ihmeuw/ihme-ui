@@ -1,8 +1,14 @@
-import React, { PropTypes } from 'react';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { uniqueId } from 'lodash';
 import classNames from 'classnames';
-import { CommonPropTypes, getScale, getScaleTypes, propsChanged } from '../../../utils';
+import {
+  CommonPropTypes,
+  getScale,
+  getScaleTypes,
+  propsChanged,
+  shouldPureComponentUpdate
+} from '../../../utils';
 
 const SCALE_TYPES = getScaleTypes();
 
@@ -62,7 +68,8 @@ export default class AxisChart extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !nextProps.loading && PureRenderMixin.shouldComponentUpdate(this, nextProps, nextState);
+    return !nextProps.loading &&
+      shouldPureComponentUpdate(this.props, this.state, nextProps, nextState);
   }
 
   render() {

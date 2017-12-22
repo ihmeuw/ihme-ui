@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import {
   assign,
   get as getValue,
@@ -13,13 +14,12 @@ import {
   CommonPropTypes,
   propResolver,
   propsChanged,
-  PureComponent,
   stateFromPropUpdates,
 } from '../../../utils';
 
 import Path from './path';
 
-export default class FeatureLayer extends PureComponent {
+export default class FeatureLayer extends React.PureComponent {
   constructor(props) {
     super(props);
 

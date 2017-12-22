@@ -34,6 +34,47 @@ function argumentsAreShallowlyEqual(equalityCheck, prev, next) {
 }
 
 /**
+ * direct copy of `shallowEqual` from fbjs (https://github.com/facebook/fbjs)
+ *
+ * Performs equality check by iterating through keys on an object and returning false
+ * when any key has values which are not strictly equal between the arguments.
+ * Returns true when the values of all keys are strictly equal.
+ *
+ * @param {Object} objA
+ * @param {Object} objB
+ * @return {boolean}
+ */
+export function shallowEqual(objA, objB) {
+  if (Object.is(objA, objB)) {
+    return true;
+  }
+
+  if (typeof objA !== 'object' || objA === null ||
+    typeof objB !== 'object' || objB === null) {
+    return false;
+  }
+
+  const keysA = Object.keys(objA);
+  const keysB = Object.keys(objB);
+
+  if (keysA.length !== keysB.length) {
+    return false;
+  }
+
+  // Test for A's keys different from B.
+  for (let i = 0; i < keysA.length; i++) {
+    if (
+      !Object.prototype.hasOwnProperty.call(objB, keysA[i]) ||
+      !Object.is(objA[keysA[i]], objB[keysA[i]])
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/**
  * this function is a direct copy of `defaultMemoize` from reselect (https://github.com/reactjs/reselect)
  * memoize a function based on most recently passed-in arguments
  * @param {function} func

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import memoize from 'lodash/memoize';
 import noop from 'lodash/noop';
@@ -6,7 +7,6 @@ import noop from 'lodash/noop';
 import {
   CommonPropTypes,
   propResolver,
-  PureComponent,
 } from '../../../utils';
 
 /**
@@ -17,7 +17,7 @@ import {
  * by wrapping `<Option />` components (or similar, customized components) in a `<Group />`.
  *
  */
-export default class Group extends PureComponent {
+export default class Group extends React.PureComponent {
   constructor(props) {
     super(props);
 

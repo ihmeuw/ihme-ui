@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { area } from 'd3';
 import bindAll from 'lodash/bindAll';
@@ -8,14 +9,13 @@ import {
   CommonDefaultProps,
   propsChanged,
   propResolver,
-  PureComponent,
   stateFromPropUpdates,
 } from '../../../utils';
 
 /**
  * `import { Area } from 'ihme-ui'`
  */
-export default class Area extends PureComponent {
+export default class Area extends React.PureComponent {
   constructor(props) {
     super(props);
 
