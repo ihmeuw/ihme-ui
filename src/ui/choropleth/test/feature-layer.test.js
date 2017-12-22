@@ -20,7 +20,7 @@ describe('Choropleth <FeatureLayer />', () => {
     /* eslint-disable no-param-reassign */
     accum[locationId] = {
       id: locationId,
-      mean: Math.floor(Math.random() * 100 + 1),
+      mean: Math.floor(Math.random() * 100 + 2),
     };
 
     return accum;
