@@ -27,7 +27,6 @@ describe('Choropleth <FeatureLayer />', () => {
     return accum;
     /* eslint-enable no-param-reassign */
   }, {});
-  console.log(data);
 
   const pathGenerator = geoPath();
   const colorScale = baseColorScale();
