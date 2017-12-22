@@ -17,7 +17,7 @@ describe('Choropleth <FeatureLayer />', () => {
   const features = getGeoJSON('states', 'feature').features;
 
   const data = getLocationIds(features).reduce((accum, locationId) => {
-    const meanValue = (Math.floor(Math.random() * 100))
+    const meanValue = (Math.floor(Math.random() * 100));
     /* eslint-disable no-param-reassign */
     accum[locationId] = {
       id: locationId,
