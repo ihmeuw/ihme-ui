@@ -3,7 +3,6 @@
 var path = require('path');
 var _ = require('lodash');
 var autoprefixer = require('autoprefixer');
-var WebpackNotifierPlugin = require('webpack-notifier');
 
 var baseConfig = require('./webpack.base.config');
 
@@ -21,9 +20,6 @@ module.exports = function(directory) {
       path: directory,
       filename: 'bundle.js',
     },
-    plugins: [
-      new WebpackNotifierPlugin({alwaysNotify: true})
-    ],
     module: {
       rules: [
         {

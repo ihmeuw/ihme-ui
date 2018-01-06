@@ -84,8 +84,7 @@
     "react-test-renderer": "~15.6.0",
     "sinon": "^2.4.1",
     "style-loader": "~0.17",
-    "webpack": "~2.2",
-    "webpack-notifier": "~1.5"
+    "webpack": "~2.2"
   },
   "dependencies": {
     "babel-runtime": "~6.6",
