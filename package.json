@@ -1,7 +1,7 @@
 {
   "name": "ihme-ui",
   "description": "Visualization tools from the Institute for Health Metrics and Evaluation",
-  "version": "0.28.0",
+  "version": "0.28.1",
   "license": "MIT",
   "browser": "dist/ihme-ui.min.js",
   "main": "lib/index.js",
@@ -96,7 +96,7 @@
     "prop-types": "~15.6",
     "react": "~15.6",
     "react-dom": "~15.6",
-    "react-virtualized": "~9.00",
+    "react-virtualized": "~9.18.5",
     "topojson": "~1.6"
   }
 }
