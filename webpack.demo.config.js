@@ -1,23 +1,17 @@
 'use strict';
 
-var path = require('path');
-var _ = require('lodash');
-var autoprefixer = require('autoprefixer');
+const path = require('path');
+const _ = require('lodash');
+const autoprefixer = require('autoprefixer');
 
-var baseConfig = require('./webpack.base.config');
-
-function customizer(objValue, srcValue) {
-  if (_.isArray(objValue)) {
-    return objValue.concat(srcValue);
-  }
-};
+const baseConfig = require('./webpack.base.config');
 
 module.exports = function(directory) {
   const demoConfig = {
     devtool: 'source-map',
     entry: path.resolve(directory, 'app.jsx'),
     output: {
-      path: directory,
+      path: path.resolve(directory),
       filename: 'bundle.js',
     },
     module: {
