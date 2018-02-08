@@ -5,7 +5,6 @@ export default function inputRenderer(inputProps) {
     <div
       className={inputProps.className}
       key="input-wrap"
-      style={{ display: open ? 'block' : 'none' }}
     >
       <input
         {...inputProps}
