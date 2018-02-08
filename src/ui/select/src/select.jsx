@@ -48,10 +48,10 @@ export default class Select extends React.PureComponent {
         {...this.props}
         autoFocus
         autosize={false}
-        className={classNames(style.select, className)}
+        className={classNames(multi ? style['multi-select'] : style['single-select'], className)}
         clearable
         closeOnSelect={!multi}
-        inputProps={multi && { placeholder: `Add/Remove... (${value.length})` }}
+        inputProps={multi ? { placeholder: `Add/Remove... (${value.length})` } : {}}
         inputRenderer={multi && inputRenderer}
         menuContainerStyle={menuContainerStyle}
         menuStyle={menuStyle}
@@ -59,7 +59,7 @@ export default class Select extends React.PureComponent {
         optionRenderer={optionRenderer({ hierarchical, multi })}
         placeholder={!multi && (placeholder || 'Add/Remove...')}
         removeSelected={false}
-        resetValue={resetValue || []}
+        resetValue={resetValue || (multi ? [] : null)}
         searchable
         valueComponent={multi && retNull}
         wrapperStyle={wrapperStyle}
