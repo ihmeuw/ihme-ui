@@ -44,12 +44,18 @@ export default class Select extends React.PureComponent {
       value,
     } = this.props;
 
+    const computedClassName = classNames(
+      style.select,
+      multi ? style['multi-select'] : style['single-select'],
+      className
+    );
+
     return (
       <BaseSelect
         {...this.props}
         autoFocus
         autosize={false}
-        className={classNames(multi ? style['multi-select'] : style['single-select'], className)}
+        className={computedClassName}
         clearable
         closeOnSelect={!multi}
         inputProps={multi ? { placeholder: `Add/Remove... (${value.length})` } : {}}
