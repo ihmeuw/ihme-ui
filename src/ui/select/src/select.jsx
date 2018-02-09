@@ -38,6 +38,7 @@ export default class Select extends React.PureComponent {
       className,
       hierarchical,
       multi,
+      optionHeight,
       placeholder,
       resetValue,
       value,
@@ -56,6 +57,7 @@ export default class Select extends React.PureComponent {
         menuContainerStyle={menuContainerStyle}
         menuStyle={menuStyle}
         multi={multi}
+        optionHeight={optionHeight}
         optionRenderer={optionRenderer({ hierarchical, multi })}
         placeholder={!multi && (placeholder || 'Add/Remove...')}
         removeSelected={false}
@@ -85,6 +87,7 @@ const selectPropTypes = {
 Select.propTypes = assign({}, BaseSelect.propTypes, selectPropTypes);
 
 Select.defaultProps = {
+  optionHeight: 20,
   widthPad: 60,
 };
 
