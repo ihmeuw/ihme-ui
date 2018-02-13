@@ -1,17 +1,16 @@
 'use strict';
 
-var webpack = require('webpack');
-var _ = require('lodash');
+const _ = require('lodash');
 
-var config = require('./webpack.base.config');
+const config = require('./webpack.base.config');
 
 function customizer(objValue, srcValue) {
   if (_.isArray(objValue)) {
     return objValue.concat(srcValue);
   }
-};
+}
 
-var buildConfig = _.mergeWith({}, config, {
+const buildConfig = _.mergeWith({}, config, {
   devtool: 'cheap-module-source-map',
   output: {
     library: 'ihmeUI',

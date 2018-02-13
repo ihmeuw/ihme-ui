@@ -1,16 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { default as BaseSelect, propTypes as baseProps } from 'ihme-react-select';
+import BaseSelect from 'react-virtualized-select';
 import { assign } from 'lodash';
 
 import { stateFromPropUpdates, propsChanged } from '../../../utils';
 import { FLIP_MENU_UPWARDS_INLINE_STYLE, getWidestLabel } from './utils';
 
 import style from './select.css';
-import { menuWrapper } from './menu';
-import Value from './value';
-import multiValueRenderer from './multi-value-renderer';
+import optionRenderer from './option-renderer';
+import inputRenderer from './input-renderer';
+
+function retNull() {
+  return null;
+}
 
 export default class Select extends React.PureComponent {
   constructor(props) {
@@ -24,66 +27,52 @@ export default class Select extends React.PureComponent {
     );
   }
 
-  renderSingleSelect() {
-    const {
-      menuContainerStyle,
-      menuRenderer,
-      menuStyle,
-      wrapperStyle,
-    } = this.state;
-
-    return (
-      <BaseSelect
-        {...this.props}
-        autofocus
-        autosize={false}
-        className={classNames(style.select, this.props.className)}
-        menuContainerStyle={menuContainerStyle}
-        menuRenderer={menuRenderer}
-        menuStyle={menuStyle}
-        placeholder={this.props.placeholder || 'Select...'}
-        resetValue={this.props.resetValue || null}
-        searchable
-        wrapperStyle={wrapperStyle}
-      />
-    );
-  }
-
-  renderMultiSelect() {
-    const {
-      menuContainerStyle,
-      menuRenderer,
-      menuStyle,
-      wrapperStyle,
-    } = this.state;
-
-    return (
-      <BaseSelect
-        {...this.props}
-        autofocus
-        autosize={false}
-        className={classNames(style.select, this.props.className)}
-        clearable
-        menuContainerStyle={menuContainerStyle}
-        menuRenderer={menuRenderer}
-        menuStyle={menuStyle}
-        multi
-        placeholder={this.props.placeholder || 'Add/Remove...'}
-        resetValue={this.props.resetValue || []}
-        searchable
-        valueComponent={Value}
-        valueRenderer={multiValueRenderer}
-        wrapperStyle={wrapperStyle}
-      />
-    );
-  }
-
   render() {
-    if (this.props.multi) {
-      return this.renderMultiSelect();
-    }
+    const {
+      menuContainerStyle,
+      menuStyle,
+      wrapperStyle,
+    } = this.state;
 
-    return this.renderSingleSelect();
+    const {
+      className,
+      hierarchical,
+      multi,
+      optionHeight,
+      placeholder,
+      resetValue,
+      value,
+    } = this.props;
+
+    const computedClassName = classNames(
+      style.select,
+      multi ? style['multi-select'] : style['single-select'],
+      className
+    );
+
+    return (
+      <BaseSelect
+        {...this.props}
+        autoFocus
+        autosize={false}
+        className={computedClassName}
+        clearable
+        closeOnSelect={!multi}
+        inputProps={multi ? { placeholder: `Add/Remove... (${value.length})` } : {}}
+        inputRenderer={multi && inputRenderer}
+        menuContainerStyle={menuContainerStyle}
+        menuStyle={menuStyle}
+        multi={multi}
+        optionHeight={optionHeight}
+        optionRenderer={optionRenderer({ hierarchical, multi })}
+        placeholder={!multi && (placeholder || 'Add/Remove...')}
+        removeSelected={false}
+        resetValue={resetValue || (multi ? [] : null)}
+        searchable
+        valueComponent={multi && retNull}
+        wrapperStyle={wrapperStyle}
+      />
+    );
   }
 }
 
@@ -101,9 +90,10 @@ const selectPropTypes = {
   widthPad: PropTypes.number,
 };
 
-Select.propTypes = assign({}, baseProps, selectPropTypes);
+Select.propTypes = assign({}, BaseSelect.propTypes, selectPropTypes);
 
 Select.defaultProps = {
+  optionHeight: 20,
   widthPad: 60,
 };
 
@@ -138,7 +128,6 @@ Select.propUpdates = {
           nextProps.menuContainerStyle,
           nextProps.menuUpward && FLIP_MENU_UPWARDS_INLINE_STYLE
         ),
-        menuRenderer: menuWrapper(menuWidth),
         menuStyle: assign(
           {},
           { overflow: 'hidden', width: `${menuWidth}px` },

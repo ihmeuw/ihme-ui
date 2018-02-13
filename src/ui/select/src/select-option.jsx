@@ -114,6 +114,7 @@ export default class SelectOption extends React.Component {
         onClick={!isDisabled && this.onClick}
         onMouseOver={!isDisabled && this.onMouseOver}
         style={style}
+        title={option.title}
       >
         {
           multi ? <Input selected={isSelected} /> : null

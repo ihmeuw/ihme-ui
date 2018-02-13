@@ -4,3 +4,55 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.select :global(.Select-placeholder) {
+  line-height: 23px;
+}
+
+.select :global(.Select-input) {
+  height: 23px;
+  vertical-align: top;
+}
+
+.select :global(.Select-control) {
+  height: 23px;
+}
+
+.select :global(.Select-clear) {
+  font-size: 12px;
+}
+
+.select :global(.Select-arrow-zone) {
+  background-color: rgb(238, 238, 238);
+  border-left: 1px solid rgb(204, 204, 204);
+  justify-content: center;
+  padding: 0 5px;
+}
+
+/* STYLES FOR SELECT */
+
+.single-select :global(.Select-input) {
+  height: 23px;
+  vertical-align: top;
+}
+
+.single-select :global(.Select-input) > input {
+  padding: 0;
+}
+
+.single-select :global(.Select-value) {
+  line-height: 23px;
+  height: 23px;
+}
+
+.single-select :global(.Select-value-label) {
+  line-height: 23px;
+  vertical-align: top;
+}
+
+/* STYLES FOR MULTI-SELECT */
+
+.multi-select :global(.Select-input) > input {
+  height: 23px;
+  vertical-align: top;
+}
