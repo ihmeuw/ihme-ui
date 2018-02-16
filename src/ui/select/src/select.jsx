@@ -53,7 +53,6 @@ export default class Select extends React.PureComponent {
     return (
       <BaseSelect
         {...this.props}
-        autoFocus
         autosize={false}
         className={computedClassName}
         clearable
