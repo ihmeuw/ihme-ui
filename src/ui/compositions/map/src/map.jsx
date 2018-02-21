@@ -350,7 +350,7 @@ export default class Map extends React.Component {
     return (
       <div className={classNames(styles.legend, legendClassName)} style={legendStyle}>
         <div className={styles['legend-wrapper']}>
-          <ResponsiveContainer disableHeight>
+          <ResponsiveContainer>
             <ChoroplethLegend
               axisTickFormat={axisTickFormat}
               colorSteps={colorSteps}
