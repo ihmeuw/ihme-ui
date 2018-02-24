@@ -8,7 +8,7 @@ import { stateFromPropUpdates, propsChanged } from '../../../utils';
 import { FLIP_MENU_UPWARDS_INLINE_STYLE, getWidestLabel } from './utils';
 
 import style from './select.css';
-import optionRenderer from './option-renderer';
+import defaultOptionRenderer from './option-renderer';
 import inputRenderer from './input-renderer';
 
 function retNull() {
@@ -36,9 +36,12 @@ export default class Select extends React.PureComponent {
 
     const {
       className,
+      clearable,
       hierarchical,
       multi,
       optionHeight,
+      optionRenderer,
+      optionStyle,
       placeholder,
       resetValue,
       value,
@@ -55,7 +58,7 @@ export default class Select extends React.PureComponent {
         {...this.props}
         autosize={false}
         className={computedClassName}
-        clearable
+        clearable={clearable}
         closeOnSelect={!multi}
         inputProps={multi ? { placeholder: `Add/Remove... (${value.length})` } : {}}
         inputRenderer={multi && inputRenderer}
@@ -63,7 +66,7 @@ export default class Select extends React.PureComponent {
         menuStyle={menuStyle}
         multi={multi}
         optionHeight={optionHeight}
-        optionRenderer={optionRenderer({ hierarchical, multi })}
+        optionRenderer={optionRenderer({ hierarchical, multi, optionStyle })}
         placeholder={!multi && (placeholder || 'Add/Remove...')}
         removeSelected={false}
         resetValue={resetValue || (multi ? [] : null)}
@@ -76,11 +79,26 @@ export default class Select extends React.PureComponent {
 }
 
 const selectPropTypes = {
+  /* should it be possible to reset value */
+  clearable: PropTypes.bool,
+
   /* drop down will flip up */
   menuUpward: PropTypes.bool,
 
   /* allow multiple selections */
   multi: PropTypes.bool,
+
+  /* function to render option components */
+  optionRenderer: PropTypes.func,
+
+  /* styles to pass to <Option />; if a func, passed option object */
+  optionStyle: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.func,
+  ]),
+
+  /* whether to enable searching feature or not */
+  searchable: PropTypes.bool,
 
   /* width applied to outermost wrapper */
   width: PropTypes.number,
@@ -92,7 +110,10 @@ const selectPropTypes = {
 Select.propTypes = assign({}, BaseSelect.propTypes, selectPropTypes);
 
 Select.defaultProps = {
+  clearable: true,
   optionHeight: 20,
+  optionRenderer: defaultOptionRenderer,
+  searchable: true,
   widthPad: 60,
 };
 
