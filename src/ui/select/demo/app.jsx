@@ -1,26 +1,61 @@
+import 'babel-polyfill';
 import React from 'react';
 import { render } from 'react-dom';
 import { bindAll } from 'lodash';
-import { randomUniform } from 'd3';
 
 import { Select } from '../';
 import { default as cities } from './cities';
 import style from './app.css';
 
-const randomizer = randomUniform(0, 4);
+const random = Math.random;
+
+function* hierarchyGenerator() {
+  let level = 1;
+  yield level;
+  while (true) {
+    const q = random();
+    if (level === 1) {
+      if (q < 0.5) {
+        level++;
+      }
+    } else if (level === 4) {
+      if (q < 0.5) {
+        level--;
+      }
+    } else {
+      if (q < 0.25) {
+        level++;
+      } else if (q > 0.75) {
+        level--;
+      }
+    }
+    yield level;
+  }
+}
+
+const levelG = hierarchyGenerator();
 
 const hierarchicalCities = cities.map((city) => {
-  const level = Math.floor(randomizer());
+  const {value: level} = levelG.next();
+
   return {
     level,
-    bold: !level || null,
+    bold: level === 1,
     ...city,
   };
 });
 
-function randomlyDisableOptions(option) {
-  const isEven = Math.floor(randomizer()) % 2 === 0;
-  if (isEven) return { color: '#eee' };
+function randomlyColorOptions() {
+  const colors = [
+    '#26c',
+    '#C13',
+    '#c71',
+    '#b1c',
+    '#eee',
+  ];
+
+  const color = colors[Math.floor(random() * 10)];
+  if (color) return { color };
   return {};
 }
 
@@ -30,11 +65,13 @@ class App extends React.Component {
 
     this.state = {
       multiSelectValues: [],
+      multiHierarchicalSelectValues: [],
       singleSelectValue: null,
     };
 
     bindAll(this, [
       'onMultiSelectChange',
+      'onMultiHierarchicalSelectChange',
       'onSingleSelectChange',
     ]);
   }
@@ -45,6 +82,12 @@ class App extends React.Component {
     });
   }
 
+  onMultiHierarchicalSelectChange(selections) {
+    this.setState({
+      multiHierarchicalSelectValues: selections,
+    });
+  }
+
   onSingleSelectChange(selection) {
     this.setState({
       singleSelectValue: selection,
@@ -52,7 +95,11 @@ class App extends React.Component {
   }
 
   render() {
-    const { multiSelectValues, singleSelectValue } = this.state;
+    const {
+      multiSelectValues,
+      multiHierarchicalSelectValues,
+      singleSelectValue,
+    } = this.state;
 
     return (
       <div className={style.container}>
@@ -93,12 +140,13 @@ class App extends React.Component {
 
 </code></pre> */}
           <Select
+            clearable={false}
             hierarchical
             labelKey="name"
             multi
-            onChange={this.onMultiSelectChange}
+            onChange={this.onMultiHierarchicalSelectChange}
             options={hierarchicalCities}
-            value={multiSelectValues}
+            value={multiHierarchicalSelectValues}
             valueKey="name"
           />
         </section>
@@ -164,7 +212,7 @@ class App extends React.Component {
             labelKey="name"
             onChange={this.onSingleSelectChange}
             options={hierarchicalCities}
-            optionStyle={randomlyDisableOptions}
+            optionStyle={randomlyColorOptions}
             value={singleSelectValue}
             valueKey="name"
           />
