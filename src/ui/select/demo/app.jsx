@@ -140,7 +140,6 @@ class App extends React.Component {
 
 </code></pre> */}
           <Select
-            clearable={false}
             hierarchical
             labelKey="name"
             multi
@@ -194,9 +193,10 @@ class App extends React.Component {
         </section>
 
         <section>
-          <h3>Option styling</h3>
+          <h3>Option styling without clearable</h3>
 {/* <pre><code>
        <Select
+         clearable={false}
          hierarchical
          labelKey="name"
          onChange={ function (selections <Object>) {...} }
@@ -208,6 +208,8 @@ class App extends React.Component {
 
 </code></pre> */}
           <Select
+            clearable={false}
+            searchable={false}
             hierarchical
             labelKey="name"
             onChange={this.onSingleSelectChange}

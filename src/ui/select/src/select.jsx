@@ -113,7 +113,6 @@ Select.defaultProps = {
   clearable: true,
   optionHeight: 20,
   optionRenderer: defaultOptionRenderer,
-  searchable: true,
   widthPad: 60,
 };
 
