@@ -97,9 +97,6 @@ const selectPropTypes = {
     PropTypes.func,
   ]),
 
-  /* whether to enable searching feature or not */
-  searchable: PropTypes.bool,
-
   /* width applied to outermost wrapper */
   width: PropTypes.number,
 
