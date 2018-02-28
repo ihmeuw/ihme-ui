@@ -3,7 +3,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import { bindAll } from 'lodash';
 
-import { Select } from '../';
+import { Select, SelectOption } from '../';
 import { default as cities } from './cities';
 import style from './app.css';
 
@@ -57,6 +57,62 @@ function randomlyColorOptions() {
   const color = colors[Math.floor(random() * 10)];
   if (color) return { color };
   return {};
+}
+
+function customOptionRenderer({ hierarchical, multi, optionStyle }) {
+  return (passedProps) => {
+    const {
+      focusedOption,
+      focusedOptionIndex,
+      focusOption,
+      key,
+      labelKey,
+      onSelect,
+      option,
+      optionIndex,
+      options,
+      selectValue,
+      style,
+      valueArray,
+      valueKey
+    } = passedProps;
+
+    function onClickSelectAll(selection) {
+      const filteredOptions = options.filter(optionFromList => optionFromList !== option);
+      onSelect(filteredOptions);
+    }
+
+    if (option[valueKey] === 'select all') {
+      return (
+        <div
+          key={key}
+          style={style}
+          title={option.title}
+        >
+          <SelectOption
+            {...passedProps}
+            selectValue={onClickSelectAll}
+            optionStyle={optionStyle}
+          />
+        </div>
+      );
+    }
+
+    return (
+      <div
+        key={key}
+        style={style}
+        title={option.title}
+      >
+        <SelectOption
+          {...passedProps}
+          hierarchical={hierarchical}
+          multi={multi}
+          optionStyle={optionStyle}
+        />
+      </div>
+    );
+  }
 }
 
 class App extends React.Component {
@@ -220,14 +276,14 @@ class App extends React.Component {
           />
         </section>
         <section>
-          <h3>Multi-select flip up</h3>
+          <h3>Multi-select custom option renderer</h3>
 {/* <pre><code>
        <Select
          labelKey="name"
-         menuUpward
          multi
          onChange={ function (selections <Array>) {...} }
          options={ [{name: 'Albany'}, ...] }
+         optionRenderer={customOptionRenderer}
          placeholder="select cities"
          value={[]}
          valueKey="name"
@@ -239,7 +295,8 @@ class App extends React.Component {
             menuUpward
             multi
             onChange={this.onMultiSelectChange}
-            options={cities}
+            options={[{name: 'select all'}].concat(cities)}
+            optionRenderer={customOptionRenderer}
             placeholder="select cities"
             value={multiSelectValues}
             valueKey="name"
