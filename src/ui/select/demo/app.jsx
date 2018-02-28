@@ -112,7 +112,7 @@ function customOptionRenderer({ hierarchical, multi, optionStyle }) {
         />
       </div>
     );
-  }
+  };
 }
 
 class App extends React.Component {
