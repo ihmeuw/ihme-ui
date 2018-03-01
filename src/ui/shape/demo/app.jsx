@@ -49,9 +49,11 @@ class App extends React.Component {
     super(props);
     this.state = {
       selectedItems: [],
+      country: 2,
     }
 
     bindAll(this, [
+      'onButtonPush',
       'onClick',
       'onMouseLeave',
       'onMouseMove',
@@ -83,6 +85,12 @@ class App extends React.Component {
       focus: datum,
     });
   };
+
+  onButtonPush() {
+    this.setState({
+      country: (this.state.country + 1) % locationData.length,
+    });
+  }
 
   render() {
     return (
@@ -174,7 +182,8 @@ class App extends React.Component {
             </AxisChart>
         </section>
         <section>
-          <h3>One Dataset</h3>
+          <h3>One Dataset: {locationData[this.state.country].location}</h3>
+          <button onClick={this.onButtonPush}>press to look at next country</button>
 {/* <pre><code>
  <AxisChart
    height={300}
@@ -217,7 +226,7 @@ class App extends React.Component {
               <YAxis />
               <Scatter
                 fill="steelblue"
-                data={data.filter((datum) => { return datum.location === 'India'; })}
+                data={data.filter((datum) => { return datum.location === locationData[this.state.country].location; })}
                 dataAccessors={{
                   fill: keyField,
                   key: 'id',
