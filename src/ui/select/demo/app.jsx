@@ -36,7 +36,7 @@ function* hierarchyGenerator() {
 const levelG = hierarchyGenerator();
 
 const hierarchicalCities = cities.map((city) => {
-  const {value: level} = levelG.next();
+  const { value: level } = levelG.next();
 
   return {
     level,
@@ -55,8 +55,8 @@ function randomlyColorOptions() {
   ];
 
   const color = colors[Math.floor(random() * 10)];
-  if (color) return { color };
-  return {};
+
+  return color ? { color } : {};
 }
 
 function customOptionRenderer({ hierarchical, multi, optionStyle }) {

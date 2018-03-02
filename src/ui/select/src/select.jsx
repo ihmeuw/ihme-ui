@@ -48,8 +48,8 @@ export default class Select extends React.PureComponent {
     } = this.props;
 
     const computedClassName = classNames(
-      style.select,
       multi ? style['multi-select'] : style['single-select'],
+      style.select,
       className
     );
 
@@ -79,7 +79,7 @@ export default class Select extends React.PureComponent {
 }
 
 const selectPropTypes = {
-  /* should it be possible to reset value */
+  /* render the clear selection "X" to reset the value */
   clearable: PropTypes.bool,
 
   /* drop down will flip up */
