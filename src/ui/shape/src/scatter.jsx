@@ -432,4 +432,12 @@ Scatter.propUpdates = {
       ),
     });
   },
+  focusedDatumKey: (state, _, prevProps, nextProps) => {
+    if (!propsChanged(prevProps, nextProps, ['selection', 'data'])) return state;
+    const {
+      dataAccessors: { key },
+      focus,
+    } = nextProps;
+    return assign({}, state, { focusedDatumKey: focus ? propResolver(focus, key) : null });
+  },
 };
