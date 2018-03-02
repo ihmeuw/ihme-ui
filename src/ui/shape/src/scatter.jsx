@@ -102,20 +102,20 @@ export default class Scatter extends React.PureComponent {
       shapeScale(propResolver(datum, dataAccessors.shape)) :
       shapeType;
 
-    const focusedDatumKey = focus ? propResolver(focus, dataAccessors.key) : null;
-    const animationFunction = datum => {
-      const xValue = propResolver(datum, dataAccessors.x);
-      const yValue = propResolver(datum, dataAccessors.y);
-      const resolvedShapeType = dataAccessors.shape ?
-        shapeScale(propResolver(datum, dataAccessors.shape)) :
-        shapeType;
+    const translateX = Scatter.getCoordinate(
+      propResolver(datum, dataAccessors.x),
+      scales && scales.x,
+    );
+    const translateY = Scatter.getCoordinate(
+      propResolver(datum, dataAccessors.y),
+      scales && scales.y,
+    );
 
-      return {
-        fillValue: propResolver(datum, dataAccessors.fill || dataAccessors.x),
-        resolvedShapeType,
-        translateX: scales.x && isFinite(xValue) ? [scales.x(xValue)] : [0],
-        translateY: scales.y && isFinite(yValue) ? [scales.y(yValue)] : [0],
-      };
+    return {
+      processedFill,
+      resolvedShapeType,
+      translateX,
+      translateY,
     };
 
     return animate ? (
