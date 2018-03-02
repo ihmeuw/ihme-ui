@@ -24,7 +24,7 @@ describe('<Select />', () => {
       />
     );
 
-    expect(wrapper).to.have.className(styles['single-select']);
+    expect(wrapper.hasClass(styles['single-select'])).to.equal(true);
   });
 
   it('uses placeholder text in div element for single select', () => {
