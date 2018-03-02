@@ -41,6 +41,7 @@ export default class Scatter extends React.PureComponent {
 
   render() {
     const {
+      animate,
       className,
       clipPathId,
       colorScale,
@@ -89,7 +90,7 @@ export default class Scatter extends React.PureComponent {
       };
     };
 
-    return (
+    return animate ? (
       <NodeGroup
         data={sortedData}
         keyAccessor={(datum) => propResolver(datum, dataAccessors.x)}
@@ -131,6 +132,41 @@ export default class Scatter extends React.PureComponent {
           </g>
         )}
       </NodeGroup>
+    ) : (
+      <g
+        className={className && classNames(className)}
+        clipPath={clipPathId && `url(#${clipPathId})`}
+        style={this.combineStyles(style, data)}
+      >
+        {
+          map(sortedData, (datum) => {
+            // value passed into colorScale
+            // use dataAccessors.x as fail-over for backward compatibility
+            const key = propResolver(datum, dataAccessors.key);
+            const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x);
+            const resolvedShapeType = dataAccessors.shape ?
+              shapeScale(propResolver(datum, dataAccessors.shape)) :
+              shapeType;
+            const xValue = propResolver(datum, dataAccessors.x);
+            const yValue = propResolver(datum, dataAccessors.y);
+            return (
+              <Shape
+                className={shapeClassName}
+                key={key}
+                datum={datum}
+                fill={colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill}
+                focused={focusedDatumKey === key}
+                selected={selectedDataMappedToKeys.hasOwnProperty(key)}
+                shapeType={resolvedShapeType}
+                style={shapeStyle}
+                translateX={scales.x && isFinite(xValue) ? scales.x(xValue) : 0}
+                translateY={scales.y && isFinite(yValue) ? scales.y(yValue) : 0}
+                {...childProps}
+              />
+            );
+          })
+        }
+      </g>
     );
   }
 }
