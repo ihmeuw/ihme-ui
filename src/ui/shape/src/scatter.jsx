@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { scaleLinear } from 'd3';
 import {
   assign,
+  bindAll,
   findIndex,
   isFinite,
   keyBy,
@@ -33,6 +34,11 @@ export default class Scatter extends React.PureComponent {
     super(props);
     this.combineStyles = memoizeByLastCall(combineStyles);
     this.state = stateFromPropUpdates(Scatter.propUpdates, {}, props, {});
+    bindAll(this, [
+      'processDatum',
+      'renderScatter',
+      'renderScatterShape',
+    ]);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -73,6 +79,24 @@ export default class Scatter extends React.PureComponent {
       'selectedStyle',
       'size',
     ]);
+  }
+
+  processDatum(datum) {
+    const {
+      colorScale,
+      dataAccessors,
+      fill,
+      scales,
+      shapeScale,
+      shapeType,
+    } = this.props;
+
+    const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x);
+    const processedFill = colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill;
+
+    const resolvedShapeType = dataAccessors.shape ?
+      shapeScale(propResolver(datum, dataAccessors.shape)) :
+      shapeType;
 
     const focusedDatumKey = focus ? propResolver(focus, dataAccessors.key) : null;
     const animationFunction = datum => {
@@ -91,6 +115,45 @@ export default class Scatter extends React.PureComponent {
     };
 
     return animate ? (
+  renderScatterShape({
+    data,
+    key,
+    state: {
+      processedFill,
+      resolvedShapeType,
+      translateX,
+      translateY,
+    },
+  }) {
+    return (
+      <Shape
+        className={this.props.shapeClassName}
+        key={key}
+        datum={data}
+        fill={processedFill}
+        focused={this.state.focusedDatumKey === key}
+        selected={this.state.selectedDataMappedToKeys.hasOwnProperty(key)}
+        shapeType={resolvedShapeType}
+        style={this.props.shapeStyle}
+        translateX={translateX}
+        translateY={translateY}
+        {...this.getChildProps()}
+      />
+    );
+  }
+
+  renderScatter(data) {
+    return (
+      <g
+        className={this.props.className && classNames(this.props.className)}
+        clipPath={this.props.clipPathId && `url(#${this.props.clipPathId})`}
+        style={this.combineStyles(this.props.style, this.props.data)}
+      >
+        {map(data, this.renderScatterShape)}
+      </g>
+    );
+  }
+
       <NodeGroup
         data={sortedData}
         keyAccessor={(datum) => propResolver(datum, dataAccessors.x)}
