@@ -10,7 +10,6 @@ import AxisChart from '../../axis-chart';
 import { XAxis, YAxis } from '../../axis';
 import { MultiScatter, Scatter } from '../';
 
-
 const keyField = 'year_id';
 const valueField = 'population';
 
@@ -182,38 +181,41 @@ class App extends React.Component {
             </AxisChart>
         </section>
         <section>
-          <h3>One Dataset: {locationData[this.state.country].location}</h3>
-          <button onClick={this.onButtonPush}>press to look at next country</button>
+          <h3>One Dataset</h3>
 {/* <pre><code>
+ <h3>{locationData[this.state.country].location}</h3>
+ <button onClick={this.onButtonPush}>press to look at next country</button>
  <AxisChart
-   height={300}
-   width={500}
-   xDomain={keyFieldDomain}
-   xScaleType="point"
-   yDomain={valueFieldDomain}
-   yScaleType="linear"
+  height={300}
+  width={500}
+  xDomain={keyFieldDomain}
+  xScaleType="point"
+  yDomain={valueFieldDomain}
+  yScaleType="linear"
  >
-   <XAxis />
-   <YAxis />
-   <Scatter
-     fill="steelblue"
-     data={[]}
-     dataAccessors={{
-       fill: keyField,
-       key: 'id',
-       x: keyField,    // year_id
-       y: valueField   // population
-     }}
-     focus={{}}
-     onClick={function(event, datum, Shape) {...}}
-     onMouseLeave={function(event, datum, Shape) {...}}
-     onMouseMove={function(event, datum, Shape) {...}}
-     onMouseOver={function(event, datum, Shape) {...}}
-     selection={this.state.selectedItems}
-     shapeType="circle"
-   />
- </AxisChart>
+  <XAxis />
+  <YAxis />
+  <Scatter
+    fill="steelblue"
+    data={data.filter((datum) => { return datum.location === locationData[this.state.country].location; })}
+    dataAccessors={{
+      fill: keyField,
+      key: keyField,
+      x: keyField,    // year_id
+      y: valueField   // population
+    }}
+    focus={this.state.focus}
+    onClick={this.onClick}
+    onMouseLeave={this.onMouseLeave}
+    onMouseMove={this.onMouseMove}
+    onMouseOver={this.onMouseOver}
+    selection={this.state.selectedItems}
+    shapeType="circle"
+  />
+</AxisChart>
 </code></pre> */}
+          <h3>{locationData[this.state.country].location}</h3>
+          <button onClick={this.onButtonPush}>press to look at next country</button>
             <AxisChart
               height={300}
               width={500}
