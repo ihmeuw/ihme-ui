@@ -231,7 +231,7 @@ class App extends React.Component {
                 data={data.filter((datum) => { return datum.location === locationData[this.state.country].location; })}
                 dataAccessors={{
                   fill: keyField,
-                  key: 'id',
+                  key: keyField,
                   x: keyField,    // year_id
                   y: valueField   // population
                 }}
