@@ -227,6 +227,7 @@ class App extends React.Component {
               <XAxis />
               <YAxis />
               <Scatter
+                animate
                 fill="steelblue"
                 data={data.filter((datum) => { return datum.location === locationData[this.state.country].location; })}
                 dataAccessors={{
