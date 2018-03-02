@@ -173,6 +173,11 @@ export default class Scatter extends React.PureComponent {
 
 Scatter.propTypes = {
   /**
+   * Whether to animate the scatter component or not.
+   */
+  animate: CommonPropTypes.boolean,
+
+  /**
    * className applied to outermost wrapping `<g>`.
    */
   className: CommonPropTypes.className,
