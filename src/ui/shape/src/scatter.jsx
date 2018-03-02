@@ -49,30 +49,8 @@ export default class Scatter extends React.PureComponent {
     this.state = stateFromPropUpdates(Scatter.propUpdates, this.props, nextProps, this.state);
   }
 
-  render() {
-    const {
-      animate,
-      className,
-      clipPathId,
-      colorScale,
-      data,
-      dataAccessors,
-      fill,
-      focus,
-      scales,
-      shapeClassName,
-      shapeScale,
-      shapeStyle,
-      shapeType,
-      style,
-    } = this.props;
-
-    const {
-      selectedDataMappedToKeys,
-      sortedData,
-    } = this.state;
-
-    const childProps = pick(this.props, [
+  getChildProps() {
+    return pick(this.props, [
       'focusedClassName',
       'focusedStyle',
       'onClick',
@@ -129,7 +107,6 @@ export default class Scatter extends React.PureComponent {
     }, []);
   }
 
-    return animate ? (
   renderScatterShape({
     data,
     key,
@@ -169,82 +146,27 @@ export default class Scatter extends React.PureComponent {
     );
   }
 
+  renderAnimatedScatter(data) {
+    return (
       <NodeGroup
-        data={sortedData}
-        keyAccessor={(datum) => propResolver(datum, dataAccessors.x)}
+        data={data}
+        keyAccessor={(datum) => propResolver(datum, this.props.dataAccessors.x)}
         start={() => ({ translateX: 0, translateY: 0 })}
-        enter={animationFunction}
-        update={animationFunction}
+        enter={this.processDatum}
+        update={this.processDatum}
         leave={() => ({ translateX: 100, translateY: 100 })}
       >
-        {nodes => (
-          <g
-            className={className && classNames(className)}
-            clipPath={clipPathId && `url(#${clipPathId})`}
-            style={this.combineStyles(style, data)}
-          >
-            {map(nodes, ({
-              data: datum,
-              key,
-              state: {
-                fillValue,
-                resolvedShapeType,
-                translateX,
-                translateY,
-              },
-            }) => (
-              <Shape
-                className={shapeClassName}
-                key={key}
-                datum={datum}
-                fill={colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill}
-                focused={focusedDatumKey === key}
-                selected={selectedDataMappedToKeys.hasOwnProperty(key)}
-                shapeType={resolvedShapeType}
-                style={shapeStyle}
-                translateX={translateX}
-                translateY={translateY}
-                {...childProps}
-              />
-            ))}
-          </g>
-        )}
+        {this.renderScatter}
       </NodeGroup>
-    ) : (
-      <g
-        className={className && classNames(className)}
-        clipPath={clipPathId && `url(#${clipPathId})`}
-        style={this.combineStyles(style, data)}
-      >
-        {
-          map(sortedData, (datum) => {
-            // value passed into colorScale
-            // use dataAccessors.x as fail-over for backward compatibility
-            const key = propResolver(datum, dataAccessors.key);
-            const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x);
-            const resolvedShapeType = dataAccessors.shape ?
-              shapeScale(propResolver(datum, dataAccessors.shape)) :
-              shapeType;
-            const xValue = propResolver(datum, dataAccessors.x);
-            const yValue = propResolver(datum, dataAccessors.y);
-            return (
-              <Shape
-                className={shapeClassName}
-                key={key}
-                datum={datum}
-                fill={colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill}
-                focused={focusedDatumKey === key}
-                selected={selectedDataMappedToKeys.hasOwnProperty(key)}
-                shapeType={resolvedShapeType}
-                style={shapeStyle}
-                translateX={scales.x && isFinite(xValue) ? scales.x(xValue) : 0}
-                translateY={scales.y && isFinite(yValue) ? scales.y(yValue) : 0}
-                {...childProps}
-              />
-            );
-          })
-        }
-      </g>
+    );
+  }
+
+  render() {
+    const { sortedData } = this.state;
+    return (
+      this.props.animate
+      ? this.renderAnimatedScatter(sortedData)
+      : this.renderScatter(this.processDataSet(sortedData))
     );
   }
 }
