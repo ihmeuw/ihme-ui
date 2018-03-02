@@ -1,4 +1,5 @@
 import React from 'react';
+import NodeGroup from 'react-move/NodeGroup';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { scaleLinear } from 'd3';
@@ -55,7 +56,10 @@ export default class Scatter extends React.PureComponent {
       style,
     } = this.props;
 
-    const { selectedDataMappedToKeys, sortedData } = this.state;
+    const {
+      selectedDataMappedToKeys,
+      sortedData,
+    } = this.state;
 
     const childProps = pick(this.props, [
       'focusedClassName',
@@ -69,29 +73,47 @@ export default class Scatter extends React.PureComponent {
       'size',
     ]);
 
+    const focusedDatumKey = focus ? propResolver(focus, dataAccessors.key) : null;
+    const animationFunction = datum => {
+      const xValue = propResolver(datum, dataAccessors.x);
+      const yValue = propResolver(datum, dataAccessors.y);
+      const resolvedShapeType = dataAccessors.shape ?
+        shapeScale(propResolver(datum, dataAccessors.shape)) :
+        shapeType;
+
+      return {
+        fillValue: propResolver(datum, dataAccessors.fill || dataAccessors.x),
+        resolvedShapeType,
+        translateX: scales.x && isFinite(xValue) ? [scales.x(xValue)] : [0],
+        translateY: scales.y && isFinite(yValue) ? [scales.y(yValue)] : [0],
+      };
+    };
+
     return (
-      <g
-        className={className && classNames(className)}
-        clipPath={clipPathId && `url(#${clipPathId})`}
-        style={this.combineStyles(style, data)}
+      <NodeGroup
+        data={sortedData}
+        keyAccessor={(datum) => propResolver(datum, dataAccessors.x)}
+        start={() => ({ translateX: 0, translateY: 0 })}
+        enter={animationFunction}
+        update={animationFunction}
+        leave={() => ({ translateX: 100, translateY: 100 })}
       >
-        {
-          map(sortedData, (datum) => {
-            // value passed into colorScale
-            // use dataAccessors.x as fail-over for backward compatibility
-            const key = propResolver(datum, dataAccessors.key);
-            const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x);
-
-            const focusedDatumKey = focus ? propResolver(focus, dataAccessors.key) : null;
-
-            const resolvedShapeType = dataAccessors.shape ?
-              shapeScale(propResolver(datum, dataAccessors.shape)) :
-              shapeType;
-
-            const xValue = propResolver(datum, dataAccessors.x);
-            const yValue = propResolver(datum, dataAccessors.y);
-
-            return (
+        {nodes => (
+          <g
+            className={className && classNames(className)}
+            clipPath={clipPathId && `url(#${clipPathId})`}
+            style={this.combineStyles(style, data)}
+          >
+            {map(nodes, ({
+              data: datum,
+              key,
+              state: {
+                fillValue,
+                resolvedShapeType,
+                translateX,
+                translateY,
+              },
+            }) => (
               <Shape
                 className={shapeClassName}
                 key={key}
@@ -101,14 +123,14 @@ export default class Scatter extends React.PureComponent {
                 selected={selectedDataMappedToKeys.hasOwnProperty(key)}
                 shapeType={resolvedShapeType}
                 style={shapeStyle}
-                translateX={scales.x && isFinite(xValue) ? scales.x(xValue) : 0}
-                translateY={scales.y && isFinite(yValue) ? scales.y(yValue) : 0}
+                translateX={translateX}
+                translateY={translateY}
                 {...childProps}
               />
-            );
-          })
-        }
-      </g>
+            ))}
+          </g>
+        )}
+      </NodeGroup>
     );
   }
 }
