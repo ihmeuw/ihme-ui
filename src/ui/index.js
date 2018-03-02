@@ -13,9 +13,8 @@ import Legend, { LegendItem, LegendTitle } from './legend';
 import LoadingIndicator from './loading-indicator';
 import ResponsiveContainer from './responsive-container';
 import {
-  MultiSelect,
   Select,
-  SingleSelect,
+  SelectOption,
 } from './select';
 import {
   Area,
@@ -48,13 +47,12 @@ export {
   Map,
   MultiLine,
   MultiScatter,
-  MultiSelect,
   Option,
   orientAxis,
   ResponsiveContainer,
   Scatter,
   Select,
-  SingleSelect,
+  SelectOption,
   Slider,
   SvgText,
   Shape,

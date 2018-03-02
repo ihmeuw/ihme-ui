@@ -2,7 +2,7 @@ import React from 'react';
 
 import SelectOption from './select-option';
 
-export default function optionRenderer({ hierarchical, multi }) {
+export default function optionRenderer({ hierarchical, multi, optionStyle }) {
   return function optionRendererFn(passedProps) {
     const {
       key,
@@ -20,6 +20,7 @@ export default function optionRenderer({ hierarchical, multi }) {
           {...passedProps}
           hierarchical={hierarchical}
           multi={multi}
+          optionStyle={optionStyle}
         />
       </div>
     );

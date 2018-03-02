@@ -29,7 +29,13 @@
   padding: 0 5px;
 }
 
-/* STYLES FOR SELECT */
+:global(.Select.is-focused:not(.is-open)) > :global(.Select-control) {
+  border-color: #d9d9d9 #ccc #b3b3b3;
+  box-shadow: none;
+  background: #fff;
+}
+
+/* STYLES FOR SINGLE-SELECT */
 
 .single-select :global(.Select-input) {
   height: 23px;
