@@ -117,6 +117,17 @@ export default class Scatter extends React.PureComponent {
       translateX,
       translateY,
     };
+  }
+
+  processDataSet(data) {
+    return data.reduce((accum, datum) => {
+      return [...accum, {
+        data: datum,
+        key: propResolver(datum, this.props.dataAccessors.x),
+        state: this.processDatum(datum),
+      }];
+    }, []);
+  }
 
     return animate ? (
   renderScatterShape({
