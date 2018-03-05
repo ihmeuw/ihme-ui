@@ -49,6 +49,7 @@ export default class MultiScatter extends React.PureComponent {
     } = fieldAccessors;
 
     const childProps = pick(this.props, [
+      'animate',
       'colorScale',
       'dataAccessors',
       'focus',
@@ -104,6 +105,11 @@ export default class MultiScatter extends React.PureComponent {
 }
 
 MultiScatter.propTypes = {
+  /**
+   * Whether to animate the multi-scatter component or not.
+   */
+  animate: CommonPropTypes.boolean,
+
   /**
    * className applied to outermost wrapping `<g>`.
    */
@@ -278,6 +284,7 @@ MultiScatter.propTypes = {
 };
 
 MultiScatter.defaultProps = {
+  animate: false,
   colorScale() { return 'steelblue'; },
   fieldAccessors: {
     data: 'values',
