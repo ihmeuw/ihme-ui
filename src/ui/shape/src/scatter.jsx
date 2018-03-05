@@ -320,6 +320,7 @@ Scatter.propTypes = {
 };
 
 Scatter.defaultProps = {
+  animate: false,
   fill: 'steelblue',
   onClick: CommonDefaultProps.noop,
   onMouseLeave: CommonDefaultProps.noop,
