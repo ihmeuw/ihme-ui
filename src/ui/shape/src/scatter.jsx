@@ -153,11 +153,23 @@ export default class Scatter extends React.PureComponent {
     return (
       <NodeGroup
         data={data}
-        keyAccessor={(datum) => propResolver(datum, this.props.dataAccessors.x)}
-        start={() => ({ translateX: 0, translateY: 0 })}
-        enter={this.processDatum}
-        update={this.processDatum}
-        leave={() => ({ translateX: 100, translateY: 100 })}
+        keyAccessor={datum => propResolver(datum, this.props.dataAccessors.key)}
+        start={datum => ({
+          ...this.processDatum(datum),
+          ...this.props.start(datum),
+        })}
+        enter={datum => ({
+          ...this.processDatum(datum),
+          ...this.props.enter(datum),
+        })}
+        update={datum => ({
+          ...this.processDatum(datum),
+          ...this.props.update(datum),
+        })}
+        leave={datum => ({
+          ...this.processDatum(datum),
+          ...this.props.enter(datum),
+        })}
       >
         {this.renderScatter}
       </NodeGroup>
@@ -224,6 +236,13 @@ Scatter.propTypes = {
     y: CommonPropTypes.dataAccessor,
   }).isRequired,
 
+  /** TODO: this should be more defined as a `timing` object, or a function that returns a timing object.
+   * `enter` animation function. [detailed in react-move](https://react-move.js.org/#/documentation/node-group)
+   * A function that returns an object or array of objects describing how the state should transform
+   * on enter. The function is passed the data and index.
+   */
+  enter: PropTypes.func,
+
   /**
    * If `props.colorScale` is undefined, each `<Shape />` will be given this same fill value.
    */
@@ -247,6 +266,13 @@ Scatter.propTypes = {
    * signature: (datum) => obj
    */
   focusedStyle: CommonPropTypes.style,
+
+  /** TODO: this should be more defined as a `timing` object, or a function that returns a timing object.
+   * `leave` animation function. [detailed in react-move](https://react-move.js.org/#/documentation/node-group)
+   * 	A function that returns an object or array of objects describing how the state should
+   * 	transform on leave. The function is passed the data and index.
+   */
+  leave: PropTypes.func,
 
   /**
    * onClick callback.
@@ -323,11 +349,27 @@ Scatter.propTypes = {
    * if you want all `<Shape />` to be of the same type.
    */
   shapeType: PropTypes.string,
+
+  /** TODO: this should be more defined as a `timing` object, or a function that returns a timing object.
+   * `start` animation function. [detailed in react-move](https://react-move.js.org/#/documentation/node-group)
+   * A function that returns the starting state.
+   * The function is passed the data and index and must return an object.
+   */
+  start: PropTypes.func,
+
+  /** TODO: this should be more defined as a `timing` object, or a function that returns a timing object.
+   * `update` animation function. [detailed in react-move](https://react-move.js.org/#/documentation/node-group)
+   * A function that returns an object or array of objects describing how the state should transform
+   * on update. The function is passed the data and index.
+   */
+  update: PropTypes.func,
 };
 
 Scatter.defaultProps = {
   animate: false,
+  enter: () => ({}),
   fill: 'steelblue',
+  leave: () => ({}),
   onClick: CommonDefaultProps.noop,
   onMouseLeave: CommonDefaultProps.noop,
   onMouseMove: CommonDefaultProps.noop,
@@ -335,6 +377,8 @@ Scatter.defaultProps = {
   scales: { x: scaleLinear(), y: scaleLinear() },
   size: 64,
   shapeType: 'circle',
+  start: () => ({}),
+  update: () => ({}),
 };
 
 Scatter.propUpdates = {
