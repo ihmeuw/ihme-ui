@@ -150,25 +150,27 @@ export default class Scatter extends React.PureComponent {
   }
 
   renderAnimatedScatter(data) {
+    // react-move properties `start`, `enter`, `update`, and `move` are populated by the default
+    // animated behavior of IHME-UI Scatter component unless overridden.
     return (
       <NodeGroup
         data={data}
         keyAccessor={datum => propResolver(datum, this.props.dataAccessors.key)}
         start={datum => ({
           ...this.processDatum(datum),
-          ...this.props.start(datum),
+          ...(this.props.start && this.props.start(datum)),
         })}
         enter={datum => ({
-          ...this.processDatum(datum),
-          ...this.props.enter(datum),
+          ...(this.props.enter && this.processDatum(datum)),
+          ...(this.props.enter && this.props.enter(datum)),
         })}
         update={datum => ({
           ...this.processDatum(datum),
-          ...this.props.update(datum),
+          ...(this.props.update && this.props.update(datum)),
         })}
         leave={datum => ({
-          ...this.processDatum(datum),
-          ...this.props.enter(datum),
+          ...(this.props.leave && this.processDatum(datum)),
+          ...(this.props.leave && this.props.leave(datum)),
         })}
       >
         {this.renderScatter}
@@ -178,7 +180,7 @@ export default class Scatter extends React.PureComponent {
 
   render() {
     const { sortedData } = this.state;
-    // If props.animate is true, we want to render the animated scatter component. Since this
+    // If `props.animate` is true, we want to render the animated scatter component. Since this
     // requires the data to be in a particular shape, we make both the animated & the non-animated
     // data conform to that shape which allows us to leverage the same rendering methods.
     return (
@@ -236,10 +238,24 @@ Scatter.propTypes = {
     y: CommonPropTypes.dataAccessor,
   }).isRequired,
 
-  /** TODO: this should be more defined as a `timing` object, or a function that returns a timing object.
+  /**
    * `enter` animation function. [detailed in react-move](https://react-move.js.org/#/documentation/node-group)
    * A function that returns an object or array of objects describing how the state should transform
    * on enter. The function is passed the data and index.
+   *
+   * Signature: (datum, index) => {
+   *   processedFill: string;         // color after colorScales has been applied.
+   *   resolvedShapeType: string;     // shape after shapeScale has been applied.
+   *   translateX: number;            // x coordinate after positioning scale has been applied.
+   *   translateY: number;            // y coordinate after positioning scale has been applied.
+   *   timing: {                      // *defaultTiming [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
+   *     delay: number;               // delay before animation in ms.
+   *     duration: number;            // duration of enter animation in ms.
+   *     ease: () => number,          // interpolator funciton. ie d3-ease.
+   *   }
+   * }
+   *
+   * Default `enter` function: () => {}
    */
   enter: PropTypes.func,
 
@@ -267,10 +283,24 @@ Scatter.propTypes = {
    */
   focusedStyle: CommonPropTypes.style,
 
-  /** TODO: this should be more defined as a `timing` object, or a function that returns a timing object.
+  /**
    * `leave` animation function. [detailed in react-move](https://react-move.js.org/#/documentation/node-group)
-   * 	A function that returns an object or array of objects describing how the state should
-   * 	transform on leave. The function is passed the data and index.
+   * A function that returns an object or array of objects describing how the state should
+   * transform on leave. The function is passed the data and index.
+   *
+   * Signature: (datum, index) => {
+   *   processedFill: string;         // color after colorScales has been applied.
+   *   resolvedShapeType: string;     // shape after shapeScale has been applied.
+   *   translateX: number;            // x coordinate after positioning scale has been applied.
+   *   translateY: number;            // y coordinate after positioning scale has been applied.
+   *   timing: {                      // *defaultTiming [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
+   *     delay: number;               // delay before animation in ms.
+   *     duration: number;            // duration of enter animation in ms.
+   *     ease: () => number,          // interpolator function. ie d3-ease.
+   *   }
+   * }
+   *
+   * Default `leave` function: () => {}
    */
   leave: PropTypes.func,
 
@@ -350,26 +380,45 @@ Scatter.propTypes = {
    */
   shapeType: PropTypes.string,
 
-  /** TODO: this should be more defined as a `timing` object, or a function that returns a timing object.
-   * `start` animation function. [detailed in react-move](https://react-move.js.org/#/documentation/node-group)
+  /**
+   * `start` function.
    * A function that returns the starting state.
    * The function is passed the data and index and must return an object.
+   *
+   * Default `start` function (You can specify just the things you want to override): () => {
+   *   processedFill: string;         // color after colorScales has been applied.
+   *   resolvedShapeType: string;     // shape after shapeScale has been applied.
+   *   translateX: number;            // x coordinate after positioning scale has been applied.
+   *   translateY: number;            // y coordinate after positioning scale has been applied.
+   * }
    */
   start: PropTypes.func,
 
-  /** TODO: this should be more defined as a `timing` object, or a function that returns a timing object.
+  /**
    * `update` animation function. [detailed in react-move](https://react-move.js.org/#/documentation/node-group)
    * A function that returns an object or array of objects describing how the state should transform
    * on update. The function is passed the data and index.
+   *
+   * Default `update` function (You can specify just the things you want to override): () => {
+   *   processedFill: string;         // color after colorScales has been applied.
+   *   resolvedShapeType: string;     // shape after shapeScale has been applied.
+   *   translateX: number;            // x coordinate after positioning scale has been applied.
+   *   translateY: number;            // y coordinate after positioning scale has been applied.
+   *   timing: {                      // *defaultTiming [detailed in react-move](https://react-move.js.org/#/documentation/node-group)
+   *     delay: 0,                    // delay before animation in ms.
+   *     duration: 250,               // duration of enter animation in ms.
+   *     ease: d3-ease.easeLinear,    // interpolator function.
+   *   };
+   * }
    */
   update: PropTypes.func,
 };
 
 Scatter.defaultProps = {
   animate: false,
-  enter: () => ({}),
+  enter: undefined,
   fill: 'steelblue',
-  leave: () => ({}),
+  leave: undefined,
   onClick: CommonDefaultProps.noop,
   onMouseLeave: CommonDefaultProps.noop,
   onMouseMove: CommonDefaultProps.noop,
@@ -377,7 +426,7 @@ Scatter.defaultProps = {
   scales: { x: scaleLinear(), y: scaleLinear() },
   size: 64,
   shapeType: 'circle',
-  start: () => ({}),
+  start: undefined,
   update: () => ({}),
 };
 
