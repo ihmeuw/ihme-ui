@@ -108,7 +108,7 @@ MultiScatter.propTypes = {
   /**
    * Whether to animate the multi-scatter component or not.
    */
-  animate: CommonPropTypes.boolean,
+  animate: PropTypes.boolean,
 
   /**
    * className applied to outermost wrapping `<g>`.
