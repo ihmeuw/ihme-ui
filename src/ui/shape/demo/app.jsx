@@ -52,7 +52,6 @@ class App extends React.Component {
     }
 
     bindAll(this, [
-      'onButtonPush',
       'onClick',
       'onMouseLeave',
       'onMouseMove',
@@ -84,12 +83,6 @@ class App extends React.Component {
       focus: datum,
     });
   };
-
-  onButtonPush() {
-    this.setState({
-      country: (this.state.country + 1) % locationData.length,
-    });
-  }
 
   render() {
     return (
@@ -214,7 +207,13 @@ class App extends React.Component {
  </AxisChart>
  </code></pre> */}
           <h3>{locationData[this.state.country].location}</h3>
-          <button onClick={this.onButtonPush}>press to look at next country</button>
+          <button
+            onClick={() => {
+              this.setState({ country: (this.state.country + 1) % locationData.length });
+            }}
+          >
+            press to look at next country
+          </button>
             <AxisChart
               height={300}
               width={500}
