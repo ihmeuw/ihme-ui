@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { symbol } from 'd3';
 import assign from 'lodash/assign';
 import bindAll from 'lodash/bindAll';
+import head from 'lodash/head';
 
 import {
   combineStyles,
@@ -277,7 +278,12 @@ Shape.propUpdates = {
   // update path if shape type or size have changed
   path: (accum, propName, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, ['shapeType', 'size'])) return accum;
-    const [shapeType, rotate] = nextProps.shapeType.split(' ', 2);
+    // Since shapeType is animatable, this component needs to handle the case where shapeType is an
+    // array. If it is an Array, the value should be in the first position.
+    const rawShapeType = Array.isArray(nextProps.shapeType)
+      ? head(nextProps.shapeType)
+      : nextProps.shapeType;
+    const [shapeType, rotate] = rawShapeType.split(' ', 2);
     return assign({}, accum, {
       path: Shape.getPath(shapeType, nextProps.size),
       rotate: SYMBOL_ROTATE[rotate] || 0,
