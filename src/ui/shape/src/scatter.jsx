@@ -442,6 +442,14 @@ Scatter.propUpdates = {
     if (!propsChanged(prevProps, nextProps, childPropNames)) return state;
     return assign({}, state, { childProps: pick(nextProps, childPropNames) });
   },
+  focusedDatumKey: (state, _, prevProps, nextProps) => {
+    if (!propsChanged(prevProps, nextProps, ['focus', 'data'])) return state;
+    const {
+      dataAccessors: { key },
+      focus,
+    } = nextProps;
+    return assign({}, state, { focusedDatumKey: focus ? propResolver(focus, key) : null });
+  },
   selections: (state, _, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, ['selection', 'dataAccessors'])) return state;
     return assign({}, state, {
@@ -464,13 +472,5 @@ Scatter.propUpdates = {
         )
       ),
     });
-  },
-  focusedDatumKey: (state, _, prevProps, nextProps) => {
-    if (!propsChanged(prevProps, nextProps, ['selection', 'data'])) return state;
-    const {
-      dataAccessors: { key },
-      focus,
-    } = nextProps;
-    return assign({}, state, { focusedDatumKey: focus ? propResolver(focus, key) : null });
   },
 };
