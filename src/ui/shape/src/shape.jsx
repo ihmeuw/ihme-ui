@@ -144,7 +144,10 @@ Shape.propTypes = {
   /**
    * Fill color for path.
    */
-  fill: PropTypes.string,
+  fill: PropTypes.oneOf([
+    PropTypes.string,
+    PropTypes.arrayOf(PropTypes.number),
+  ]),
 
   /**
    * Whether shape has focus.
@@ -223,17 +226,26 @@ Shape.propTypes = {
    * Type of shape to render, driven by d3-shape.
    * One of: 'circle', 'cross', 'diamond', 'square', 'star', 'triangle', 'wye'
    */
-  shapeType: PropTypes.oneOf(shapeTypes()),
+  shapeType: PropTypes.oneOfType([
+    PropTypes.oneOf(shapeTypes()),
+    PropTypes.arrayOf(PropTypes.oneOf(shapeTypes())),
+  ]),
 
   /**
    * Move shape away from origin in x direction.
    */
-  translateX: PropTypes.number,
+  translateX: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.arrayOf(PropTypes.number),
+  ]),
 
   /**
    * Move shape away from origin in y direction.
    */
-  translateY: PropTypes.number,
+  translateY: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.arrayOf(PropTypes.number),
+  ]),
 };
 
 Shape.defaultProps = {
