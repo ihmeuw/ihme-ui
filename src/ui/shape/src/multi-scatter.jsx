@@ -52,9 +52,11 @@ export default class MultiScatter extends React.PureComponent {
       'animate',
       'colorScale',
       'dataAccessors',
+      'enter',
       'focus',
       'focusedClassName',
       'focusedStyle',
+      'leave',
       'onClick',
       'onMouseLeave',
       'onMouseMove',
@@ -66,6 +68,8 @@ export default class MultiScatter extends React.PureComponent {
       'shapeClassName',
       'shapeScale',
       'shapeStyle',
+      'start',
+      'update',
     ]);
 
     return (
