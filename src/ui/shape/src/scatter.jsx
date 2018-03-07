@@ -31,7 +31,7 @@ import Shape from './shape';
  */
 export default class Scatter extends React.PureComponent {
   static getCoordinate(value, scale) {
-    return scale && isFinite(value) ? [scale(value)] : [0];
+    return scale && isFinite(value) ? scale(value) : 0;
   }
 
   constructor(props) {
