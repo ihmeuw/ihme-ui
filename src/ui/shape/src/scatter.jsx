@@ -183,7 +183,7 @@ Scatter.propTypes = {
   /**
    * Whether to animate the scatter component or not.
    */
-  animate: PropTypes.boolean,
+  animate: PropTypes.bool,
 
   /**
    * className applied to outermost wrapping `<g>`.
