@@ -91,7 +91,7 @@ export default class Scatter extends React.PureComponent {
         ...accum,
         {
           data: datum,
-          key: propResolver(datum, this.props.dataAccessors.x),
+          key: propResolver(datum, this.props.dataAccessors.key),
           state: this.processDatum(datum),
         }
       ];
