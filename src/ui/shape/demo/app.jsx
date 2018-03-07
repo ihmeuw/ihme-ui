@@ -189,9 +189,7 @@ class App extends React.Component {
    <Scatter
      animate
      fill="steelblue"
-     data={data.filter(
-       (datum) => datum.location === locationData[this.state.country].location,
-     )}
+     data={[]}
      dataAccessors={{
        fill: keyField,
        key: keyField,
@@ -199,10 +197,10 @@ class App extends React.Component {
        y: valueField   // population
      }}
      focus={this.state.focus}
-     onClick={this.onClick}
-     onMouseLeave={this.onMouseLeave}
-     onMouseMove={this.onMouseMove}
-     onMouseOver={this.onMouseOver}
+     onClick={function(event, datum, Shape) {...}}
+     onMouseLeave={function(event, datum, Shape) {...}}
+     onMouseMove={function(event, datum, Shape) {...}}
+     onMouseOver={function(event, datum, Shape) {...}}
      selection={this.state.selectedItems}
      shapeType="circle"
    />
