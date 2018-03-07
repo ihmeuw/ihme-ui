@@ -262,7 +262,7 @@ describe('<Scatter />', () => {
       const wrapper = shallow(
         <Scatter
           data={junkData}
-          dataAccessors={{ key: 'x', x: 'x' }}
+          dataAccessors={{ key: (d, i) => `${i}_${d.x}`, x: 'x' }}
           scales={{ x: spyMap.x.spy }}
         />
       );
