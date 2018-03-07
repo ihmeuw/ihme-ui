@@ -413,6 +413,7 @@ Scatter.defaultProps = {
   onMouseOver: CommonDefaultProps.noop,
   scales: { x: scaleLinear(), y: scaleLinear() },
   size: 64,
+  shapeStyle: undefined,
   shapeType: 'circle',
   start: undefined,
   update: () => ({}),
