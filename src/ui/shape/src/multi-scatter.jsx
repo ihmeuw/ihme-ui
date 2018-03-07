@@ -376,13 +376,17 @@ MultiScatter.propTypes = {
 MultiScatter.defaultProps = {
   animate: false,
   colorScale() { return 'steelblue'; },
+  enter: undefined,
   fieldAccessors: {
     data: 'values',
     key: 'key',
   },
+  leave: undefined,
   scales: { x: scaleLinear(), y: scaleLinear() },
   scatterValuesIteratee: CommonDefaultProps.identity,
   size: 64,
   shapeField: 'type',
   shapeScale() { return 'circle'; },
+  start: undefined,
+  update: () => ({}),
 };
