@@ -59,6 +59,7 @@ export default class Scatter extends React.PureComponent {
       shapeType,
     } = this.props;
 
+    const { wrapIfAnimating } = this.state;
     const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x);
     const processedFill = colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill;
 
@@ -75,11 +76,12 @@ export default class Scatter extends React.PureComponent {
       scales && scales.y,
     );
 
+    // *react-move requires that values be wrapped in an array if they are to be animated.
     return {
-      processedFill,
-      resolvedShapeType,
-      translateX,
-      translateY,
+      processedFill: wrapIfAnimating(processedFill),
+      resolvedShapeType: wrapIfAnimating(resolvedShapeType),
+      translateX: wrapIfAnimating(translateX),
+      translateY: wrapIfAnimating(translateY),
     };
   }
 
@@ -416,7 +418,15 @@ Scatter.defaultProps = {
   update: () => ({}),
 };
 
+function wrapInArrayIfTrue(condition) {
+  return value => { return condition ? [value] : value; };
+}
+
 Scatter.propUpdates = {
+  wrapIfAnimating: (state, _, prevProps, nextProps) => {
+    if (!propsChanged(prevProps, nextProps, ['animate'])) return state;
+    return assign({}, state, { wrapIfAnimating: wrapInArrayIfTrue(nextProps.animate) });
+  },
   childProps: (state, _, prevProps, nextProps) => {
     const childPropNames = [
       'focusedClassName',
