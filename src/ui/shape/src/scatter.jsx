@@ -49,20 +49,6 @@ export default class Scatter extends React.PureComponent {
     this.state = stateFromPropUpdates(Scatter.propUpdates, this.props, nextProps, this.state);
   }
 
-  getChildProps() {
-    return pick(this.props, [
-      'focusedClassName',
-      'focusedStyle',
-      'onClick',
-      'onMouseLeave',
-      'onMouseMove',
-      'onMouseOver',
-      'selectedClassName',
-      'selectedStyle',
-      'size',
-    ]);
-  }
-
   processDatum(datum) {
     const {
       colorScale,
@@ -132,7 +118,7 @@ export default class Scatter extends React.PureComponent {
         style={this.props.shapeStyle}
         translateX={translateX}
         translateY={translateY}
-        {...this.getChildProps()}
+        {...this.state.childProps}
       />
     );
   }
@@ -431,6 +417,21 @@ Scatter.defaultProps = {
 };
 
 Scatter.propUpdates = {
+  childProps: (state, _, prevProps, nextProps) => {
+    const childPropNames = [
+      'focusedClassName',
+      'focusedStyle',
+      'onClick',
+      'onMouseLeave',
+      'onMouseMove',
+      'onMouseOver',
+      'selectedClassName',
+      'selectedStyle',
+      'size',
+    ];
+    if (!propsChanged(prevProps, nextProps, childPropNames)) return state;
+    return assign({}, state, { childProps: pick(nextProps, childPropNames) });
+  },
   selections: (state, _, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, ['selection', 'dataAccessors'])) return state;
     return assign({}, state, {
