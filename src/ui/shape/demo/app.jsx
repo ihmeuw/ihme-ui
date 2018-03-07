@@ -189,7 +189,9 @@ class App extends React.Component {
    <Scatter
      animate
      fill="steelblue"
-     data={data.filter((datum) => { return datum.location === locationData[this.state.country].location; })}
+     data={data.filter(
+       (datum) => datum.location === locationData[this.state.country].location,
+     )}
      dataAccessors={{
        fill: keyField,
        key: keyField,
@@ -227,7 +229,9 @@ class App extends React.Component {
               <Scatter
                 animate
                 fill="steelblue"
-                data={data.filter((datum) => { return datum.location === locationData[this.state.country].location; })}
+                data={data.filter(
+                  (datum) => datum.location === locationData[this.state.country].location,
+                )}
                 dataAccessors={{
                   fill: keyField,
                   key: keyField,
