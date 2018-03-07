@@ -60,13 +60,17 @@ export default class Scatter extends React.PureComponent {
     } = this.props;
 
     const { wrapIfAnimating } = this.state;
+
+    // Compute fill.
     const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x);
     const processedFill = colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill;
 
+    // Compute shape type.
     const resolvedShapeType = dataAccessors.shape ?
       shapeScale(propResolver(datum, dataAccessors.shape)) :
       shapeType;
 
+    // Compute x and y translations.
     const translateX = Scatter.getCoordinate(
       propResolver(datum, dataAccessors.x),
       scales && scales.x,
@@ -86,6 +90,7 @@ export default class Scatter extends React.PureComponent {
   }
 
   processDataSet(data) {
+    // Conform data to shape react-move expects.
     return data.reduce((accum, datum) => {
       return [
         ...accum,
