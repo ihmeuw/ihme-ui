@@ -232,15 +232,20 @@ Scatter.propTypes = {
    * on enter. The function is passed the data and index.
    *
    * Signature: (datum, index) => {
-   *   processedFill: string;         // color after colorScales has been applied.
-   *   resolvedShapeType: string;     // shape after shapeScale has been applied.
-   *   translateX: number;            // x coordinate after positioning scale has been applied.
-   *   translateY: number;            // y coordinate after positioning scale has been applied.
+   *   processedFill: string[];       // color after colorScales has been applied.
+   *   resolvedShapeType: string[];   // shape after shapeScale has been applied.
+   *   translateX: number[];          // x coordinate after positioning scale has been applied.
+   *   translateY: number[];          // y coordinate after positioning scale has been applied.
    *   timing: {                      // *defaultTiming [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
    *     delay: number;               // delay before animation in ms.
    *     duration: number;            // duration of enter animation in ms.
    *     ease: () => number,          // interpolator funciton. ie d3-ease.
-   *   }
+   *   },
+   *   events: {                      // [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
+   *     start: () => void,           // function to run on `start`.
+   *     interrupt: () => void,       // function to run on `interrupt`.
+   *     end: () => void,             // function to run on `end`.
+   *   },
    * }
    *
    * Default `enter` function: () => {}
@@ -277,15 +282,20 @@ Scatter.propTypes = {
    * transform on leave. The function is passed the data and index.
    *
    * Signature: (datum, index) => {
-   *   processedFill: string;         // color after colorScales has been applied.
-   *   resolvedShapeType: string;     // shape after shapeScale has been applied.
-   *   translateX: number;            // x coordinate after positioning scale has been applied.
-   *   translateY: number;            // y coordinate after positioning scale has been applied.
+   *   processedFill: string[];       // color after colorScales has been applied.
+   *   resolvedShapeType: string[];   // shape after shapeScale has been applied.
+   *   translateX: number[];          // x coordinate after positioning scale has been applied.
+   *   translateY: number[];          // y coordinate after positioning scale has been applied.
    *   timing: {                      // *defaultTiming [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
    *     delay: number;               // delay before animation in ms.
    *     duration: number;            // duration of enter animation in ms.
    *     ease: () => number,          // interpolator function. ie d3-ease.
-   *   }
+   *   },
+   *   events: {                      // [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
+   *     start: () => void,           // function to run on `start`.
+   *     interrupt: () => void,       // function to run on `interrupt`.
+   *     end: () => void,             // function to run on `end`.
+   *   },
    * }
    *
    * Default `leave` function: () => {}
@@ -374,10 +384,10 @@ Scatter.propTypes = {
    * The function is passed the data and index and must return an object.
    *
    * Default `start` function (You can specify just the things you want to override): () => {
-   *   processedFill: string;         // color after colorScales has been applied.
-   *   resolvedShapeType: string;     // shape after shapeScale has been applied.
-   *   translateX: number;            // x coordinate after positioning scale has been applied.
-   *   translateY: number;            // y coordinate after positioning scale has been applied.
+   *   processedFill: string[];       // color after colorScales has been applied.
+   *   resolvedShapeType: string[];   // shape after shapeScale has been applied.
+   *   translateX: number[];          // x coordinate after positioning scale has been applied.
+   *   translateY: number[];          // y coordinate after positioning scale has been applied.
    * }
    */
   start: PropTypes.func,
@@ -388,15 +398,16 @@ Scatter.propTypes = {
    * on update. The function is passed the data and index.
    *
    * Default `update` function (You can specify just the things you want to override): () => {
-   *   processedFill: string;         // color after colorScales has been applied.
-   *   resolvedShapeType: string;     // shape after shapeScale has been applied.
-   *   translateX: number;            // x coordinate after positioning scale has been applied.
-   *   translateY: number;            // y coordinate after positioning scale has been applied.
+   *   processedFill: string[];       // color after colorScales has been applied.
+   *   resolvedShapeType: string[];   // shape after shapeScale has been applied.
+   *   translateX: number[];          // x coordinate after positioning scale has been applied.
+   *   translateY: number[];          // y coordinate after positioning scale has been applied.
    *   timing: {                      // *defaultTiming [detailed in react-move](https://react-move.js.org/#/documentation/node-group)
    *     delay: 0,                    // delay before animation in ms.
    *     duration: 250,               // duration of enter animation in ms.
    *     ease: d3-ease.easeLinear,    // interpolator function.
-   *   };
+   *   },
+   *   events: {},                    // [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
    * }
    */
   update: PropTypes.func,
