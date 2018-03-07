@@ -388,5 +388,5 @@ MultiScatter.defaultProps = {
   shapeField: 'type',
   shapeScale() { return 'circle'; },
   start: undefined,
-  update: () => ({}),
+  update: undefined,
 };

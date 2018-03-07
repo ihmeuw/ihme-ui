@@ -432,7 +432,7 @@ Scatter.defaultProps = {
   shapeStyle: undefined,
   shapeType: 'circle',
   start: undefined,
-  update: () => ({}),
+  update: undefined,
 };
 
 function wrapInArrayIfTrue(condition) {
