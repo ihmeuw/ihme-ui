@@ -153,18 +153,9 @@ export default class Scatter extends React.PureComponent {
           ...this.processDatum(datum),
           ...(this.props.start && this.props.start(datum)),
         })}
-        enter={datum => ({
-          ...(this.props.enter && this.processDatum(datum)),
-          ...(this.props.enter && this.props.enter(datum)),
-        })}
-        update={datum => ({
-          ...this.processDatum(datum),
-          ...(this.props.update && this.props.update(datum)),
-        })}
-        leave={datum => ({
-          ...(this.props.leave && this.processDatum(datum)),
-          ...(this.props.leave && this.props.leave(datum)),
-        })}
+        enter={this.props.enter}
+        update={this.props.update || this.processDatum}
+        leave={this.props.leave}
       >
         {this.renderScatter}
       </NodeGroup>
