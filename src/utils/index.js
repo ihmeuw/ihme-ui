@@ -1,4 +1,8 @@
 export {
+  wrapInArrayIfTrue,
+} from './animate';
+
+export {
   linspace,
   takeSkipping,
 } from './array';

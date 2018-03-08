@@ -22,6 +22,7 @@ import {
   propResolver,
   propsChanged,
   stateFromPropUpdates,
+  wrapInArrayIfTrue,
 } from '../../../utils';
 
 import Shape from './shape';
@@ -438,10 +439,6 @@ Scatter.defaultProps = {
   start: undefined,
   update: undefined,
 };
-
-function wrapInArrayIfTrue(condition) {
-  return value => { return condition ? [value] : value; };
-}
 
 Scatter.propUpdates = {
   wrapIfAnimating: (state, _, prevProps, nextProps) => {
