@@ -145,8 +145,9 @@ Shape.propTypes = {
   /**
    * Fill color for path.
    */
-  fill: PropTypes.oneOf([
+  fill: PropTypes.oneOfType([
     PropTypes.string,
+    PropTypes.arrayOf(PropTypes.string),
     PropTypes.arrayOf(PropTypes.number),
   ]),
 
