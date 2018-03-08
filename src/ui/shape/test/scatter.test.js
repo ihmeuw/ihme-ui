@@ -37,25 +37,37 @@ describe('<Scatter />', () => {
   const yScale = scaleLinear().domain(yDomain).range([chartDimensions.height, 0]);
   const colorScale = scaleLinear().domain(yDomain).range(['#fc8d59', '#ffffbf', '#91bfdb']);
 
+  const sharedProps = {
+    data,
+    dataAccessors,
+    fill: 'red',
+    focus: data[2],
+    focusedClassName: 'focused',
+    focusedStyle: { stroke: 'cornsilk' },
+    scales: { x: xScale, y: yScale },
+    selection: [data[1], data[3]],
+    selectedClassName: 'selected',
+    selectedStyle: { stroke: 'aqua' },
+    shapeClassName: 'symbol',
+    shapeStyle: { fill: 'bluesteel' },
+    shapeType: 'circle',
+  };
+
   const component = (
     <Scatter
-      data={data}
-      dataAccessors={dataAccessors}
-      fill="red"
-      focus={data[2]}
-      focusedClassName="focused"
-      focusedStyle={{ stroke: 'cornsilk' }}
-      scales={{ x: xScale, y: yScale }}
-      selection={[data[1], data[3]]}
-      selectedClassName="selected"
-      selectedStyle={{ stroke: 'aqua' }}
-      shapeClassName="symbol"
-      shapeStyle={{ fill: 'bluesteel' }}
-      shapeType="circle"
+      {...sharedProps}
     />
   );
 
-  it('contains 10 shapes', () => {
+  const animatedComponent = (
+    <Scatter
+      {...sharedProps}
+      animate
+    />
+  );
+
+  const components = [animatedComponent, component];
+
     const wrapper = shallow(component);
     expect(wrapper.find(Shape)).to.have.length(10);
   });
