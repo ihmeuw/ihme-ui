@@ -3,16 +3,14 @@ import NodeGroup from 'react-move/NodeGroup';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { scaleLinear } from 'd3';
-import {
-  assign,
-  bindAll,
-  findIndex,
-  isFinite,
-  keyBy,
-  map,
-  pick,
-  sortBy,
-} from 'lodash';
+import assign from 'lodash/assign';
+import bindAll from 'lodash/bindAll';
+import findIndex from 'lodash/findIndex';
+import isFinite from 'lodash/isFinite';
+import keyBy from 'lodash/keyBy';
+import map from 'lodash/map';
+import pick from 'lodash/pick';
+import sortBy from 'lodash/sortBy';
 
 import {
   combineStyles,
