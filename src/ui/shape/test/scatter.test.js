@@ -74,7 +74,7 @@ describe('<Scatter />', () => {
     component,
   ];
 
-  it('does not pass specific properties to its children', () => {
+  describe('inherited & non-inherited props', () => {
     const nonInheritedProps = [
       'animate',
       'colorScale',
@@ -90,16 +90,6 @@ describe('<Scatter />', () => {
       'start',
       'update',
     ];
-    const assertion = (shape) => {
-      nonInheritedProps.forEach(prop => {
-        expect(shape).to.not.have.prop(prop);
-      });
-    };
-
-    shallow(component).find(Shape).forEach(assertion);
-  });
-
-  it('passes specified properties to its children', () => {
     const inheritedProps = [
       'className',
       'focusedClassName',
@@ -114,15 +104,27 @@ describe('<Scatter />', () => {
       'shapeType',
       'style',
     ];
-    const assertion = (shape) => {
+    const nonInheritedPropsAssertion = shape => {
+      nonInheritedProps.forEach(prop => {
+        expect(shape).to.not.have.prop(prop);
+      });
+    };
+    const inheritedPropsAssertion = (shape) => {
       inheritedProps.forEach(prop => {
         expect(shape).to.have.prop(prop);
       });
     };
 
-    shallow(component).find(Shape).forEach(assertion);
-  });
+    components.forEach(testComponent => {
+      const animated = testComponent.props.animate ? 'animated' : 'non-animated';
 
+      it(`does not pass specific properties to its children (${animated})`, () => {
+        shallow(testComponent).find(Shape).forEach(nonInheritedPropsAssertion);
+      });
+      it(`passes specified properties to its children (${animated})`, () => {
+        shallow(testComponent).find(Shape).forEach(inheritedPropsAssertion);
+      });
+    });
   });
 
   describe('child Shape components', () => {
