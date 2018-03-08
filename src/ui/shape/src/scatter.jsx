@@ -81,10 +81,10 @@ export default class Scatter extends React.PureComponent {
 
     // *react-move requires that values be wrapped in an array if they are to be animated.
     return {
-      processedFill: wrapIfAnimating(processedFill),
-      resolvedShapeType: wrapIfAnimating(resolvedShapeType),
-      translateX: wrapIfAnimating(translateX),
-      translateY: wrapIfAnimating(translateY),
+      fill: processedFill,
+      shapeType: resolvedShapeType,
+      translateX,
+      translateY,
     };
   }
 
@@ -106,8 +106,8 @@ export default class Scatter extends React.PureComponent {
     data,
     key,
     state: {
-      processedFill,
-      resolvedShapeType,
+      fill,
+      shapeType,
       translateX,
       translateY,
     },
@@ -117,10 +117,10 @@ export default class Scatter extends React.PureComponent {
         className={this.props.shapeClassName}
         key={key}
         datum={data}
-        fill={processedFill}
+        fill={fill}
         focused={this.state.focusedDatumKey === key}
         selected={this.state.selectedDataMappedToKeys.hasOwnProperty(key)}
-        shapeType={resolvedShapeType}
+        shapeType={shapeType}
         style={this.props.shapeStyle}
         translateX={translateX}
         translateY={translateY}
