@@ -76,14 +76,19 @@ describe('<Scatter />', () => {
 
   it('does not pass specific properties to its children', () => {
     const nonInheritedProps = [
+      'animate',
       'colorScale',
       'data',
       'dataAccessors',
+      'enter',
       'focus',
+      'leave',
       'scales',
       'selection',
       'shapeClassName',
       'shapeStyle',
+      'start',
+      'update',
     ];
     const assertion = (shape) => {
       nonInheritedProps.forEach(prop => {
