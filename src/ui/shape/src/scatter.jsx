@@ -371,7 +371,7 @@ Scatter.propTypes = {
   /**
    * Inline styles passed to each `<Shape />`
    */
-  shapeStyle: CommonDefaultProps.style,
+  shapeStyle: CommonPropTypes.style,
 
   /**
    * Type of shape to render; use in lieu of `props.shapeScale`
