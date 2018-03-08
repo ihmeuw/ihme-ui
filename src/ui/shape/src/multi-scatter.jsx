@@ -52,11 +52,9 @@ export default class MultiScatter extends React.PureComponent {
       'animate',
       'colorScale',
       'dataAccessors',
-      'enter',
       'focus',
       'focusedClassName',
       'focusedStyle',
-      'leave',
       'onClick',
       'onMouseLeave',
       'onMouseMove',
@@ -68,8 +66,6 @@ export default class MultiScatter extends React.PureComponent {
       'shapeClassName',
       'shapeScale',
       'shapeStyle',
-      'start',
-      'update',
     ]);
 
     return (
@@ -110,9 +106,59 @@ export default class MultiScatter extends React.PureComponent {
 
 MultiScatter.propTypes = {
   /**
-   * Whether to animate the multi-scatter component or not.
+   * Whether to animate the scatter component (using default `start`, `update` functions).
+   * Optionally, an object that provides functions that dictate behavior of animations.
    */
-  animate: PropTypes.boolean,
+  animate: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.shape({
+      /**
+       * `start` function.
+       * A function that returns the starting state.
+       * The function is passed the data and index and must return an object.
+       *
+       * Default `start` function (You can specify just the things you want to override):
+       * (datum, index) => {
+       *   processedFill?: string[];       // color after colorScales has been applied.
+       *   resolvedShapeType?: string[];   // shape after shapeScale has been applied.
+       *   translateX?: number[];          // x coordinate after positioning scale has been applied.
+       *   translateY?: number[];          // y coordinate after positioning scale has been applied.
+       * }
+       *
+       * Note: `start` does not use `timing`, `events` properties because it represents initial state.
+       */
+      start: PropTypes.func,
+      /**
+       * `enter`, `leave`, `update` animation functions. [detailed in react-move](https://react-move.js.org/#/documentation/node-group)
+       * A function that returns an object or array of objects describing how the state should transform
+       * on enter. The function is passed the data and index.
+       *
+       * All required properties must be overridden in return value of `enter`, `leave`, `update` functions.
+       * ie signature: (datum, index) => {} | [{}] where properties, or accumulative properties result
+       * in shape: {
+       *   processedFill: string | string[];      // color after colorScales has been applied.
+       *   resolvedShapeType: string | string[];  // shape after shapeScale has been applied.
+       *   translateX: number | number[];         // x coordinate after positioning scale has been applied.
+       *   translateY: number | number[];         // y coordinate after positioning scale has been applied.
+       *   timing?: {                             // *defaultTiming [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
+       *     delay?: number;                      // delay before animation in ms.
+       *     duration?: number;                   // duration of enter animation in ms.
+       *     ease?: () => number,                 // interpolator function. ie d3-ease.
+       *   },
+       *   events?: {                             // [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
+       *     start?: () => void,                  // function to run on `start`.
+       *     interrupt?: () => void,              // function to run on `interrupt`.
+       *     end?: () => void,                    // function to run on `end`.
+       *   },
+       * }
+       *
+       * *Default `enter`,`leave` function: undefined
+       */
+      enter: PropTypes.func,
+      leave: PropTypes.func,
+      update: PropTypes.func,
+    }),
+  ]),
 
   /**
    * className applied to outermost wrapping `<g>`.
@@ -156,32 +202,6 @@ MultiScatter.propTypes = {
   }).isRequired,
 
   /**
-   * `enter` animation function. [detailed in react-move](https://react-move.js.org/#/documentation/node-group)
-   * A function that returns an object or array of objects describing how the state should transform
-   * on enter. The function is passed the data and index.
-   *
-   * Signature: (datum, index) => {
-   *   processedFill: string[];       // color after colorScales has been applied.
-   *   resolvedShapeType: string[];   // shape after shapeScale has been applied.
-   *   translateX: number[];          // x coordinate after positioning scale has been applied.
-   *   translateY: number[];          // y coordinate after positioning scale has been applied.
-   *   timing: {                      // *defaultTiming [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
-   *     delay: number;               // delay before animation in ms.
-   *     duration: number;            // duration of enter animation in ms.
-   *     ease: () => number,          // interpolator funciton. ie d3-ease.
-   *   },
-   *   events: {                      // [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
-   *     start: () => void,           // function to run on `start`.
-   *     interrupt: () => void,       // function to run on `interrupt`.
-   *     end: () => void,             // function to run on `end`.
-   *   },
-   * }
-   *
-   * Default `enter` function: () => {}
-   */
-  enter: PropTypes.func,
-
-  /**
    * Accessors for objects within `props.data`
    *   color: (optional) color data as input to color scale.
    *   data: data provided to child components. default: 'values'
@@ -213,32 +233,6 @@ MultiScatter.propTypes = {
    * signature: (datum) => obj
    */
   focusedStyle: CommonPropTypes.style,
-
-  /**
-   * `leave` animation function. [detailed in react-move](https://react-move.js.org/#/documentation/node-group)
-   * A function that returns an object or array of objects describing how the state should
-   * transform on leave. The function is passed the data and index.
-   *
-   * Signature: (datum, index) => {
-   *   processedFill: string[];       // color after colorScales has been applied.
-   *   resolvedShapeType: string[];   // shape after shapeScale has been applied.
-   *   translateX: number[];          // x coordinate after positioning scale has been applied.
-   *   translateY: number[];          // y coordinate after positioning scale has been applied.
-   *   timing: {                      // *defaultTiming [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
-   *     delay: number;               // delay before animation in ms.
-   *     duration: number;            // duration of enter animation in ms.
-   *     ease: () => number,          // interpolator function. ie d3-ease.
-   *   },
-   *   events: {                      // [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
-   *     start: () => void,           // function to run on `start`.
-   *     interrupt: () => void,       // function to run on `interrupt`.
-   *     end: () => void,             // function to run on `end`.
-   *   },
-   * }
-   *
-   * Default `leave` function: () => {}
-   */
-  leave: PropTypes.func,
 
   /**
    * onClick callback.
@@ -337,56 +331,18 @@ MultiScatter.propTypes = {
    * Inline styles applied to `<Shape />`s.
    */
   shapeStyle: CommonPropTypes.style,
-
-  /**
-   * `start` function.
-   * A function that returns the starting state.
-   * The function is passed the data and index and must return an object.
-   *
-   * Default `start` function (You can specify just the things you want to override): () => {
-   *   processedFill: string[];       // color after colorScales has been applied.
-   *   resolvedShapeType: string[];   // shape after shapeScale has been applied.
-   *   translateX: number[];          // x coordinate after positioning scale has been applied.
-   *   translateY: number[];          // y coordinate after positioning scale has been applied.
-   * }
-   */
-  start: PropTypes.func,
-
-  /**
-   * `update` animation function. [detailed in react-move](https://react-move.js.org/#/documentation/node-group)
-   * A function that returns an object or array of objects describing how the state should transform
-   * on update. The function is passed the data and index.
-   *
-   * Default `update` function (You can specify just the things you want to override): () => {
-   *   processedFill: string[];       // color after colorScales has been applied.
-   *   resolvedShapeType: string[];   // shape after shapeScale has been applied.
-   *   translateX: number[];          // x coordinate after positioning scale has been applied.
-   *   translateY: number[];          // y coordinate after positioning scale has been applied.
-   *   timing: {                      // *defaultTiming [detailed in react-move](https://react-move.js.org/#/documentation/node-group)
-   *     delay: 0,                    // delay before animation in ms.
-   *     duration: 250,               // duration of enter animation in ms.
-   *     ease: d3-ease.easeLinear,    // interpolator function.
-   *   },
-   *   events: {},                    // [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
-   * }
-   */
-  update: PropTypes.func,
 };
 
 MultiScatter.defaultProps = {
   animate: false,
   colorScale() { return 'steelblue'; },
-  enter: undefined,
   fieldAccessors: {
     data: 'values',
     key: 'key',
   },
-  leave: undefined,
   scales: { x: scaleLinear(), y: scaleLinear() },
   scatterValuesIteratee: CommonDefaultProps.identity,
   size: 64,
   shapeField: 'type',
   shapeScale() { return 'circle'; },
-  start: undefined,
-  update: undefined,
 };
