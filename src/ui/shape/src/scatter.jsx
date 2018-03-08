@@ -163,13 +163,17 @@ export default class Scatter extends React.PureComponent {
     );
   }
 
+  shouldAnimate() {
+    return !!this.props.animate;
+  }
+
   render() {
     const { sortedData } = this.state;
     // If `props.animate` is true, we want to render the animated scatter component. Since this
     // requires the data to be in a particular shape, we make both the animated & the non-animated
     // data conform to that shape which allows us to leverage the same rendering methods.
     return (
-      this.props.animate
+      this.shouldAnimate()
       ? this.renderAnimatedScatter(sortedData)
       : this.renderScatter(this.processDataSet(sortedData))
     );
