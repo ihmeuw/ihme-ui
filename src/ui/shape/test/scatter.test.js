@@ -2,7 +2,10 @@
 import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
-import { shallow } from 'enzyme';
+import {
+  mount,
+  shallow,
+} from 'enzyme';
 import { drop, forEach, minBy, maxBy, uniqBy, map } from 'lodash';
 import { scaleLinear, scalePoint } from 'd3';
 import sinon from 'sinon';
@@ -66,11 +69,10 @@ describe('<Scatter />', () => {
     />
   );
 
-  const components = [animatedComponent, component];
-
-    const wrapper = shallow(component);
-    expect(wrapper.find(Shape)).to.have.length(10);
-  });
+  const components = [
+    animatedComponent,
+    component,
+  ];
 
   it('does not pass specific properties to its children', () => {
     const nonInheritedProps = [
@@ -116,14 +118,27 @@ describe('<Scatter />', () => {
     shallow(component).find(Shape).forEach(assertion);
   });
 
-  it('selects a shape', () => {
-    const wrapper = shallow(component);
-    expect(wrapper.find({ selected: true })).to.have.length(2);
   });
 
-  it('focuses a shape', () => {
-    const wrapper = shallow(component);
-    expect(wrapper.find({ focused: true })).to.have.length(1);
+  describe('child Shape components', () => {
+    components.forEach(testComponent => {
+      const animated = testComponent.props.animate ? 'animated' : 'non-animated';
+
+      it(`component contains 10 shapes (${animated})`, () => {
+        const wrapper = mount(testComponent);
+        expect(wrapper.find(Shape)).to.have.length(10);
+      });
+
+      it(`selects a shape (${animated})`, () => {
+        const wrapper = mount(testComponent);
+        expect(wrapper.find({ selected: true })).to.have.length(2);
+      });
+
+      it(`focuses a shape (${animated})`, () => {
+        const wrapper = mount(testComponent);
+        expect(wrapper.find({ focused: true })).to.have.length(1);
+      });
+    });
   });
 
   describe('dataAccessors', () => {
