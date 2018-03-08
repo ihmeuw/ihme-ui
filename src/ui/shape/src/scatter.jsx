@@ -227,24 +227,26 @@ Scatter.propTypes = {
    * A function that returns an object or array of objects describing how the state should transform
    * on enter. The function is passed the data and index.
    *
-   * Signature: (datum, index) => {
-   *   processedFill: string[];       // color after colorScales has been applied.
-   *   resolvedShapeType: string[];   // shape after shapeScale has been applied.
-   *   translateX: number[];          // x coordinate after positioning scale has been applied.
-   *   translateY: number[];          // y coordinate after positioning scale has been applied.
-   *   timing: {                      // *defaultTiming [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
-   *     delay: number;               // delay before animation in ms.
-   *     duration: number;            // duration of enter animation in ms.
-   *     ease: () => number,          // interpolator funciton. ie d3-ease.
+   * All required properties must be overridden in return value of `enter` function.
+   * ie singature: (datum, index) => {} | [{}] where properties, or accumulative properties result
+   * in shape: {
+   *   processedFill: string | string[];       // color after colorScales has been applied.
+   *   resolvedShapeType: string | string[];   // shape after shapeScale has been applied.
+   *   translateX: number | number[];          // x coordinate after positioning scale has been applied.
+   *   translateY: number | number[];          // y coordinate after positioning scale has been applied.
+   *   timing?: {                              // *defaultTiming [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
+   *     delay?: number;                       // delay before animation in ms.
+   *     duration?: number;                    // duration of enter animation in ms.
+   *     ease?: () => number,                  // interpolator function. ie d3-ease.
    *   },
-   *   events: {                      // [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
-   *     start: () => void,           // function to run on `start`.
-   *     interrupt: () => void,       // function to run on `interrupt`.
-   *     end: () => void,             // function to run on `end`.
+   *   events?: {                              // [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
+   *     start?: () => void,                   // function to run on `start`.
+   *     interrupt?: () => void,               // function to run on `interrupt`.
+   *     end?: () => void,                     // function to run on `end`.
    *   },
    * }
    *
-   * Default `enter` function: () => {}
+   * Default `enter` function: undefined
    */
   enter: PropTypes.func,
 
@@ -277,24 +279,26 @@ Scatter.propTypes = {
    * A function that returns an object or array of objects describing how the state should
    * transform on leave. The function is passed the data and index.
    *
-   * Signature: (datum, index) => {
+   * All required properties must be overridden in return value of `leave` function.
+   * ie singature: (datum, index) => {} | [{}] where properties, or accumulative properties result
+   * in shape: {
    *   processedFill: string[];       // color after colorScales has been applied.
    *   resolvedShapeType: string[];   // shape after shapeScale has been applied.
    *   translateX: number[];          // x coordinate after positioning scale has been applied.
    *   translateY: number[];          // y coordinate after positioning scale has been applied.
-   *   timing: {                      // *defaultTiming [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
-   *     delay: number;               // delay before animation in ms.
-   *     duration: number;            // duration of enter animation in ms.
-   *     ease: () => number,          // interpolator function. ie d3-ease.
+   *   timing?: {                     // *defaultTiming [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
+   *     delay?: number;              // delay before animation in ms.
+   *     duration?: number;           // duration of enter animation in ms.
+   *     ease?: () => number,         // interpolator function. ie d3-ease.
    *   },
-   *   events: {                      // [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
-   *     start: () => void,           // function to run on `start`.
-   *     interrupt: () => void,       // function to run on `interrupt`.
-   *     end: () => void,             // function to run on `end`.
+   *   events?: {                     // [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
+   *     start?: () => void,          // function to run on `start`.
+   *     interrupt?: () => void,      // function to run on `interrupt`.
+   *     end?: () => void,            // function to run on `end`.
    *   },
    * }
    *
-   * Default `leave` function: () => {}
+   * Default `leave` function: undefined
    */
   leave: PropTypes.func,
 
@@ -379,12 +383,15 @@ Scatter.propTypes = {
    * A function that returns the starting state.
    * The function is passed the data and index and must return an object.
    *
-   * Default `start` function (You can specify just the things you want to override): () => {
-   *   processedFill: string[];       // color after colorScales has been applied.
-   *   resolvedShapeType: string[];   // shape after shapeScale has been applied.
-   *   translateX: number[];          // x coordinate after positioning scale has been applied.
-   *   translateY: number[];          // y coordinate after positioning scale has been applied.
+   * Default `start` function (You can specify just the things you want to override):
+   * (datum, index) => {
+   *   processedFill?: string[];       // color after colorScales has been applied.
+   *   resolvedShapeType?: string[];   // shape after shapeScale has been applied.
+   *   translateX?: number[];          // x coordinate after positioning scale has been applied.
+   *   translateY?: number[];          // y coordinate after positioning scale has been applied.
    * }
+   *
+   * Note: `start` does not use `timing`, `events` properties because it represents initial state.
    */
   start: PropTypes.func,
 
@@ -393,17 +400,23 @@ Scatter.propTypes = {
    * A function that returns an object or array of objects describing how the state should transform
    * on update. The function is passed the data and index.
    *
-   * Default `update` function (You can specify just the things you want to override): () => {
+   * All required properties must be overridden in return value of `update` function.
+   * ie singature: (datum, index) => {} | [{}] where properties, or accumulative properties result
+   * in shape: {
    *   processedFill: string[];       // color after colorScales has been applied.
    *   resolvedShapeType: string[];   // shape after shapeScale has been applied.
    *   translateX: number[];          // x coordinate after positioning scale has been applied.
    *   translateY: number[];          // y coordinate after positioning scale has been applied.
-   *   timing: {                      // *defaultTiming [detailed in react-move](https://react-move.js.org/#/documentation/node-group)
-   *     delay: 0,                    // delay before animation in ms.
-   *     duration: 250,               // duration of enter animation in ms.
-   *     ease: d3-ease.easeLinear,    // interpolator function.
+   *   timing?: {                     // *defaultTiming [detailed in react-move](https://react-move.js.org/#/documentation/node-group)
+   *     delay?: 0,                   // delay before animation in ms.
+   *     duration?: 250,              // duration of enter animation in ms.
+   *     ease?: d3-ease.easeLinear,   // interpolator function.
    *   },
-   *   events: {},                    // [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
+   *   events?: {                     // [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
+   *     start?: () => void,          // function to run on `start`.
+   *     interrupt?: () => void,      // function to run on `interrupt`.
+   *     end?: () => void,            // function to run on `end`.
+   *   },
    * }
    */
   update: PropTypes.func,
