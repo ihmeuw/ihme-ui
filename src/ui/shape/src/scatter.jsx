@@ -22,7 +22,6 @@ import {
   propResolver,
   propsChanged,
   stateFromPropUpdates,
-  wrapInArrayIfTrue,
 } from '../../../utils';
 
 import Shape from './shape';
@@ -60,8 +59,6 @@ export default class Scatter extends React.PureComponent {
       shapeScale,
       shapeType,
     } = this.props;
-
-    const { wrapIfAnimating } = this.state;
 
     // Compute fill.
     const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x);
@@ -437,10 +434,6 @@ Scatter.defaultProps = {
 };
 
 Scatter.propUpdates = {
-  wrapIfAnimating: (state, _, prevProps, nextProps) => {
-    if (!propsChanged(prevProps, nextProps, ['animate'])) return state;
-    return assign({}, state, { wrapIfAnimating: wrapInArrayIfTrue(nextProps.animate) });
-  },
   childProps: (state, _, prevProps, nextProps) => {
     const childPropNames = [
       'focusedClassName',
