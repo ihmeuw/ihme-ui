@@ -42,7 +42,7 @@ export default class Scatter extends React.PureComponent {
       'processDatum',
       'processDatumAnimated',
       'renderScatter',
-      'renderScatterShape',
+      'renderShape',
     ]);
   }
 
@@ -146,7 +146,7 @@ export default class Scatter extends React.PureComponent {
     }, []);
   }
 
-  renderScatterShape({
+  renderShape({
     data,
     key,
     state: {
@@ -180,7 +180,7 @@ export default class Scatter extends React.PureComponent {
         clipPath={this.props.clipPathId && `url(#${this.props.clipPathId})`}
         style={this.combineStyles(this.props.style, this.props.data)}
       >
-        {map(data, this.renderScatterShape)}
+        {map(data, this.renderShape)}
       </g>
     );
   }
