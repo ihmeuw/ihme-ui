@@ -88,13 +88,6 @@ export default class Scatter extends React.PureComponent {
     };
   }
 
-  // | react-move | d3     |
-  // +------------+--------+
-  // | start      | enter  |
-  // | enter      | update |
-  // | update     | update |
-  // | leave      | exit   |
-
   /**
    * @param method: 'enter' | 'update' | 'leave'
    * @return {function(, index: number) => [{}]}
