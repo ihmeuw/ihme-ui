@@ -1,4 +1,9 @@
 export {
+  animationProcessorFactory,
+  animationStartFactory,
+} from './animate';
+
+export {
   linspace,
   takeSkipping,
 } from './array';
