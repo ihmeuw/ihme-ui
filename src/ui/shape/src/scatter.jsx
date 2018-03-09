@@ -4,12 +4,14 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { scaleLinear } from 'd3';
 import assign from 'lodash/assign';
+import get from 'lodash/get';
 import bindAll from 'lodash/bindAll';
 import findIndex from 'lodash/findIndex';
 import isFinite from 'lodash/isFinite';
 import keyBy from 'lodash/keyBy';
 import map from 'lodash/map';
 import pick from 'lodash/pick';
+import reduce from 'lodash/reduce';
 import sortBy from 'lodash/sortBy';
 
 import {
@@ -39,6 +41,7 @@ export default class Scatter extends React.PureComponent {
     this.state = stateFromPropUpdates(Scatter.propUpdates, {}, props, {});
     bindAll(this, [
       'processDatum',
+      'processDatumAnimated',
       'renderScatter',
       'renderScatterShape',
     ]);
@@ -85,6 +88,43 @@ export default class Scatter extends React.PureComponent {
       shapeType: resolvedShapeType,
       translateX,
       translateY,
+    };
+  }
+
+  /**
+   * @param method: 'enter' | 'update' | 'leave'
+   * @return {function(, index: number) => [{}]}
+   */
+  processDatumAnimated(method) {
+    return (datum, index) => {
+      const {
+        animate: {
+          events,
+          timing,
+        },
+      } = this.props;
+
+      return reduce(
+        // Process the datum to be consumed by Shape function.
+        this.processDatum(datum),
+        // Apply any transition methods to override.
+        (accum, value, key) => {
+          // get appropriate animation method: start | enter | update | leave
+          // for transitional elements: fill, transitionX, transitionY
+          // ie `this.props.animation.fill.leave`
+          const userMethod = get(this.props.animate, [key, method]);
+          return [
+            ...accum,
+            {
+              events,
+              timing,
+              [key]: [value],
+              ...(userMethod && userMethod(value, datum, index)),
+            },
+          ];
+        },
+        [],
+      );
     };
   }
 
@@ -145,22 +185,19 @@ export default class Scatter extends React.PureComponent {
     // react-move properties `start`, `enter`, `update`, and `move` are populated by the default
     // animated behavior of IHME-UI Scatter component unless overridden in animate prop.
     const {
-      animate: {
-        enter,
-        leave,
-        start,
-        update,
-      },
       dataAccessors: { key }
     } = this.props;
     return (
       <NodeGroup
         data={data}
         keyAccessor={datum => propResolver(datum, key)}
-        start={datum => ({ ...this.processDatum(datum), ...(start && start(datum)) })}
-        enter={enter}
-        update={update || this.processDatum}
-        leave={leave}
+        start={(datum, index) => ({
+          ...this.processDatum(datum),
+          ...(this.props.start && this.props.start(datum, index)),
+        })}
+        enter={this.processDatumAnimated('enter')}
+        update={this.processDatumAnimated('update')}
+        leave={this.processDatumAnimated('leave')}
       >
         {this.renderScatter}
       </NodeGroup>
