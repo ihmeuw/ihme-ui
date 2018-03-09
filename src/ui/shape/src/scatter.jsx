@@ -7,6 +7,7 @@ import assign from 'lodash/assign';
 import get from 'lodash/get';
 import bindAll from 'lodash/bindAll';
 import findIndex from 'lodash/findIndex';
+import includes from 'lodash/includes';
 import isFinite from 'lodash/isFinite';
 import keyBy from 'lodash/keyBy';
 import map from 'lodash/map';
@@ -112,18 +113,25 @@ export default class Scatter extends React.PureComponent {
         this.processDatum(datum),
         // Apply any transition methods to override.
         (accum, value, key) => {
-          // get appropriate animation method: enter | update | leave
-          // for transitional elements: fill, transitionX, transitionY
-          // ie `this.props.animation.fill.leave`
-          const userMethod = get(this.props.animate, [key, method]);
+          if (includes(Scatter.animatable, key)) {
+            // get appropriate animation method: enter | update | leave
+            // ie `this.props.animation.fill.leave`
+            const userMethod = get(this.props.animate, [key, method]);
+            return [
+              ...accum,
+              {
+                events,
+                timing,
+                [key]: [value],
+                ...(userMethod && userMethod(value, datum, index)),
+              },
+            ];
+          }
+
+          // Leave non-animatable values alone.
           return [
             ...accum,
-            {
-              events,
-              timing,
-              [key]: [value],
-              ...(userMethod && userMethod(value, datum, index)),
-            },
+            { [key]: value }
           ];
         },
         [],
@@ -223,6 +231,16 @@ export default class Scatter extends React.PureComponent {
     );
   }
 }
+
+/**
+ * Props given to <Shape /> children that can be animated using <Scatter animate />
+ * @type {string[]}
+ */
+Scatter.animatable = [
+  'fill',
+  'translateX',
+  'translateY',
+];
 
 Scatter.propTypes = {
   /**
