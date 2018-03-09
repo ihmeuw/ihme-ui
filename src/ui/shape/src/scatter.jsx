@@ -106,7 +106,7 @@ export default class Scatter extends React.PureComponent {
         this.processDatum(datum),
         // Apply any transition methods to override.
         (accum, value, key) => {
-          // get appropriate animation method: start | enter | update | leave
+          // get appropriate animation method: enter | update | leave
           // for transitional elements: fill, transitionX, transitionY
           // ie `this.props.animation.fill.leave`
           const userMethod = get(this.props.animate, [key, method]);
