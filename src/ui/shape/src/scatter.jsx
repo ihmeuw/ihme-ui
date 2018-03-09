@@ -79,7 +79,6 @@ export default class Scatter extends React.PureComponent {
       scales && scales.y,
     );
 
-    // *react-move requires that values be wrapped in an array if they are to be animated.
     return {
       fill: processedFill,
       shapeType: resolvedShapeType,
