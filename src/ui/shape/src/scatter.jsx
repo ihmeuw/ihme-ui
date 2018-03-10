@@ -37,45 +37,6 @@ export default class Scatter extends React.PureComponent {
     return scale && isFinite(value) ? scale(value) : 0;
   }
 
-  static getDatumProcessor(
-    {
-      colorScale,
-      dataAccessors,
-      fill,
-      scales,
-      shapeScale,
-      shapeType,
-    },
-  ) {
-    return function processDatum(datum) {
-      // Compute fill.
-      const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x);
-      const processedFill = colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill;
-
-      // Compute shape type.
-      const resolvedShapeType = dataAccessors.shape ?
-        shapeScale(propResolver(datum, dataAccessors.shape)) :
-        shapeType;
-
-      // Compute x and y translations.
-      const translateX = Scatter.getCoordinate(
-        propResolver(datum, dataAccessors.x),
-        scales && scales.x,
-      );
-      const translateY = Scatter.getCoordinate(
-        propResolver(datum, dataAccessors.y),
-        scales && scales.y,
-      );
-
-      return {
-        fill: processedFill,
-        shapeType: resolvedShapeType,
-        translateX,
-        translateY,
-      };
-    };
-  }
-
   constructor(props) {
     super(props);
     this.combineStyles = memoizeByLastCall(combineStyles);
@@ -90,18 +51,56 @@ export default class Scatter extends React.PureComponent {
     this.state = stateFromPropUpdates(Scatter.propUpdates, this.props, nextProps, this.state);
   }
 
-  processDataSet(data, keyAccessor) {
-    // Conform non-animated data to shape of animated data.
+  processDatum(datum) {
+    const {
+      colorScale,
+      dataAccessors,
+      fill,
+      scales,
+      shapeScale,
+      shapeType,
+    } = this.props;
+
+    // Compute fill.
+    const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x);
+    const processedFill = colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill;
+
+    // Compute shape type.
+    const resolvedShapeType = dataAccessors.shape
+      ? shapeScale(propResolver(datum, dataAccessors.shape))
+      : shapeType;
+
+    // Compute x and y translations.
+    const translateX = Scatter.getCoordinate(
+      propResolver(datum, dataAccessors.x),
+      scales && scales.x,
+    );
+    const translateY = Scatter.getCoordinate(
+      propResolver(datum, dataAccessors.y),
+      scales && scales.y,
+    );
+
+    return {
+      fill: processedFill,
+      shapeType: resolvedShapeType,
+      translateX,
+      translateY,
+    };
+  }
+
+  processDataSet(data) {
+    const { key } = this.props.dataAccessors;
     return data.reduce((accum, datum) => {
-      const newDatum = {
+      // This data shape is compatible with animated and non-animated components.
+      const processedDatum = {
         data: datum,
-        key: propResolver(datum, keyAccessor),
-        state: this.state.processDatum(datum),
+        key: propResolver(datum, key),
+        state: this.processDatum(datum),
       };
 
       return [
         ...accum,
-        newDatum,
+        processedDatum,
       ];
     }, []);
   }
@@ -116,19 +115,30 @@ export default class Scatter extends React.PureComponent {
       translateY,
     },
   }) {
+    const {
+      shapeClassName,
+      shapeStyle,
+    } = this.props;
+
+    const {
+      childProps,
+      focusedDatumKey,
+      selectedDataMappedToKeys,
+    } = this.state;
+
     return (
       <Shape
-        className={this.props.shapeClassName}
+        className={shapeClassName}
         key={key}
         datum={data}
         fill={fill}
-        focused={this.state.focusedDatumKey === key}
-        selected={this.state.selectedDataMappedToKeys.hasOwnProperty(key)}
+        focused={focusedDatumKey === key}
+        selected={selectedDataMappedToKeys.hasOwnProperty(key)}
         shapeType={shapeType}
-        style={this.props.shapeStyle}
+        style={shapeStyle}
         translateX={translateX}
         translateY={translateY}
-        {...this.state.childProps}
+        {...childProps}
       />
     );
   }
@@ -147,8 +157,7 @@ export default class Scatter extends React.PureComponent {
 
   renderAnimatedScatter(data) {
     // react-move properties `start`, `enter`, `update`, and `move` are populated by the default
-    // animated behavior of IHME-UI Scatter component unless overridden in animate prop.
-    const { key } = this.props.dataAccessors;
+    // animated behavior of IHME-UI Scatter component unless overridden in `animate` prop.
     const {
       animationProcessor,
       animationStartProcessor,
@@ -157,7 +166,7 @@ export default class Scatter extends React.PureComponent {
     return (
       <NodeGroup
         data={data}
-        keyAccessor={datum => propResolver(datum, key)}
+        keyAccessor={({ key }) => key}
         start={animationStartProcessor}
         enter={animationProcessor('enter')}
         update={animationProcessor('update')}
@@ -173,16 +182,13 @@ export default class Scatter extends React.PureComponent {
   }
 
   render() {
-    const { sortedData } = this.state;
-    // If `props.animate` is true, we want to render the animated scatter component.
-    if (this.shouldAnimate()) {
-      return this.renderAnimatedScatter(sortedData);
-    }
+    const data = this.processDataSet(this.state.sortedData);
 
-    // Processing non-animated datasets to match shape of
-    // animated datasets allows us to reuse rendering methods.
-    const processedDataSet = this.processDataSet(sortedData);
-    return this.renderScatter(processedDataSet);
+    return (
+      this.shouldAnimate()
+      ? this.renderAnimatedScatter(data)
+      : this.renderScatter(data)
+    );
   }
 }
 
@@ -372,39 +378,14 @@ Scatter.defaultProps = {
 };
 
 Scatter.propUpdates = {
-  processDatum: (state, _, prevProps, nextProps) => {
-    const datumProcessorProps = [
-      'colorScale',
-      'data',
-      'dataAccessors',
-      'fill',
-      'scales',
-      'shapeScale',
-      'shapeType',
-    ];
-    if (!propsChanged(prevProps, nextProps, datumProcessorProps)) return state;
-
-    return assign({}, state, { processDatum: Scatter.getDatumProcessor(nextProps) });
-  },
   animationProcessor: (state, _, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, ['animate'])) return state;
-
-    const animationProcessor = animationProcessorFactory(
-      nextProps.animate,
-      Scatter.getDatumProcessor(nextProps),
-      Scatter.animatable,
-    );
-
+    const animationProcessor = animationProcessorFactory(nextProps.animate, Scatter.animatable);
     return assign({}, state, { animationProcessor });
   },
   animationStartProcessor: (state, _, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, ['animate'])) return state;
-
-    const animationStartProcessor = animationStartFactory(
-      nextProps.animate,
-      Scatter.getDatumProcessor(nextProps),
-    );
-
+    const animationStartProcessor = animationStartFactory(nextProps.animate);
     return assign({}, state, { animationStartProcessor });
   },
   childProps: (state, _, prevProps, nextProps) => {
