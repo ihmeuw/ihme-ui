@@ -2,13 +2,6 @@ import includes from 'lodash/includes';
 import get from 'lodash/get';
 import reduce from 'lodash/reduce';
 
-/**
- *
- * @param animate {}
- * @param defaultProcessor
- * @param animatableKeys
- * @return {function(*=)}
- */
 export function animationProcessorFactory(animate, defaultProcessor, animatableKeys) {
   // A factory for each animation method: `start` | `enter` | `update` | `leave`;
   return (method) => {
