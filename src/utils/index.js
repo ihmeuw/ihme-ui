@@ -53,6 +53,12 @@ export {
 } from './objects';
 
 export {
+  AnimatableValue,
+  AnimateEvents,
+  AnimateMethod,
+  AnimateProp,
+  AnimateStart,
+  AnimateTiming,
   CommonPropTypes,
   CommonDefaultProps,
   atLeastOneOfProp,
