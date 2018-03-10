@@ -36,6 +36,85 @@ export const CommonDefaultProps = {
   identity,
 };
 
+/**
+ * Event functions that happen during transition. The given functions are passed no arguments but
+ * have access to the context to which they were created.
+ * [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
+ *   start: () => void,                  // function to run on `start`.
+ *   interrupt: () => void,              // function to run on `interrupt`.
+ *   end: () => void,                    // function to run on `end`.
+ * @type {AnimateEvents}
+ */
+export const AnimateEvents = PropTypes.shape({
+  start: PropTypes.func,
+  interrupt: PropTypes.func,
+  end: PropTypes.func,
+});
+
+/**
+ * [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
+ *   delay: time in ms before transition occurs.
+ *   duration: number in ms of how long the transition should last.
+ *   ease: easing function like d3-easeLinear.
+ * @type {AnimateTiming}
+ */
+export const AnimateTiming = PropTypes.shape({
+  delay: PropTypes.number,
+  duration: PropTypes.number,
+  ease: PropTypes.func,
+});
+
+/**
+ * Values not wrapped in an array will not be animated.
+ * [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
+ */
+export const AnimatableValue = PropTypes.oneOfType([
+  PropTypes.number,
+  PropTypes.arrayOf(PropTypes.number),
+  PropTypes.string,
+  PropTypes.arrayOf(PropTypes.string),
+]);
+
+/**
+ * A function that returns an object describing how the state should initially start.
+ * The function is passed:
+ *   `value`: number | string - computed by component
+ *   `rawDatum`: {}           - datum used to compute `value`.
+ *   `index`: number          - index of the `rawDatum`.
+ *
+ * signature: (value, rawDatum, index) => {
+ *   [keyof Prop]: PropTypes.oneOfType([Proptypes.string, PropTypes.number]);
+ * }
+ * @type {AnimateMethod}
+ * @type {AnimateStart}
+ */
+export const AnimateStart = PropTypes.func;
+
+/**
+ * A function that returns an object describing how the state should transform.
+ * The function is passed:
+ *   `value`: number | string - computed by component
+ *   `rawDatum`: {}           - datum used to compute `value`.
+ *   `index`: number          - index of the `rawDatum`.
+ *
+ * signature: (value, rawDatum, index) => {
+ *   [keyof Prop]: AnimatableValue;
+ *   events: AnimateEvents;
+ *   timing: AnimateTiming;
+ * }
+ * @type {AnimateMethod}
+ */
+export const AnimateMethod = PropTypes.func;
+
+export const AnimateProp = PropTypes.shape({
+  start: AnimateStart,
+  enter: AnimateMethod,
+  leave: AnimateMethod,
+  update: AnimateMethod,
+  events: AnimateEvents,
+  timing: AnimateTiming,
+});
+
 export function exactlyOneOfProp(propTypes) {
   return (props, propName, componentName, ...rest) => {
     let error = null;
