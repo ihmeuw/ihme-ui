@@ -67,6 +67,7 @@ export const AnimateTiming = PropTypes.shape({
 /**
  * Values not wrapped in an array will not be animated.
  * [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
+ * @type {AnimatableValue}
  */
 export const AnimatableValue = PropTypes.oneOfType([
   PropTypes.number,
@@ -85,7 +86,6 @@ export const AnimatableValue = PropTypes.oneOfType([
  * signature: (value, rawDatum, index) => {
  *   [keyof Prop]: PropTypes.oneOfType([Proptypes.string, PropTypes.number]);
  * }
- * @type {AnimateMethod}
  * @type {AnimateStart}
  */
 export const AnimateStart = PropTypes.func;
@@ -106,6 +106,16 @@ export const AnimateStart = PropTypes.func;
  */
 export const AnimateMethod = PropTypes.func;
 
+/**
+ * An object that gives instructions for handling animation events:
+ *   `start`: AnimateStart   - establish state at `start`
+ *   `enter`: AnimateMethod  - establish state for animations at `enter`
+ *   `update`: AnimateMethod - establish state for animations at `update`
+ *   `leave`: AnimateMethod  - establish state for animations at `leave`
+ *   `events`: AnimateEvents - AnimateEvents (`events` used if not overridden by `AnimateMethod`)
+ *   `timing`: AnimateTiming - AnimateTiming (`timing` used if not overridden by `AnimateMethod`)
+ * @type {AnimateProp}
+ */
 export const AnimateProp = PropTypes.shape({
   start: AnimateStart,
   enter: AnimateMethod,
