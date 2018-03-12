@@ -379,7 +379,11 @@ Scatter.defaultProps = {
 Scatter.propUpdates = {
   animationProcessor: (state, _, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, ['animate'])) return state;
-    const animationProcessor = animationProcessorFactory(nextProps.animate, Scatter.animatable);
+    const animationProcessor = animationProcessorFactory.bind(
+      null,
+      nextProps.animate,
+      Scatter.animatable,
+    );
     return {
       ...state,
       animationProcessor,
