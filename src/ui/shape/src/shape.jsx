@@ -279,12 +279,7 @@ Shape.propUpdates = {
   // update path if shape type or size have changed
   path: (accum, propName, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, ['shapeType', 'size'])) return accum;
-    // Since shapeType is animatable, this component needs to handle the case where shapeType is an
-    // array. If it is an Array, the value should be in the first position.
-    const rawShapeType = Array.isArray(nextProps.shapeType)
-      ? head(nextProps.shapeType)
-      : nextProps.shapeType;
-    const [shapeType, rotate] = rawShapeType.split(' ', 2);
+    const [shapeType, rotate] = head(nextProps.shapeType).split(' ', 2);
     return assign({}, accum, {
       path: Shape.getPath(shapeType, nextProps.size),
       rotate: SYMBOL_ROTATE[rotate] || 0,
