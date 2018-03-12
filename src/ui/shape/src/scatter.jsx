@@ -88,19 +88,14 @@ export default class Scatter extends React.PureComponent {
 
   processDataSet(data) {
     const { key } = this.props.dataAccessors;
-    return data.reduce((accum, datum) => {
-      // This data shape is compatible with animated and non-animated components.
-      const processedDatum = {
+    // This data shape is compatible with animated and non-animated components.
+    return data.map(
+      datum => ({
         data: datum,
         key: propResolver(datum, key),
         state: this.processDatum(datum),
-      };
-
-      return [
-        ...accum,
-        processedDatum,
-      ];
-    }, []);
+      }),
+    );
   }
 
   renderShape({
