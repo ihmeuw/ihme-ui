@@ -2,8 +2,38 @@ import includes from 'lodash/includes';
 import get from 'lodash/get';
 import reduce from 'lodash/reduce';
 
+export function animationStartFactory(animate) {
+  // Upon initialization, `start` cannot animate, but is required by `react-move`
+  const METHOD = 'start';
+  return ({ data, key, state }, index) => {
+    return reduce(
+      state,
+      (accum, value, property) => {
+        const userMethod = get(animate, [property, METHOD]);
+
+        const resolvedStartState = {
+          [property]: value,
+          ...(userMethod && userMethod(value, data, index)),
+        };
+
+        return {
+          ...accum,
+          ...resolvedStartState,
+        };
+      },
+      {},
+    );
+  };
+}
+
 // A factory for each animation method: `enter` | `update` | `leave`;
 export function animationProcessorFactory(animate, animatableKeys, method) {
+  const NON_ANIMATABLE_METHOD = 'start';
+
+  if (method === NON_ANIMATABLE_METHOD) {
+    return animationStartFactory(animate);
+  }
+
   return ({ data, key, state }, index) => {
     const {
       events,
@@ -40,30 +70,6 @@ export function animationProcessorFactory(animate, animatableKeys, method) {
         ];
       },
       [],
-    );
-  };
-}
-
-export function animationStartFactory(animate) {
-  // Upon initialization, `start` cannot animate, but is required by `react-move`
-  const METHOD = 'start';
-  return ({ data, key, state }, index) => {
-    return reduce(
-      state,
-      (accum, value, property) => {
-        const userMethod = get(animate, [property, METHOD]);
-
-        const resolvedStartState = {
-          [property]: value,
-          ...(userMethod && userMethod(value, data, index)),
-        };
-
-        return {
-          ...accum,
-          ...resolvedStartState,
-        };
-      },
-      {},
     );
   };
 }
