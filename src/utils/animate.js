@@ -9,7 +9,7 @@ export function animationProcessorFactory(animate, animatableKeys, method) {
       events,
       timing,
       ...specificAnimationMethods,
-    } = this.animate;
+    } = animate;
 
     // Process datum, apply default animation, which can be overridden by user methods.
     return reduce(
