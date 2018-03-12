@@ -22,7 +22,7 @@ export function animationProcessorFactory(animate, animatableKeys) {
             const userMethod = get(specificAnimationProps, [property, method]);
 
             // Apply animate defaults that can be overridden by user for respective `key`.
-            const animationObject = {
+            const resolvedState = {
               [property]: [value],
               events,
               timing,
@@ -32,7 +32,7 @@ export function animationProcessorFactory(animate, animatableKeys) {
             // Concatenate with accumulator and return.
             return [
               ...accum,
-              animationObject,
+              resolvedState,
             ];
           }
           // Return non-animation object with accumulator.
@@ -56,14 +56,14 @@ export function animationStartFactory(animate) {
       (accum, value, property) => {
         const userMethod = get(animate, [property, METHOD]);
 
-        const startValues = {
+        const resolvedStartState = {
           [property]: value,
           ...(userMethod && userMethod(value, data, index)),
         };
 
         return {
           ...accum,
-          ...startValues,
+          ...resolvedStartState,
         };
       },
       {},
