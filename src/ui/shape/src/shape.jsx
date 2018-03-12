@@ -223,26 +223,17 @@ Shape.propTypes = {
    * Type of shape to render, driven by d3-shape.
    * One of: 'circle', 'cross', 'diamond', 'square', 'star', 'triangle', 'wye'
    */
-  shapeType: PropTypes.oneOfType([
-    PropTypes.oneOf(shapeTypes()),
-    PropTypes.arrayOf(PropTypes.oneOf(shapeTypes())),
-  ]),
+  shapeType: PropTypes.oneOf(shapeTypes()),
 
   /**
    * Move shape away from origin in x direction.
    */
-  translateX: PropTypes.oneOfType([
-    PropTypes.number,
-    PropTypes.arrayOf(PropTypes.number),
-  ]),
+  translateX: PropTypes.number,
 
   /**
    * Move shape away from origin in y direction.
    */
-  translateY: PropTypes.oneOfType([
-    PropTypes.number,
-    PropTypes.arrayOf(PropTypes.number),
-  ]),
+  translateY: PropTypes.number,
 };
 
 Shape.defaultProps = {
