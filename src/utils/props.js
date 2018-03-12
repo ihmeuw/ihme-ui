@@ -38,7 +38,7 @@ export const CommonDefaultProps = {
 
 /**
  * Event functions that happen during transition. The given functions are passed no arguments but
- * have access to the context to which they were created.
+ * have access to the context in which they were created.
  * [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
  *   start: () => void,                  // function to run on `start`.
  *   interrupt: () => void,              // function to run on `interrupt`.
