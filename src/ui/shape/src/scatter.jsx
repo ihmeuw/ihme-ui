@@ -13,7 +13,6 @@ import sortBy from 'lodash/sortBy';
 
 import {
   animationProcessorFactory,
-  animationStartFactory,
   AnimateEvents,
   AnimateProp,
   AnimateTiming,
