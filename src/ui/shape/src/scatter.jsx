@@ -157,16 +157,13 @@ export default class Scatter extends React.PureComponent {
   renderAnimatedScatter(data) {
     // react-move properties `start`, `enter`, `update`, and `move` are populated by the default
     // animated behavior of IHME-UI Scatter component unless overridden in `animate` prop.
-    const {
-      animationProcessor,
-      animationStartProcessor,
-    } = this.state;
+    const { animationProcessor } = this.state;
 
     return (
       <NodeGroup
         data={data}
         keyAccessor={({ key }) => key}
-        start={animationStartProcessor}
+        start={animationProcessor('start')}
         enter={animationProcessor('enter')}
         update={animationProcessor('update')}
         leave={animationProcessor('leave')}
@@ -387,14 +384,6 @@ Scatter.propUpdates = {
     return {
       ...state,
       animationProcessor,
-    };
-  },
-  animationStartProcessor: (state, _, prevProps, nextProps) => {
-    if (!propsChanged(prevProps, nextProps, ['animate'])) return state;
-    const animationStartProcessor = animationStartFactory(nextProps.animate);
-    return {
-      ...state,
-      animationStartProcessor,
     };
   },
   childProps: (state, _, prevProps, nextProps) => {
