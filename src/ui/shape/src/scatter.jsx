@@ -3,7 +3,6 @@ import NodeGroup from 'react-move/NodeGroup';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { scaleLinear } from 'd3';
-import assign from 'lodash/assign';
 import bindAll from 'lodash/bindAll';
 import findIndex from 'lodash/findIndex';
 import isFinite from 'lodash/isFinite';
@@ -381,12 +380,18 @@ Scatter.propUpdates = {
   animationProcessor: (state, _, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, ['animate'])) return state;
     const animationProcessor = animationProcessorFactory(nextProps.animate, Scatter.animatable);
-    return assign({}, state, { animationProcessor });
+    return {
+      ...state,
+      animationProcessor,
+    };
   },
   animationStartProcessor: (state, _, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, ['animate'])) return state;
     const animationStartProcessor = animationStartFactory(nextProps.animate);
-    return assign({}, state, { animationStartProcessor });
+    return {
+      ...state,
+      animationStartProcessor,
+    };
   },
   childProps: (state, _, prevProps, nextProps) => {
     const childPropNames = [
@@ -401,7 +406,10 @@ Scatter.propUpdates = {
       'size',
     ];
     if (!propsChanged(prevProps, nextProps, childPropNames)) return state;
-    return assign({}, state, { childProps: pick(nextProps, childPropNames) });
+    return {
+      ...state,
+      childProps: pick(nextProps, childPropNames),
+    };
   },
   focusedDatumKey: (state, _, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, ['focus', 'data'])) return state;
@@ -409,29 +417,36 @@ Scatter.propUpdates = {
       dataAccessors: { key },
       focus,
     } = nextProps;
-    return assign({}, state, { focusedDatumKey: focus ? propResolver(focus, key) : null });
+    return {
+      ...state,
+      focusedDatumKey: focus ? propResolver(focus, key) : null,
+    };
   },
   selections: (state, _, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, ['selection', 'dataAccessors'])) return state;
-    return assign({}, state, {
-      selectedDataMappedToKeys: keyBy(nextProps.selection, (selectedDatum) =>
-        propResolver(selectedDatum, nextProps.dataAccessors.key)
-      ),
-    });
+    const selectedDataMappedToKeys = keyBy(nextProps.selection, (selectedDatum) =>
+      propResolver(selectedDatum, nextProps.dataAccessors.key)
+    );
+    return {
+      ...state,
+      selectedDataMappedToKeys,
+    };
   },
   sortedData: (state, _, prevProps, nextProps) => {
-    /* eslint-disable max-len, eqeqeq */
+    /* eslint-disable eqeqeq */
     if (!propsChanged(prevProps, nextProps, ['selection', 'data'])) return state;
+    // sort data by whether or not datum is selected
+    // this is a way of ensuring that selected symbols are rendered last
+    // similar to, in a path click handler, doing a this.parentNode.appendChild(this)
     const keyField = nextProps.dataAccessors.key;
-    return assign({}, state, {
-      // sort data by whether or not datum is selected
-      // this is a way of ensuring that selected symbols are rendered last
-      // similar to, in a path click handler, doing a this.parentNode.appendChild(this)
-      sortedData: sortBy(nextProps.data, (datum) =>
-        findIndex(nextProps.selection, (selected) =>
-          propResolver(datum, keyField) == propResolver(selected, keyField)
-        )
-      ),
-    });
+    const sortedData = sortBy(nextProps.data, (datum) =>
+      findIndex(nextProps.selection, (selected) =>
+        propResolver(datum, keyField) == propResolver(selected, keyField)
+      )
+    );
+    return {
+      ...state,
+      sortedData,
+    };
   },
 };
