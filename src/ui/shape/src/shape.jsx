@@ -144,11 +144,7 @@ Shape.propTypes = {
   /**
    * Fill color for path.
    */
-  fill: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.arrayOf(PropTypes.string),
-    PropTypes.arrayOf(PropTypes.number),
-  ]),
+  fill: PropTypes.string,
 
   /**
    * Whether shape has focus.
