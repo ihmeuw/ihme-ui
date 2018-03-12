@@ -36,8 +36,8 @@ export function animationProcessorFactory(animate, animatableKeys, method) {
 
   return ({ data, key, state }, index) => {
     const {
-      events,
-      timing,
+      events: rootEvents,
+      timing: rootTiming,
       ...specificAnimationMethods,
     } = animate;
 
@@ -46,6 +46,11 @@ export function animationProcessorFactory(animate, animatableKeys, method) {
       state,
       (accum, value, property) => {
         if (includes(animatableKeys, property)) {
+          // Override root animate `events` and `timing` properties.
+          // ie, `animate.events` can be overridden by `animate.fill.events`.
+          const events = get(specificAnimationMethods, [property, 'events'], rootEvents);
+          const timing = get(specificAnimationMethods, [property, 'timing'], rootTiming);
+
           // A user defined animation method. ie, `animate.fill.update`
           const userMethod = get(specificAnimationMethods, [property, method]);
 
