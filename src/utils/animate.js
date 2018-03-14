@@ -5,14 +5,14 @@ import reduce from 'lodash/reduce';
 export function animationStartFactory(animate) {
   // Upon initialization, `start` cannot animate, but is required by `react-move`
   const METHOD = 'start';
-  return ({ data, key, state }, index) => {
+  return ({ data, state }, index) => {
     return reduce(
       state,
-      (accum, value, property) => {
-        const userMethod = get(animate, [property, METHOD]);
+      (accum, value, key) => {
+        const userMethod = get(animate, [key, METHOD]);
 
         const resolvedStartState = {
-          [property]: value,
+          [key]: value,
           ...(userMethod && userMethod(value, data, index)),
         };
 
@@ -34,7 +34,7 @@ export function animationProcessorFactory(animate, animatableKeys, method) {
     return animationStartFactory(animate);
   }
 
-  return ({ data, key, state }, index) => {
+  return ({ data, state }, index) => {
     const {
       events: rootEvents,
       timing: rootTiming,
@@ -44,19 +44,19 @@ export function animationProcessorFactory(animate, animatableKeys, method) {
     // Process datum, apply default animation, which can be overridden by user methods.
     return reduce(
       state,
-      (accum, value, property) => {
-        if (includes(animatableKeys, property)) {
+      (accum, value, key) => {
+        if (includes(animatableKeys, key)) {
           // Override root animate `events` and `timing` properties.
           // ie, `animate.events` can be overridden by `animate.fill.events`.
-          const events = get(specificAnimationMethods, [property, 'events'], rootEvents);
-          const timing = get(specificAnimationMethods, [property, 'timing'], rootTiming);
+          const events = get(specificAnimationMethods, [key, 'events'], rootEvents);
+          const timing = get(specificAnimationMethods, [key, 'timing'], rootTiming);
 
           // A user defined animation method. ie, `animate.fill.update`
-          const userMethod = get(specificAnimationMethods, [property, method]);
+          const userMethod = get(specificAnimationMethods, [key, method]);
 
           // Apply animate defaults that can be overridden by user for respective `key`.
           const resolvedState = {
-            [property]: [value],
+            [key]: [value],
             events,
             timing,
             ...(userMethod && userMethod(value, data, index)),
@@ -71,7 +71,7 @@ export function animationProcessorFactory(animate, animatableKeys, method) {
         // Return non-animation object with accumulator.
         return [
           ...accum,
-          { [property]: value },
+          { [key]: value },
         ];
       },
       [],
