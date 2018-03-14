@@ -261,9 +261,21 @@ describe('animate factory functions', () => {
     };
 
     const spyMap = {
-      fill: { spy: sinon.spy(() => fillUpdateReturnValue) },
-      x: { spy: sinon.spy(() => xLeaveReturnValue) },
-      y: { spy: sinon.spy(() => yStartReturnValue) },
+      fill: {
+        attr: 'fill',
+        methodName: 'enter',
+        spy: sinon.spy(() => fillUpdateReturnValue)
+      },
+      x: {
+        attr: 'x',
+        methodName: 'leave',
+        spy: sinon.spy(() => xLeaveReturnValue)
+      },
+      y: {
+        attr: 'y',
+        methodName: 'start',
+        spy: sinon.spy(() => yStartReturnValue)
+      },
     };
 
     const animate = {
@@ -359,7 +371,7 @@ describe('animate factory functions', () => {
     });
 
     describe('Confirm given `animate` methods are called with expected args', () => {
-      const spyDatum = {
+      const spyInputDatum = {
         data: {
           fill: 'before fill is computed to #ccc',
           x: 100,
@@ -375,50 +387,31 @@ describe('animate factory functions', () => {
 
       const testIndex = 1000;
 
-      it('calls `fill.enter`', () => {
-        animationEnterMethod(spyDatum, testIndex);
+      const assertion = ({
+        attr,
+        methodName,
+        spy,
+      }) => {
+        it(`calls ${attr}.${methodName} with expected arguments`, () => {
+          // call `start`, `enter`, or `leave` animationProcessor to check
+          // if spy is called during execution of animationProcessor.
+          animationProcessor(methodName)(spyInputDatum, testIndex);
 
-        const [
-          spyCallValue,
-          spyCallRawDatum,
-          spyCallIndex,
-        ] = spyMap.fill.spy.getCall(0).args;
+          expect(spy.called).to.be.true;
 
-        expect(spyMap.fill.spy.called).to.be.true;
-        expect(spyCallValue).to.equal(spyDatum.state.fill);
-        expect(spyCallRawDatum).to.deep.equal(spyDatum.data);
-        expect(spyCallIndex).to.deep.equal(testIndex);
-      });
+          const [
+            spyCallValue,
+            spyCallRawDatum,
+            spyCallIndex,
+          ] = spy.getCall(0).args;
 
-      it('calls `x.leave`', () => {
-        animationLeaveMethod(spyDatum, testIndex);
+          expect(spyCallValue).to.equal(spyInputDatum.state[attr]);
+          expect(spyCallRawDatum).to.deep.equal(spyInputDatum.data);
+          expect(spyCallIndex).to.deep.equal(testIndex);
+        });
+      };
 
-        const [
-          spyCallValue,
-          spyCallRawDatum,
-          spyCallIndex,
-        ] = spyMap.x.spy.getCall(0).args;
-
-        expect(spyMap.x.spy.called).to.be.true;
-        expect(spyCallValue).to.equal(spyDatum.state.x);
-        expect(spyCallRawDatum).to.deep.equal(spyDatum.data);
-        expect(spyCallIndex).to.deep.equal(testIndex);
-      });
-
-      it('calls `y.start`', () => {
-        animationStartMethod(spyDatum, testIndex);
-
-        const [
-          spyCallValue,
-          spyCallRawDatum,
-          spyCallIndex,
-        ] = spyMap.x.spy.getCall(0).args;
-
-        expect(spyMap.x.spy.called).to.be.true;
-        expect(spyCallValue).to.equal(spyDatum.state.y);
-        expect(spyCallRawDatum).to.deep.equal(spyDatum.data);
-        expect(spyCallIndex).to.deep.equal(testIndex);
-      });
+      forEach(spyMap, assertion);
     });
   });
 });
