@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions, max-len */
 import { expect } from 'chai';
 import get from 'lodash/get';
 import forEach from 'lodash/forEach';
@@ -38,78 +39,28 @@ describe('animate factory functions', () => {
     'leave',
   ];
 
-  function runBoilerPlateTests(scenario, animate) {
-    describe(`Common tests between 'animate' scenarios (${scenario})`, () => {
-
-      const animationProcessor = animationProcessorFactory.bind(
-        null,
-        animate,
-        animatableAttrs,
-      );
-
-      const [
-        animationStartMethod,
-        animationEnterMethod,
-        animationUpdateMethod,
-        animationLeaveMethod,
-      ] = animationMethodNames.map(animationProcessor);
-
-      const animationMethods = [
-        // (animationStartMethod) is an initialization;
-        // it does not contain animation properties.
-        animationEnterMethod,
-        animationUpdateMethod,
-        animationLeaveMethod,
-      ];
-
-      describe(`defaults of animation \`start\` method (${scenario})`, () => {
-        const outputDatum = animationStartMethod(inputDatum);
-
-        it(`outputs an object (start method) equal to input\'s `state` property.`, () => {
-          expect(outputDatum).to.deep.equal(inputDatum.state);
-        });
-
-        it('does not wrap any values in arrays', () => {
-          Object.keys(outputDatum).forEach(key => {
-            expect(outputDatum[key]).to.not.be.an('Array');
-          });
-        });
-
-        it(`'animationStartMethod' should have the same functionality as calling
-      'animationStartFactory' directly.`, () => {
-          const outputDatumFromAnimationStartFactory = animationStartFactory(animate)(inputDatum);
-          expect(outputDatum).to.deep.equal(outputDatumFromAnimationStartFactory);
-        });
-      });
-    });
-  }
-
-  describe('Default functionality (`animate` param is boolean):', () => {
-    const animate = true;
-
+  function getAnimationMethods(animationProp) {
     const animationProcessor = animationProcessorFactory.bind(
       null,
-      animate,
+      animationProp,
       animatableAttrs,
     );
 
     const [
-      animationStartMethod,
-      animationEnterMethod,
-      animationUpdateMethod,
-      animationLeaveMethod,
+      animationStartMethod,     // `start` is a bit different than
+      ...otherAnimationMethods  // `enter`, `update`, `leave`, so its ideal to keep them separate.
     ] = animationMethodNames.map(animationProcessor);
 
-    const animationMethods = [
-      // (animationStartMethod) is an initialization;
-      // it does not contain animation properties.
-      animationEnterMethod,
-      animationUpdateMethod,
-      animationLeaveMethod,
-    ];
+    return [animationStartMethod, otherAnimationMethods];
+  }
 
-    describe('defaults of animation `start` method', () => {
-      const outputDatum = animationStartMethod(inputDatum);
+  function runBoilerPlateStartTest(scenario, animate) {
+    describe(`defaults of animation \`start\` method (${scenario})`, () => {
+      const outputDatum = animationProcessorFactory(
+        animate,
+        animatableAttrs,
+        'start',
+      )(inputDatum);
 
       it('outputs an object (start method) equal to input\'s `state` property.', () => {
         expect(outputDatum).to.deep.equal(inputDatum.state);
@@ -122,36 +73,83 @@ describe('animate factory functions', () => {
       });
 
       it(`'animationStartMethod' should have the same functionality as calling
-      'animationStartFactory' directly.`, () => {
+        'animationStartFactory' directly.`, () => {
         const outputDatumFromAnimationStartFactory = animationStartFactory(animate)(inputDatum);
         expect(outputDatum).to.deep.equal(outputDatumFromAnimationStartFactory);
       });
     });
+  }
 
-    describe('defaults of animation methods `enter`, `update`, `leave`', () => {
-      animationMethods.forEach((animationMethod, index) => {
+  function runBoilerPlateTests(scenario, animationMethods) {
+    describe(`Common tests between 'animate' scenarios (${scenario})`, () => {
+      describe('defaults of animation methods `enter`, `update`, `leave`', () => {
+        animationMethods.forEach((animationMethod, index) => {
+          const outputDatum = animationMethod(inputDatum);
+          it(`outputs an array of objects (${animationMethodNames[index + 1]})`, () => {
+            expect(outputDatum).to.be.an('Array');
+            outputDatum.forEach(outputDatumObject => {
+              expect(outputDatumObject).to.be.an('Object');
+            });
+          });
+
+          it('does not wrap non-animatable props in an array', () => {
+            outputDatum.forEach(outputDatumObject => {
+              if (outputDatumObject.nonAnimatableProp) {
+                expect(outputDatumObject.nonAnimatableProp).not.to.be.an('Array');
+                expect(outputDatumObject.nonAnimatableProp).to.be.a('string');
+              }
+            });
+          });
+        });
+      });
+
+      describe('Nested animation properties', () => {
+        animationMethods.forEach(animationMethod => {
+          const outputData = animationMethod(inputDatum);
+
+          it('each output datum only contains one attr.', () => {
+            outputData.forEach(datum => {
+              // if datum is for a non-animatable attribute,
+              // animatable properties should not be on the datum.
+              if (datum.hasOwnProperty('nonAnimatableProp')) {
+                animatableAttrs.forEach(attr => {
+                  expect(datum[attr]).to.equal(undefined);
+                });
+
+                // datum is for exactly one animatable attribute.
+              } else {
+                const shouldBeExactlyOne = intersection(
+                  animatableAttrs,
+                  Object.keys(datum)
+                );
+                expect(shouldBeExactlyOne.length).to.equal(1);
+              }
+            });
+          });
+        });
+      });
+    });
+  }
+
+  describe('Default functionality (`animate` param is boolean):', () => {
+    const animate = true;
+
+    const [
+      animationStartMethod,
+      animationMethods,
+    ] = getAnimationMethods(animate);
+
+    runBoilerPlateStartTest('`animate` param is boolean', animationStartMethod);
+
+    runBoilerPlateTests('`animate` param is boolean', animationMethods);
+
+    animationMethods.forEach(animationMethod => {
+      it('does not assign `events` or `timing` properties as a default', () => {
         const outputDatum = animationMethod(inputDatum);
-        it(`outputs an array of objects (${animationMethodNames[index + 1]})`, () => {
-          expect(outputDatum).to.be.an('Array');
-          outputDatum.forEach(outputDatumObject => {
-            expect(outputDatumObject).to.be.an('Object');
-          });
-        });
 
-        it('does not wrap non-animatable props in an array', () => {
-          outputDatum.forEach(outputDatumObject => {
-            if (outputDatumObject.nonAnimatableProp) {
-              expect(outputDatumObject.nonAnimatableProp).not.to.be.an('Array');
-              expect(outputDatumObject.nonAnimatableProp).to.be.a('string');
-            }
-          });
-        });
-
-        it('does not assign `events` or `timing` properties as a default', () => {
-          outputDatum.forEach(outputDatumObject => {
-            expect(outputDatumObject.events).to.be.equal(undefined);
-            expect(outputDatumObject.timing).to.equal(undefined);
-          });
+        outputDatum.forEach(outputDatumObject => {
+          expect(outputDatumObject.events).to.be.equal(undefined);
+          expect(outputDatumObject.timing).to.equal(undefined);
         });
       });
     });
@@ -168,61 +166,24 @@ describe('animate factory functions', () => {
       },
     };
 
-    const animationProcessor = animationProcessorFactory.bind(
-      null,
-      animate,
-      animatableAttrs,
-    );
-
     const [
       animationStartMethod,
-      animationEnterMethod,
-      animationUpdateMethod,
-      animationLeaveMethod,
-    ] = animationMethodNames.map(animationProcessor);
+      animationMethods,
+    ] = getAnimationMethods(animate);
 
-    const animationMethods = [
-      // (animationStartMethod) is an initialization;
-      // it does not contain animation properties.
-      animationEnterMethod,
-      animationUpdateMethod,
-      animationLeaveMethod,
-    ];
+    runBoilerPlateStartTest('Complex animation configuration', animationStartMethod);
 
-    describe('root `events`, `timing` don\'t affect animation `start` method', () => {
-      const outputDatum = animationStartMethod(inputDatum);
+    runBoilerPlateTests(
+      'Simple customized animate: `timing`, `events` defined at root.',
+      animationMethods,
+    );
 
-      it('outputs an object (start method) equal to input\'s `state` property.', () => {
-        expect(outputDatum).to.deep.equal(inputDatum.state);
-      });
-
-      it('does not wrap any values in arrays', () => {
-        Object.keys(outputDatum).forEach(key => {
-          expect(outputDatum[key]).to.not.be.an('Array');
-        });
-      });
-
-      it(`'animationStartMethod' should have the same functionality as calling
-      'animationStartFactory' directly.`, () => {
-        const outputDatumFromAnimationStartFactory = animationStartFactory(animate)(inputDatum);
-        expect(outputDatum).to.deep.equal(outputDatumFromAnimationStartFactory);
-      });
-    });
-
-    describe(`'events' and 'timing' properties should be applied to 
-    'enter', 'update', 'leave'`, () => {
+    describe('`events` and `timing` properties should be applied to return value of: `enter`, `update`, `leave`', () => {
       animationMethods.forEach((animationMethod, index) => {
         const outputDatum = animationMethod(inputDatum);
+        const methodName = animationMethodNames[index + 1]; // one is start
 
-        it(`outputs an array of objects (${animationMethodNames[index + 1]})`, () => {
-          expect(outputDatum).to.be.an('Array');
-          outputDatum.forEach(outputDatumObject => {
-            expect(outputDatumObject).to.be.an('Object');
-          });
-        });
-
-        it(`${animationMethodNames[index + 1]} appropriately applies root 
-        'events', 'timing'`, () => {
+        describe(`${methodName} appropriately applies root 'events', 'timing'`, () => {
           outputDatum.forEach(outputDatumObject => {
             if (outputDatumObject.hasOwnProperty('nonAnimatableProp')) {
               it('does not contain `events` or `timing` for non-animatable props.', () => {
@@ -231,8 +192,8 @@ describe('animate factory functions', () => {
               });
             } else {
               it('overrides `events` and `timing` properties when appropriate', () => {
-                expect(outputDatumObject.events).to.deep.equal(animate.events);
-                expect(outputDatumObject.timing).to.deep.equal(animate.timing);
+                expect(outputDatumObject.events).to.equal(animate.events);
+                expect(outputDatumObject.timing).to.equal(animate.timing);
               });
             }
           });
@@ -316,62 +277,24 @@ describe('animate factory functions', () => {
       },
     };
 
-    const animationProcessor = animationProcessorFactory.bind(
-      null,
-      animate,
-      animatableAttrs,
-    );
-
-    const [
-      animationStartMethod,
-      animationEnterMethod,
-      animationUpdateMethod,
-      animationLeaveMethod,
-    ] = animationMethodNames.map(animationProcessor);
-
-    const animationMethods = [
-      // (animationStartMethod) is an initialization;
-      // it does not contain animation properties.
-      animationEnterMethod,
-      animationUpdateMethod,
-      animationLeaveMethod,
-    ];
-
     beforeEach(() => {
       forEach(methodMap, (spyConfig) => {
         spyConfig.spy.reset();
       });
     });
 
-    describe('Nested animation properties', () => {
-      animationMethods.forEach(animationMethod => {
-        const outputData = animationMethod(inputDatum);
-
-        it('each output datum only contains one attr.', () => {
-          outputData.forEach(datum => {
-            // if datum is for a non-animatable attribute,
-            // animatable properties should not be on the datum.
-            if (datum.hasOwnProperty('nonAnimatableProp')) {
-              animatableAttrs.forEach(attr => {
-                expect(datum[attr]).to.equal(undefined);
-              });
-
-            // datum is for exactly one animatable attribute.
-            } else {
-              const [shouldBeExactlyOne] = intersection(
-                animatableAttrs,
-                Object.keys(datum)
-              );
-              expect(shouldBeExactlyOne.length).to.equal(1);
-            }
-          });
-        });
-      });
-    });
+    runBoilerPlateTests(
+      'Complex animation configuration',
+      getAnimationMethods(animate)[1],
+    );
 
     describe('overrides/includes properties correctly', () => {
       const assertion = ({ methodName }, attr) => {
-        const outputData = animationProcessor(methodName)(inputDatum);
+        const outputData = animationProcessorFactory(
+          animate,
+          animatableAttrs,
+          methodName
+        )(inputDatum);
 
         // allow for `start` method not being in an array
         const [outputDatum] = methodName === 'start'
@@ -429,7 +352,11 @@ describe('animate factory functions', () => {
         it(`calls ${attr}.${methodName} with expected arguments`, () => {
           // call `start`, `enter`, or `leave` animationProcessor to check
           // if spy is called during execution of animationProcessor.
-          animationProcessor(methodName)(spyInputDatum, testIndex);
+          animationProcessorFactory(
+            animate,
+            animatableAttrs,
+            methodName
+          )(spyInputDatum, testIndex);
 
           expect(spy.called).to.be.true;
 
