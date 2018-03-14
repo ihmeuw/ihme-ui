@@ -1,7 +1,8 @@
 import { expect } from 'chai';
-import noop from 'lodash/noop';
+import get from 'lodash/get';
 import forEach from 'lodash/forEach';
 import intersection from 'lodash/intersection';
+import noop from 'lodash/noop';
 import sinon from 'sinon';
 
 import {
@@ -241,58 +242,67 @@ describe('animate factory functions', () => {
   });
 
   describe('Nested animation instructions should be applied independently of root, peers:', () => {
-    const fillUpdateReturnValue = {
-      fill: ['I am a nested fill value!'],
-      timing: {
-        delay: 100,
-      }
-    };
-    const xLeaveReturnValue = {
-      x: [100],
-      events: {
-        end: sinon.spy(),
-      }
-    };
-    const yStartReturnValue = {
-      y: [0],
-      timing: {
-        delay: 100,
-      }
-    };
-
-    const spyMap = {
+    // Store `returnValue` in nested structure to access in assertion loops.
+    const returnValues = {
       fill: {
-        attr: 'fill',
-        methodName: 'enter',
-        spy: sinon.spy(() => fillUpdateReturnValue)
+        enter: {
+          fill: ['I am a nested fill value!'],
+          timing: {
+            delay: 100,
+          },
+        },
       },
       x: {
-        attr: 'x',
-        methodName: 'leave',
-        spy: sinon.spy(() => xLeaveReturnValue)
+        leave: {
+          x: [100],
+          events: {
+            end: sinon.spy(),
+          },
+        },
       },
       y: {
-        attr: 'y',
-        methodName: 'start',
-        spy: sinon.spy(() => yStartReturnValue)
+        start: {
+          y: [0],
+          timing: {
+            delay: 10000,
+          },
+        },
       },
     };
 
+    // Store spies in nested structure to be able to traverse in assertion loops,
+    // reset in before clause.
+    const methodMap = {
+      fill: {
+        methodName: 'enter',
+        spy: sinon.spy(() => returnValues.fill.enter)
+      },
+      x: {
+        methodName: 'leave',
+        spy: sinon.spy(() => returnValues.x.leave)
+      },
+      y: {
+        methodName: 'start',
+        spy: sinon.spy(() => returnValues.y.start)
+      },
+    };
+
+    // Mock the `animate` prop.
     const animate = {
       fill: {
-        enter: spyMap.fill.spy,
+        enter: methodMap.fill.spy,
         timing: {
-          duration: 200,
+          duration: 2000,
         },
       },
       x: {
-        leave: spyMap.x.spy,
+        leave: methodMap.x.spy,
         events: {
-          interrupt: noop,
+          interrupt: sinon.spy(),
         },
       },
       y: {
-        start: spyMap.y.spy,
+        start: methodMap.y.spy,
         timing: {
           delay: 500,
         }
@@ -328,46 +338,74 @@ describe('animate factory functions', () => {
     ];
 
     beforeEach(() => {
-      forEach(spyMap, (spyConfig) => {
+      forEach(methodMap, (spyConfig) => {
         spyConfig.spy.reset();
       });
     });
 
     describe('Nested animation properties', () => {
       animationMethods.forEach(animationMethod => {
-        const outputDatum = animationMethod(inputDatum);
+        const outputData = animationMethod(inputDatum);
 
         it('each output datum only contains one attr.', () => {
-          outputDatum.forEach(outputDatumObject => {
-            if (outputDatumObject.hasOwnProperty('nonAnimatableProp')) {
-              animatableAttrs.forEach(animatableAttr => {
-                expect(outputDatumObject[animatableAttr]).to.equal(undefined);
+          outputData.forEach(datum => {
+            // if datum is for a non-animatable attribute,
+            // animatable properties should not be on the datum.
+            if (datum.hasOwnProperty('nonAnimatableProp')) {
+              animatableAttrs.forEach(attr => {
+                expect(datum[attr]).to.equal(undefined);
               });
+
+            // datum is for exactly one animatable attribute.
             } else {
-              const shouldBeOne = intersection(
+              const [shouldBeExactlyOne] = intersection(
                 animatableAttrs,
-                Object.keys(outputDatumObject)
+                Object.keys(datum)
               );
-              expect(shouldBeOne.length).to.equal(1);
+              expect(shouldBeExactlyOne.length).to.equal(1);
             }
           });
         });
       });
     });
 
-    describe('overrides/includes properties (`fill.enter` animation attribute)', () => {
-      const outputEnterData = animationEnterMethod(inputDatum, 100);
-      const [fillOutputDatum] = outputEnterData.filter(datum => datum.fill);
+    describe('overrides/includes properties correctly', () => {
+      const assertion = ({ methodName }, attr) => {
+        const outputData = animationProcessor(methodName)(inputDatum);
 
-      it('overrides less-nested animation properties if overridden', () => {
-        expect(fillOutputDatum.timing).to.equal(fillUpdateReturnValue.timing);
-        expect(fillOutputDatum.fill).to.equal(fillUpdateReturnValue.fill);
-      });
+        // allow for `start` method not being in an array
+        const [outputDatum] = methodName === 'start'
+          ? [outputData]
+          : outputData.filter(datum => datum[attr]);
 
-      it('includes less-nested animation properties if not overridden', () => {
-        expect(fillOutputDatum.timing).to.equal(fillUpdateReturnValue.timing);
-        expect(fillOutputDatum.fill).to.equal(fillUpdateReturnValue.fill);
-      });
+        it(`overrides less-nested animation properties:
+        ${attr} if overridden in ${methodName}`, () => {
+          forEach(outputDatum, (value, key) => {
+            // If the value was to be overridden by method's return value,
+            // ie, `animate.x.leave => { timing, events, <attr> }
+            if (get(returnValues, [attr, methodName, key])) {
+              expect(value).to.equal(returnValues[attr][methodName][key]);
+
+            // if the value was assigned at animate[attr],
+            // ie, `animate.y.timing` or `animate.fill.events`
+            } else if (get(animate, [attr, key])) {
+              expect(value).to.equal(animate[attr][key]);
+
+            // the original data value was never overridden.
+            // ie, `inputDatum.state.fill`
+            } else if (get(inputDatum.state, [key])) {
+              expect(value).to.equal(inputDatum.state[key]);
+
+            // the root animate[key] was never overridden.
+            // ie, `animate.timing`
+            } else {
+              expect(value).to.equal(animate[key]);
+            }
+          });
+        });
+      };
+
+      forEach(methodMap, assertion);
     });
 
     describe('Confirm given `animate` methods are called with expected args', () => {
@@ -387,11 +425,7 @@ describe('animate factory functions', () => {
 
       const testIndex = 1000;
 
-      const assertion = ({
-        attr,
-        methodName,
-        spy,
-      }) => {
+      const assertion = ({ methodName, spy }, attr) => {
         it(`calls ${attr}.${methodName} with expected arguments`, () => {
           // call `start`, `enter`, or `leave` animationProcessor to check
           // if spy is called during execution of animationProcessor.
@@ -411,7 +445,7 @@ describe('animate factory functions', () => {
         });
       };
 
-      forEach(spyMap, assertion);
+      forEach(methodMap, assertion);
     });
   });
 });
