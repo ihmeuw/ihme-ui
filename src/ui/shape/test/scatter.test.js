@@ -310,6 +310,67 @@ describe('<Scatter />', () => {
     });
   });
 
+  describe('data processing instance methods', () => {
+    const rawData = [
+      { id: 1, population: 450, year_id: 2000 },
+      { id: 2, population: 351, year_id: 2003 },
+      { id: 3, population: 540, year_id: 2009 },
+    ];
+
+    const expectedProcessedDatum = [
+      {
+        fill: 'red',
+        shapeType: 'circle',
+        translateX: 0,
+        translateY: 400,
+      },
+      {
+        fill: 'red',
+        shapeType: 'circle',
+        translateX: 200,
+        translateY: 664.1761174116077,
+      },
+      {
+        fill: 'red',
+        shapeType: 'circle',
+        translateX: 600,
+        translateY: 159.83989326217474,
+      },
+    ];
+
+    const testComponent = (
+      <Scatter
+        {...sharedProps}
+        data={rawData}
+      />
+    );
+
+    const wrapper = shallow(testComponent);
+
+    it('processDatum correctly calculates values as expected', () => {
+      rawData.forEach((rawDatum, index) => {
+        const processedDatum = wrapper.instance().processDatum(rawDatum);
+        expect(processedDatum).to.deep.equal(expectedProcessedDatum[index]);
+      });
+    });
+
+    it('processDataSet formats and processes data', () => {
+      const processedData = wrapper.instance().processDataSet(rawData);
+
+      processedData.forEach((datum, index) => {
+        // correct shape.
+        expect(datum).to.have.property('key');
+        expect(datum).to.have.property('data');
+        expect(datum).to.have.property('state');
+
+        // correct `key`, `data`, `state` assignments.
+        expect(datum.key).to.equal(datum.data.id);
+        expect(datum.data).to.equal(rawData[index]);
+        expect(datum.state).to.deep.equal(expectedProcessedDatum[index]);
+      });
+    });
+  });
+
   describe('selection', () => {
     it('renders selected shapes last', () => {
       const selectedDatum = data[0];
