@@ -6,6 +6,7 @@ import { scaleLinear } from 'd3';
 import bindAll from 'lodash/bindAll';
 import findIndex from 'lodash/findIndex';
 import isFinite from 'lodash/isFinite';
+import has from 'lodash/has';
 import keyBy from 'lodash/keyBy';
 import partial from 'lodash/partial';
 import pick from 'lodash/pick';
@@ -126,7 +127,7 @@ export default class Scatter extends React.PureComponent {
         datum={data}
         fill={fill}
         focused={focusedDatumKey === key}
-        selected={selectedDataMappedToKeys.hasOwnProperty(key)}
+        selected={has(selectedDataMappedToKeys, key)}
         shapeType={shapeType}
         style={shapeStyle}
         translateX={translateX}
