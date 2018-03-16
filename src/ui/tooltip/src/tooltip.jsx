@@ -251,7 +251,7 @@ Tooltip.propUpdates = {
       paddingY: nextProps.paddingY,
       width,
     });
-    return assign({}, accum, { transform: `translate(${x}px, ${y}px)` });
+    return assign({}, accum, { top: `${y}px`, left: `${x}px` });
     /* eslint-enable no-underscore-dangle */
   },
   display: (accum, _, prevProps, nextProps) => {
