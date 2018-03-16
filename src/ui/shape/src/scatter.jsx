@@ -7,6 +7,7 @@ import bindAll from 'lodash/bindAll';
 import findIndex from 'lodash/findIndex';
 import isFinite from 'lodash/isFinite';
 import keyBy from 'lodash/keyBy';
+import partial from 'lodash/partial';
 import pick from 'lodash/pick';
 import sortBy from 'lodash/sortBy';
 
@@ -369,8 +370,8 @@ Scatter.defaultProps = {
 Scatter.propUpdates = {
   animationProcessor: (state, _, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, ['animate'])) return state;
-    const animationProcessor = animationProcessorFactory.bind(
-      null,
+    const animationProcessor = partial(
+      animationProcessorFactory,
       nextProps.animate,
       Scatter.animatable,
     );
