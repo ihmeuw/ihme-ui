@@ -10,7 +10,6 @@ import AxisChart from '../../axis-chart';
 import { XAxis, YAxis } from '../../axis';
 import { MultiScatter, Scatter } from '../';
 
-
 const keyField = 'year_id';
 const valueField = 'population';
 
@@ -49,6 +48,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       selectedItems: [],
+      country: 2,
     }
 
     bindAll(this, [
@@ -187,15 +187,16 @@ class App extends React.Component {
    <XAxis />
    <YAxis />
    <Scatter
+     animate
      fill="steelblue"
      data={[]}
      dataAccessors={{
        fill: keyField,
-       key: 'id',
+       key: keyField,
        x: keyField,    // year_id
        y: valueField   // population
      }}
-     focus={{}}
+     focus={this.state.focus}
      onClick={function(event, datum, Shape) {...}}
      onMouseLeave={function(event, datum, Shape) {...}}
      onMouseMove={function(event, datum, Shape) {...}}
@@ -204,7 +205,15 @@ class App extends React.Component {
      shapeType="circle"
    />
  </AxisChart>
-</code></pre> */}
+ </code></pre> */}
+          <h3>{locationData[this.state.country].location}</h3>
+          <button
+            onClick={() => {
+              this.setState({ country: (this.state.country + 1) % locationData.length });
+            }}
+          >
+            press to look at next country
+          </button>
             <AxisChart
               height={300}
               width={500}
@@ -216,11 +225,14 @@ class App extends React.Component {
               <XAxis />
               <YAxis />
               <Scatter
+                animate
                 fill="steelblue"
-                data={data.filter((datum) => { return datum.location === 'India'; })}
+                data={data.filter(
+                  (datum) => datum.location === locationData[this.state.country].location,
+                )}
                 dataAccessors={{
                   fill: keyField,
-                  key: 'id',
+                  key: keyField,
                   x: keyField,    // year_id
                   y: valueField   // population
                 }}

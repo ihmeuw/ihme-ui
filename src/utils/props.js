@@ -36,6 +36,62 @@ export const CommonDefaultProps = {
   identity,
 };
 
+/**
+ * Event functions that happen during animated transition.
+ * @type {AnimateEventsType}
+ */
+export const AnimateEvents = PropTypes.shape({
+  start: PropTypes.func,
+  interrupt: PropTypes.func,
+  end: PropTypes.func,
+});
+
+/**
+ * Timing instructions for animated transition.
+ * @type {AnimateTimingType}
+ */
+export const AnimateTiming = PropTypes.shape({
+  delay: PropTypes.number,
+  duration: PropTypes.number,
+  ease: PropTypes.func,
+});
+
+/**
+ * A value that an animatable attribute can evaluate to animate to.
+ * @type {AnimatableValueType}
+ */
+export const AnimatableValue = PropTypes.oneOfType([
+  PropTypes.number,
+  PropTypes.arrayOf(PropTypes.number),
+  PropTypes.string,
+  PropTypes.arrayOf(PropTypes.string),
+]);
+
+/**
+ * A function that returns an object describing how the state should initially start.
+ * @type {AnimateStartCallback}
+ */
+export const AnimateStart = PropTypes.func;
+
+/**
+ * A function that returns an object describing how the state should transform.
+ * @type {AnimateMethodCallback}
+ */
+export const AnimateMethod = PropTypes.func;
+
+/**
+ * An object that gives instructions for handling animation
+ * @type {AnimatePropType}
+ */
+export const AnimateProp = PropTypes.shape({
+  start: AnimateStart,
+  enter: AnimateMethod,
+  leave: AnimateMethod,
+  update: AnimateMethod,
+  events: AnimateEvents,
+  timing: AnimateTiming,
+});
+
 export function exactlyOneOfProp(propTypes) {
   return (props, propName, componentName, ...rest) => {
     let error = null;
@@ -169,4 +225,88 @@ export function applyFuncToProps(prevProps, nextProps, propNames, firstFunc, ...
  * @param {Object} [context] - optional `this` context with which to call updateFuncCallback.
  *                             Usually the react component instance.
  * @returns {Object} accumulated state.
+ */
+
+/**
+ * @typedef {(string | string[] | number | number[] )} AnimatableValueType
+ * @description Value for animatable attribute. Values not wrapped in an array will not be animated.
+ *   ie, a `fill` attribute can animate to the color, '#ccc', by the value `['#ccc']`.
+ *   [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
+ */
+
+/**
+ * @typedef {Object} AnimationStartStateType
+ * @description Object representing animatable attribute's initial state.
+ * @property {(string | number)} <keyof AnimationInstruction> - value of
+ *   AnimationStartState. The key would be the name of the attribute that is to be
+ *   affected, ie `fill`.
+ */
+
+/**
+ * @callback AnimateStartCallback
+ * @param {(number | string)} value - computed value of animatable attribute that can be overridden.
+ * @param {Object} rawDatum - input data object from which `value` was computed.
+ * @param {number} index - array index of `rawDatum` within greater dataset.
+ * @returns {AnimationStartStateType}
+ */
+
+/**
+ * @callback AnimateEventsCallback
+ * @description Function to execute during an animated transition event.
+ *   ie, function to execute on transition `end`.
+ *   No formal parameters the function has access to the context in which it was created.
+ * @returns {Void}
+ */
+
+/**
+ * @typedef {Object} AnimateEventsType
+ * @description The given functions are passed. no arguments but
+ * have access to the context in which they were created.
+ * [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
+ * @property {AnimateEventsCallback} start - function to run on `start`.
+ * @property {AnimateEventsCallback} interrupt - function to run on `interrupt`.
+ * @property {AnimateEventsCallback} end - function to run on `end`.
+ */
+
+/**
+ * @callback EasingFunction
+ * @description Easing function [detailed in react-move](https://react-move.js.org/#/documentation/node-group).
+ * @param {number} t - input value
+ * @returns {number}
+ */
+
+/**
+ * @typedef {Object} AnimateTimingType
+ * @param {number} [delay] - time in ms before transition occurs.
+ * @param {number} [duration] - time in ms of how long the transition should last.
+ * @param {EasingFunction} [ease] - easing function like `d3-easeLinear`.
+ */
+
+/**
+ * @typedef {Object} AnimationInstructionType
+ * @description Instructions for how an animatable attribute should animate.
+ * @property {AnimatableValueType} [<keyof AnimationInstruction>] - optional value of
+ *   AnimationInstruction. The key would be the name of the animatable attribute that is to be
+ *   affected, ie `fill`. Note, the value must be wrapped in an array if animation is desired.
+ * @property {AnimateEventsType} [events] - optional object containing instructions for events.
+ * @property {AnimateTimingType} [timing] - optional object containing instructions for timing.
+ */
+
+/**
+ * @callback AnimateMethodCallback
+ * @param {number|string} value - computed value of animatable attribute that can be overridden.
+ * @param {Object} rawDatum - input data object from which `value` was computed.
+ * @param {number} index - array index of `rawDatum` within greater dataset.
+ * @returns {AnimationInstructionType}
+ */
+
+/**
+ * @typedef {Object} AnimatePropType
+ * @description An object that gives instructions for handling animation:
+ * @property {AnimateStart} start - establish state at `start`
+ * @property {AnimateMethodCallback} enter - establish state for animations at `enter`
+ * @property {AnimateMethodCallback} update - establish state for animations at `update`
+ * @property {AnimateMethodCallback} leave - establish state for animations at `leave`
+ * @property {AnimateEvents} events - `events` used if not overridden by `AnimateMethod`
+ * @property {AnimateTiming} timing - `timing` used if not overridden by `AnimateMethod`
  */

@@ -6,6 +6,9 @@ import { castArray, map, pick } from 'lodash';
 import Scatter from './scatter';
 
 import {
+  AnimateEvents,
+  AnimateProp,
+  AnimateTiming,
   combineStyles,
   CommonDefaultProps,
   CommonPropTypes,
@@ -49,6 +52,7 @@ export default class MultiScatter extends React.PureComponent {
     } = fieldAccessors;
 
     const childProps = pick(this.props, [
+      'animate',
       'colorScale',
       'dataAccessors',
       'focus',
@@ -104,6 +108,21 @@ export default class MultiScatter extends React.PureComponent {
 }
 
 MultiScatter.propTypes = {
+  /**
+   * Whether to animate the MultiScatter component (using default `start`, `update` functions).
+   * Optionally, an object that provides functions that dictate behavior of animations.
+   */
+  animate: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.shape({
+      fill: AnimateProp,
+      translateX: AnimateProp,
+      translateY: AnimateProp,
+      events: AnimateEvents,
+      timing: AnimateTiming,
+    }),
+  ]),
+
   /**
    * className applied to outermost wrapping `<g>`.
    */
@@ -278,6 +297,7 @@ MultiScatter.propTypes = {
 };
 
 MultiScatter.defaultProps = {
+  animate: false,
   colorScale() { return 'steelblue'; },
   fieldAccessors: {
     data: 'values',

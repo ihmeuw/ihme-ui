@@ -1,4 +1,9 @@
 export {
+  animationProcessorFactory,
+  animationStartFactory,
+} from './animate';
+
+export {
   linspace,
   takeSkipping,
 } from './array';
@@ -48,6 +53,12 @@ export {
 } from './objects';
 
 export {
+  AnimatableValue,
+  AnimateEvents,
+  AnimateMethod,
+  AnimateProp,
+  AnimateStart,
+  AnimateTiming,
   CommonPropTypes,
   CommonDefaultProps,
   atLeastOneOfProp,
