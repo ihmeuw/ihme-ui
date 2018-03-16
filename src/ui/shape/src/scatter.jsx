@@ -7,7 +7,6 @@ import bindAll from 'lodash/bindAll';
 import findIndex from 'lodash/findIndex';
 import isFinite from 'lodash/isFinite';
 import keyBy from 'lodash/keyBy';
-import map from 'lodash/map';
 import pick from 'lodash/pick';
 import sortBy from 'lodash/sortBy';
 
@@ -143,7 +142,7 @@ export default class Scatter extends React.PureComponent {
         clipPath={this.props.clipPathId && `url(#${this.props.clipPathId})`}
         style={this.combineStyles(this.props.style, this.props.data)}
       >
-        {map(data, this.renderShape)}
+        {data.map(this.renderShape)}
       </g>
     );
   }
