@@ -2,12 +2,12 @@ import includes from 'lodash/includes';
 import get from 'lodash/get';
 import reduce from 'lodash/reduce';
 
-export function animationStartFactory(animate) {
+export function animationStartFactory(animate, processor) {
   // Upon initialization, `start` cannot animate, but is required by `react-move`
   const METHOD = 'start';
-  return ({ data, state }, index) => {
+  return (data, index) => {
     return reduce(
-      state,
+      processor(data),
       (accum, value, key) => {
         const userMethod = get(animate, [key, METHOD]);
 
@@ -27,14 +27,14 @@ export function animationStartFactory(animate) {
 }
 
 // A factory for each animation method: `enter` | `update` | `leave`;
-export function animationProcessorFactory(animate, animatableKeys, method) {
+export function animationProcessorFactory(animate, animatableKeys, processor, method) {
   const NON_ANIMATABLE_METHOD = 'start';
 
   if (method === NON_ANIMATABLE_METHOD) {
-    return animationStartFactory(animate);
+    return animationStartFactory(animate, processor);
   }
 
-  return ({ data, state }, index) => {
+  return (datum, index) => {
     const {
       events: rootEvents,
       timing: rootTiming,
@@ -43,7 +43,7 @@ export function animationProcessorFactory(animate, animatableKeys, method) {
 
     // Process datum, apply default animation, which can be overridden by user methods.
     return reduce(
-      state,
+      processor(datum),
       (accum, value, key) => {
         if (includes(animatableKeys, key)) {
           // Override root animate `events` and `timing` properties.
@@ -59,7 +59,7 @@ export function animationProcessorFactory(animate, animatableKeys, method) {
             [key]: [value],
             events,
             timing,
-            ...(userMethod && userMethod(value, data, index)),
+            ...(userMethod && userMethod(value, datum, index)),
           };
 
           // Concatenate with accumulator and return.
@@ -68,6 +68,7 @@ export function animationProcessorFactory(animate, animatableKeys, method) {
             resolvedState,
           ];
         }
+
         // Return non-animation object with accumulator.
         return [
           ...accum,

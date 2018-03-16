@@ -178,7 +178,7 @@ export default class Scatter extends React.PureComponent {
 
     return (
       this.shouldAnimate()
-      ? this.renderAnimatedScatter(data)
+      ? this.renderAnimatedScatter(this.state.sortedData)
       : this.renderScatter(data)
     );
   }
@@ -371,12 +371,26 @@ Scatter.defaultProps = {
 
 Scatter.propUpdates = {
   animationProcessor: (state, _, prevProps, nextProps) => {
-    if (!propsChanged(prevProps, nextProps, ['animate'])) return state;
+    const animationPropNames = [
+      'animate',
+      'colorScale',
+      'dataAccessors',
+      'fill',
+      'scales',
+      'shapeScale',
+      'shapeType',
+    ];
+    if (!propsChanged(prevProps, nextProps, animationPropNames)) return state;
+
+    const datumProcessor = partial(Scatter.processDatum, nextProps);
+
     const animationProcessor = partial(
       animationProcessorFactory,
       nextProps.animate,
       Scatter.animatable,
+      datumProcessor,
     );
+
     return {
       ...state,
       animationProcessor,
