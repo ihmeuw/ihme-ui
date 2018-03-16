@@ -50,7 +50,7 @@ export default class Scatter extends React.PureComponent {
     this.state = stateFromPropUpdates(Scatter.propUpdates, this.props, nextProps, this.state);
   }
 
-  processDatum(datum) {
+  static processDatum(props, datum) {
     const {
       colorScale,
       dataAccessors,
@@ -58,7 +58,7 @@ export default class Scatter extends React.PureComponent {
       scales,
       shapeScale,
       shapeType,
-    } = this.props;
+    } = props;
 
     // Compute fill.
     const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x);
@@ -94,7 +94,7 @@ export default class Scatter extends React.PureComponent {
       datum => ({
         data: datum,
         key: propResolver(datum, key),
-        state: this.processDatum(datum),
+        state: Scatter.processDatum(this.props, datum),
       }),
     );
   }
