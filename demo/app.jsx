@@ -2,23 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import {
-  extent,
   scaleOrdinal,
   schemeCategory10,
 } from 'd3';
 
 import {
-  AxisChart,
-  Button,
   Group,
   Option,
-  MultiLine,
-  MultiScatter,
-  XAxis,
-  YAxis,
 } from '../src';
 import { data as rawData } from './data';
-import { Scatter } from '../src/ui/shape'
+import ScatterView from './scatter-view';
+import MultiScaterView from './multi-scatter-view';
 
 const dataLocations = [
   { name: 'Brazil', id: 135 },
@@ -37,129 +31,57 @@ const locationColorScale = scaleOrdinal()
   .domain(dataLocations.map(({ id }) => id))
   .range(schemeCategory10);
 
+const views = {
+  Scatter: ScatterView,
+  MultiScatter: MultiScaterView,
+};
+
 class App extends React.Component {
   constructor(props) {
     super(props);
 
-    const initialLocation = this.props.locations[0];
-    const {
-      data,
-      xDomain,
-      yDomain,
-    } = this.getLocationData(initialLocation.id);
-
     this.state = {
-      selectedLocation: initialLocation,
-      data,
-      xDomain,
-      yDomain,
+      selectedComponentView: 'Scatter',
     };
 
-    this.changeLocation = this.changeLocation.bind(this);
+    this.changeComponent = this.changeComponent.bind(this);
   }
 
-  getLocationData(locationId) {
-    const data = this.props.data.filter(row => row.location === locationId);
-    const xDomain = data.map(({ year }) => year).sort((a, b) => a - b);
-    const yDomain = extent(
-      data.reduce((acc, { lower, mean, upper }) => [...acc, lower, mean, upper], [])
-    );
-
-    return {
-      data,
-      xDomain,
-      yDomain,
-    };
-  }
-
-  changeLocation(selectedValue) {
-    const selectedLocation = this.props.locations.find(location => location.id === selectedValue);
-    const {
-      data,
-      xDomain,
-      yDomain,
-    } = this.getLocationData(selectedValue);
-
-    this.setState({
-      data,
-      xDomain,
-      yDomain,
-      selectedLocation
-    });
+  changeComponent(selectedComponentView) {
+    this.setState({ selectedComponentView });
   }
 
   render() {
     const {
-      selectedLocation,
-      data,
-      xDomain,
-      yDomain,
+      selectedComponentView,
     } = this.state;
+    const ViewComponent = views[selectedComponentView];
 
     return (
       <div>
         <div>
+          <span>Component</span>
           <Group
-            onClick={(_, selectedValue) => {
-              this.changeLocation(selectedValue);
-            }}
+            onClick={(_, value) => { this.changeComponent(value); }}
           >
-            {
-              this.props.locations.map(({ name, id }) => (
-                <Option
-                  key={id}
-                  selected={selectedLocation.id === id}
-                  text={name}
-                  value={id}
-                />
-              ))
-            }
+            <Option
+              key={'Scatter'}
+              selected={selectedComponentView === 'Scatter'}
+              text={'Scatter'}
+              value={'Scatter'}
+            />
+            <Option
+              key={'MultiScatter'}
+              selected={selectedComponentView === 'MultiScatter'}
+              text={'Multi-Scatter'}
+              value={'MultiScatter'}
+            />
           </Group>
         </div>
         <div>
-          <AxisChart
-            height={500}
-            width={800}
-            xDomain={xDomain}
-            xScaleType="point"
-            yDomain={yDomain}
-            yScaleType="linear"
-          >
-            <Scatter
-              animate
-              data={data}
-              dataAccessors={{
-                key: 'year',
-                x: 'year',
-                y: 'upper',
-              }}
-              fill={'blue'}
-              shapeType={'line'}
-            />
-            <Scatter
-              animate
-              data={data}
-              dataAccessors={{
-                key: 'year',
-                x: 'year',
-                y: 'mean',
-              }}
-              fill={'green'}
-            />
-            <Scatter
-              animate
-              data={data}
-              dataAccessors={{
-                key: 'year',
-                x: 'year',
-                y: 'lower',
-              }}
-              fill={'red'}
-              shapeType={'line'}
-            />
-            <XAxis />
-            <YAxis />
-          </AxisChart>
+          <ViewComponent
+            {...this.props}
+          />
         </div>
       </div>
     );
