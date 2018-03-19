@@ -174,13 +174,13 @@ export default class Scatter extends React.PureComponent {
   }
 
   render() {
-    const data = this.processDataSet(this.state.sortedData);
+    if (this.shouldAnimate()) {
+      return this.renderAnimatedScatter(this.state.sortedData);
+    }
 
-    return (
-      this.shouldAnimate()
-      ? this.renderAnimatedScatter(this.state.sortedData)
-      : this.renderScatter(data)
-    );
+    const processedData = this.processDataSet(this.state.sortedData);
+
+    return this.renderScatter(processedData);
   }
 }
 
