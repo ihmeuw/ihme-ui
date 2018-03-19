@@ -2,7 +2,9 @@
 import { expect } from 'chai';
 import get from 'lodash/get';
 import forEach from 'lodash/forEach';
+import identity from 'lodash/identity';
 import intersection from 'lodash/intersection';
+import partial from 'lodash/partial';
 import noop from 'lodash/noop';
 import sinon from 'sinon';
 
@@ -19,17 +21,10 @@ describe('animate factory functions', () => {
   ];
 
   const inputDatum = {
-    data: {
-      fill: 'before fill is computed to #ccc',
-      x: 0,
-      y: 0,
-    },
-    state: {
-      nonAnimatableProp: 'I should not be tampered with!',
-      fill: '#ccc',
-      x: 1,
-      y: 1,
-    },
+    nonAnimatableProp: 'I should not be tampered with!',
+    fill: '#ccc',
+    x: 1,
+    y: 1,
   };
 
   const animationMethodNames = [
@@ -39,11 +34,14 @@ describe('animate factory functions', () => {
     'leave',
   ];
 
+  const processor = identity;
+
   function getAnimationMethods(animationProp) {
-    const animationProcessor = animationProcessorFactory.bind(
-      null,
+    const animationProcessor = partial(
+      animationProcessorFactory,
       animationProp,
       animatableAttrs,
+      processor,
     );
 
     const [
@@ -59,11 +57,12 @@ describe('animate factory functions', () => {
       const outputDatum = animationProcessorFactory(
         animate,
         animatableAttrs,
+        processor,
         'start',
       )(inputDatum);
 
-      it('outputs an object (start method) equal to input\'s `state` property.', () => {
-        expect(outputDatum).to.deep.equal(inputDatum.state);
+      it('outputs an object (start method) equal to input\'s processed data', () => {
+        expect(outputDatum).to.deep.equal(inputDatum);
       });
 
       it('does not wrap any values in arrays', () => {
@@ -74,7 +73,10 @@ describe('animate factory functions', () => {
 
       it(`'animationStartMethod' should have the same functionality as calling
         'animationStartFactory' directly.`, () => {
-        const outputDatumFromAnimationStartFactory = animationStartFactory(animate)(inputDatum);
+        const outputDatumFromAnimationStartFactory = animationStartFactory(
+          animate,
+          processor
+        )(inputDatum);
         expect(outputDatum).to.deep.equal(outputDatumFromAnimationStartFactory);
       });
     });
@@ -293,6 +295,7 @@ describe('animate factory functions', () => {
         const outputData = animationProcessorFactory(
           animate,
           animatableAttrs,
+          processor,
           methodName
         )(inputDatum);
 
@@ -315,9 +318,9 @@ describe('animate factory functions', () => {
               expect(value).to.equal(animate[attr][key]);
 
             // the original data value was never overridden.
-            // ie, `inputDatum.state.fill`
-            } else if (get(inputDatum.state, [key])) {
-              expect(value).to.equal(inputDatum.state[key]);
+            // ie, `inputDatum.fill`
+            } else if (get(inputDatum, [key])) {
+              expect(value).to.equal(inputDatum[key]);
 
             // the root animate[key] was never overridden.
             // ie, `animate.timing`
@@ -333,17 +336,10 @@ describe('animate factory functions', () => {
 
     describe('Confirm given `animate` methods are called with expected args', () => {
       const spyInputDatum = {
-        data: {
-          fill: 'before fill is computed to #ccc',
-          x: 100,
-          y: 100,
-        },
-        state: {
-          nonAnimatableProp: 'I should not be tampered with!',
-          fill: '#fff',
-          x: 101,
-          y: 101,
-        },
+        nonAnimatableProp: 'I should not be tampered with!',
+        fill: '#fff',
+        x: 101,
+        y: 101,
       };
 
       const testIndex = 1000;
@@ -355,6 +351,7 @@ describe('animate factory functions', () => {
           animationProcessorFactory(
             animate,
             animatableAttrs,
+            processor,
             methodName
           )(spyInputDatum, testIndex);
 
@@ -366,8 +363,8 @@ describe('animate factory functions', () => {
             spyCallIndex,
           ] = spy.getCall(0).args;
 
-          expect(spyCallValue).to.equal(spyInputDatum.state[attr]);
-          expect(spyCallRawDatum).to.deep.equal(spyInputDatum.data);
+          expect(spyCallValue).to.equal(spyInputDatum[attr]);
+          expect(spyCallRawDatum).to.deep.equal(spyInputDatum);
           expect(spyCallIndex).to.deep.equal(testIndex);
         });
       };
