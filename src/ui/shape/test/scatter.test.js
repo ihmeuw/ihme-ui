@@ -349,7 +349,16 @@ describe('<Scatter />', () => {
 
     it('processDatum correctly calculates values as expected', () => {
       rawData.forEach((rawDatum, index) => {
-        const processedDatum = wrapper.instance().processDatum(rawDatum);
+        const processedDatum = Scatter.processDatum(
+          {
+            dataAccessors,
+            fill: 'red',
+            scales: { x: xScale, y: yScale },
+            shapeType: 'circle',
+          },
+          rawDatum
+        );
+
         expect(processedDatum).to.deep.equal(expectedProcessedDatum[index]);
       });
     });
