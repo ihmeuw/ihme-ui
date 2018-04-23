@@ -1,14 +1,18 @@
 import React from 'react';
 import { render } from 'react-dom';
 
-import { schemeCategory10, scaleOrdinal } from 'd3';
+import {
+  scaleLinear,
+  scaleOrdinal,
+  schemeCategory10,
+} from 'd3';
 
 import { bindAll, maxBy, minBy, map, slice, uniqBy, without, xor } from 'lodash';
 
 import { dataGenerator } from '../../../utils';
 import AxisChart from '../../axis-chart';
 import { XAxis, YAxis } from '../../axis';
-import { MultiScatter, Scatter } from '../';
+import { Line, MultiScatter, Scatter } from '../';
 
 const keyField = 'year_id';
 const valueField = 'population';
@@ -56,7 +60,12 @@ class App extends React.Component {
       'onMouseLeave',
       'onMouseMove',
       'onMouseOver',
+      'setNextLocation',
     ]);
+  }
+
+  setNextLocation() {
+    this.setState({ country: (this.state.country + 1) % locationData.length });
   }
 
   onClick(event, datum) {
@@ -84,9 +93,41 @@ class App extends React.Component {
     });
   };
 
+  renderLineDemo() {
+    return (
+      <section>
+        <h3>Line</h3>
+        <h3>{locationData[this.state.country].location}</h3>
+        <button onClick={this.setNextLocation}>
+          press to look at next country
+        </button>
+        <AxisChart
+          height={300}
+          width={500}
+          xDomain={keyFieldDomain}
+          xScaleType="point"
+          yDomain={valueFieldDomain}
+          yScaleType="linear"
+        >
+          <XAxis />
+          <YAxis />
+          <Line
+            animate
+            data={data.filter(
+              datum => datum.location === locationData[this.state.country].location,
+            )}
+            dataAccessors={{ x: 'year_id', y: 'population' }}
+            scales={{ x: scaleLinear(), y: scaleLinear() }}
+          />
+        </AxisChart>
+      </section>
+    );
+  }
+
   render() {
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
+        {this.renderLineDemo()}
         <section>
           <h3>Multiple datasets</h3>
 {/* <pre><code>
@@ -207,11 +248,7 @@ class App extends React.Component {
  </AxisChart>
  </code></pre> */}
           <h3>{locationData[this.state.country].location}</h3>
-          <button
-            onClick={() => {
-              this.setState({ country: (this.state.country + 1) % locationData.length });
-            }}
-          >
+          <button onClick={this.setNextLocation}>
             press to look at next country
           </button>
             <AxisChart
@@ -228,7 +265,7 @@ class App extends React.Component {
                 animate
                 fill="steelblue"
                 data={data.filter(
-                  (datum) => datum.location === locationData[this.state.country].location,
+                  datum => datum.location === locationData[this.state.country].location,
                 )}
                 dataAccessors={{
                   fill: keyField,
