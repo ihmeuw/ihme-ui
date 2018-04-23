@@ -1,4 +1,5 @@
 import React from 'react';
+import Animate from 'react-move/Animate';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { line } from 'd3';
@@ -26,6 +27,7 @@ export default class Line extends React.PureComponent {
       'onMouseLeave',
       'onMouseMove',
       'onMouseOver',
+      'renderPath',
     ]);
   }
 
@@ -69,7 +71,11 @@ export default class Line extends React.PureComponent {
     onMouseOver(event, data, this);
   }
 
-  render() {
+  shouldAnimate() {
+    return !!this.props.animate;
+  }
+
+  renderPath(additionalProps) {
     const {
       className,
       clipPathId,
@@ -91,7 +97,28 @@ export default class Line extends React.PureComponent {
         onMouseMove={this.onMouseMove}
         onMouseOver={this.onMouseOver}
         style={style}
+        {...additionalProps}
       />
+    );
+  }
+
+  renderAnimatedPath() {
+    const { path } = this.state;
+    return (
+      <Animate
+        start={{ d: this.state.path }}
+        update={{ d: [path] }}
+      >
+        {this.renderPath}
+      </Animate>
+    );
+  }
+
+  render() {
+    return (
+      this.shouldAnimate()
+        ? this.renderAnimatedPath()
+        : this.renderPath()
     );
   }
 }
