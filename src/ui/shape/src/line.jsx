@@ -8,6 +8,9 @@ import partial from 'lodash/partial';
 
 import {
   animationProcessorFactory,
+  AnimateEvents,
+  AnimateProp,
+  AnimateTiming,
   CommonPropTypes,
   CommonDefaultProps,
   memoizeByLastCall,
@@ -127,6 +130,21 @@ export default class Line extends React.PureComponent {
 }
 
 Line.propTypes = {
+  /**
+   * Whether to animate the scatter component (using default `start`, `update` functions).
+   * Optionally, an object that provides functions that dictate behavior of animations.
+   */
+  animate: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.shape({
+      events: AnimateEvents,
+      path: AnimateProp,
+      stroke: AnimateProp,
+      strokeWidth: AnimateProp,
+      timing: AnimateTiming,
+    }),
+  ]),
+
   /**
    * className applied to path.
    */
