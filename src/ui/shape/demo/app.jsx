@@ -68,6 +68,12 @@ class App extends React.Component {
     this.setState({ country: (this.state.country + 1) % locationData.length });
   }
 
+  getCurrentLocationData() {
+    return data.filter(
+      datum => datum.location === locationData[this.state.country].location,
+    );
+  }
+
   onClick(event, datum) {
     console.log(`${event.type}::${datum[keyField]},${datum[valueField]}`);
     this.setState({
@@ -113,9 +119,7 @@ class App extends React.Component {
           <YAxis />
           <Line
             animate
-            data={data.filter(
-              datum => datum.location === locationData[this.state.country].location,
-            )}
+            data={this.getCurrentLocationData()}
             dataAccessors={{ x: 'year_id', y: 'population' }}
             scales={{ x: scaleLinear(), y: scaleLinear() }}
           />
@@ -264,9 +268,7 @@ class App extends React.Component {
               <Scatter
                 animate
                 fill="steelblue"
-                data={data.filter(
-                  datum => datum.location === locationData[this.state.country].location,
-                )}
+                data={this.getCurrentLocationData()}
                 dataAccessors={{
                   fill: keyField,
                   key: keyField,
