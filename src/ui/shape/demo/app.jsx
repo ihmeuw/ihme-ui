@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from 'react-dom';
 
 import {
+  range,
   scaleLinear,
   scaleOrdinal,
   schemeCategory10,
@@ -100,6 +101,12 @@ class App extends React.Component {
   };
 
   renderLineDemo() {
+    const style = {
+      shapeRendering: 'geometricPrecision',
+      stroke: colorScale(this.state.country),
+      strokeWidth: this.state.country + 1,
+    };
+
     return (
       <section>
         <h3>Line</h3>
@@ -122,6 +129,7 @@ class App extends React.Component {
             data={this.getCurrentLocationData()}
             dataAccessors={{ x: 'year_id', y: 'population' }}
             scales={{ x: scaleLinear(), y: scaleLinear() }}
+            style={style}
           />
         </AxisChart>
       </section>
