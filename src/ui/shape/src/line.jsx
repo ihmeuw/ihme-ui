@@ -4,10 +4,13 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { line } from 'd3';
 import bindAll from 'lodash/bindAll';
+import partial from 'lodash/partial';
 
 import {
+  animationProcessorFactory,
   CommonPropTypes,
   CommonDefaultProps,
+  memoizeByLastCall,
   propsChanged,
   propResolver,
   stateFromPropUpdates,
@@ -20,6 +23,7 @@ export default class Line extends React.PureComponent {
   constructor(props) {
     super(props);
 
+    this.processStyle = memoizeByLastCall(Line.processStyle);
     this.state = stateFromPropUpdates(Line.propUpdates, {}, props, {});
 
     bindAll(this, [
@@ -71,55 +75,54 @@ export default class Line extends React.PureComponent {
     onMouseOver(event, data, this);
   }
 
-  shouldAnimate() {
-    return !!this.props.animate;
-  }
-
-  renderPath(additionalProps) {
+  renderPath({ d, ...processedProps }) {
     const {
       className,
       clipPathId,
-      style,
     } = this.props;
-
-    const {
-      path,
-    } = this.state;
 
     return (
       <path
         className={className && classNames(className)}
         clipPath={clipPathId && `url(#${clipPathId})`}
-        d={path}
+        d={d}
         fill="none"
         onClick={this.onClick}
         onMouseLeave={this.onMouseLeave}
         onMouseMove={this.onMouseMove}
         onMouseOver={this.onMouseOver}
-        style={style}
-        {...additionalProps}
+        style={this.processStyle(this.props.style, processedProps)}
       />
     );
   }
 
   renderAnimatedPath() {
-    const { path } = this.state;
+    const { animationProcessor } = this.state;
+    const { data } = this.props;
     return (
       <Animate
-        start={{ d: this.state.path }}
-        update={{ d: [path] }}
+        start={animationProcessor('start')(data)}
+        enter={animationProcessor('enter')(data)}
+        update={animationProcessor('update')(data)}
+        leave={animationProcessor('leave')(data)}
       >
         {this.renderPath}
       </Animate>
     );
   }
 
+  shouldAnimate() {
+    return !!this.props.animate;
+  }
+
   render() {
-    return (
-      this.shouldAnimate()
-        ? this.renderAnimatedPath()
-        : this.renderPath()
-    );
+    if (this.shouldAnimate()) {
+      return this.renderAnimatedPath();
+    }
+
+    const processedProps = Line.dataProcessor(this.props, this.props.data);
+
+    return this.renderPath(processedProps);
   }
 }
 
@@ -203,19 +206,56 @@ Line.defaultProps = {
   },
 };
 
+Line.animatable = [
+  'd',
+  'stroke',
+  'strokeWidth',
+];
+
+Line.processStyle = (style, { stroke, strokeWidth }) => ({
+  ...style,
+  stroke: stroke || style.stroke,
+  strokeWidth: strokeWidth || style.strokeWidth,
+});
+
+Line.getPathGenerator = props => {
+  return line()
+    .x(datum => props.scales.x(propResolver(datum, props.dataAccessors.x)))
+    .y(datum => props.scales.y(propResolver(datum, props.dataAccessors.y)));
+};
+
+Line.dataProcessor = (props, data) => ({
+  d: Line.getPathGenerator(props)(data),
+  stroke: props.stroke || props.style.stroke,
+  strokeWidth: props.strokeWidth || props.style.strokeWidth,
+});
+
 Line.propUpdates = {
-  path: (acc, propName, prevProps, nextProps) => {
-    if (!propsChanged(prevProps, nextProps, ['data', 'dataAccessors', 'scales'])) {
+  animationProcessor: (acc, propName, prevProps, nextProps) => {
+    const animationPropNames = [
+      'animate',
+      'data',
+      'dataAccessors',
+      'scales',
+      'style',
+    ];
+
+    if (!propsChanged(prevProps, nextProps, animationPropNames)) {
       return acc;
     }
 
-    const pathGenerator = line()
-      .x((datum) => nextProps.scales.x(propResolver(datum, nextProps.dataAccessors.x)))
-      .y((datum) => nextProps.scales.y(propResolver(datum, nextProps.dataAccessors.y)));
+    const dataProcessor = partial(Line.dataProcessor, nextProps);
+
+    const animationProcessor = partial(
+      animationProcessorFactory,
+      nextProps.animate,
+      Line.animatable,
+      dataProcessor,
+    );
 
     return {
       ...acc,
-      path: pathGenerator(nextProps.data),
+      animationProcessor,
     };
   },
 };
