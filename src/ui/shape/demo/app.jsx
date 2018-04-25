@@ -125,7 +125,24 @@ class App extends React.Component {
           <XAxis />
           <YAxis />
           <Line
-            animate
+            animate={{
+              d: { timing: { duration: 3300 }},
+              stroke: () => ({
+                timing: { delay: 1000, duration: 3000 },
+                events: {
+                  interrupt() {
+                    console.log('The `stroke` animation has been interrupted!');
+                  },
+                },
+              }),
+              strokeWidth: {
+                timing: { duration: 2500 },
+                events: {
+                  end: () => { console.log('The `strokeWidth` animation has ended!'); },
+                },
+              },
+              timing: { duration: 333 }
+            }}
             data={this.getCurrentLocationData()}
             dataAccessors={{ x: 'year_id', y: 'population' }}
             scales={{ x: scaleLinear(), y: scaleLinear() }}
