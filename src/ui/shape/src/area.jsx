@@ -1,12 +1,16 @@
 import React from 'react';
+import Animate from 'react-move/Animate';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { area } from 'd3';
 import bindAll from 'lodash/bindAll';
+import partial from 'lodash/partial';
 
 import {
+  animationProcessorFactory,
   CommonPropTypes,
   CommonDefaultProps,
+  memoizeByLastCall,
   propsChanged,
   propResolver,
   stateFromPropUpdates,
@@ -19,6 +23,7 @@ export default class Area extends React.PureComponent {
   constructor(props) {
     super(props);
 
+    this.processStyle = memoizeByLastCall(Area.processStyle);
     this.state = stateFromPropUpdates(Area.propUpdates, {}, props, {});
 
     bindAll(this, [
@@ -26,6 +31,7 @@ export default class Area extends React.PureComponent {
       'onMouseLeave',
       'onMouseMove',
       'onMouseOver',
+      'renderPath',
     ]);
   }
 
@@ -69,29 +75,54 @@ export default class Area extends React.PureComponent {
     onMouseOver(event, data, this);
   }
 
-  render() {
+  renderPath({ d, ...processedProps }) {
     const {
       className,
       clipPathId,
       style,
     } = this.props;
 
-    const {
-      path,
-    } = this.state;
-
     return (
       <path
         className={className && classNames(className)}
         clipPath={clipPathId && `url(#${clipPathId})`}
-        d={path}
+        d={d}
         onClick={this.onClick}
         onMouseLeave={this.onMouseLeave}
         onMouseMove={this.onMouseMove}
         onMouseOver={this.onMouseOver}
-        style={style}
+        style={this.processStyle(style, processedProps)}
       />
     );
+  }
+
+  renderAnimatedPath() {
+    const { animationProcessor } = this.state;
+    const { data } = this.props;
+    return (
+      <Animate
+        start={animationProcessor('start')(data)}
+        enter={animationProcessor('enter')(data)}
+        update={animationProcessor('update')(data)}
+        leave={animationProcessor('leave')(data)}
+      >
+        {this.renderPath}
+      </Animate>
+    );
+  }
+
+  shouldAnimate() {
+    return !!this.props.animate;
+  }
+
+  render() {
+    if (this.shouldAnimate()) {
+      return this.renderAnimatedPath();
+    }
+
+    const processedProps = Area.dataProcessor(this.props, this.props.data);
+
+    return this.renderPath(processedProps);
   }
 }
 
@@ -177,20 +208,60 @@ Area.defaultProps = {
   },
 };
 
+Area.animatable = [
+  'd',
+  'fill',
+  'stroke',
+  'strokeWidth',
+];
+
+Area.processStyle = (style, { fill, stroke, strokeWidth }) => ({
+  ...style,
+  fill: fill || style.fill,
+  stroke: stroke || style.stroke,
+  strokeWidth: strokeWidth || style.strokeWidth,
+});
+
+Area.getPathGenerator = props => {
+  return area()
+    .x((datum) => props.scales.x(propResolver(datum, props.dataAccessors.x)))
+    .y0((datum) => props.scales.y(propResolver(datum, props.dataAccessors.y0)))
+    .y1((datum) => props.scales.y(propResolver(datum, props.dataAccessors.y1)));
+};
+
+Area.dataProcessor = (props, data) => ({
+  d: Area.getPathGenerator(props)(data),
+  fill: props.style.fill,
+  stroke: props.style.stroke,
+  strokeWidth: props.style.strokeWidth,
+});
+
 Area.propUpdates = {
-  path: (acc, propName, prevProps, nextProps) => {
-    if (!propsChanged(prevProps, nextProps, ['data', 'dataAccessors', 'scales'])) {
+  animationProcessor: (acc, propName, prevProps, nextProps) => {
+    const animationPropNames = [
+      'animate',
+      'data',
+      'dataAccessors',
+      'scales',
+      'style',
+    ];
+
+    if (!propsChanged(prevProps, nextProps, animationPropNames)) {
       return acc;
     }
 
-    const pathGenerator = area()
-      .x((datum) => nextProps.scales.x(propResolver(datum, nextProps.dataAccessors.x)))
-      .y0((datum) => nextProps.scales.y(propResolver(datum, nextProps.dataAccessors.y0)))
-      .y1((datum) => nextProps.scales.y(propResolver(datum, nextProps.dataAccessors.y1)));
+    const dataProcessor = partial(Area.dataProcessor, nextProps);
+
+    const animationProcessor = partial(
+      animationProcessorFactory,
+      nextProps.animate,
+      Area.animatable,
+      dataProcessor,
+    );
 
     return {
       ...acc,
-      path: pathGenerator(nextProps.data),
+      animationProcessor,
     };
   },
 };
