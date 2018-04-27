@@ -82,6 +82,7 @@ export default class Line extends React.PureComponent {
     const {
       className,
       clipPathId,
+      style,
     } = this.props;
 
     return (
@@ -94,7 +95,7 @@ export default class Line extends React.PureComponent {
         onMouseLeave={this.onMouseLeave}
         onMouseMove={this.onMouseMove}
         onMouseOver={this.onMouseOver}
-        style={this.processStyle(this.props.style, processedProps)}
+        style={this.processStyle(style, processedProps)}
       />
     );
   }
@@ -138,7 +139,7 @@ Line.propTypes = {
     PropTypes.bool,
     PropTypes.shape({
       events: AnimateEvents,
-      path: AnimateProp,
+      d: AnimateProp,
       stroke: AnimateProp,
       strokeWidth: AnimateProp,
       timing: AnimateTiming,
