@@ -14,6 +14,7 @@ import { dataGenerator } from '../../../utils';
 import AxisChart from '../../axis-chart';
 import { XAxis, YAxis } from '../../axis';
 import {
+  Area,
   Line,
   MultiLine,
   MultiScatter,
@@ -44,6 +45,10 @@ const locationData = [
 ];
 
 const valueFieldDomain = [minBy(data, valueField)[valueField], maxBy(data, valueField)[valueField]];
+const valueUncertaintyDomain = [
+  minBy(data, 'population_lb')['population_lb'],
+  maxBy(data, 'population_ub')['population_ub']
+];
 
 const keyFieldDomain = map(uniqBy(data, keyField), (obj) => { return (obj[keyField]); });
 
@@ -202,14 +207,23 @@ class App extends React.Component {
           width={500}
           xDomain={keyFieldDomain}
           xScaleType="point"
-          yDomain={valueFieldDomain}
+          yDomain={valueUncertaintyDomain}
           yScaleType="linear"
         >
           <XAxis />
           <YAxis />
+          <Area
+            animate
+            data={this.getCurrentLocationData()}
+            dataAccessors={{ x: 'year_id', y0: 'population_lb', y1: 'population_ub' }}
+            scales={{ x: scaleLinear(), y: scaleLinear() }}
+            style={{
+              fill: colorScale(this.state.country + 1),
+              opacity: 0.4,
+            }}
+          />
           <Line
             animate={{
-              d: { timing: { duration: 3300 }},
               stroke: () => ({
                 timing: { delay: 1000, duration: 3000 },
                 events: {
@@ -224,7 +238,6 @@ class App extends React.Component {
                   end: () => { console.log('The `strokeWidth` animation has ended!'); },
                 },
               },
-              timing: { duration: 333 }
             }}
             data={this.getCurrentLocationData()}
             dataAccessors={{ x: 'year_id', y: 'population' }}
