@@ -13,7 +13,12 @@ import { bindAll, maxBy, minBy, map, slice, uniqBy, without, xor } from 'lodash'
 import { dataGenerator } from '../../../utils';
 import AxisChart from '../../axis-chart';
 import { XAxis, YAxis } from '../../axis';
-import { Line, MultiScatter, Scatter } from '../';
+import {
+  Line,
+  MultiLine,
+  MultiScatter,
+  Scatter,
+} from '../';
 
 const keyField = 'year_id';
 const valueField = 'population';
@@ -100,6 +105,84 @@ class App extends React.Component {
     });
   };
 
+  renderMultiLineDemo() {
+    const lineDataSet = locationData.reduce(
+      (accum, line, index) => {
+        switch(index) {
+          case this.state.country:
+            accum.push({ ...line, key: 0 });
+            break;
+          case (this.state.country + 1) % locationData.length:
+            accum.push({ ...line, key: 1 });
+            break;
+          case (this.state.country + 2) % locationData.length:
+            accum.push({ ...line, key: 2 });
+            break;
+        }
+        return accum;
+      },
+      [],
+    ).sort((line_a, line_b) => line_a.key - line_b.key);
+
+    return (
+      <section>
+        <h3>Multi Line</h3>
+        <p>
+          {lineDataSet.map(({ location, key }) =>
+            <span style={{
+              backgroundColor: colorScale(location),
+              marginRight: 5,
+              color: 'white',
+              padding: 10,
+            }}>line {key + 1}</span>
+          )}
+        </p>
+        <button onClick={this.setNextLocation}>
+          press to look at next line set
+        </button>
+        <AxisChart
+          height={300}
+          width={500}
+          xDomain={keyFieldDomain}
+          xScaleType="point"
+          yDomain={valueFieldDomain}
+          yScaleType="linear"
+        >
+          <XAxis />
+          <YAxis />
+          <MultiLine
+            animate={{
+              timing: { duration: 666 },
+              stroke: { start() { console.log('started'); return {}; }},
+            }}
+            colorScale={colorScale}
+            data={lineDataSet}
+            dataAccessors={{
+              x: 'year_id',
+              y: 'population',
+            }}
+            fieldAccessors={{
+              key: 'key',
+              color: 'location',
+              data: 'values',
+            }}
+            scales={{ x: scaleLinear(), y: scaleLinear() }}
+            lineStyle={(values) => {
+              const [{ location }] = values;
+              if (location === locationData[this.state.country].location) {
+                return {
+                  strokeWidth: this.state.country + 1,
+                  strokeDasharray: 5,
+                };
+              }
+              return {};
+            }}
+          />
+        </AxisChart>
+      </section>
+    )
+  }
+
   renderLineDemo() {
     const style = {
       shapeRendering: 'geometricPrecision',
@@ -157,6 +240,7 @@ class App extends React.Component {
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         {this.renderLineDemo()}
+        {this.renderMultiLineDemo()}
         <section>
           <h3>Multiple datasets</h3>
 {/* <pre><code>
