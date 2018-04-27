@@ -7,6 +7,7 @@ import { map, pick } from 'lodash';
 import Line from './line';
 import Area from './area';
 import {
+  AnimateEvents, AnimateProp, AnimateTiming,
   CommonDefaultProps,
   CommonPropTypes,
   propResolver,
@@ -46,6 +47,7 @@ export default class MultiLine extends React.PureComponent {
     } = fieldAccessors;
 
     const childProps = pick(this.props, [
+      'animate',
       'onClick',
       'onMouseLeave',
       'onMouseMove',
@@ -113,6 +115,21 @@ export default class MultiLine extends React.PureComponent {
 }
 
 MultiLine.propTypes = {
+  /**
+   * Whether to animate the scatter component (using default `start`, `update` functions).
+   * Optionally, an object that provides functions that dictate behavior of animations.
+   */
+  animate: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.shape({
+      events: AnimateEvents,
+      d: AnimateProp,
+      stroke: AnimateProp,
+      strokeWidth: AnimateProp,
+      timing: AnimateTiming,
+    }),
+  ]),
+
   /**
    * classname applied to `<Area/>`s that are children of MultiLine, if applicable
    */
