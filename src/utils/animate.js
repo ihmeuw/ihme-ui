@@ -33,7 +33,7 @@ export function getMethodIfExists(methodMap, key) {
     ? preliminaryMethod
     : null
   );
-};
+}
 
 // A factory for each animation method: `enter` | `update` | `leave`;
 export function animationProcessorFactory(animate, animatableKeys, processor, method) {
