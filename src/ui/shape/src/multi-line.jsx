@@ -122,8 +122,8 @@ MultiLine.propTypes = {
   animate: PropTypes.oneOfType([
     PropTypes.bool,
     PropTypes.shape({
-      events: AnimateEvents,
       d: AnimateProp,
+      events: AnimateEvents,
       stroke: AnimateProp,
       strokeWidth: AnimateProp,
       timing: AnimateTiming,
