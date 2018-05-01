@@ -1,4 +1,5 @@
 import React from 'react';
+import Animate from 'react-move/Animate';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { mount, shallow } from 'enzyme';
@@ -106,19 +107,27 @@ describe('<Line />', () => {
   });
 
   describe('events', () => {
-    it(`calls onClick, mouseLeave, mouseMove, and mouseOver with
-    the browser event, the data prop, and the React element`, () => {
-      const wrapper = shallow(component);
-      const event = {
-        preventDefault() {},
-      };
-      const inst = wrapper.instance();
+    components.forEach((testComponent) => {
+      const animated = testComponent.props.animate ? 'animated' : 'non-animated';
 
-      ['click', 'mouseLeave', 'mouseMove', 'mouseOver'].forEach((evtName) => {
-        eventHandler.reset();
-        wrapper.simulate(evtName, event);
-        expect(eventHandler.calledOnce).to.be.true;
-        expect(eventHandler.calledWith(event, data, inst)).to.be.true;
+      it(`calls onClick, mouseLeave, mouseMove, and mouseOver with
+      the browser event, the data prop, and the React element (${animated})`, () => {
+        let wrapper = shallow(testComponent);
+        const inst = wrapper.instance();
+        if (testComponent.props.animate) {
+          wrapper = wrapper.find(Animate).dive();
+        }
+
+        const event = {
+          preventDefault() {},
+        };
+
+        ['click', 'mouseLeave', 'mouseMove', 'mouseOver'].forEach((evtName) => {
+          eventHandler.reset();
+          wrapper.simulate(evtName, event);
+          expect(eventHandler.calledOnce).to.be.true;
+          expect(eventHandler.calledWith(event, data, inst)).to.be.true;
+        });
       });
     });
   });
