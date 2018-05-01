@@ -4,8 +4,6 @@ node_js: stable
 
 sudo: false
 
-dist: trusty
-
 notifications:
   email: false
 
