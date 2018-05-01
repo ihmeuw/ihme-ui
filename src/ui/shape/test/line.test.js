@@ -1,7 +1,7 @@
 import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import sinon from 'sinon';
 import { maxBy, minBy } from 'lodash';
 import { line, scalePoint, scaleLinear } from 'd3';
@@ -25,8 +25,6 @@ describe('<Line />', () => {
     length: 10,
   });
 
-  let component;
-
   const range = [minBy(data, valueField)[valueField], maxBy(data, valueField)[valueField]];
   const domain = [minBy(data, keyField)[keyField], maxBy(data, keyField)[keyField]];
 
@@ -41,26 +39,34 @@ describe('<Line />', () => {
 
   const expectedPath = lineFunction(data);
 
-  before(() => {
-    component = (
-      <Line
-        data={data}
-        scales={{ x: xScale, y: yScale }}
-        dataAccessors={{ x: keyField, y: valueField }}
-        onClick={eventHandler}
-        onMouseLeave={eventHandler}
-        onMouseMove={eventHandler}
-        onMouseOver={eventHandler}
-      />
-    );
-  });
+  const sharedProps = {
+    data,
+    scales: { x: xScale, y: yScale },
+    dataAccessors: { x: keyField, y: valueField },
+    onClick: eventHandler,
+    onMouseLeave: eventHandler,
+    onMouseMove: eventHandler,
+    onMouseOver: eventHandler,
+  };
 
-  it('renders an SVG path node with a d attribute', () => {
-    const wrapper = shallow(component);
-    const path = wrapper.find('path');
 
-    expect(path).to.have.length(1);
-    expect(path).to.have.attr('d', expectedPath);
+  const components = [
+    <Line {...sharedProps} />,
+    <Line animate {...sharedProps} />,
+  ];
+
+  describe('renders', () => {
+    components.forEach((testComponent) => {
+      const animated = testComponent.props.animate ? 'animated' : 'non-animated';
+
+      it(`an SVG path node with a d attribute (${animated})`, () => {
+        const wrapper = mount(testComponent);
+        const path = wrapper.find('path');
+
+        expect(path).to.have.length(1);
+        expect(path).to.have.attr('d', expectedPath);
+      });
+    });
   });
 
   describe('styling', () => {
