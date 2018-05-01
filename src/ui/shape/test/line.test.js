@@ -41,6 +41,7 @@ describe('<Line />', () => {
   const expectedPath = lineFunction(data);
 
   const sharedProps = {
+    className: 'base-classname',
     data,
     scales: { x: xScale, y: yScale },
     dataAccessors: { x: keyField, y: valueField },
@@ -48,8 +49,11 @@ describe('<Line />', () => {
     onMouseLeave: eventHandler,
     onMouseMove: eventHandler,
     onMouseOver: eventHandler,
+    style: {
+      stroke: 'red',
+      strokeWidth: '10',
+    },
   };
-
 
   const components = [
     <Line {...sharedProps} />,
@@ -59,52 +63,26 @@ describe('<Line />', () => {
   describe('renders', () => {
     components.forEach((testComponent) => {
       const animated = testComponent.props.animate ? 'animated' : 'non-animated';
+      const wrapper = mount(testComponent);
 
-      it(`an SVG path node with a d attribute (${animated})`, () => {
-        const wrapper = mount(testComponent);
+      it(`SVG path node with a d attribute (${animated})`, () => {
         const path = wrapper.find('path');
 
         expect(path).to.have.length(1);
         expect(path).to.have.attr('d', expectedPath);
       });
+
+      it(`applies a base classname (${animated})`, () => {
+        expect(wrapper).to.have.className(sharedProps.className);
+      });
+
+      it(`applies style as an object (${animated})`, () => {
+        expect(wrapper).to.have.style('stroke', sharedProps.style.stroke);
+        expect(wrapper).to.have.style('stroke-width', sharedProps.style.strokeWidth);
+      });
     });
   });
 
-  describe('styling', () => {
-    const baseStyle = {
-      stroke: 'red',
-      strokeWidth: 10,
-    };
-
-    it('applies style as an object', () => {
-      const wrapper = shallow(
-        <Line
-          data={data}
-          scales={{ x: xScale, y: yScale }}
-          dataAccessors={{ x: keyField, y: valueField }}
-          style={baseStyle}
-        />
-      );
-
-      expect(wrapper).to.have.style('stroke', 'red');
-      expect(wrapper).to.have.style('stroke-width', '10');
-    });
-  });
-
-  describe('classnames', () => {
-    const wrapper = shallow(
-      <Line
-        className="base-classname"
-        data={data}
-        scales={{ x: xScale, y: yScale }}
-        dataAccessors={{ x: keyField, y: valueField }}
-      />
-    );
-
-    it('applies a base classname', () => {
-      expect(wrapper).to.have.className('base-classname');
-    });
-  });
 
   describe('events', () => {
     components.forEach((testComponent) => {
@@ -114,6 +92,9 @@ describe('<Line />', () => {
       the browser event, the data prop, and the React element (${animated})`, () => {
         let wrapper = shallow(testComponent);
         const inst = wrapper.instance();
+
+        // If wrapped in <Animate /> it's necessary to `dive` an additional
+        // layer in order to test simulated events consistently.
         if (testComponent.props.animate) {
           wrapper = wrapper.find(Animate).dive();
         }
