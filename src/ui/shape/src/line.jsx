@@ -233,8 +233,8 @@ Line.animatable = [
 
 Line.processStyle = (style, { stroke, strokeWidth }) => ({
   ...style,
-  stroke: stroke || style.stroke,
-  strokeWidth: strokeWidth || style.strokeWidth,
+  stroke,
+  strokeWidth,
 });
 
 Line.getPathGenerator = props => {
