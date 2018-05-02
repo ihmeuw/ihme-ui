@@ -32,6 +32,9 @@ describe('<MultiLine />', () => {
 
   const lineData = [{ location: 'USA', values: data }, { location: 'Canada', values: data }];
 
+  const lineDataAccessors = { x: keyField, y: valueField };
+  const areaDataAccessors = { x: keyField, y0: 'value_lb', y1: 'value_ub' };
+
   const sharedProps = {
     data: lineData,
     fieldAccessors: {
@@ -43,103 +46,76 @@ describe('<MultiLine />', () => {
   };
 
   describe('plot of only <Line /> components', () => {
-    let component;
-
-    before(() => {
-      component = (
-        <MultiLine
-          {...sharedProps}
-          dataAccessors={{ x: keyField, y: valueField }}
-        />
-      );
-    });
+    const wrapper = shallow((
+      <MultiLine
+        {...sharedProps}
+        dataAccessors={lineDataAccessors}
+      />
+    ));
 
     it('renders a g', () => {
-      const wrapper = shallow(component);
       expect(wrapper.find('g')).to.have.length(1);
     });
 
     it('renders two <Line /> components', () => {
-      const wrapper = shallow(component);
       expect(wrapper).to.have.exactly(2).descendants('Line');
     });
 
     it('passes a subset of its props to child components', () => {
-      const wrapper = shallow(component);
       const child = wrapper.find('Line').first();
       expect(child)
         .to.have.prop('scales')
         .that.is.an('object')
         .that.has.keys(['x', 'y']);
 
-      expect(child)
-        .to.not.have.prop('keyField');
+      expect(child).to.not.have.prop('keyField');
     });
 
     it('alters styling passed to children when given a color scale', () => {
-      const wrapper = shallow(component);
       const usaLine = wrapper.find('Line').first();
       const caLine = wrapper.find('Line').last();
 
-      expect(usaLine)
-        .to.have.style('stroke', colorScale('USA'));
-
-      expect(caLine)
-        .to.have.style('stroke', colorScale('Canada'));
+      expect(usaLine).to.have.style('stroke', colorScale('USA'));
+      expect(caLine).to.have.style('stroke', colorScale('Canada'));
     });
   });
 
   describe('plot of only <Area /> components', () => {
-    let component;
-
-    before(() => {
-      component = (
-        <MultiLine
-          {...sharedProps}
-          dataAccessors={{ x: keyField, y0: 'value_lb', y1: 'value_ub' }}
-        />
-      );
-    });
+    const wrapper = shallow((
+      <MultiLine
+        {...sharedProps}
+        dataAccessors={areaDataAccessors}
+      />
+    ));
 
     it('renders two <Area /> components', () => {
-      const wrapper = shallow(component);
       expect(wrapper).to.have.exactly(2).descendants('Area');
     });
   });
 
   describe('plot of both <Line /> and <Area /> components', () => {
-    let component;
-
-    before(() => {
-      component = (
-        <MultiLine
-          {...sharedProps}
-          dataAccessors={{ x: keyField, y: valueField, y0: 'value_lb', y1: 'value_ub' }}
-        />
-      );
-    });
+    const wrapper = shallow((
+      <MultiLine
+        {...sharedProps}
+        dataAccessors={{ ...lineDataAccessors, ...areaDataAccessors }}
+      />
+    ));
 
     it('renders two <Line /> and two <Area /> components', () => {
-      const wrapper = shallow(component);
       expect(wrapper).to.have.exactly(2).descendants('Line');
       expect(wrapper).to.have.exactly(2).descendants('Area');
     });
   });
 
   describe('plot of neither <Line /> nor <Area />', () => {
-    let component;
-
-    before(() => {
-      component = (
-        <MultiLine
-          {...sharedProps}
-          dataAccessors={{ x: keyField }}
-        />
-      );
-    });
+    const wrapper = shallow((
+      <MultiLine
+        {...sharedProps}
+        dataAccessors={{ x: keyField }}
+      />
+    ));
 
     it('render neither <Line /> nor <Area /> components', () => {
-      const wrapper = shallow(component);
       expect(wrapper).to.not.have.descendants('Line');
       expect(wrapper).to.not.have.descendants('Area');
     });
