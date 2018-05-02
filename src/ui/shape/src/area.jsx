@@ -217,9 +217,9 @@ Area.animatable = [
 
 Area.processStyle = (style, { fill, stroke, strokeWidth }) => ({
   ...style,
-  fill: fill || style.fill,
-  stroke: stroke || style.stroke,
-  strokeWidth: strokeWidth || style.strokeWidth,
+  fill,
+  stroke,
+  strokeWidth,
 });
 
 Area.getPathGenerator = props => {
