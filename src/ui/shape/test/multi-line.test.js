@@ -32,19 +32,23 @@ describe('<MultiLine />', () => {
 
   const lineData = [{ location: 'USA', values: data }, { location: 'Canada', values: data }];
 
+  const sharedProps = {
+    data: lineData,
+    fieldAccessors: {
+      key: 'location',
+      data: 'values',
+    },
+    scales,
+    colorScale,
+  };
+
   describe('plot of only <Line /> components', () => {
     let component;
 
     before(() => {
       component = (
         <MultiLine
-          data={lineData}
-          fieldAccessors={{
-            key: 'location',
-            data: 'values',
-          }}
-          scales={scales}
-          colorScale={colorScale}
+          {...sharedProps}
           dataAccessors={{ x: keyField, y: valueField }}
         />
       );
@@ -91,13 +95,7 @@ describe('<MultiLine />', () => {
     before(() => {
       component = (
         <MultiLine
-          data={lineData}
-          fieldAccessors={{
-            key: 'location',
-            data: 'values',
-          }}
-          scales={scales}
-          colorScale={colorScale}
+          {...sharedProps}
           dataAccessors={{ x: keyField, y0: 'value_lb', y1: 'value_ub' }}
         />
       );
@@ -115,13 +113,7 @@ describe('<MultiLine />', () => {
     before(() => {
       component = (
         <MultiLine
-          data={lineData}
-          fieldAccessors={{
-            key: 'location',
-            data: 'values',
-          }}
-          scales={scales}
-          colorScale={colorScale}
+          {...sharedProps}
           dataAccessors={{ x: keyField, y: valueField, y0: 'value_lb', y1: 'value_ub' }}
         />
       );
@@ -140,13 +132,7 @@ describe('<MultiLine />', () => {
     before(() => {
       component = (
         <MultiLine
-          data={lineData}
-          fieldAccessors={{
-            key: 'location',
-            data: 'values',
-          }}
-          scales={scales}
-          colorScale={colorScale}
+          {...sharedProps}
           dataAccessors={{ x: keyField }}
         />
       );
