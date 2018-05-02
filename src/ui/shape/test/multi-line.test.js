@@ -152,6 +152,31 @@ describe('<MultiLine />', () => {
       });
     });
   });
+
+  describe('passes specified properties to its children', () => {
+    it('passes specified properties to its children', () => {
+      const inheritedProps = [
+        'animate',
+        'onClick',
+        'onMouseLeave',
+        'onMouseMove',
+        'onMouseOver',
+      ];
+
+      const assertion = (shape) => {
+        inheritedProps.forEach((prop) => {
+          expect(shape).to.have.prop(prop);
+        });
+      };
+
+      const wrapper = shallow((
+        <MultiLine
+          {...sharedProps}
+          dataAccessors={{ ...lineDataAccessors, ...areaDataAccessors }}
+        />
+      ));
+
+      wrapper.find('line').forEach(assertion);
     });
   });
 });
