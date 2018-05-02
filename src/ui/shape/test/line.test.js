@@ -50,12 +50,14 @@ describe('<Line />', () => {
     onMouseMove: eventHandler,
     onMouseOver: eventHandler,
     style: {
+      background: 'never overridden',
       stroke: 'red',
       strokeWidth: '10',
     },
   };
 
   const processedStyle = {
+    background: 'will not override',
     stroke: 'blue',
     strokeWidth: 1000,
   };
@@ -115,6 +117,8 @@ describe('<Line />', () => {
       const result = Line.processStyle(sharedProps.style, processedStyle);
       expect(result.stroke).to.equal(processedStyle.stroke);
       expect(result.strokeWidth).to.equal(processedStyle.strokeWidth);
+      expect(result.background).to.equal(sharedProps.style.background);
+      expect(result.background).not.to.equal(processedStyle.background);
     });
   });
 
