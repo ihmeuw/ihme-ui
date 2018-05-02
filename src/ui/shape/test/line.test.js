@@ -55,7 +55,7 @@ describe('<Line />', () => {
     },
   };
 
-  const additionalProps = {
+  const processedStyle = {
     stroke: 'blue',
     strokeWidth: 1000,
   };
@@ -92,40 +92,29 @@ describe('<Line />', () => {
     const result1 = Line.dataProcessor(sharedProps, sharedProps.data);
 
     const result2 = Line.dataProcessor(
-      { ...sharedProps, ...additionalProps },
+      { ...sharedProps, style: processedStyle },
       sharedProps.data
     );
 
     it('returns calculated d attribute based on data accessors', () => {
       // Close to above test, but intended to target `Line.dataProcessor` as a unit.
       expect(result1.d).to.equal(expectedPath);
+      expect(result2.d).to.equal(expectedPath);
     });
 
     it('returns processed `stroke`, `strokeWidth` properties', () => {
-      // Nested in prop `style`
       expect(result1.stroke).to.equal(sharedProps.style.stroke);
       expect(result1.strokeWidth).to.equal(sharedProps.style.strokeWidth);
-      // From flat props `stroke`, `strokeWidth`
-      expect(result2.stroke).to.equal(additionalProps.stroke);
-      expect(result2.strokeWidth).to.equal(additionalProps.strokeWidth);
+      expect(result2.stroke).to.equal(processedStyle.stroke);
+      expect(result2.strokeWidth).to.equal(processedStyle.strokeWidth);
     });
   });
 
   describe('processStyle', () => {
     it('combines props `style`, `stroke`, `strokeWidth`', () => {
-      const result1 = Line.processStyle(sharedProps.style, additionalProps);
-      const result2 = Line.processStyle(
-        sharedProps.style,
-        { stroke: additionalProps.stroke },
-      );
-
-      // Flat props of `additionalProps` override those of `style`
-      expect(result1.stroke).to.equal(additionalProps.stroke);
-      expect(result1.strokeWidth).to.equal(additionalProps.strokeWidth);
-
-      // `stroke` overrides, while `strokeWidth` remains from `style`
-      expect(result2.stroke).to.equal(additionalProps.stroke);
-      expect(result2.strokeWidth).to.equal(sharedProps.style.strokeWidth);
+      const result = Line.processStyle(sharedProps.style, processedStyle);
+      expect(result.stroke).to.equal(processedStyle.stroke);
+      expect(result.strokeWidth).to.equal(processedStyle.strokeWidth);
     });
   });
 
