@@ -53,6 +53,17 @@ describe('<Area />', () => {
     onMouseLeave: eventHandler,
     onMouseMove: eventHandler,
     onMouseOver: eventHandler,
+    style: {
+      fill: 'salmon',
+      stroke: 'firebrick',
+      strokeWidth: 5,
+    },
+  };
+
+  const processedStyle = {
+    fill: 'orangered',
+    stroke: 'rebeccapurple',
+    strokeWidth: 1000,
   };
 
   const components = [
@@ -75,6 +86,29 @@ describe('<Area />', () => {
       const path = wrapper.find('path');
       expect(path).to.have.length(1);
       expect(path).to.have.attr('d', expectedPath);
+    });
+  });
+
+  describe('dataProcessor', () => {
+    const result1 = Area.dataProcessor(sharedProps, sharedProps.data);
+    const result2 = Area.dataProcessor(
+      { ...sharedProps, style: processedStyle },
+      sharedProps.data,
+    );
+
+    it('returns calculated d attribute based on data accessors', () => {
+      // Close to above test, but intended to target `Area.dataProcessor` as a unit.
+      expect(result1.d).to.equal(expectedPath);
+      expect(result2.d).to.equal(expectedPath);
+    });
+
+    it('returns processed `fill`, `stroke`, `strokeWidth` properties', () => {
+      expect(result1.fill).to.equal(sharedProps.style.fill);
+      expect(result1.stroke).to.equal(sharedProps.style.stroke);
+      expect(result1.strokeWidth).to.equal(sharedProps.style.strokeWidth);
+      expect(result2.fill).to.equal(processedStyle.fill);
+      expect(result2.stroke).to.equal(processedStyle.stroke);
+      expect(result2.strokeWidth).to.equal(processedStyle.strokeWidth);
     });
   });
 
