@@ -132,16 +132,16 @@ describe('<Area />', () => {
       with event, data, and the React element (${animated})`, () => {
         let wrapper = shallow(testComponent);
         const inst = wrapper.instance();
-        const event = {
-          preventDefault() {
-          },
-        };
 
         // If wrapped in <Animate /> it's necessary to `dive` an additional
         // layer in order to test simulated events consistently.
         if (testComponent.props.animate) {
           wrapper = wrapper.find(Animate).dive();
         }
+
+        const event = {
+          preventDefault() {},
+        };
 
         ['click', 'mouseLeave', 'mouseMove', 'mouseOver'].forEach((evtName) => {
           eventHandler.reset();
