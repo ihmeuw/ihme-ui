@@ -54,6 +54,7 @@ describe('<Area />', () => {
     onMouseMove: eventHandler,
     onMouseOver: eventHandler,
     style: {
+      background: 'never overridden',
       fill: 'salmon',
       stroke: 'firebrick',
       strokeWidth: 5,
@@ -61,6 +62,7 @@ describe('<Area />', () => {
   };
 
   const processedStyle = {
+    background: 'will not override',
     fill: 'orangered',
     stroke: 'rebeccapurple',
     strokeWidth: 1000,
@@ -109,6 +111,16 @@ describe('<Area />', () => {
       expect(result2.fill).to.equal(processedStyle.fill);
       expect(result2.stroke).to.equal(processedStyle.stroke);
       expect(result2.strokeWidth).to.equal(processedStyle.strokeWidth);
+    });
+  });
+
+  describe('processStyle', () => {
+    it('combines props `style`, `stroke`, `strokeWidth` with existing style', () => {
+      const result = Area.processStyle(sharedProps.style, processedStyle);
+      expect(result.stroke).to.equal(processedStyle.stroke);
+      expect(result.strokeWidth).to.equal(processedStyle.strokeWidth);
+      expect(result.background).to.equal(sharedProps.style.background);
+      expect(result.background).not.to.equal(processedStyle.background);
     });
   });
 
