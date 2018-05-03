@@ -1,6 +1,7 @@
 export {
   animationProcessorFactory,
   animationStartFactory,
+  getMethodIfExists,
 } from './animate';
 
 export {
