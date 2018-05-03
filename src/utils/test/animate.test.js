@@ -11,6 +11,7 @@ import sinon from 'sinon';
 import {
   animationStartFactory,
   animationProcessorFactory,
+  getMethodIfExists,
 } from '../';
 
 describe('animate factory functions', () => {
@@ -132,6 +133,42 @@ describe('animate factory functions', () => {
       });
     });
   }
+
+  describe('getMethodIfExists', () => {
+    const methodMap = {
+      fill: noop,
+      stroke: {},
+    };
+
+    const foreseeableInputs = [false, true, undefined];
+    const unexpectedButPossibleInputs = [1, 2, 3, 'a', 'b', 'c'];
+
+    it('returns property when it is a function', () => {
+      const method = getMethodIfExists(methodMap, 'fill');
+      expect(method).to.be.a('function');
+    });
+
+    it('returns `null` when property is not a function', () => {
+      const method = getMethodIfExists(methodMap, 'stroke');
+      expect(method).to.equal(null);
+    });
+
+    it('gracefully handles unexpected inputs', () => {
+      unexpectedButPossibleInputs.forEach((unexpectedInput) => {
+        function shouldNotThrow() {
+          getMethodIfExists(unexpectedInput, 'key');
+        }
+        expect(shouldNotThrow).to.not.throw();
+      });
+    });
+
+    it('returns `null` when input is not an object', () => {
+      [...foreseeableInputs, ...unexpectedButPossibleInputs].forEach((nonObjectInput) => {
+        const method = getMethodIfExists(nonObjectInput, 'key');
+        expect(method).to.equal(null);
+      });
+    });
+  });
 
   describe('Default functionality (`animate` param is boolean):', () => {
     const animate = true;
