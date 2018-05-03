@@ -132,6 +132,47 @@ class App extends React.Component {
     return (
       <section>
         <h3>Multi Line</h3>
+{/* <pre><code>
+ <AxisChart
+   height={300}
+   width={500}
+   xDomain={keyFieldDomain}
+   xScaleType="point"
+   yDomain={valueFieldDomain}
+   yScaleType="linear"
+ >
+   <XAxis />
+   <YAxis />
+   <MultiLine
+     animate={{
+       timing: { duration: 666 },
+       stroke: { start() { console.log('started'); return {}; }},
+     }}
+     colorScale={colorScale}
+     data={lineDataSet}
+     dataAccessors={{
+       x: 'year_id',
+       y: 'population',
+     }}
+     fieldAccessors={{
+       key: 'key',
+       color: 'location',
+       data: 'values',
+     }}
+     scales={{ x: scaleLinear(), y: scaleLinear() }}
+     lineStyle={(values) => {
+       const [{ location }] = values;
+       if (location === locationData[this.state.country].location) {
+         return {
+           strokeWidth: this.state.country + 1,
+           strokeDasharray: 5,
+         };
+       }
+       return {};
+     }}
+   />
+ </AxisChart>
+</code></pre> */}
         <p>
           {lineDataSet.map(({ location, key }) =>
             <span style={{
@@ -198,6 +239,52 @@ class App extends React.Component {
     return (
       <section>
         <h3>Line</h3>
+{/* <pre><code>
+ <AxisChart
+   height={300}
+   width={500}
+   xDomain={keyFieldDomain}
+   xScaleType="point"
+   yDomain={valueUncertaintyDomain}
+   yScaleType="linear"
+ >
+   <XAxis />
+   <YAxis />
+   <Area
+     animate
+     data={currentLocationData}
+     dataAccessors={{
+       x: 'year_id',
+       y0: 'population_lb',
+       y1: 'population_ub',
+     }}
+     scales={{ x: scaleLinear(), y: scaleLinear() }}
+     style={{ fill: colorScale(currentLocationId), opacity: 0.4 }}
+   />
+   <Line
+     animate={{
+       stroke: () => ({
+         timing: { delay: 1000, duration: 3000 },
+         events: {
+           interrupt() {
+             console.log('The `stroke` animation has been interrupted!');
+           },
+         },
+       }),
+       strokeWidth: {
+         timing: { duration: 2500 },
+         events: {
+           end: () => { console.log('The `strokeWidth` animation has ended!'); },
+         },
+       },
+     }}
+     data={this.getCurrentLocationData()}
+     dataAccessors={{ x: 'year_id', y: 'population' }}
+     scales={{ x: scaleLinear(), y: scaleLinear() }}
+     style={style}
+   />
+ </AxisChart>
+</code></pre> */}
         <h3>{locationData[this.state.country].location}</h3>
         <button onClick={this.setNextLocation}>
           press to look at next country
@@ -215,8 +302,15 @@ class App extends React.Component {
           <Area
             animate
             data={this.getCurrentLocationData()}
-            dataAccessors={{ x: 'year_id', y0: 'population_lb', y1: 'population_ub' }}
-            scales={{ x: scaleLinear(), y: scaleLinear() }}
+            dataAccessors={{
+              x: 'year_id',
+              y0: 'population_lb',
+              y1: 'population_ub',
+            }}
+            scales={{
+              x: scaleLinear(),
+              y: scaleLinear(),
+            }}
             style={{
               fill: colorScale(this.state.country + 1),
               opacity: 0.4,
