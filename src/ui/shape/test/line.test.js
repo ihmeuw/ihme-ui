@@ -72,7 +72,7 @@ describe('<Line />', () => {
       const animated = testComponent.props.animate ? 'animated' : 'non-animated';
       const wrapper = mount(testComponent);
 
-      it(`SVG path node with a d attribute (${animated})`, () => {
+      it(`renders an SVG path node with a d attribute (${animated})`, () => {
         const path = wrapper.find('path');
 
         expect(path).to.have.length(1);
