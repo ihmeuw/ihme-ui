@@ -111,23 +111,18 @@ class App extends React.Component {
   };
 
   renderMultiLineDemo() {
-    const lineDataSet = locationData.reduce(
-      (accum, line, index) => {
-        switch(index) {
-          case this.state.country:
-            accum.push({ ...line, key: 0 });
-            break;
-          case (this.state.country + 1) % locationData.length:
-            accum.push({ ...line, key: 1 });
-            break;
-          case (this.state.country + 2) % locationData.length:
-            accum.push({ ...line, key: 2 });
-            break;
-        }
-        return accum;
-      },
-      [],
-    ).sort((line_a, line_b) => line_a.key - line_b.key);
+    const lineDataSet = locationData.map((line, index) => {
+      switch(index) {
+        case this.state.country:
+          return { ...line, key: 0 };
+        case (this.state.country + 1) % locationData.length:
+          return { ...line, key: 1 };
+        case (this.state.country + 2) % locationData.length:
+          return { ...line, key: 2 };
+      }
+      return false;
+    }).filter(line => line)
+      .sort((line_a, line_b) => line_a.key - line_b.key);
 
     return (
       <section>
