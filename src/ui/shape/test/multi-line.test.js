@@ -163,12 +163,6 @@ describe('<MultiLine />', () => {
         'onMouseOver',
       ];
 
-      const assertion = (shape) => {
-        inheritedProps.forEach((prop) => {
-          expect(shape).to.have.prop(prop);
-        });
-      };
-
       const wrapper = shallow((
         <MultiLine
           {...sharedProps}
@@ -176,7 +170,11 @@ describe('<MultiLine />', () => {
         />
       ));
 
-      wrapper.find('line').forEach(assertion);
+      wrapper.find('line').forEach((shape) => {
+        inheritedProps.forEach((prop) => {
+          expect(shape).to.have.prop(prop);
+        });
+      });
     });
   });
 });
