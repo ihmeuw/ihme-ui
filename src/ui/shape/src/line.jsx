@@ -132,7 +132,7 @@ export default class Line extends React.PureComponent {
 
 Line.propTypes = {
   /**
-   * Whether to animate the scatter component (using default `start`, `update` functions).
+   * Whether to animate the Line component (using default `start`, `update` functions).
    * Optionally, an object that provides functions that dictate behavior of animations.
    */
   animate: PropTypes.oneOfType([

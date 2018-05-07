@@ -7,12 +7,15 @@ import bindAll from 'lodash/bindAll';
 import partial from 'lodash/partial';
 
 import {
-  animationProcessorFactory,
-  CommonPropTypes,
+  AnimateEvents,
+  AnimateProp,
+  AnimateTiming,
   CommonDefaultProps,
+  CommonPropTypes,
+  animationProcessorFactory,
   memoizeByLastCall,
-  propsChanged,
   propResolver,
+  propsChanged,
   stateFromPropUpdates,
 } from '../../../utils';
 
@@ -127,6 +130,22 @@ export default class Area extends React.PureComponent {
 }
 
 Area.propTypes = {
+  /**
+   * Whether to animate the Area component (using default `start`, `update` functions).
+   * Optionally, an object that provides functions that dictate behavior of animations.
+   */
+  animate: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.shape({
+      events: AnimateEvents,
+      d: AnimateProp,
+      fill: AnimateProp,
+      stroke: AnimateProp,
+      strokeWidth: AnimateProp,
+      timing: AnimateTiming,
+    }),
+  ]),
+
   /**
    * className applied to path.
    */
