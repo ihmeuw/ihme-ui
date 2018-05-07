@@ -67,7 +67,7 @@ describe('<Line />', () => {
     <Line animate {...sharedProps} />,
   ];
 
-  describe('renders', () => {
+  describe('render', () => {
     components.forEach((testComponent) => {
       const animated = testComponent.props.animate ? 'animated' : 'non-animated';
       const wrapper = mount(testComponent);
