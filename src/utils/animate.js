@@ -27,10 +27,10 @@ export function animationStartFactory(animate, processor) {
 }
 
 export function getMethodIfExists(methodMap, key) {
-  const preliminaryMethod = get(methodMap, [key]);
+  const potentialMethod = get(methodMap, [key]);
   return (
-    typeof preliminaryMethod === 'function'
-    ? preliminaryMethod
+    typeof potentialMethod === 'function'
+    ? potentialMethod
     : null
   );
 }
