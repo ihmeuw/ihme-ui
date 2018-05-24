@@ -8,7 +8,9 @@ import { default as getValue } from 'lodash/get';
  */
 const flatOptionPropTypes = {
   // option object
-  option: PropTypes.object.isRequired,
+  option: PropTypes.shape({
+    bold: PropTypes.bool,
+  }),
 
   // key on option that holds its label
   labelKey: PropTypes.string.isRequired,
