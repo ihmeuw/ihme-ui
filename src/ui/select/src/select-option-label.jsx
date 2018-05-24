@@ -15,7 +15,15 @@ const flatOptionPropTypes = {
 };
 
 export function FlatOptionLabel(props) {
-  return <span>{`${getValue(props.option, [props.labelKey], '')}`}</span>;
+  return (
+    <span
+      style={{
+        fontWeight: props.option.bold ? 'bold' : 'normal',
+      }}
+    >
+      {`${getValue(props.option, [props.labelKey], '')}`}
+    </span>
+  );
 }
 
 FlatOptionLabel.propTypes = flatOptionPropTypes;
