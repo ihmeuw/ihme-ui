@@ -250,7 +250,7 @@ MultiBars.propTypes = {
    * Orientation in which bars should be created.
    * Defaults to vertical, but option for horizontal orientation supported.
    */
-  orientation: PropTypes.string,
+  orientation: PropTypes.oneOf(['Horizontal', 'horizontal', 'Vertical', 'vertical']),
 
   /**
    * `x` and `y` scales for positioning `<Bar />`s.
