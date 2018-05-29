@@ -32,14 +32,14 @@ export default class BarChart extends PureComponent {
 
   renderTitle() {
     const {
-      labelObject,
+      labelAccessors,
       titleClassName,
       titleStyle,
     } = this.props;
-    if (!labelObject.title) return null;
+    if (!labelAccessors.title) return null;
     return (
       <div className={classNames(styles.title, titleClassName)} style={titleStyle}>
-        {labelObject.title}
+        {labelAccessors.title}
       </div>
     );
   }
@@ -74,14 +74,14 @@ export default class BarChart extends PureComponent {
       fill,
       focus,
       height,
-      labelObject,
+      labelAccessors,
       onClick,
       onMouseOver,
       onMouseLeave,
       onMouseMove,
       orientation,
       scaleObject,
-      bandObject,
+      bandPositions,
       width,
     } = this.props;
 
@@ -99,16 +99,16 @@ export default class BarChart extends PureComponent {
             yScaleType={scaleObject.yScale}
           >
             <XAxis
-              label={labelObject.xLabel ? labelObject.xLabel : 'X Axis'}
+              label={labelAccessors.xLabel}
             />
             <YAxis
-              label={labelObject.yLabel ? labelObject.yLabel : 'Y Axis'}
+              label={labelAccessors.yLabel}
             />
             <Bars
-              align={bandObject.align}
-              bandPaddingOuter={bandObject.bandPaddingOuter}
-              bandPadding={bandObject.bandPadding}
-              bandPaddingInner={bandObject.bandPaddingInner}
+              align={bandPositions.align}
+              bandPaddingOuter={bandPositions.bandPaddingOuter}
+              bandPadding={bandPositions.bandPadding}
+              bandPaddingInner={bandPositions.bandPaddingInner}
               dataAccessors={dataAccessors}
               data={data}
               fill={fill}
@@ -167,13 +167,13 @@ BarChart.propTypes = {
   bandPaddingOuter: PropTypes.number,
 
   /**
-   * Accessors to d3 scale band properties
-   *    align: property used to access the align property to alter d3 scaleBand alignment
-   *    bandPadding: property used to access the bandPadding to alter d3 scaleBand inner and outer padding
-   *    bandPaddingInner: property used to access the bandPaddingInner to alter d3 scaleBand inner padding
-   *    bandPaddingOuter: property used to access the bandPaddingOuter to alter d3 scaleBand outer padding
+   * Values used for the d3 scale band properties
+   *    align: property used for the align property to alter d3 scaleBand alignment
+   *    bandPadding: property used for the bandPadding to alter d3 scaleBand inner and outer padding
+   *    bandPaddingInner: property used for the bandPaddingInner to alter d3 scaleBand inner padding
+   *    bandPaddingOuter: property used for the bandPaddingOuter to alter d3 scaleBand outer padding
    */
-  bandObject: PropTypes.shape({
+  bandPositions: PropTypes.shape({
     align: PropTypes.number,
     bandPadding: PropTypes.number,
     bandPaddingInner: PropTypes.number,
@@ -226,7 +226,7 @@ BarChart.propTypes = {
    *    xLabel: property used to access the xLabel of the composite component
    *    yLabel: property used to access the yLabel of the composite component
    */
-  labelObject: PropTypes.shape({
+  labelAccessors: PropTypes.shape({
     title: PropTypes.string,
     xLabel: PropTypes.string,
     yLabel: PropTypes.string
@@ -320,7 +320,11 @@ BarChart.propTypes = {
 BarChart.defaultProps = {
   orientation: 'vertical',
   fill: 'steelblue',
-  bandObject: {
+  band: {
     align: 0.5
-  }
+  },
+  labelAccessors: {
+    xLabel: 'X Axis',
+    yLabel: 'Y Axis',
+  },
 };
