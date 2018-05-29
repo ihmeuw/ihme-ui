@@ -9,13 +9,6 @@ import { Bar } from '../';
 chai.use(chaiEnzme());
 
 describe('<Bar />', () => {
-  // it('renders a svg rect element that represents one bar', () => {
-  //   const wrapper = shallow(<Bar />);
-  //   expect(wrapper).to.have.descendants('g');
-  //   expect(wrapper).to.have.descendants('rect');
-  //   expect(wrapper.find('rect'))
-  //     .to.have.attr('fill'); // checks default props of fill is there
-  // });
 
   it('renders a svg rect element that represents one bar given properties', () => {
     const wrapper = shallow(
@@ -26,8 +19,7 @@ describe('<Bar />', () => {
         width={10}
       />
     );
-    // expect(wrapper).to.have.descendants('g');
-    // expect(wrapper).to.have.descendants('rect');
+
     expect(wrapper.find('rect'))
       .to.have.attr('fill');
   });
