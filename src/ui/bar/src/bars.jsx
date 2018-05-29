@@ -15,13 +15,20 @@ import {
   combineStyles,
   CommonDefaultProps,
   CommonPropTypes,
+  getXPositionStack,
+  getYPositionStack,
+  getHeightStack,
+  getWidthStack,
+  getHeight,
+  getWidth,
+  getYPosition,
+  getXPosition,
   isVertical,
   memoizeByLastCall,
   propResolver,
   propsChanged,
   PureComponent,
   stateFromPropUpdates,
-  getRenderingProps,
   setBandProps,
   getXValue,
 } from '../../../utils';
@@ -57,15 +64,12 @@ export default class Bars extends PureComponent {
       dataAccessors,
       fill,
       focus,
-      height,
-      layerOrdinal,
       orientation,
       scales,
       rectClassName,
       rectStyle,
       style,
       stacked,
-      grouped,
     } = this.props;
 
     const { selectedDataMappedToKeys, sortedData } = this.state;
@@ -102,12 +106,7 @@ export default class Bars extends PureComponent {
               propResolver(datum, dataAccessors.key);
             const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.stack);
             const focusedDatumKey = focus && propResolver(focus, dataAccessors.key);
-
-            const xValue = getXValue(datum, dataAccessors, grouped, stacked);
-
-            const yValue = propResolver(datum, !stacked ? dataAccessors.value : 1);
-            const renderingProps = getRenderingProps(datum, grouped, height, layerOrdinal, linear,
-              ordinal, orientation, stacked, xValue, yValue);
+            const renderingProps = this.getRenderingProps(datum, dataAccessors, linear, ordinal);
 
             return (
               <Bar
@@ -129,6 +128,50 @@ export default class Bars extends PureComponent {
         }
       </g>
     );
+  }
+
+
+  /**
+   * Logic behind which values are computed given the configuration of the bar chart
+   * @param datum : Represents the datum for that corresponding bar
+   * @param dataAccessors : Object that represents the keys used to access the datum
+   * @param linear : Represents the scale for the data values plotted
+   * @param ordinal : Represents the scale for the categorical data
+   * @returns {object} : Returns an object that contains all the properties used to position and
+   * plot the data
+   */
+  getRenderingProps(datum, dataAccessors, linear, ordinal) {
+    const {
+      height,
+      layerOrdinal,
+      orientation,
+      stacked,
+      grouped,
+    } = this.props;
+    const result = {};
+
+    const xValue = getXValue(datum, dataAccessors, grouped, stacked);
+
+    const yValue = propResolver(datum, !stacked ? dataAccessors.value : 1);
+
+    const xPosition = stacked ? getXPositionStack(datum[0], linear, ordinal, orientation, xValue)
+      : getXPosition(grouped, layerOrdinal, ordinal, orientation, xValue);
+
+    const yPosition = stacked ? getYPositionStack(datum[1], linear, ordinal, orientation, xValue)
+      : getYPosition(grouped, layerOrdinal, linear, ordinal, orientation, xValue, yValue);
+
+    const barHeight = stacked ? getHeightStack(datum[0], linear, ordinal, orientation, yValue)
+      : getHeight(height, grouped, layerOrdinal, linear, ordinal, orientation, yValue);
+
+    const barWidth = stacked ? getWidthStack(datum[0], linear, ordinal, orientation, yValue)
+      : getWidth(grouped, layerOrdinal, linear, ordinal, orientation, xValue, yValue);
+
+    result.xPosition = xPosition;
+    result.yPosition = yPosition;
+    result.barHeight = barHeight;
+    result.barWidth = barWidth;
+
+    return result;
   }
 }
 
