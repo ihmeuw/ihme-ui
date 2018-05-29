@@ -10,7 +10,6 @@ import AxisChart from '../../axis-chart';
 import { XAxis, YAxis } from '../../axis';
 import { MultiScatter, Scatter } from '../';
 
-
 const keyField = 'year_id';
 const valueField = 'population';
 

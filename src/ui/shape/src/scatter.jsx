@@ -30,6 +30,7 @@ import Shape from './shape';
 export default class Scatter extends React.PureComponent {
   constructor(props) {
     super(props);
+
     this.combineStyles = memoizeByLastCall(combineStyles);
     this.state = stateFromPropUpdates(Scatter.propUpdates, {}, props, {});
   }
@@ -81,7 +82,6 @@ export default class Scatter extends React.PureComponent {
             // use dataAccessors.x as fail-over for backward compatibility
             const key = propResolver(datum, dataAccessors.key);
             const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x);
-
             const focusedDatumKey = focus ? propResolver(focus, dataAccessors.key) : null;
 
             const resolvedShapeType = dataAccessors.shape ?
