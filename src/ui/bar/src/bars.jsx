@@ -86,11 +86,17 @@ export default class Bars extends PureComponent {
     ]);
 
     // Given the orientation, set the scales accordingly for the x & y axis
-    const ordinal = (isVertical(orientation) ? scales.x : scales.y);
+    const ordinalScale = (isVertical(orientation) ? scales.x : scales.y);
     const linear = (isVertical(orientation) ? scales.y : scales.x);
 
     // Check the padding properties and sets it accordingly.
-    setBandProps(ordinal, align, bandPadding, bandPaddingInner, bandPaddingOuter);
+    const ordinal = setBandProps(
+      ordinalScale,
+      align,
+      bandPadding,
+      bandPaddingInner,
+      bandPaddingOuter
+    );
 
     return (
       <g
