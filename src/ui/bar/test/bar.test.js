@@ -9,7 +9,6 @@ import { Bar } from '../';
 chai.use(chaiEnzme());
 
 describe('<Bar />', () => {
-
   it('renders a svg rect element that represents one bar given properties', () => {
     const wrapper = shallow(
       <Bar
