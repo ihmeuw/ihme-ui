@@ -46,17 +46,17 @@ export default class BarChart extends PureComponent {
 
   renderLegend() {
     const {
-      legendObject,
+      legendAccessors,
       legendKey,
       legendClassName,
       legendStyle,
     } = this.props;
-    if (!legendObject) return null;
+    if (!legendAccessors) return null;
     return (
       <div className={classNames(styles.legend, legendClassName)} style={legendStyle}>
         <div className={styles['legend-wrapper']}>
           <Legend
-            items={legendObject}
+            items={legendAccessors}
             labelKey={legendKey.labelKey}
             shapeColorKey={legendKey.shapeColorKey}
             shapeTypeKey={legendKey.shapeTypeKey}
@@ -80,7 +80,7 @@ export default class BarChart extends PureComponent {
       onMouseLeave,
       onMouseMove,
       orientation,
-      scaleObject,
+      scaleAccessors,
       bandPositions,
       width,
     } = this.props;
@@ -93,10 +93,10 @@ export default class BarChart extends PureComponent {
           <AxisChart
             width={width}
             height={height}
-            xDomain={scaleObject.xDomain}
-            yDomain={scaleObject.yDomain}
-            xScaleType={scaleObject.xScale}
-            yScaleType={scaleObject.yScale}
+            xDomain={scaleAccessors.xDomain}
+            yDomain={scaleAccessors.yDomain}
+            xScaleType={scaleAccessors.xScale}
+            yScaleType={scaleAccessors.yScale}
           >
             <XAxis
               label={labelAccessors.xLabel}
@@ -238,7 +238,7 @@ BarChart.propTypes = {
    *    shapeColorKey: property used to access the path to shape color in item objects (e.g., 'color', 'properties.color')
    *    shapeTypeKey: property used to access the path to shape type in item objects (e.g., 'type', 'properties.type')
    */
-  legendObject: PropTypes.shape({
+  legendAccessors: PropTypes.shape({
     labelKey: PropTypes.string,
     shapeColorKey: PropTypes.string,
     shapeTypeKey: PropTypes.string
@@ -298,7 +298,7 @@ BarChart.propTypes = {
    *    xScale: property used to access the xScale  of the scales object
    *    yScale: property used to access the yScale of the scales object
    */
-  scaleObject: PropTypes.shape({
+  scaleAccessors: PropTypes.shape({
     xDomain: PropTypes.string,
     yDomain: PropTypes.string,
     xScale: PropTypes.string,
