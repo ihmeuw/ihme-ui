@@ -297,7 +297,6 @@ MultiScatter.propTypes = {
 };
 
 MultiScatter.defaultProps = {
-  animate: false,
   colorScale() { return 'steelblue'; },
   fieldAccessors: {
     data: 'values',
@@ -309,3 +308,13 @@ MultiScatter.defaultProps = {
   shapeField: 'type',
   shapeScale() { return 'circle'; },
 };
+
+/**
+ * Props given to <Scatter /> children that can be animated using <MultiScatter animate />
+ * @type {string[]}
+ */
+MultiScatter.animatable = [
+  'fill',
+  'translateX',
+  'translateY',
+];
