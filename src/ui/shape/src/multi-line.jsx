@@ -124,6 +124,7 @@ MultiLine.propTypes = {
     PropTypes.shape({
       d: AnimateProp,
       events: AnimateEvents,
+      fill: AnimateProp,
       stroke: AnimateProp,
       strokeWidth: AnimateProp,
       timing: AnimateTiming,
@@ -282,3 +283,10 @@ MultiLine.defaultProps = {
   lineValuesIteratee: CommonDefaultProps.identity,
   scales: { x: scaleLinear(), y: scaleLinear() },
 };
+
+MultiLine.animatable = [
+  'd',
+  'fill',
+  'stroke',
+  'strokeWidth',
+];
