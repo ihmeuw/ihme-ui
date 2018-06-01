@@ -6,25 +6,23 @@ import map from 'lodash/map';
 export function animationStartFactory(animate, processor) {
   // Upon initialization, `start` cannot animate, but is required by `react-move`
   const METHOD = 'start';
-  return (data, index) => {
-    return reduce(
-      processor(data),
-      (accum, value, key) => {
-        const userMethod = get(animate, [key, METHOD]);
+  return (data, index) => reduce(
+    processor(data),
+    (accum, value, key) => {
+      const userMethod = get(animate, [key, METHOD]);
 
-        const resolvedStartState = {
-          [key]: value,
-          ...(userMethod && userMethod(value, data, index)),
-        };
+      const resolvedStartState = {
+        [key]: value,
+        ...(userMethod && userMethod(value, data, index)),
+      };
 
-        return {
-          ...accum,
-          ...resolvedStartState,
-        };
-      },
-      {},
-    );
-  };
+      return {
+        ...accum,
+        ...resolvedStartState,
+      };
+    },
+    {},
+  );
 }
 
 export function getMethodIfExists(methodMap, key) {
