@@ -1,6 +1,7 @@
 import includes from 'lodash/includes';
 import get from 'lodash/get';
 import reduce from 'lodash/reduce';
+import map from 'lodash/map';
 
 export function animationStartFactory(animate, processor) {
   // Upon initialization, `start` cannot animate, but is required by `react-move`
@@ -51,9 +52,9 @@ export function animationProcessorFactory(animate, animatableKeys, processor, me
     } = animate;
 
     // Process datum, apply default animation, which can be overridden by user methods.
-    return reduce(
+    return map(
       processor(datum),
-      (accum, value, key) => {
+      (value, key) => {
         if (includes(animatableKeys, key)) {
           // Override root animate `events` and `timing` properties.
           // ie, `animate.events` can be overridden by `animate.fill.events`.
@@ -67,28 +68,18 @@ export function animationProcessorFactory(animate, animatableKeys, processor, me
           // A user defined animation method. ie, `animate.fill.update`
           const userMethod = get(specificAnimationMethods, [key, method], phaseAgnosticMethod);
 
-          // Apply animate defaults that can be overridden by user for respective `key`.
-          const resolvedState = {
+          // return applied animate defaults that can be overridden by user for respective `key`.
+          return {
             [key]: [value],
             events,
             timing,
             ...(userMethod && userMethod(value, datum, index)),
           };
-
-          // Concatenate with accumulator and return.
-          return [
-            ...accum,
-            resolvedState,
-          ];
         }
 
         // Return non-animation object with accumulator.
-        return [
-          ...accum,
-          { [key]: value },
-        ];
+        return { [key]: value };
       },
-      [],
     );
   };
 }
