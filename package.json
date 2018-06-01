@@ -1,7 +1,7 @@
 {
   "name": "ihme-ui",
   "description": "Visualization tools from the Institute for Health Metrics and Evaluation",
-  "version": "0.30.0",
+  "version": "0.30.1",
   "license": "MIT",
   "browser": "dist/ihme-ui.min.js",
   "main": "lib/index.js",
@@ -79,6 +79,7 @@
     "jsdom": "^11.6.2",
     "mocha": "~2.3",
     "mustache": "~2.3",
+    "node-pre-gyp": "~0.10.0",
     "postcss": "^6.0.17",
     "postcss-loader": "^2.1.0",
     "react-docgen": "~2.13",
