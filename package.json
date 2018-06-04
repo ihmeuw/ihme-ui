@@ -45,8 +45,7 @@
     "test": "NODE_ENV=production BABEL_ENV=test $(npm bin)/babel-node $(npm bin)/_mocha --require ./scripts/setup-jsdom.js `./scripts/get-test-directories.sh`",
     "test:travis": "npm run lint && npm run coverage:travis && npm run coverage:token",
     "update:dep": "./scripts/update-package.sh",
-    "version": "npm run build:all && git add .",
-    "demo:app": "$(npm bin)/webpack --env demo --config webpack.demo.config.js --watch"
+    "version": "npm run build:all && git add ."
   },
   "devDependencies": {
     "autoprefixer": "^7.2.5",
