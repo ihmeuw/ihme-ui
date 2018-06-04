@@ -5,11 +5,11 @@ import map from 'lodash/map';
 
 export function animationStartFactory(animate, processor) {
   // Upon initialization, `start` cannot animate, but is required by `react-move`
-  const METHOD = 'start';
+  const PHASE = 'start';
   return (data, index) => reduce(
     processor(data),
     (accum, value, key) => {
-      const userMethod = get(animate, [key, METHOD]);
+      const userMethod = get(animate, [key, PHASE]);
 
       const resolvedStartState = {
         [key]: value,
@@ -34,11 +34,11 @@ export function getMethodIfExists(methodMap, key) {
   );
 }
 
-// A factory for each animation method: `enter` | `update` | `leave`;
-export function animationProcessorFactory(animate, animatableKeys, processor, method) {
-  const NON_ANIMATABLE_METHOD = 'start';
+// A factory for each animation phase method: `enter` | `update` | `leave`;
+export function animationProcessorFactory(animate, animatableKeys, processor, phase) {
+  const NON_ANIMATABLE_PHASE = 'start';
 
-  if (method === NON_ANIMATABLE_METHOD) {
+  if (phase === NON_ANIMATABLE_PHASE) {
     return animationStartFactory(animate, processor);
   }
 
@@ -64,7 +64,7 @@ export function animationProcessorFactory(animate, animatableKeys, processor, me
           const phaseAgnosticMethod = getMethodIfExists(specificAnimationMethods, key);
 
           // A user defined animation method. ie, `animate.fill.update`
-          const userMethod = get(specificAnimationMethods, [key, method], phaseAgnosticMethod);
+          const userMethod = get(specificAnimationMethods, [key, phase], phaseAgnosticMethod);
 
           // return applied animate defaults that can be overridden by user for respective `key`.
           return {
