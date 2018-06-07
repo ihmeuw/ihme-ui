@@ -24,13 +24,14 @@ describe('<Scatter />', () => {
   const dataAccessors = {
     x: 'year_id',
     y: 'population',
-    key: 'id'
+    key: 'id',
+    shape: 'location',
   };
 
   const data = dataGenerator({
     primaryKeys: [{ name: 'location', values: ['USA'] }],
     valueKeys: [{ name: 'population', range: [300, 600], uncertainty: false }],
-    length: 10
+    length: 10,
   });
 
   const yDomain = [minBy(data, 'population').population, maxBy(data, 'population').population];
@@ -52,8 +53,8 @@ describe('<Scatter />', () => {
     selectedClassName: 'selected',
     selectedStyle: { stroke: 'aqua' },
     shapeClassName: 'symbol',
+    shapeScale: () => 'circle',
     shapeStyle: { fill: 'bluesteel' },
-    shapeType: 'circle',
   };
 
   const component = (
@@ -351,7 +352,11 @@ describe('<Scatter />', () => {
       rawData.forEach((rawDatum, index) => {
         const processedDatum = Scatter.processDatum(
           {
-            dataAccessors,
+            dataAccessors: {
+              x: 'year_id',
+              y: 'population',
+              key: 'id',
+            },
             fill: 'red',
             scales: { x: xScale, y: yScale },
             shapeType: 'circle',
