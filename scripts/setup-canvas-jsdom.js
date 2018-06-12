@@ -11,7 +11,6 @@ export function createElementMock(originalCreateElement, tagName) {
     return {
       ...initialElement,
       getContext: () => ({
-        font: 'font',
         measureText: text => ({ width: text.length }),
       }),
     };
