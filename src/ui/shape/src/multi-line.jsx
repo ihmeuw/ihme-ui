@@ -2,7 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { scaleLinear } from 'd3';
-import { map, pick } from 'lodash';
+import {
+  map,
+  pick,
+} from 'lodash';
 
 import Line from './line';
 import Area from './area';

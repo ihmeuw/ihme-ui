@@ -1,7 +1,9 @@
-import includes from 'lodash/includes';
-import get from 'lodash/get';
-import reduce from 'lodash/reduce';
-import map from 'lodash/map';
+import {
+  get,
+  includes,
+  map,
+  reduce,
+} from 'lodash';
 
 export function animationStartFactory(animate, processor) {
   // Upon initialization, `start` cannot animate, but is required by `react-move`

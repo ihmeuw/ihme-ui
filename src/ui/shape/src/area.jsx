@@ -3,8 +3,10 @@ import Animate from 'react-move/Animate';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { area } from 'd3';
-import bindAll from 'lodash/bindAll';
-import partial from 'lodash/partial';
+import {
+  bindAll,
+  partial,
+} from 'lodash';
 
 import {
   AnimateEvents,

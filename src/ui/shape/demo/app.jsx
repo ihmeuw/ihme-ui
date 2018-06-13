@@ -8,7 +8,16 @@ import {
   schemeCategory10,
 } from 'd3';
 
-import { bindAll, maxBy, minBy, map, slice, uniqBy, without, xor } from 'lodash';
+import {
+  bindAll,
+  maxBy,
+  minBy,
+  map,
+  slice,
+  uniqBy,
+  without,
+  xor,
+} from 'lodash';
 
 import { dataGenerator } from '../../../utils';
 import AxisChart from '../../axis-chart';

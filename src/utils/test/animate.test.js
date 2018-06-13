@@ -1,11 +1,13 @@
 /* eslint-disable no-unused-expressions, max-len */
 import { expect } from 'chai';
-import get from 'lodash/get';
-import forEach from 'lodash/forEach';
-import identity from 'lodash/identity';
-import intersection from 'lodash/intersection';
-import partial from 'lodash/partial';
-import noop from 'lodash/noop';
+import {
+  get,
+  forEach,
+  identity,
+  intersection,
+  partial,
+  noop,
+} from 'lodash';
 import sinon from 'sinon';
 
 import {

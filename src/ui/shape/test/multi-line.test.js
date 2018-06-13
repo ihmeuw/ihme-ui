@@ -2,8 +2,17 @@ import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
-import { maxBy, minBy, map, uniqBy } from 'lodash';
-import { scalePoint, scaleLinear, scaleOrdinal } from 'd3';
+import {
+  maxBy,
+  minBy,
+  map,
+  uniqBy,
+} from 'lodash';
+import {
+  scalePoint,
+  scaleLinear,
+  scaleOrdinal,
+} from 'd3';
 
 import { dataGenerator } from '../../../utils';
 import { MultiLine } from '../';

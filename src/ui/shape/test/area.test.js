@@ -4,8 +4,15 @@ import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
-import { maxBy, minBy } from 'lodash';
-import { area, scaleLinear, scalePoint } from 'd3';
+import {
+  maxBy,
+  minBy,
+} from 'lodash';
+import {
+  area,
+  scaleLinear,
+  scalePoint,
+} from 'd3';
 
 import { dataGenerator } from '../../../utils';
 import { Area } from '../';

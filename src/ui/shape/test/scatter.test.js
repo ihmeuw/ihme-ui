@@ -6,8 +6,18 @@ import {
   mount,
   shallow,
 } from 'enzyme';
-import { drop, forEach, minBy, maxBy, uniqBy, map } from 'lodash';
-import { scaleLinear, scalePoint } from 'd3';
+import {
+  drop,
+  forEach,
+  map,
+  minBy,
+  maxBy,
+  uniqBy,
+} from 'lodash';
+import {
+  scaleLinear,
+  scalePoint,
+} from 'd3';
 import sinon from 'sinon';
 import { dataGenerator } from '../../../utils';
 

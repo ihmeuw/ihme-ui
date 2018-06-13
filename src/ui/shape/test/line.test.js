@@ -2,10 +2,20 @@ import React from 'react';
 import Animate from 'react-move/Animate';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
-import { mount, shallow } from 'enzyme';
+import {
+  mount,
+  shallow,
+} from 'enzyme';
 import sinon from 'sinon';
-import { maxBy, minBy } from 'lodash';
-import { line, scalePoint, scaleLinear } from 'd3';
+import {
+  maxBy,
+  minBy,
+} from 'lodash';
+import {
+  line,
+  scalePoint,
+  scaleLinear,
+} from 'd3';
 
 import { dataGenerator } from '../../../utils';
 import { Line } from '../';

@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types';
-import eq from 'lodash/eq';
-import identity from 'lodash/identity';
-import includes from 'lodash/includes';
-import intersection from 'lodash/intersection';
-import noop from 'lodash/noop';
-import reduce from 'lodash/reduce';
+import {
+  eq,
+  identity,
+  includes,
+  intersection,
+  noop,
+  reduce,
+} from 'lodash';
 
 export const CommonPropTypes = {
   children: PropTypes.node,

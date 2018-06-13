@@ -3,14 +3,16 @@ import NodeGroup from 'react-move/NodeGroup';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { scaleLinear } from 'd3';
-import bindAll from 'lodash/bindAll';
-import findIndex from 'lodash/findIndex';
-import isFinite from 'lodash/isFinite';
-import has from 'lodash/has';
-import keyBy from 'lodash/keyBy';
-import partial from 'lodash/partial';
-import pick from 'lodash/pick';
-import sortBy from 'lodash/sortBy';
+import {
+  bindAll,
+  findIndex,
+  isFinite,
+  has,
+  keyBy,
+  partial,
+  pick,
+  sortBy,
+} from 'lodash';
 
 import {
   animationProcessorFactory,

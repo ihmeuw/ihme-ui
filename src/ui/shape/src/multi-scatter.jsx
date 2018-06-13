@@ -2,7 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { scaleLinear } from 'd3';
-import { castArray, map, pick } from 'lodash';
+import {
+  castArray,
+  map,
+  pick,
+} from 'lodash';
 import Scatter from './scatter';
 
 import {
