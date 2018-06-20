@@ -2,8 +2,17 @@ import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
-import { maxBy, minBy, map, uniqBy } from 'lodash';
-import { scalePoint, scaleLinear, scaleOrdinal } from 'd3';
+import {
+  maxBy,
+  minBy,
+  map,
+  uniqBy,
+} from 'lodash';
+import {
+  scalePoint,
+  scaleLinear,
+  scaleOrdinal,
+} from 'd3';
 
 import { dataGenerator } from '../../../utils';
 import { MultiLine } from '../';
@@ -32,130 +41,149 @@ describe('<MultiLine />', () => {
 
   const lineData = [{ location: 'USA', values: data }, { location: 'Canada', values: data }];
 
+  const lineDataAccessors = { x: keyField, y: valueField };
+  const areaDataAccessors = { x: keyField, y0: 'value_lb', y1: 'value_ub' };
+
+  const sharedProps = {
+    data: lineData,
+    fieldAccessors: {
+      key: 'location',
+      data: 'values',
+    },
+    scales,
+    colorScale,
+  };
+
   describe('plot of only <Line /> components', () => {
-    let component;
+    const testProps = {
+      ...sharedProps,
+      dataAccessors: lineDataAccessors,
+    };
 
-    before(() => {
-      component = (
-        <MultiLine
-          data={lineData}
-          fieldAccessors={{
-            key: 'location',
-            data: 'values',
-          }}
-          scales={scales}
-          colorScale={colorScale}
-          dataAccessors={{ x: keyField, y: valueField }}
-        />
-      );
-    });
+    const components = [
+      <MultiLine {...testProps} />,
+      <MultiLine animate {...testProps} />,
+    ];
 
-    it('renders a g', () => {
-      const wrapper = shallow(component);
-      expect(wrapper.find('g')).to.have.length(1);
-    });
+    components.forEach((testComponent) => {
+      const animated = testComponent.props.animate ? 'animated' : 'non-animated';
+      const wrapper = shallow(testComponent);
 
-    it('renders two <Line /> components', () => {
-      const wrapper = shallow(component);
-      expect(wrapper).to.have.exactly(2).descendants('Line');
-    });
+      it(`renders a g (${animated})`, () => {
+        expect(wrapper.find('g')).to.have.length(1);
+      });
 
-    it('passes a subset of its props to child components', () => {
-      const wrapper = shallow(component);
-      const child = wrapper.find('Line').first();
-      expect(child)
-        .to.have.prop('scales')
-        .that.is.an('object')
-        .that.has.keys(['x', 'y']);
+      it(`renders two <Line /> components (${animated})`, () => {
+        expect(wrapper).to.have.exactly(2).descendants('Line');
+      });
 
-      expect(child)
-        .to.not.have.prop('keyField');
-    });
+      it(`passes a subset of its props to child components (${animated})`, () => {
+        const child = wrapper.find('Line').first();
+        expect(child)
+          .to.have.prop('scales')
+          .that.is.an('object')
+          .that.has.keys(['x', 'y']);
 
-    it('alters styling passed to children when given a color scale', () => {
-      const wrapper = shallow(component);
-      const usaLine = wrapper.find('Line').first();
-      const caLine = wrapper.find('Line').last();
+        expect(child).to.not.have.prop('keyField');
+      });
 
-      expect(usaLine)
-        .to.have.style('stroke', colorScale('USA'));
+      it(`alters styling passed to children when given a color scale (${animated})`, () => {
+        const usaLine = wrapper.find('Line').first();
+        const caLine = wrapper.find('Line').last();
 
-      expect(caLine)
-        .to.have.style('stroke', colorScale('Canada'));
+        expect(usaLine).to.have.style('stroke', colorScale('USA'));
+        expect(caLine).to.have.style('stroke', colorScale('Canada'));
+      });
     });
   });
 
   describe('plot of only <Area /> components', () => {
-    let component;
+    const testProps = {
+      ...sharedProps,
+      dataAccessors: areaDataAccessors,
+    };
 
-    before(() => {
-      component = (
-        <MultiLine
-          data={lineData}
-          fieldAccessors={{
-            key: 'location',
-            data: 'values',
-          }}
-          scales={scales}
-          colorScale={colorScale}
-          dataAccessors={{ x: keyField, y0: 'value_lb', y1: 'value_ub' }}
-        />
-      );
-    });
+    const components = [
+      <MultiLine {...testProps} />,
+      <MultiLine animate {...testProps} />,
+    ];
 
-    it('renders two <Area /> components', () => {
-      const wrapper = shallow(component);
-      expect(wrapper).to.have.exactly(2).descendants('Area');
+    components.forEach((testComponent) => {
+      const animated = testComponent.props.animate ? 'animated' : 'non-animated';
+      const wrapper = shallow(testComponent);
+
+      it(`renders two <Area /> components (${animated})`, () => {
+        expect(wrapper).to.have.exactly(2).descendants('Area');
+      });
     });
   });
 
   describe('plot of both <Line /> and <Area /> components', () => {
-    let component;
+    const testProps = {
+      ...sharedProps,
+      dataAccessors: { ...lineDataAccessors, ...areaDataAccessors },
+    };
 
-    before(() => {
-      component = (
-        <MultiLine
-          data={lineData}
-          fieldAccessors={{
-            key: 'location',
-            data: 'values',
-          }}
-          scales={scales}
-          colorScale={colorScale}
-          dataAccessors={{ x: keyField, y: valueField, y0: 'value_lb', y1: 'value_ub' }}
-        />
-      );
-    });
+    const components = [
+      <MultiLine {...testProps} />,
+      <MultiLine animate {...testProps} />,
+    ];
 
-    it('renders two <Line /> and two <Area /> components', () => {
-      const wrapper = shallow(component);
-      expect(wrapper).to.have.exactly(2).descendants('Line');
-      expect(wrapper).to.have.exactly(2).descendants('Area');
+    components.forEach((testComponent) => {
+      const animated = testComponent.props.animate ? 'animated' : 'non-animated';
+      const wrapper = shallow(testComponent);
+
+      it(`renders two <Line /> and two <Area /> components (${animated})`, () => {
+        expect(wrapper).to.have.exactly(2).descendants('Line');
+        expect(wrapper).to.have.exactly(2).descendants('Area');
+      });
     });
   });
 
   describe('plot of neither <Line /> nor <Area />', () => {
-    let component;
+    const testProps = {
+      ...sharedProps,
+      dataAccessors: { x: keyField },
+    };
 
-    before(() => {
-      component = (
-        <MultiLine
-          data={lineData}
-          fieldAccessors={{
-            key: 'location',
-            data: 'values',
-          }}
-          scales={scales}
-          colorScale={colorScale}
-          dataAccessors={{ x: keyField }}
-        />
-      );
+    const components = [
+      <MultiLine {...testProps} />,
+      <MultiLine animate {...testProps} />,
+    ];
+
+    components.forEach((testComponent) => {
+      const animated = testComponent.props.animate ? 'animated' : 'non-animated';
+      const wrapper = shallow(testComponent);
+
+      it(`render neither <Line /> nor <Area /> components (${animated})`, () => {
+        expect(wrapper).to.not.have.descendants('Line');
+        expect(wrapper).to.not.have.descendants('Area');
+      });
     });
+  });
 
-    it('render neither <Line /> nor <Area /> components', () => {
-      const wrapper = shallow(component);
-      expect(wrapper).to.not.have.descendants('Line');
-      expect(wrapper).to.not.have.descendants('Area');
+  describe('passes specified properties to its children', () => {
+    it('passes specified properties to its children', () => {
+      const inheritedProps = [
+        'animate',
+        'onClick',
+        'onMouseLeave',
+        'onMouseMove',
+        'onMouseOver',
+      ];
+
+      const wrapper = shallow((
+        <MultiLine
+          {...sharedProps}
+          dataAccessors={{ ...lineDataAccessors, ...areaDataAccessors }}
+        />
+      ));
+
+      wrapper.find('line').forEach((shape) => {
+        inheritedProps.forEach((prop) => {
+          expect(shape).to.have.prop(prop);
+        });
+      });
     });
   });
 });

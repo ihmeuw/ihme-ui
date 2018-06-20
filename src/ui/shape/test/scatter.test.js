@@ -2,9 +2,22 @@
 import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
-import { shallow } from 'enzyme';
-import { drop, forEach, minBy, maxBy, uniqBy, map } from 'lodash';
-import { scaleLinear, scalePoint } from 'd3';
+import {
+  mount,
+  shallow,
+} from 'enzyme';
+import {
+  drop,
+  forEach,
+  map,
+  minBy,
+  maxBy,
+  uniqBy,
+} from 'lodash';
+import {
+  scaleLinear,
+  scalePoint,
+} from 'd3';
 import sinon from 'sinon';
 import { dataGenerator } from '../../../utils';
 
@@ -21,13 +34,14 @@ describe('<Scatter />', () => {
   const dataAccessors = {
     x: 'year_id',
     y: 'population',
-    key: 'id'
+    key: 'id',
+    shape: 'location',
   };
 
   const data = dataGenerator({
     primaryKeys: [{ name: 'location', values: ['USA'] }],
     valueKeys: [{ name: 'population', range: [300, 600], uncertainty: false }],
-    length: 10
+    length: 10,
   });
 
   const yDomain = [minBy(data, 'population').population, maxBy(data, 'population').population];
@@ -37,50 +51,56 @@ describe('<Scatter />', () => {
   const yScale = scaleLinear().domain(yDomain).range([chartDimensions.height, 0]);
   const colorScale = scaleLinear().domain(yDomain).range(['#fc8d59', '#ffffbf', '#91bfdb']);
 
+  const sharedProps = {
+    data,
+    dataAccessors,
+    fill: 'red',
+    focus: data[2],
+    focusedClassName: 'focused',
+    focusedStyle: { stroke: 'cornsilk' },
+    scales: { x: xScale, y: yScale },
+    selection: [data[1], data[3]],
+    selectedClassName: 'selected',
+    selectedStyle: { stroke: 'aqua' },
+    shapeClassName: 'symbol',
+    shapeScale: () => 'circle',
+    shapeStyle: { fill: 'bluesteel' },
+  };
+
   const component = (
     <Scatter
-      data={data}
-      dataAccessors={dataAccessors}
-      fill="red"
-      focus={data[2]}
-      focusedClassName="focused"
-      focusedStyle={{ stroke: 'cornsilk' }}
-      scales={{ x: xScale, y: yScale }}
-      selection={[data[1], data[3]]}
-      selectedClassName="selected"
-      selectedStyle={{ stroke: 'aqua' }}
-      shapeClassName="symbol"
-      shapeStyle={{ fill: 'bluesteel' }}
-      shapeType="circle"
+      {...sharedProps}
     />
   );
 
-  it('contains 10 shapes', () => {
-    const wrapper = shallow(component);
-    expect(wrapper.find(Shape)).to.have.length(10);
-  });
+  const animatedComponent = (
+    <Scatter
+      {...sharedProps}
+      animate
+    />
+  );
 
-  it('does not pass specific properties to its children', () => {
+  const components = [
+    animatedComponent,
+    component,
+  ];
+
+  describe('inherited & non-inherited props', () => {
     const nonInheritedProps = [
+      'animate',
       'colorScale',
       'data',
       'dataAccessors',
+      'enter',
       'focus',
+      'leave',
       'scales',
       'selection',
       'shapeClassName',
       'shapeStyle',
+      'start',
+      'update',
     ];
-    const assertion = (shape) => {
-      nonInheritedProps.forEach(prop => {
-        expect(shape).to.not.have.prop(prop);
-      });
-    };
-
-    shallow(component).find(Shape).forEach(assertion);
-  });
-
-  it('passes specified properties to its children', () => {
     const inheritedProps = [
       'className',
       'focusedClassName',
@@ -95,23 +115,48 @@ describe('<Scatter />', () => {
       'shapeType',
       'style',
     ];
-    const assertion = (shape) => {
+    const nonInheritedPropsAssertion = shape => {
+      nonInheritedProps.forEach(prop => {
+        expect(shape).to.not.have.prop(prop);
+      });
+    };
+    const inheritedPropsAssertion = (shape) => {
       inheritedProps.forEach(prop => {
         expect(shape).to.have.prop(prop);
       });
     };
 
-    shallow(component).find(Shape).forEach(assertion);
+    components.forEach(testComponent => {
+      const animated = testComponent.props.animate ? 'animated' : 'non-animated';
+
+      it(`does not pass specific properties to its children (${animated})`, () => {
+        shallow(testComponent).find(Shape).forEach(nonInheritedPropsAssertion);
+      });
+      it(`passes specified properties to its children (${animated})`, () => {
+        shallow(testComponent).find(Shape).forEach(inheritedPropsAssertion);
+      });
+    });
   });
 
-  it('selects a shape', () => {
-    const wrapper = shallow(component);
-    expect(wrapper.find({ selected: true })).to.have.length(2);
-  });
+  describe('child Shape components', () => {
+    components.forEach(testComponent => {
+      const animated = testComponent.props.animate ? 'animated' : 'non-animated';
 
-  it('focuses a shape', () => {
-    const wrapper = shallow(component);
-    expect(wrapper.find({ focused: true })).to.have.length(1);
+      it(`component contains 10 shapes (${animated})`, () => {
+        const wrapper = mount(testComponent);
+        expect(wrapper.find(Shape)).to.have.length(10);
+      });
+
+      it(`selects a shape (${animated})`, () => {
+        const wrapper = mount(testComponent);
+        expect(wrapper.find({ selected: true })).to.have.length(2);
+      });
+
+      it(`focuses a shape (${animated})`, () => {
+        const wrapper = mount(testComponent);
+        expect(wrapper.find({ focused: true })).to.have.length(1);
+      });
+    });
   });
 
   describe('dataAccessors', () => {
@@ -262,7 +307,7 @@ describe('<Scatter />', () => {
       const wrapper = shallow(
         <Scatter
           data={junkData}
-          dataAccessors={{ key: 'x', x: 'x' }}
+          dataAccessors={{ key: (d, i) => `${i}_${d.x}`, x: 'x' }}
           scales={{ x: spyMap.x.spy }}
         />
       );
@@ -273,6 +318,80 @@ describe('<Scatter />', () => {
 
       wrapper.find(Shape).forEach(assertion);
       expect(spyMap.x.spy.called).to.be.false;
+    });
+  });
+
+  describe('data processing instance methods', () => {
+    const rawData = [
+      { id: 1, population: 450, year_id: 2000 },
+      { id: 2, population: 351, year_id: 2003 },
+      { id: 3, population: 540, year_id: 2009 },
+    ];
+
+    const expectedProcessedDatum = [
+      {
+        fill: 'red',
+        shapeType: 'circle',
+        translateX: 0,
+        translateY: 400,
+      },
+      {
+        fill: 'red',
+        shapeType: 'circle',
+        translateX: 200,
+        translateY: 664.1761174116077,
+      },
+      {
+        fill: 'red',
+        shapeType: 'circle',
+        translateX: 600,
+        translateY: 159.83989326217474,
+      },
+    ];
+
+    const testComponent = (
+      <Scatter
+        {...sharedProps}
+        data={rawData}
+      />
+    );
+
+    const wrapper = shallow(testComponent);
+
+    it('processDatum correctly calculates values as expected', () => {
+      rawData.forEach((rawDatum, index) => {
+        const processedDatum = Scatter.processDatum(
+          {
+            dataAccessors: {
+              x: 'year_id',
+              y: 'population',
+              key: 'id',
+            },
+            fill: 'red',
+            scales: { x: xScale, y: yScale },
+            shapeType: 'circle',
+          },
+          rawDatum
+        );
+
+        expect(processedDatum).to.deep.equal(expectedProcessedDatum[index]);
+      });
+    });
+
+    it('processDataSet formats and processes data', () => {
+      const processedData = wrapper.instance().processDataSet(rawData);
+
+      processedData.forEach((datum, index) => {
+        // correct shape.
+        expect(datum).to.have.property('key');
+        expect(datum).to.have.property('data');
+        expect(datum).to.have.property('state');
+
+        // correct `key`, `data`, `state` assignments.
+        expect(datum.key).to.equal(datum.data.id);
+        expect(datum.data).to.equal(rawData[index]);
+        expect(datum.state).to.deep.equal(expectedProcessedDatum[index]);
+      });
     });
   });
 

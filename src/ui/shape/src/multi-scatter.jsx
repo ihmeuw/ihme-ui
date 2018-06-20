@@ -2,10 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { scaleLinear } from 'd3';
-import { castArray, map, pick } from 'lodash';
+import {
+  castArray,
+  map,
+  pick,
+} from 'lodash';
 import Scatter from './scatter';
 
 import {
+  AnimateEvents,
+  AnimateProp,
+  AnimateTiming,
   combineStyles,
   CommonDefaultProps,
   CommonPropTypes,
@@ -49,6 +56,7 @@ export default class MultiScatter extends React.PureComponent {
     } = fieldAccessors;
 
     const childProps = pick(this.props, [
+      'animate',
       'colorScale',
       'dataAccessors',
       'focus',
@@ -104,6 +112,21 @@ export default class MultiScatter extends React.PureComponent {
 }
 
 MultiScatter.propTypes = {
+  /**
+   * Whether to animate the MultiScatter component (using default `start`, `update` functions).
+   * Optionally, an object that provides functions that dictate behavior of animations.
+   */
+  animate: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.shape({
+      fill: AnimateProp,
+      translateX: AnimateProp,
+      translateY: AnimateProp,
+      events: AnimateEvents,
+      timing: AnimateTiming,
+    }),
+  ]),
+
   /**
    * className applied to outermost wrapping `<g>`.
    */
@@ -289,3 +312,13 @@ MultiScatter.defaultProps = {
   shapeField: 'type',
   shapeScale() { return 'circle'; },
 };
+
+/**
+ * Props given to <Scatter /> children that can be animated using <MultiScatter animate />
+ * @type {string[]}
+ */
+MultiScatter.animatable = [
+  'fill',
+  'translateX',
+  'translateY',
+];
