@@ -159,7 +159,7 @@ the component will animate with the default settings of the underlying animation
 
 Here's a quick example of using a bool `animate` prop on an `<Line/>` component for default animation 
 options of its [animatable attributes](https://github.com/ihmeuw/ihme-ui/blob/react-move/src/ui/shape/src/line.jsx#L228):
-```
+```js
 <Line
   animate
   {...otherLineProps}
@@ -197,7 +197,7 @@ each phase of the animation lifecycle (`start`, `enter`, `update`, `leave`).
 
 As an example, the `<Scatter/>` `animate` prop can apply custom animation settings to the `fill` 
 attribute during the `update` phase of the animation lifecycle:
-```
+```js
 <Scatter
   animate={{
     fill: {
@@ -225,7 +225,7 @@ accordingly. The signature has been detailed in the @callback type
 [AnimateMethodCallback](https://github.com/ihmeuw/ihme-ui/blob/react-move/src/utils/props.js#L296). 
 
 Here's is an example of utilizing the arguments in an animation method:
-```
+```js
 function updateFill(computedFillValue, inputDatum, index) {
   // Use raw input data.
   const isSpecial = inputDatum.someSpecificProperty;
