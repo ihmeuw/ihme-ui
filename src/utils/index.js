@@ -12,6 +12,7 @@ export {
 export {
   colorSteps,
   baseColorScale,
+  getRandomColor,
 } from './colors';
 
 export {
