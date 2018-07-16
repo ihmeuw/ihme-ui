@@ -264,6 +264,7 @@ export default class Map extends React.Component {
 
   renderMap() {
     const {
+      colorAccessor,
       data,
       focus,
       focusedClassName,
@@ -289,6 +290,7 @@ export default class Map extends React.Component {
       <div className={classNames(styles.map, mapClassName)} style={mapStyle}>
         <ResponsiveContainer>
           <Choropleth
+            colorAccessor={colorAccessor}
             colorScale={colorScale}
             controls
             controlsClassName={zoomControlsClassName}
@@ -317,6 +319,7 @@ export default class Map extends React.Component {
     const {
       axisTickFormat,
       colorSteps,
+      colorAccessor,
       data,
       domain,
       extentPct,
@@ -354,6 +357,7 @@ export default class Map extends React.Component {
             <ChoroplethLegend
               axisTickFormat={axisTickFormat}
               colorSteps={colorSteps}
+              colorAccessor={colorAccessor}
               colorScale={colorScale}
               data={filterData(data, locationIdsOnMap, keyField)}
               domain={domain}
@@ -418,6 +422,16 @@ Map.propTypes = {
    * className applied to outermost wrapping div
    */
   className: CommonPropTypes.className,
+
+  /**
+   * colorAccessor can either be a string or function. If a string, it is assumed to be the name of a
+   * property on datum objects;
+   * If a function, it is passed datum objects as its first and only argument. key of datum;
+   */
+  colorAccessor: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+  ]),
 
   /**
    * list of hex or rbg color values

@@ -301,6 +301,7 @@ export default class Choropleth extends React.Component {
           return (
             <FeatureLayer
               colorScale={this.props.colorScale}
+              colorAccessor={this.props.colorAccessor}
               data={this.state.processedData}
               features={this.state.cache.feature[layer.name].features}
               focus={this.props.focus}
@@ -375,6 +376,14 @@ Choropleth.propTypes = {
    * className applied to outermost div
    */
   className: CommonPropTypes.className,
+
+  /**
+   * accepts value of `keyfield` (str), returns stroke color for line (str)
+   */
+  colorAccessor: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+  ]),
 
   /**
    * accepts value of `keyfield` (str), returns stroke color for line (str)
