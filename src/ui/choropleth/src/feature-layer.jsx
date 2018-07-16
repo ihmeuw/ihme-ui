@@ -32,6 +32,7 @@ export default class FeatureLayer extends React.PureComponent {
 
   render() {
     const {
+      colorAccessor,
       colorScale,
       data,
       focus,
@@ -78,7 +79,15 @@ export default class FeatureLayer extends React.PureComponent {
               ? valueField(data, feature)
               : getValue(datum, valueField);
 
-            const fill = isNil(value) ? '#ccc' : colorScale(value);
+            let accessedColor;
+            let color;
+            if (colorAccessor) accessedColor = propResolver(datum, colorAccessor);
+            if (colorScale) {
+              color = (colorAccessor && (colorScale(value) !== '#ccc'))
+                ? accessedColor
+                : colorScale(value);
+            }
+            const fill = isNil(value) ? '#ccc' : color;
 
             return (
               <Path
@@ -109,6 +118,15 @@ export default class FeatureLayer extends React.PureComponent {
 }
 
 FeatureLayer.propTypes = {
+
+  /**
+   * accepts value of `keyfield` (str), returns stroke color for line (str)
+   */
+  colorAccessor: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+  ]),
+
   /* fn that accepts keyfield, and returns fill color for Path */
   colorScale: PropTypes.func.isRequired,
 
