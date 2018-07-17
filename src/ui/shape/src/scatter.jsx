@@ -52,28 +52,34 @@ export default class Scatter extends React.PureComponent {
     this.state = stateFromPropUpdates(Scatter.propUpdates, this.props, nextProps, this.state);
   }
 
-  static processDatum(props, datum) {
+  static computeFill(props, datum) {
     const {
       colorAccessor,
       colorScale,
       dataAccessors,
       fill,
+    } = props;
+    const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x);
+    if (colorScale && isFinite(fillValue)) {
+      return colorAccessor && colorScale(fillValue) !== '#ccc'
+        ? propResolver(datum, colorAccessor)
+        : colorScale(fillValue);
+      /* eslint-disable no-else-return */
+    } else {
+      return fill;
+    }
+  }
+
+  static processDatum(props, datum) {
+    const {
+      dataAccessors,
       scales,
       shapeScale,
       shapeType,
     } = props;
 
     // Compute fill.
-    let accessedColor;
-    let color;
-    if (colorAccessor) accessedColor = propResolver(datum, colorAccessor);
-    const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x);
-    if (colorScale) {
-      color = (colorAccessor && (colorScale(fillValue) !== '#ccc'))
-        ? accessedColor
-        : colorScale(fillValue);
-    }
-    const processedFill = colorScale && isFinite(fillValue) ? color : fill;
+    const processedFill = Scatter.computeFill(props, datum);
 
     // Compute shape type.
     const resolvedShapeType = dataAccessors.shape
