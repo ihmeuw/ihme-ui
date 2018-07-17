@@ -30,7 +30,6 @@ export const baseColorScale = (domain = [0, 1]) =>
     .domain(linspace(domain, colorSteps.length))
     .range(colorSteps);
 
-
 /**
  * Returns a random hex color
  * @returns {string} hex color
