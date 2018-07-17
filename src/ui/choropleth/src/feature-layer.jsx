@@ -40,10 +40,8 @@ export default class FeatureLayer extends React.PureComponent {
       return defaultColor;
     } else if (colorAccessor && colorScale(value) !== '#ccc') {
       return propResolver(datum, colorAccessor);
-      /* eslint-disable no-else-return */
-    } else {
-      return colorScale(value);
     }
+    return colorScale(value);
   }
 
   render() {

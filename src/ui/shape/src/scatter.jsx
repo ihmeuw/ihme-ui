@@ -64,10 +64,8 @@ export default class Scatter extends React.PureComponent {
       return colorAccessor && colorScale(fillValue) !== '#ccc'
         ? propResolver(datum, colorAccessor)
         : colorScale(fillValue);
-      /* eslint-disable no-else-return */
-    } else {
-      return fill;
     }
+    return fill;
   }
 
   static processDatum(props, datum) {
