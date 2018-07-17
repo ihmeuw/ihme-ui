@@ -106,13 +106,16 @@ export default class ChoroplethLegend extends React.PureComponent {
             shapeClassName={styles['density-circle']}
           />
           <g transform={`translate(0, ${10 + (5 * zoom)})`}>
-            <LinearGradient
-              colors={colorAccessor ? ['#fff'] : colorSteps}
-              x1={x1}
-              x2={x2}
-              width={adjustedWidth}
-              height={sliderHeight}
-            />
+            {
+              !colorAccessor
+              && <LinearGradient
+                colors={colorSteps}
+                x1={x1}
+                x2={x2}
+                width={adjustedWidth}
+                height={sliderHeight}
+              />
+            }
             <Slider
               domain={domain}
               xScale={sliderScale}
