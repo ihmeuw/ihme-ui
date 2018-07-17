@@ -6,7 +6,7 @@
 Property | Required | Type(s) | Defaults | Description
 :---    |:---      |:---     |:---      |:---       
 `className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to outermost div
-`colorAccessor` |  | string, func |  | If string is the color property of the datum object. If function takes in datum object and returns a color string.
+`colorAccessor` |  | string, func |  | if string, the color property of the datum object; if function, takes in datum object and returns a color string.
 `colorScale` | true | func |  | accepts value of `keyfield` (str), returns stroke color for line (str)
 `controls` |  | bool | false | show zoom controls
 `controlsClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to controls container div

@@ -7,7 +7,7 @@ Property | Required | Type(s) | Defaults | Description
 :---    |:---      |:---     |:---      |:---       
 `axisTickFormat` |  | func | numberFormat | [format of axis ticks](https://github.com/d3/d3-axis#axis_tickFormat)
 `axisTranslate` |  | object | {<br />  x: 0,<br />  y: 20<br />} | shift axis in the x or y directions; use to put padding between the color gradient rect and the axis
-`colorAccessor` |  | string, func |  | If string is the color property of the datum object. If function takes in datum object and returns a color string.
+`colorAccessor` |  | string, func |  | if string, the color property of the datum object; if function, takes in datum object and returns a color string.
 `colorScale` | true | func |  | color scale for density plot; should accept `datum[valueField]` and return color string
 `colorSteps` |  | array | defaultColorSteps | color steps, e.g. ['#fff', '#ccc', '\#000', ...]
 `data` | true | array |  | array of datum objects
