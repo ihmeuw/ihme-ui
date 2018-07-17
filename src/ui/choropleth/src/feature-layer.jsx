@@ -30,10 +30,24 @@ export default class FeatureLayer extends React.PureComponent {
     this.setState(stateFromPropUpdates(FeatureLayer.propUpdates, this.props, nextProps, {}));
   }
 
-  render() {
+  getColor(datum, value) {
     const {
       colorAccessor,
       colorScale,
+    } = this.props;
+    const defaultColor = '#ccc';
+    if (isNil(value)) {
+      return defaultColor;
+    } else if (colorAccessor && colorScale(value) !== '#ccc') {
+      return propResolver(datum, colorAccessor);
+      /* eslint-disable no-else-return */
+    } else {
+      return colorScale(value);
+    }
+  }
+
+  render() {
+    const {
       data,
       focus,
       focusedClassName,
@@ -79,15 +93,7 @@ export default class FeatureLayer extends React.PureComponent {
               ? valueField(data, feature)
               : getValue(datum, valueField);
 
-            let accessedColor;
-            let color;
-            if (colorAccessor) accessedColor = propResolver(datum, colorAccessor);
-            if (colorScale) {
-              color = (colorAccessor && (colorScale(value) !== '#ccc'))
-                ? accessedColor
-                : colorScale(value);
-            }
-            const fill = isNil(value) ? '#ccc' : color;
+            const fill = this.getColor(datum, value);
 
             return (
               <Path
