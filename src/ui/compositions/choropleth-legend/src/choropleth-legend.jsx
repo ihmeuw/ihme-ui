@@ -107,7 +107,7 @@ export default class ChoroplethLegend extends React.PureComponent {
           />
           <g transform={`translate(0, ${10 + (5 * zoom)})`}>
             <LinearGradient
-              colors={(colorAccessor) ? ['#fff'] : colorSteps}
+              colors={colorAccessor ? ['#fff'] : colorSteps}
               x1={x1}
               x2={x2}
               width={adjustedWidth}
