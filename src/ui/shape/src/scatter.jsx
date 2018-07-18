@@ -52,19 +52,32 @@ export default class Scatter extends React.PureComponent {
     this.state = stateFromPropUpdates(Scatter.propUpdates, this.props, nextProps, this.state);
   }
 
-  static processDatum(props, datum) {
+  static computeFill(props, datum) {
     const {
+      colorAccessor,
       colorScale,
       dataAccessors,
       fill,
+    } = props;
+    const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x);
+    if (colorScale && isFinite(fillValue)) {
+      return colorAccessor && colorScale(fillValue) !== '#ccc'
+        ? propResolver(datum, colorAccessor)
+        : colorScale(fillValue);
+    }
+    return fill;
+  }
+
+  static processDatum(props, datum) {
+    const {
+      dataAccessors,
       scales,
       shapeScale,
       shapeType,
     } = props;
 
     // Compute fill.
-    const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x);
-    const processedFill = colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill;
+    const processedFill = Scatter.computeFill(props, datum);
 
     // Compute shape type.
     const resolvedShapeType = dataAccessors.shape
@@ -222,6 +235,14 @@ Scatter.propTypes = {
    * clip all children of `<Scatter />` to that container by passing in the clip path URL id.
    */
   clipPathId: PropTypes.string,
+
+  /**
+   * accepts value of `keyfield` (str), returns stroke color for line (str)
+   */
+  colorAccessor: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+  ]),
 
   /**
    * If provided will determine color of rendered `<Shape />`s

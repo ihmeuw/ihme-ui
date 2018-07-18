@@ -2,16 +2,18 @@ import React from 'react';
 import { render } from 'react-dom';
 import { json } from 'd3';
 import {
+  assign,
   bindAll,
   find,
   flatMap,
   get as getValue,
+  reduce,
   xor,
 } from 'lodash';
 
 import Map from '../';
 import Button from '../../../button';
-import { dataGenerator, numberFormat } from '../../../../utils';
+import { dataGenerator, numberFormat, getRandomColor } from '../../../../utils';
 
 const keyField = 'loc_id';
 const valueField = (data, feature) => {
@@ -53,6 +55,7 @@ class App extends React.Component {
       'onGenerateNewData',
       'onResetScale',
       'onSliderMove',
+      'onToggleColorAccessor',
       'onToggleSubnational',
       'onMouseOver',
       'onMouseLeave',
@@ -87,6 +90,14 @@ class App extends React.Component {
     this.setData();
   }
 
+ onToggleColorAccessor() {
+    this.setState({
+      colorAccessor: this.state.colorAccessor === 'Color'
+        ? null
+        : 'Color',
+    });
+  }
+
   onSliderMove(selectedChoroplethDomain) {
     this.setState({
       selectedChoroplethDomain,
@@ -109,8 +120,14 @@ class App extends React.Component {
 
   setData() {
     const range = randomRange();
-    this.setState({
-      data: this.getData(this.getLocationIds(this.props.topology.objects), range),
+     const initialData = this.getData(this.getLocationIds(this.props.topology.objects), range);
+     const colorData = reduce(initialData, (result, value, key) => {
+       result.push(assign(value, {}, { Color: getRandomColor() }));
+       return result;
+     }, []);
+
+   this.setState({
+      data: colorData,
       range,
     });
   }
@@ -131,7 +148,7 @@ class App extends React.Component {
 
   render() {
     const { topology } = this.props;
-    const { data, mapLevel, range, selections, selectedChoroplethDomain } = this.state;
+    const { colorAccessor, data, mapLevel, range, selections, selectedChoroplethDomain } = this.state;
 
     if (!Array.isArray(data)) return null;
 
@@ -144,6 +161,7 @@ class App extends React.Component {
           extentPct={selectedChoroplethDomain}
           focus={this.state.focus}
           geometryKeyField={`properties.${keyField}`}
+          colorAccessor={colorAccessor}
           keyField={keyField}
           onClick={this.onClick}
           onMouseOver={this.onMouseOver}
@@ -156,6 +174,10 @@ class App extends React.Component {
           topology={topology}
           unit="Probability of death"
           valueField={valueField}
+        />
+        <Button
+          onClick={this.onToggleColorAccessor}
+          text="Toggle color accessor"
         />
         <Button
           onClick={this.onGenerateNewData}

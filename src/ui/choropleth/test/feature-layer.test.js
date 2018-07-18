@@ -207,6 +207,40 @@ describe('Choropleth <FeatureLayer />', () => {
         .prop('fill')
       ).to.include('#ccc');
     });
+
+    it('has a fill color from the datum\'s colorAccessor property when present', () => {
+      const testData = getLocationIds(features).reduce((accum, locationId) => {
+        /* eslint-disable no-param-reassign */
+        accum[locationId] = {
+          id: locationId,
+          mean: 10,
+          color: 'blue',
+        };
+
+        return accum;
+        /* eslint-enable no-param-reassign */
+      }, {});
+      const wrapperThree = shallow(
+        <FeatureLayer
+          features={features}
+          data={testData}
+          geometryKeyField="id"
+          keyField="id"
+          valueField={(dataMappedToKeys, feature) => dataMappedToKeys[feature.id].mean}
+          pathGenerator={pathGenerator}
+          colorAccessor={'color'}
+          colorScale={colorScale}
+        />
+      );
+
+      expect(wrapperThree
+        .find('g')
+        .find(Path)
+        .filterWhere(n => n.prop('datum').id === featureToTest.id)
+        .first()
+        .prop('fill')
+      ).to.include('blue');
+    });
   });
 
   describe('selected', () => {

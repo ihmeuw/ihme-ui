@@ -29,3 +29,16 @@ export const baseColorScale = (domain = [0, 1]) =>
   scaleLinear()
     .domain(linspace(domain, colorSteps.length))
     .range(colorSteps);
+
+/**
+ * Returns a random hex color
+ * @returns {string} hex color
+ */
+export const getRandomColor = () => {
+  const letters = '0123456789ABCDEF';
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+};

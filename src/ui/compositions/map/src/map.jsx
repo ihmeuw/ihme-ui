@@ -264,6 +264,7 @@ export default class Map extends React.Component {
 
   renderMap() {
     const {
+      colorAccessor,
       data,
       focus,
       focusedClassName,
@@ -289,6 +290,7 @@ export default class Map extends React.Component {
       <div className={classNames(styles.map, mapClassName)} style={mapStyle}>
         <ResponsiveContainer>
           <Choropleth
+            colorAccessor={colorAccessor}
             colorScale={colorScale}
             controls
             controlsClassName={zoomControlsClassName}
@@ -316,6 +318,7 @@ export default class Map extends React.Component {
   renderLegend() {
     const {
       axisTickFormat,
+      colorAccessor,
       colorSteps,
       data,
       domain,
@@ -353,6 +356,7 @@ export default class Map extends React.Component {
           <ResponsiveContainer>
             <ChoroplethLegend
               axisTickFormat={axisTickFormat}
+              colorAccessor={colorAccessor}
               colorSteps={colorSteps}
               colorScale={colorScale}
               data={filterData(data, locationIdsOnMap, keyField)}
@@ -418,6 +422,14 @@ Map.propTypes = {
    * className applied to outermost wrapping div
    */
   className: CommonPropTypes.className,
+
+  /**
+   * accepts value of `keyfield` (str), returns stroke color for line (str)
+   */
+  colorAccessor: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+  ]),
 
   /**
    * list of hex or rbg color values

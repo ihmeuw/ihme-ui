@@ -323,9 +323,9 @@ describe('<Scatter />', () => {
 
   describe('data processing instance methods', () => {
     const rawData = [
-      { id: 1, population: 450, year_id: 2000 },
-      { id: 2, population: 351, year_id: 2003 },
-      { id: 3, population: 540, year_id: 2009 },
+      { id: 1, population: 450, year_id: 2000, color: 'blue' },
+      { id: 2, population: 351, year_id: 2003, color: 'green' },
+      { id: 3, population: 540, year_id: 2009, color: 'yellow' },
     ];
 
     const expectedProcessedDatum = [
@@ -343,6 +343,27 @@ describe('<Scatter />', () => {
       },
       {
         fill: 'red',
+        shapeType: 'circle',
+        translateX: 600,
+        translateY: 159.83989326217474,
+      },
+    ];
+
+    const expectedColorProcessedDatum = [
+      {
+        fill: 'blue',
+        shapeType: 'circle',
+        translateX: 0,
+        translateY: 400,
+      },
+      {
+        fill: 'green',
+        shapeType: 'circle',
+        translateX: 200,
+        translateY: 664.1761174116077,
+      },
+      {
+        fill: 'yellow',
         shapeType: 'circle',
         translateX: 600,
         translateY: 159.83989326217474,
@@ -375,6 +396,31 @@ describe('<Scatter />', () => {
         );
 
         expect(processedDatum).to.deep.equal(expectedProcessedDatum[index]);
+      });
+    });
+
+
+    it('computeFill correctly calculates fill as expected', () => {
+      rawData.forEach((rawDatum, index) => {
+        const fill = Scatter.computeFill(
+          {
+            colorScale: (item) => {
+              if (item) return '#fff';
+              return '#ccc';
+            },
+            colorAccessor: 'color',
+            dataAccessors: {
+              x: 'year_id',
+              y: 'population',
+              key: 'id',
+            },
+            scales: { x: xScale, y: yScale },
+            shapeType: 'circle',
+          },
+          rawDatum
+        );
+
+        expect(fill).to.deep.equal(expectedColorProcessedDatum[index].fill);
       });
     });
 
