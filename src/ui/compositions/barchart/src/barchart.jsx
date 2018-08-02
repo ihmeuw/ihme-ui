@@ -320,7 +320,7 @@ BarChart.propTypes = {
 BarChart.defaultProps = {
   orientation: 'vertical',
   fill: 'steelblue',
-  band: {
+  bandPositions: {
     align: 0.5
   },
   labelAccessors: {
