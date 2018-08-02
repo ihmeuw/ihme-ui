@@ -27,6 +27,15 @@ import {
 } from '../../../utils';
 
 import Bar from './bar';
+import {
+  getHeight, getHeightStack,
+  getWidth,
+  getWidthStack,
+  getXPosition,
+  getXPositionStack,
+  getYPosition,
+  getYPositionStack
+} from "../../../utils/bar";
 
 /**
  * `import { Bars } from 'ihme-ui'`
@@ -43,6 +52,56 @@ export default class Bars extends PureComponent {
     this.setState(stateFromPropUpdates(Bars.propUpdates, this.props, nextProps, this.state));
   }
 
+
+  /**
+   * Logic behind which values are computed given the configuration of the bar chart
+   * @param {object} configObject : {
+    * datum : Represents the datum for that corresponding bar
+    * xValue : Represents the xValue for this particular bar component
+    * yValue Represents the yValue for this particular bar component
+    * linear : Represents the scale for the data values plotted
+    * ordinal : Represents the scale for the categorical data
+   * @returns {object} : Returns an object that contains all the properties used to position and
+   * plot the data
+   */
+  getRenderingProps(configObject) {
+    const {
+      datum,
+      xValue,
+      yValue,
+      linear,
+      ordinal
+    } = configObject;
+    const {
+      height,
+      layerOrdinal,
+      orientation,
+      stacked,
+      grouped,
+    } = this.props;
+
+    const result = {};
+
+    const xPosition = stacked ? getXPositionStack(datum[0], linear, ordinal, orientation, xValue)
+      : getXPosition(grouped, layerOrdinal, ordinal, orientation, xValue);
+
+    const yPosition = stacked ? getYPositionStack(datum[1], linear, ordinal, orientation, xValue)
+      : getYPosition(grouped, layerOrdinal, linear, ordinal, orientation, xValue, yValue);
+
+    const barHeight = stacked ? getHeightStack(datum[0], linear, ordinal, orientation, yValue)
+      : getHeight(height, grouped, layerOrdinal, linear, ordinal, orientation, yValue);
+
+    const barWidth = stacked ? getWidthStack(datum[0], linear, ordinal, orientation, yValue)
+      : getWidth(grouped, layerOrdinal, linear, ordinal, orientation, xValue, yValue);
+
+    result.xPosition = xPosition;
+    result.yPosition = yPosition;
+    result.barHeight = barHeight;
+    result.barWidth = barWidth;
+
+    return result;
+  }
+
   render() {
     const {
       align,
@@ -57,8 +116,6 @@ export default class Bars extends PureComponent {
       dataAccessors,
       fill,
       focus,
-      height,
-      layerOrdinal,
       orientation,
       scales,
       rectClassName,
@@ -106,8 +163,13 @@ export default class Bars extends PureComponent {
             const xValue = getXValue(datum, dataAccessors, grouped, stacked);
 
             const yValue = propResolver(datum, !stacked ? dataAccessors.value : 1);
-            const renderingProps = getRenderingProps(datum, grouped, height, layerOrdinal, linear,
-              ordinal, orientation, stacked, xValue, yValue);
+            const renderingProps = this.getRenderingProps({
+              datum,
+              xValue,
+              yValue,
+              linear,
+              ordinal
+            });
 
             return (
               <Bar
