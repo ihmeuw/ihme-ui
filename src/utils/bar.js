@@ -24,7 +24,7 @@ export function isDefault(type) {
 /**
  * Converts the data object into the d3 preferred stacked shape in order to position the bars
  * within a stacked bar chart.
- * @param obj : Data object used to convert into a stacked shape
+ * @param collection : Data collection used to convert into a stacked shape
  * @param layerField : Represents the subcategory of the stack field
  * @param valueField : Represents the values typically plotted against
  * @param stackField : Represents the category in which the data should be plotted against
@@ -32,14 +32,13 @@ export function isDefault(type) {
  * @param layerDomain : Represents the domain of the subcategory of the stack field
  * @returns {object} Returns an object that is the d3 preferred stacked shape
  */
-export function stackedDataArray(obj, layerField, valueField, stackField, dataField, layerDomain) {
-  let i = 0; // generates unique id number for each datum that binds to each rect
-  const categoricalData = obj.map((data) => {
+export function stackedDataArray(collection, layerField, valueField,
+                                 stackField, dataField, layerDomain) {
+  const categoricalData = collection.map((data, i) => {
     const insertObject = {};
     insertObject[stackField] = data[stackField];
     insertObject.id = i;
-    i++;
-    data[dataField].forEach(datum => {
+    data[dataField].map(datum => {
       const year = datum[layerField];
       insertObject[year] = datum[valueField];
     });
