@@ -118,7 +118,7 @@ class App extends React.Component {
             shapeTypeKey: "shapeType",
           }}
           legendObject={items}
-          scaleObject={{
+          scaleAccessors={{
             xDomain: yearFieldDomain,
             yDomain: populationFieldDomain,
             xScale: "band",
