@@ -55,18 +55,18 @@ describe('<BarChart />', () => {
         value: populationField
       }}
       focus={noop}
-      labelObject={{
+      labelAccessors={{
         title: 'Population In India 2000-2009',
         xLabel: 'Years',
         yLabel: 'Population'
       }}
-      legendKey={{
+      legendAccessors={{
         labelKey: 'label',
         shapeColorKey: 'shapeColor',
         shapeTypeKey: 'shapeType',
       }}
-      legendObject={items}
-      scaleObject={{
+      legendKey={items}
+      scaleAccessors={{
         xDomain: yearFieldDomain,
         yDomain: populationFieldDomain,
         xScale: 'band',

@@ -39,7 +39,7 @@ export function stackedDataArray(collection, layerField, valueField,
     insertObject[stackField] = data[stackField];
     insertObject.id = i;
 
-    data[dataField].map(datum => {
+    data[dataField].forEach(datum => {
       const year = datum[layerField];
       insertObject[year] = datum[valueField];
     });
