@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import assign from 'lodash/assign';
 import bindAll from 'lodash/bindAll';
@@ -8,14 +9,13 @@ import {
   CommonPropTypes,
   memoizeByLastCall,
   propsChanged,
-  PureComponent,
   stateFromPropUpdates,
 } from '../../../utils';
 
 /**
  * `import { Bar } from 'ihme-ui'`
  */
-export default class Bar extends PureComponent {
+export default class Bar extends React.Component {
   constructor(props) {
     super(props);
 

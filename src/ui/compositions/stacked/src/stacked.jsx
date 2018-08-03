@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import {
   castArray,
@@ -8,7 +9,6 @@ import {
   combineStyles,
   CommonPropTypes,
   memoizeByLastCall,
-  PureComponent,
 } from '../../../../utils';
 
 import styles from './style.css';
@@ -18,7 +18,7 @@ import MultiBars from './../../../bar/src/multi-bars';
 import ResponsiveContainer from '../../../responsive-container';
 import Legend from './../../../legend';
 
-export default class StackedBarChart extends PureComponent {
+export default class StackedBarChart extends React.Component {
   constructor(props) {
     super(props);
 
@@ -190,6 +190,11 @@ StackedBarChart.propTypes = {
   colorScale: PropTypes.func,
 
   /**
+   * applied to chart-container
+   */
+  className: PropTypes.string,
+
+  /**
    * Array of datum objects
    */
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -335,6 +340,11 @@ StackedBarChart.propTypes = {
    * inline styles applied to div wrapping the title
    */
   titleStyle: PropTypes.object,
+
+  /**
+   * inline styles applied to div wrapping the chart-container
+   */
+  style: PropTypes.object,
 
 };
 
