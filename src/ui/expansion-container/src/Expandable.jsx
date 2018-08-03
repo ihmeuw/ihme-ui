@@ -1,11 +1,12 @@
 /* global window */
 
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import bindAll from 'lodash/bindAll';
 import { default as getValue } from 'lodash/get';
 import pick from 'lodash/pick';
-import { CommonPropTypes, CommonDefaultProps, PureComponent } from '../../../utils';
+import { CommonPropTypes, CommonDefaultProps } from '../../../utils';
 import { getBackgroundColor } from '../../../utils/window';
 
 import { containerStore } from './ExpansionContainer';
@@ -37,7 +38,7 @@ const LAYOUT_STYLES = [
  *
  * Note: Transitions on the restore event do not execute on Firefox, and thus have been disabled.
  */
-export default class Expandable extends PureComponent {
+export default class Expandable extends React.PureComponent {
   constructor(props) {
     super(props);
 

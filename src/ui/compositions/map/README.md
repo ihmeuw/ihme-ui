@@ -15,6 +15,7 @@ Property | Required | Type(s) | Defaults | Description
 :---    |:---      |:---     |:---      |:---       
 `axisTickFormat` |  | func |  | [format of axis ticks](https://github.com/d3/d3-axis#axis_tickFormat)<br />implicitly defaults to [numberFormat](https://github.com/ihmeuw/ihme-ui/blob/docs/src/utils/numbers.js#L9)
 `className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to outermost wrapping div
+`colorAccessor` |  | string, func |  | if string, the color property of the datum object; if function, takes in datum object and returns a color string.
 `colorSteps` |  | array | defaultColorSteps.slice().reverse() | list of hex or rbg color values<br />color scale will interpolate between these values<br />defaults to list of 11 colors with blue at the "bottom" and red at the "top"<br />this encodes IHME's "high numbers are bad" color scheme
 `data` | true | array |  | array of datum objects
 `domain` | true | array |  | domain of color scale

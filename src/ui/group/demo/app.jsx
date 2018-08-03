@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { PureComponent } from '../../../utils';
 
 import Group, { Option } from '../';
 import CustomOptionType from './custom-option-type';
@@ -11,7 +10,7 @@ const data = [
   { name: 'both', value: 3 },
 ];
 
-class App extends PureComponent {
+class App extends React.PureComponent {
   constructor(props) {
     super(props);
 

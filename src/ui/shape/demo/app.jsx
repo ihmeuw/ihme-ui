@@ -1,14 +1,34 @@
 import React from 'react';
 import { render } from 'react-dom';
 
-import { schemeCategory10, scaleOrdinal } from 'd3';
+import {
+  range,
+  scaleLinear,
+  scaleOrdinal,
+  schemeCategory10,
+} from 'd3';
 
-import { bindAll, maxBy, minBy, map, slice, uniqBy, without, xor } from 'lodash';
+import {
+  bindAll,
+  maxBy,
+  minBy,
+  map,
+  slice,
+  uniqBy,
+  without,
+  xor,
+} from 'lodash';
 
 import { dataGenerator } from '../../../utils';
 import AxisChart from '../../axis-chart';
 import { XAxis, YAxis } from '../../axis';
-import { MultiScatter, Scatter } from '../';
+import {
+  Area,
+  Line,
+  MultiLine,
+  MultiScatter,
+  Scatter,
+} from '../';
 
 const keyField = 'year_id';
 const valueField = 'population';
@@ -34,6 +54,10 @@ const locationData = [
 ];
 
 const valueFieldDomain = [minBy(data, valueField)[valueField], maxBy(data, valueField)[valueField]];
+const valueUncertaintyDomain = [
+  minBy(data, 'population_lb')['population_lb'],
+  maxBy(data, 'population_ub')['population_ub']
+];
 
 const keyFieldDomain = map(uniqBy(data, keyField), (obj) => { return (obj[keyField]); });
 
@@ -48,6 +72,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       selectedItems: [],
+      country: 2,
     }
 
     bindAll(this, [
@@ -55,7 +80,18 @@ class App extends React.Component {
       'onMouseLeave',
       'onMouseMove',
       'onMouseOver',
+      'setNextLocation',
     ]);
+  }
+
+  setNextLocation() {
+    this.setState({ country: (this.state.country + 1) % locationData.length });
+  }
+
+  getCurrentLocationData() {
+    return data.filter(
+      datum => datum.location === locationData[this.state.country].location,
+    );
   }
 
   onClick(event, datum) {
@@ -83,9 +119,239 @@ class App extends React.Component {
     });
   };
 
+  renderMultiLineDemo() {
+    const lineDataSet = locationData.map((line, index) => {
+      switch(index) {
+        case this.state.country:
+          return { ...line, key: 0 };
+        case (this.state.country + 1) % locationData.length:
+          return { ...line, key: 1 };
+        case (this.state.country + 2) % locationData.length:
+          return { ...line, key: 2 };
+      }
+      return false;
+    }).filter(line => line)
+      .sort((line_a, line_b) => line_a.key - line_b.key);
+
+    return (
+      <section>
+        <h3>Multi Line</h3>
+{/* <pre><code>
+ <AxisChart
+   height={300}
+   width={500}
+   xDomain={keyFieldDomain}
+   xScaleType="point"
+   yDomain={valueFieldDomain}
+   yScaleType="linear"
+ >
+   <XAxis />
+   <YAxis />
+   <MultiLine
+     animate={{
+       timing: { duration: 666 },
+       stroke: { start() { console.log('started'); return {}; }},
+     }}
+     colorScale={colorScale}
+     data={lineDataSet}
+     dataAccessors={{
+       x: 'year_id',
+       y: 'population',
+     }}
+     fieldAccessors={{
+       key: 'key',
+       color: 'location',
+       data: 'values',
+     }}
+     scales={{ x: scaleLinear(), y: scaleLinear() }}
+     lineStyle={(values) => {
+       const [{ location }] = values;
+       if (location === locationData[this.state.country].location) {
+         return {
+           strokeWidth: this.state.country + 1,
+           strokeDasharray: 5,
+         };
+       }
+       return {};
+     }}
+   />
+ </AxisChart>
+</code></pre> */}
+        <p>
+          {lineDataSet.map(({ location, key }) =>
+            <span style={{
+              backgroundColor: colorScale(location),
+              marginRight: 5,
+              color: 'white',
+              padding: 10,
+            }}>line {key + 1}</span>
+          )}
+        </p>
+        <button onClick={this.setNextLocation}>
+          press to look at next line set
+        </button>
+        <AxisChart
+          height={300}
+          width={500}
+          xDomain={keyFieldDomain}
+          xScaleType="point"
+          yDomain={valueFieldDomain}
+          yScaleType="linear"
+        >
+          <XAxis />
+          <YAxis />
+          <MultiLine
+            animate={{
+              timing: { duration: 666 },
+              stroke: { start() { console.log('started'); return {}; }},
+            }}
+            colorScale={colorScale}
+            data={lineDataSet}
+            dataAccessors={{
+              x: 'year_id',
+              y: 'population',
+            }}
+            fieldAccessors={{
+              key: 'key',
+              color: 'location',
+              data: 'values',
+            }}
+            scales={{ x: scaleLinear(), y: scaleLinear() }}
+            lineStyle={(values) => {
+              const [{ location }] = values;
+              if (location === locationData[this.state.country].location) {
+                return {
+                  strokeWidth: this.state.country + 1,
+                  strokeDasharray: 5,
+                };
+              }
+              return {};
+            }}
+          />
+        </AxisChart>
+      </section>
+    )
+  }
+
+  renderLineDemo() {
+    const style = {
+      shapeRendering: 'geometricPrecision',
+      stroke: colorScale(this.state.country),
+      strokeWidth: this.state.country + 1,
+    };
+
+    return (
+      <section>
+        <h3>Line</h3>
+{/* <pre><code>
+ <AxisChart
+   height={300}
+   width={500}
+   xDomain={keyFieldDomain}
+   xScaleType="point"
+   yDomain={valueUncertaintyDomain}
+   yScaleType="linear"
+ >
+   <XAxis />
+   <YAxis />
+   <Area
+     animate
+     data={currentLocationData}
+     dataAccessors={{
+       x: 'year_id',
+       y0: 'population_lb',
+       y1: 'population_ub',
+     }}
+     scales={{ x: scaleLinear(), y: scaleLinear() }}
+     style={{ fill: colorScale(currentLocationId), opacity: 0.4 }}
+   />
+   <Line
+     animate={{
+       stroke: () => ({
+         timing: { delay: 1000, duration: 3000 },
+         events: {
+           interrupt() {
+             console.log('The `stroke` animation has been interrupted!');
+           },
+         },
+       }),
+       strokeWidth: {
+         timing: { duration: 2500 },
+         events: {
+           end: () => { console.log('The `strokeWidth` animation has ended!'); },
+         },
+       },
+     }}
+     data={this.getCurrentLocationData()}
+     dataAccessors={{ x: 'year_id', y: 'population' }}
+     scales={{ x: scaleLinear(), y: scaleLinear() }}
+     style={style}
+   />
+ </AxisChart>
+</code></pre> */}
+        <h3>{locationData[this.state.country].location}</h3>
+        <button onClick={this.setNextLocation}>
+          press to look at next country
+        </button>
+        <AxisChart
+          height={300}
+          width={500}
+          xDomain={keyFieldDomain}
+          xScaleType="point"
+          yDomain={valueUncertaintyDomain}
+          yScaleType="linear"
+        >
+          <XAxis />
+          <YAxis />
+          <Area
+            animate
+            data={this.getCurrentLocationData()}
+            dataAccessors={{
+              x: 'year_id',
+              y0: 'population_lb',
+              y1: 'population_ub',
+            }}
+            scales={{
+              x: scaleLinear(),
+              y: scaleLinear(),
+            }}
+            style={{
+              fill: colorScale(this.state.country + 1),
+              opacity: 0.4,
+            }}
+          />
+          <Line
+            animate={{
+              stroke: () => ({
+                timing: { delay: 1000, duration: 3000 },
+                events: {
+                  interrupt() {
+                    console.log('The `stroke` animation has been interrupted!');
+                  },
+                },
+              }),
+              strokeWidth: {
+                timing: { duration: 2500 },
+                events: {
+                  end: () => { console.log('The `strokeWidth` animation has ended!'); },
+                },
+              },
+            }}
+            data={this.getCurrentLocationData()}
+            dataAccessors={{ x: 'year_id', y: 'population' }}
+            scales={{ x: scaleLinear(), y: scaleLinear() }}
+            style={style}
+          />
+        </AxisChart>
+      </section>
+    );
+  }
+
   render() {
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
+        {this.renderLineDemo()}
+        {this.renderMultiLineDemo()}
         <section>
           <h3>Multiple datasets</h3>
 {/* <pre><code>
@@ -186,15 +452,16 @@ class App extends React.Component {
    <XAxis />
    <YAxis />
    <Scatter
+     animate
      fill="steelblue"
      data={[]}
      dataAccessors={{
        fill: keyField,
-       key: 'id',
+       key: keyField,
        x: keyField,    // year_id
        y: valueField   // population
      }}
-     focus={{}}
+     focus={this.state.focus}
      onClick={function(event, datum, Shape) {...}}
      onMouseLeave={function(event, datum, Shape) {...}}
      onMouseMove={function(event, datum, Shape) {...}}
@@ -203,7 +470,11 @@ class App extends React.Component {
      shapeType="circle"
    />
  </AxisChart>
-</code></pre> */}
+ </code></pre> */}
+          <h3>{locationData[this.state.country].location}</h3>
+          <button onClick={this.setNextLocation}>
+            press to look at next country
+          </button>
             <AxisChart
               height={300}
               width={500}
@@ -215,11 +486,12 @@ class App extends React.Component {
               <XAxis />
               <YAxis />
               <Scatter
+                animate
                 fill="steelblue"
-                data={data.filter((datum) => { return datum.location === 'India'; })}
+                data={this.getCurrentLocationData()}
                 dataAccessors={{
                   fill: keyField,
-                  key: 'id',
+                  key: keyField,
                   x: keyField,    // year_id
                   y: valueField   // population
                 }}

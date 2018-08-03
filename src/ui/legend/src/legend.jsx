@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import {
   map,
@@ -11,7 +12,6 @@ import {
   CommonPropTypes,
   memoizeByLastCall,
   propResolver,
-  PureComponent,
 } from '../../../utils';
 
 import styles from './legend.css';
@@ -24,7 +24,7 @@ import LegendTitle from './legend-title';
  * `import { Legend } from 'ihme-ui'`
  *
  */
-export default class Legend extends PureComponent {
+export default class Legend extends React.PureComponent {
   constructor(props) {
     super(props);
 

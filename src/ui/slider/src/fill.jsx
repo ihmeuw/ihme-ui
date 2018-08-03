@@ -1,11 +1,12 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { CommonPropTypes, PureComponent } from '../../../utils';
+import { CommonPropTypes } from '../../../utils';
 
 import { getDimension } from './util';
 import styles from './slider.css';
 
-export default class Fill extends PureComponent {
+export default class Fill extends React.PureComponent {
   static getWidth(width, direction) {
     return direction === 'right' ? `calc(100% - ${getDimension(width)})` : getDimension(width);
   }

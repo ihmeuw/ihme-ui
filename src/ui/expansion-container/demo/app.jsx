@@ -1,7 +1,8 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { render } from 'react-dom';
 import { AutoSizer } from 'react-virtualized';
-import { CommonPropTypes, PureComponent } from '../../../utils';
+import { CommonPropTypes } from '../../../utils';
 
 import Button from '../../button';
 import ExpansionContainer, { Expandable } from '../';
@@ -23,7 +24,7 @@ const expandableStyle = {
   margin: '4px',
 };
 
-class Chart extends PureComponent {
+class Chart extends React.PureComponent {
   render() {
     const { props } = this;
     return (

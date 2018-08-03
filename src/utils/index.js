@@ -1,4 +1,10 @@
 export {
+  animationProcessorFactory,
+  animationStartFactory,
+  getMethodIfExists,
+} from './animate';
+
+export {
   linspace,
   takeSkipping,
 } from './array';
@@ -24,6 +30,7 @@ export {
 export {
   colorSteps,
   baseColorScale,
+  getRandomColor,
 } from './colors';
 
 export {
@@ -62,9 +69,16 @@ export {
   memoizeByLastCall,
   propResolver,
   quickMerge,
+  shallowEqual,
 } from './objects';
 
 export {
+  AnimatableValue,
+  AnimateEvents,
+  AnimateMethod,
+  AnimateProp,
+  AnimateStart,
+  AnimateTiming,
   CommonPropTypes,
   CommonDefaultProps,
   atLeastOneOfProp,
@@ -76,7 +90,7 @@ export {
 } from './props';
 
 export {
-  PureComponent,
+  shouldPureComponentUpdate,
 } from './react';
 
 export {

@@ -15,7 +15,4 @@ module.exports = {
     "browser": true,
     "mocha": true
   },
-  "ecmaFeatures": {
-    "experimentalObjectRestSpread": true
-  }
 };

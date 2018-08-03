@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import {
   geoClipExtent,
@@ -299,6 +300,7 @@ export default class Choropleth extends React.Component {
         case 'feature':
           return (
             <FeatureLayer
+              colorAccessor={this.props.colorAccessor}
               colorScale={this.props.colorScale}
               data={this.state.processedData}
               features={this.state.cache.feature[layer.name].features}
@@ -374,6 +376,14 @@ Choropleth.propTypes = {
    * className applied to outermost div
    */
   className: CommonPropTypes.className,
+
+  /**
+   * accepts value of `keyfield` (str), returns stroke color for line (str)
+   */
+  colorAccessor: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+  ]),
 
   /**
    * accepts value of `keyfield` (str), returns stroke color for line (str)

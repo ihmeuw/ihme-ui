@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { assign } from 'lodash';
 import { scaleLinear } from 'd3';
 
@@ -7,7 +8,6 @@ import {
   numberFormat,
   propsChanged,
   CommonPropTypes,
-  PureComponent,
   stateFromPropUpdates,
 } from '../../../../utils';
 
@@ -23,7 +23,7 @@ const subtractMarginsFromWidth = (width, margins) => width - (margins.left + mar
 /**
  * `import { ChoroplethLegend } from 'ihme-ui'`
  */
-export default class ChoroplethLegend extends PureComponent {
+export default class ChoroplethLegend extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -58,6 +58,7 @@ export default class ChoroplethLegend extends PureComponent {
       focusedClassName,
       focusedStyle,
       margins,
+      colorAccessor,
       colorSteps,
       colorScale,
       x1,
@@ -88,6 +89,7 @@ export default class ChoroplethLegend extends PureComponent {
       <svg width={width} height={height}>
         <g transform={`translate(${margins.left}, ${margins.top})`}>
           <Scatter
+            colorAccessor={colorAccessor}
             colorScale={colorScale}
             data={data}
             dataAccessors={dataAccessors}
@@ -104,13 +106,16 @@ export default class ChoroplethLegend extends PureComponent {
             shapeClassName={styles['density-circle']}
           />
           <g transform={`translate(0, ${10 + (5 * zoom)})`}>
-            <LinearGradient
-              colors={colorSteps}
-              x1={x1}
-              x2={x2}
-              width={adjustedWidth}
-              height={sliderHeight}
-            />
+            {
+              !colorAccessor
+              && <LinearGradient
+                colors={colorSteps}
+                x1={x1}
+                x2={x2}
+                width={adjustedWidth}
+                height={sliderHeight}
+              />
+            }
             <Slider
               domain={domain}
               xScale={sliderScale}
@@ -153,6 +158,14 @@ ChoroplethLegend.propTypes = {
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
   }),
+
+  /**
+   * accepts value of `keyfield` (str), returns stroke color for line (str)
+   */
+  colorAccessor: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+  ]),
 
   /**
    * color scale for density plot; should accept `datum[valueField]` and return color string

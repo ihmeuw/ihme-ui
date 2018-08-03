@@ -1,24 +1,30 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import NodeGroup from 'react-move/NodeGroup';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { scaleLinear } from 'd3';
 import {
-  assign,
+  bindAll,
   findIndex,
   isFinite,
+  has,
   keyBy,
-  map,
+  partial,
   pick,
   sortBy,
 } from 'lodash';
 
 import {
+  animationProcessorFactory,
+  AnimateEvents,
+  AnimateProp,
+  AnimateTiming,
   combineStyles,
   CommonDefaultProps,
   CommonPropTypes,
   memoizeByLastCall,
   propResolver,
   propsChanged,
-  PureComponent,
   stateFromPropUpdates,
 } from '../../../utils';
 
@@ -27,93 +33,198 @@ import Shape from './shape';
 /**
  * `import { Scatter } from 'ihme-ui'`
  */
-export default class Scatter extends PureComponent {
+export default class Scatter extends React.PureComponent {
+  static getCoordinate(value, scale) {
+    return scale && isFinite(value) ? scale(value) : 0;
+  }
+
   constructor(props) {
     super(props);
-
     this.combineStyles = memoizeByLastCall(combineStyles);
     this.state = stateFromPropUpdates(Scatter.propUpdates, {}, props, {});
+    bindAll(this, [
+      'renderScatter',
+      'renderShape',
+    ]);
   }
 
   componentWillReceiveProps(nextProps) {
     this.state = stateFromPropUpdates(Scatter.propUpdates, this.props, nextProps, this.state);
   }
 
-  render() {
+  static computeFill(props, datum) {
     const {
-      className,
-      clipPathId,
+      colorAccessor,
       colorScale,
-      data,
       dataAccessors,
       fill,
-      focus,
+    } = props;
+    const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x);
+    if (colorScale && isFinite(fillValue)) {
+      return colorAccessor && colorScale(fillValue) !== '#ccc'
+        ? propResolver(datum, colorAccessor)
+        : colorScale(fillValue);
+    }
+    return fill;
+  }
+
+  static processDatum(props, datum) {
+    const {
+      dataAccessors,
       scales,
-      shapeClassName,
       shapeScale,
-      shapeStyle,
       shapeType,
-      style,
+    } = props;
+
+    // Compute fill.
+    const processedFill = Scatter.computeFill(props, datum);
+
+    // Compute shape type.
+    const resolvedShapeType = dataAccessors.shape
+      ? shapeScale(propResolver(datum, dataAccessors.shape))
+      : shapeType;
+
+    // Compute x and y translations.
+    const translateX = Scatter.getCoordinate(
+      propResolver(datum, dataAccessors.x),
+      scales && scales.x,
+    );
+    const translateY = Scatter.getCoordinate(
+      propResolver(datum, dataAccessors.y),
+      scales && scales.y,
+    );
+
+    return {
+      fill: processedFill,
+      shapeType: resolvedShapeType,
+      translateX,
+      translateY,
+    };
+  }
+
+  processDataSet(data) {
+    const { key } = this.props.dataAccessors;
+    // This data shape is compatible with animated and non-animated components.
+    return data.map(
+      datum => ({
+        data: datum,
+        key: propResolver(datum, key),
+        state: Scatter.processDatum(this.props, datum),
+      }),
+    );
+  }
+
+  renderShape({
+    data,
+    key,
+    state: {
+      fill,
+      shapeType,
+      translateX,
+      translateY,
+    },
+  }) {
+    const {
+      shapeClassName,
+      shapeStyle,
     } = this.props;
 
-    const { selectedDataMappedToKeys, sortedData } = this.state;
-
-    const childProps = pick(this.props, [
-      'focusedClassName',
-      'focusedStyle',
-      'onClick',
-      'onMouseLeave',
-      'onMouseMove',
-      'onMouseOver',
-      'selectedClassName',
-      'selectedStyle',
-      'size',
-    ]);
+    const {
+      childProps,
+      focusedDatumKey,
+      selectedDataMappedToKeys,
+    } = this.state;
 
     return (
+      <Shape
+        className={shapeClassName}
+        key={key}
+        datum={data}
+        fill={fill}
+        focused={focusedDatumKey === key}
+        selected={has(selectedDataMappedToKeys, key)}
+        shapeType={shapeType}
+        style={shapeStyle}
+        translateX={translateX}
+        translateY={translateY}
+        {...childProps}
+      />
+    );
+  }
+
+  renderScatter(data) {
+    return (
       <g
-        className={className && classNames(className)}
-        clipPath={clipPathId && `url(#${clipPathId})`}
-        style={this.combineStyles(style, data)}
+        className={this.props.className && classNames(this.props.className)}
+        clipPath={this.props.clipPathId && `url(#${this.props.clipPathId})`}
+        style={this.combineStyles(this.props.style, this.props.data)}
       >
-        {
-          map(sortedData, (datum) => {
-            // value passed into colorScale
-            // use dataAccessors.x as fail-over for backward compatibility
-            const key = propResolver(datum, dataAccessors.key);
-            const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.x);
-            const focusedDatumKey = focus ? propResolver(focus, dataAccessors.key) : null;
-
-            const resolvedShapeType = dataAccessors.shape ?
-              shapeScale(propResolver(datum, dataAccessors.shape)) :
-              shapeType;
-
-            const xValue = propResolver(datum, dataAccessors.x);
-            const yValue = propResolver(datum, dataAccessors.y);
-
-            return (
-              <Shape
-                className={shapeClassName}
-                key={key}
-                datum={datum}
-                fill={colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill}
-                focused={focusedDatumKey === key}
-                selected={selectedDataMappedToKeys.hasOwnProperty(key)}
-                shapeType={resolvedShapeType}
-                style={shapeStyle}
-                translateX={scales.x && isFinite(xValue) ? scales.x(xValue) : 0}
-                translateY={scales.y && isFinite(yValue) ? scales.y(yValue) : 0}
-                {...childProps}
-              />
-            );
-          })
-        }
+        {data.map(this.renderShape)}
       </g>
     );
   }
+
+  renderAnimatedScatter(data) {
+    // react-move properties `start`, `enter`, `update`, and `move` are populated by the default
+    // animated behavior of IHME-UI Scatter component unless overridden in `animate` prop.
+    const { animationProcessor } = this.state;
+    const { key } = this.props.dataAccessors;
+
+    return (
+      <NodeGroup
+        data={data}
+        keyAccessor={datum => propResolver(datum, key)}
+        start={animationProcessor('start')}
+        enter={animationProcessor('enter')}
+        update={animationProcessor('update')}
+        leave={animationProcessor('leave')}
+      >
+        {this.renderScatter}
+      </NodeGroup>
+    );
+  }
+
+  shouldAnimate() {
+    return !!this.props.animate;
+  }
+
+  render() {
+    if (this.shouldAnimate()) {
+      return this.renderAnimatedScatter(this.state.sortedData);
+    }
+
+    const processedData = this.processDataSet(this.state.sortedData);
+
+    return this.renderScatter(processedData);
+  }
 }
 
+/**
+ * Props given to <Shape /> children that can be animated using <Scatter animate />
+ * @type {string[]}
+ */
+Scatter.animatable = [
+  'fill',
+  'translateX',
+  'translateY',
+];
+
 Scatter.propTypes = {
+  /**
+   * Whether to animate the scatter component (using default `start`, `update` functions).
+   * Optionally, an object that provides functions that dictate behavior of animations.
+   */
+  animate: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.shape({
+      fill: AnimateProp,
+      translateX: AnimateProp,
+      translateY: AnimateProp,
+      events: AnimateEvents,
+      timing: AnimateTiming,
+    }),
+  ]),
+
   /**
    * className applied to outermost wrapping `<g>`.
    */
@@ -124,6 +235,14 @@ Scatter.propTypes = {
    * clip all children of `<Scatter />` to that container by passing in the clip path URL id.
    */
   clipPathId: PropTypes.string,
+
+  /**
+   * accepts value of `keyfield` (str), returns stroke color for line (str)
+   */
+  colorAccessor: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+  ]),
 
   /**
    * If provided will determine color of rendered `<Shape />`s
@@ -247,7 +366,7 @@ Scatter.propTypes = {
   /**
    * Inline styles passed to each `<Shape />`
    */
-  shapeStyle: CommonDefaultProps.style,
+  shapeStyle: CommonPropTypes.style,
 
   /**
    * Type of shape to render; use in lieu of `props.shapeScale`
@@ -257,38 +376,104 @@ Scatter.propTypes = {
 };
 
 Scatter.defaultProps = {
+  animate: false,
+  enter: undefined,
   fill: 'steelblue',
+  leave: undefined,
   onClick: CommonDefaultProps.noop,
   onMouseLeave: CommonDefaultProps.noop,
   onMouseMove: CommonDefaultProps.noop,
   onMouseOver: CommonDefaultProps.noop,
   scales: { x: scaleLinear(), y: scaleLinear() },
   size: 64,
+  shapeScale: CommonDefaultProps.identity,
+  shapeStyle: undefined,
   shapeType: 'circle',
+  start: undefined,
+  update: undefined,
 };
 
 Scatter.propUpdates = {
+  animationProcessor: (state, _, prevProps, nextProps) => {
+    const animationPropNames = [
+      'animate',
+      'colorScale',
+      'dataAccessors',
+      'fill',
+      'scales',
+      'shapeScale',
+      'shapeType',
+    ];
+    if (!propsChanged(prevProps, nextProps, animationPropNames)) return state;
+
+    const datumProcessor = partial(Scatter.processDatum, nextProps);
+
+    const animationProcessor = partial(
+      animationProcessorFactory,
+      nextProps.animate,
+      Scatter.animatable,
+      datumProcessor,
+    );
+
+    return {
+      ...state,
+      animationProcessor,
+    };
+  },
+  childProps: (state, _, prevProps, nextProps) => {
+    const childPropNames = [
+      'focusedClassName',
+      'focusedStyle',
+      'onClick',
+      'onMouseLeave',
+      'onMouseMove',
+      'onMouseOver',
+      'selectedClassName',
+      'selectedStyle',
+      'size',
+    ];
+    if (!propsChanged(prevProps, nextProps, childPropNames)) return state;
+    return {
+      ...state,
+      childProps: pick(nextProps, childPropNames),
+    };
+  },
+  focusedDatumKey: (state, _, prevProps, nextProps) => {
+    if (!propsChanged(prevProps, nextProps, ['focus', 'data'])) return state;
+    const {
+      dataAccessors: { key },
+      focus,
+    } = nextProps;
+    return {
+      ...state,
+      focusedDatumKey: focus ? propResolver(focus, key) : null,
+    };
+  },
   selections: (state, _, prevProps, nextProps) => {
     if (!propsChanged(prevProps, nextProps, ['selection', 'dataAccessors'])) return state;
-    return assign({}, state, {
-      selectedDataMappedToKeys: keyBy(nextProps.selection, (selectedDatum) =>
-        propResolver(selectedDatum, nextProps.dataAccessors.key)
-      ),
-    });
+    const selectedDataMappedToKeys = keyBy(nextProps.selection, (selectedDatum) =>
+      propResolver(selectedDatum, nextProps.dataAccessors.key)
+    );
+    return {
+      ...state,
+      selectedDataMappedToKeys,
+    };
   },
   sortedData: (state, _, prevProps, nextProps) => {
-    /* eslint-disable max-len, eqeqeq */
+    /* eslint-disable eqeqeq */
     if (!propsChanged(prevProps, nextProps, ['selection', 'data'])) return state;
+    // sort data by whether or not datum is selected
+    // this is a way of ensuring that selected symbols are rendered last
+    // similar to, in a path click handler, doing a this.parentNode.appendChild(this)
     const keyField = nextProps.dataAccessors.key;
-    return assign({}, state, {
-      // sort data by whether or not datum is selected
-      // this is a way of ensuring that selected symbols are rendered last
-      // similar to, in a path click handler, doing a this.parentNode.appendChild(this)
-      sortedData: sortBy(nextProps.data, (datum) =>
-        findIndex(nextProps.selection, (selected) =>
-          propResolver(datum, keyField) == propResolver(selected, keyField)
-        )
-      ),
-    });
+    const sortedData = sortBy(nextProps.data, (datum) =>
+      findIndex(nextProps.selection, (selected) =>
+        propResolver(datum, keyField) == propResolver(selected, keyField)
+      )
+    );
+    return {
+      ...state,
+      sortedData,
+    };
   },
 };

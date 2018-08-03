@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { default as getValue } from 'lodash/get';
 
 
@@ -7,14 +8,24 @@ import { default as getValue } from 'lodash/get';
  */
 const flatOptionPropTypes = {
   // option object
-  option: PropTypes.object.isRequired,
+  option: PropTypes.shape({
+    bold: PropTypes.bool,
+  }),
 
   // key on option that holds its label
   labelKey: PropTypes.string.isRequired,
 };
 
 export function FlatOptionLabel(props) {
-  return <span>{`${getValue(props.option, [props.labelKey], '')}`}</span>;
+  return (
+    <span
+      style={{
+        fontWeight: props.option.bold ? 'bold' : 'normal',
+      }}
+    >
+      {`${getValue(props.option, [props.labelKey], '')}`}
+    </span>
+  );
 }
 
 FlatOptionLabel.propTypes = flatOptionPropTypes;

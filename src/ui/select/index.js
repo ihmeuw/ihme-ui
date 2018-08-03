@@ -1,9 +1,7 @@
-import MultiSelect from './src/multi-select';
-import SingleSelect from './src/single-select';
 import Select from './src/select';
+import SelectOption from './src/select-option';
 
 export {
-  MultiSelect,
   Select,
-  SingleSelect,
+  SelectOption,
 };

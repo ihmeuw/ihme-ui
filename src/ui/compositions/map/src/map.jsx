@@ -1,5 +1,5 @@
-import React, { PropTypes } from 'react';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
+import React from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import {
   assign,
@@ -31,6 +31,7 @@ import {
   numFromPercent,
   propResolver,
   stateFromPropUpdates,
+  shouldPureComponentUpdate,
   colorSteps as defaultColorSteps,
 } from '../../../../utils';
 
@@ -107,7 +108,7 @@ export default class Map extends React.Component {
     // only update if data is not being currently loaded,
     // and when props have changed,
     return !nextProps.loading
-            && PureRenderMixin.shouldComponentUpdate.call(this, nextProps, nextState);
+            && shouldPureComponentUpdate(this.props, this.state, nextProps, nextState);
   }
 
   onSetScale() {
@@ -268,6 +269,7 @@ export default class Map extends React.Component {
 
   renderMap() {
     const {
+      colorAccessor,
       data,
       focus,
       focusedClassName,
@@ -293,6 +295,7 @@ export default class Map extends React.Component {
       <div className={classNames(styles.map, mapClassName)} style={mapStyle}>
         <ResponsiveContainer>
           <Choropleth
+            colorAccessor={colorAccessor}
             colorScale={colorScale}
             controls
             controlsClassName={zoomControlsClassName}
@@ -320,6 +323,7 @@ export default class Map extends React.Component {
   renderLegend() {
     const {
       axisTickFormat,
+      colorAccessor,
       colorSteps,
       data,
       domain,
@@ -354,9 +358,10 @@ export default class Map extends React.Component {
     return (
       <div className={classNames(styles.legend, legendClassName)} style={legendStyle}>
         <div className={styles['legend-wrapper']}>
-          <ResponsiveContainer disableHeight>
+          <ResponsiveContainer>
             <ChoroplethLegend
               axisTickFormat={axisTickFormat}
+              colorAccessor={colorAccessor}
               colorSteps={colorSteps}
               colorScale={colorScale}
               data={filterData(data, locationIdsOnMap, keyField)}
@@ -422,6 +427,14 @@ Map.propTypes = {
    * className applied to outermost wrapping div
    */
   className: CommonPropTypes.className,
+
+  /**
+   * accepts value of `keyfield` (str), returns stroke color for line (str)
+   */
+  colorAccessor: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+  ]),
 
   /**
    * list of hex or rbg color values

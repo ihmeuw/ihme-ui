@@ -20,7 +20,7 @@ describe('Choropleth <FeatureLayer />', () => {
     /* eslint-disable no-param-reassign */
     accum[locationId] = {
       id: locationId,
-      mean: Math.floor(Math.random() * 100)
+      mean: Math.floor(Math.random() * 100 + 2),
     };
 
     return accum;
@@ -101,7 +101,7 @@ describe('Choropleth <FeatureLayer />', () => {
     const featureToTest = featuresDecoratedWithData[0];
 
     it('accepts a string as valueField', () => {
-      const wrapper = shallow(
+      const wrapperOne = shallow(
         <FeatureLayer
           features={featuresDecoratedWithData}
           data={data}
@@ -113,12 +113,13 @@ describe('Choropleth <FeatureLayer />', () => {
         />
       );
 
-      expect(wrapper
+      expect(wrapperOne
         .find('g')
         .find(Path)
         .filterWhere(n => n.prop('datum').id === featureToTest.id)
         .first()
-      ).to.have.prop('fill', colorScale(featureToTest.properties.mean));
+        .prop('fill')
+      ).to.include(colorScale(featureToTest.properties.mean));
     });
 
     it('accepts a function as valueField', () => {
@@ -139,7 +140,8 @@ describe('Choropleth <FeatureLayer />', () => {
         .find(Path)
         .filterWhere(n => n.prop('datum').id === featureToTest.id)
         .first()
-      ).to.have.prop('fill', colorScale(featureToTest.properties.mean));
+        .prop('fill')
+      ).to.include(colorScale(featureToTest.properties.mean));
     });
 
     it('has a fill color when datum value is zero', () => {
@@ -153,7 +155,7 @@ describe('Choropleth <FeatureLayer />', () => {
         return accum;
         /* eslint-enable no-param-reassign */
       }, {});
-      const wrapper = shallow(
+      const wrapperTwo = shallow(
         <FeatureLayer
           features={features}
           data={testData}
@@ -165,12 +167,13 @@ describe('Choropleth <FeatureLayer />', () => {
         />
       );
 
-      expect(wrapper
+      expect(wrapperTwo
         .find('g')
         .find(Path)
         .filterWhere(n => n.prop('datum').id === featureToTest.id)
         .first()
-      ).to.have.prop('fill', colorScale(0));
+        .prop('fill')
+      ).to.include(colorScale(0));
     });
 
     it('has a gray fill color when datum value is undefined', () => {
@@ -184,7 +187,7 @@ describe('Choropleth <FeatureLayer />', () => {
         return accum;
         /* eslint-enable no-param-reassign */
       }, {});
-      const wrapper = shallow(
+      const wrapperThree = shallow(
         <FeatureLayer
           features={features}
           data={testData}
@@ -196,12 +199,47 @@ describe('Choropleth <FeatureLayer />', () => {
         />
       );
 
-      expect(wrapper
+      expect(wrapperThree
         .find('g')
         .find(Path)
         .filterWhere(n => n.prop('datum').id === featureToTest.id)
         .first()
-      ).to.have.prop('fill', '#ccc');
+        .prop('fill')
+      ).to.include('#ccc');
+    });
+
+    it('has a fill color from the datum\'s colorAccessor property when present', () => {
+      const testData = getLocationIds(features).reduce((accum, locationId) => {
+        /* eslint-disable no-param-reassign */
+        accum[locationId] = {
+          id: locationId,
+          mean: 10,
+          color: 'blue',
+        };
+
+        return accum;
+        /* eslint-enable no-param-reassign */
+      }, {});
+      const wrapperThree = shallow(
+        <FeatureLayer
+          features={features}
+          data={testData}
+          geometryKeyField="id"
+          keyField="id"
+          valueField={(dataMappedToKeys, feature) => dataMappedToKeys[feature.id].mean}
+          pathGenerator={pathGenerator}
+          colorAccessor={'color'}
+          colorScale={colorScale}
+        />
+      );
+
+      expect(wrapperThree
+        .find('g')
+        .find(Path)
+        .filterWhere(n => n.prop('datum').id === featureToTest.id)
+        .first()
+        .prop('fill')
+      ).to.include('blue');
     });
   });
 

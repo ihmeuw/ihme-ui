@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import {
   assign,
   get as getValue,
@@ -9,7 +10,6 @@ import {
 
 import {
   propsChanged,
-  PureComponent,
   stateFromPropUpdates,
 } from '../../../utils';
 import {
@@ -41,7 +41,7 @@ const AXIS_TYPE_TO_TICK_VALUE_FITLER = {
  * @return {OrientedAxis}
  */
 export default function orientAxis(AxisComponent, orientation) {
-  class OrientedAxis extends PureComponent {
+  class OrientedAxis extends React.PureComponent {
     constructor(props) {
       super(props);
       this.state = stateFromPropUpdates(OrientedAxis.propUpdates, {}, props, {});

@@ -1,15 +1,19 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { scaleLinear } from 'd3';
-import { map, pick } from 'lodash';
+import {
+  map,
+  pick,
+} from 'lodash';
 
 import Line from './line';
 import Area from './area';
 import {
+  AnimateEvents, AnimateProp, AnimateTiming,
   CommonDefaultProps,
   CommonPropTypes,
   propResolver,
-  PureComponent,
 } from '../../../utils';
 
 /**
@@ -20,7 +24,7 @@ import {
  * are provided, which can be helpful, for example, for showing uncertainty around an estimate represented
  * by a line.
  */
-export default class MultiLine extends PureComponent {
+export default class MultiLine extends React.PureComponent {
   render() {
     const {
       areaClassName,
@@ -46,6 +50,7 @@ export default class MultiLine extends PureComponent {
     } = fieldAccessors;
 
     const childProps = pick(this.props, [
+      'animate',
       'onClick',
       'onMouseLeave',
       'onMouseMove',
@@ -113,6 +118,22 @@ export default class MultiLine extends PureComponent {
 }
 
 MultiLine.propTypes = {
+  /**
+   * Whether to animate the scatter component (using default `start`, `update` functions).
+   * Optionally, an object that provides functions that dictate behavior of animations.
+   */
+  animate: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.shape({
+      d: AnimateProp,
+      events: AnimateEvents,
+      fill: AnimateProp,
+      stroke: AnimateProp,
+      strokeWidth: AnimateProp,
+      timing: AnimateTiming,
+    }),
+  ]),
+
   /**
    * classname applied to `<Area/>`s that are children of MultiLine, if applicable
    */
@@ -265,3 +286,10 @@ MultiLine.defaultProps = {
   lineValuesIteratee: CommonDefaultProps.identity,
   scales: { x: scaleLinear(), y: scaleLinear() },
 };
+
+MultiLine.animatable = [
+  'd',
+  'fill',
+  'stroke',
+  'strokeWidth',
+];

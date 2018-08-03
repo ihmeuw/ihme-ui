@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import {
   assign,
   get as getValue,
@@ -13,13 +14,12 @@ import {
   CommonPropTypes,
   propResolver,
   propsChanged,
-  PureComponent,
   stateFromPropUpdates,
 } from '../../../utils';
 
 import Path from './path';
 
-export default class FeatureLayer extends PureComponent {
+export default class FeatureLayer extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -30,9 +30,22 @@ export default class FeatureLayer extends PureComponent {
     this.setState(stateFromPropUpdates(FeatureLayer.propUpdates, this.props, nextProps, {}));
   }
 
+  getColor(datum, value) {
+    const {
+      colorAccessor,
+      colorScale,
+    } = this.props;
+    const defaultColor = '#ccc';
+    if (isNil(value)) {
+      return defaultColor;
+    } else if (colorAccessor && colorScale(value) !== '#ccc') {
+      return propResolver(datum, colorAccessor);
+    }
+    return colorScale(value);
+  }
+
   render() {
     const {
-      colorScale,
       data,
       focus,
       focusedClassName,
@@ -78,7 +91,7 @@ export default class FeatureLayer extends PureComponent {
               ? valueField(data, feature)
               : getValue(datum, valueField);
 
-            const fill = isNil(value) ? '#ccc' : colorScale(value);
+            const fill = this.getColor(datum, value);
 
             return (
               <Path
@@ -109,6 +122,15 @@ export default class FeatureLayer extends PureComponent {
 }
 
 FeatureLayer.propTypes = {
+
+  /**
+   * accepts value of `keyfield` (str), returns stroke color for line (str)
+   */
+  colorAccessor: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+  ]),
+
   /* fn that accepts keyfield, and returns fill color for Path */
   colorScale: PropTypes.func.isRequired,
 

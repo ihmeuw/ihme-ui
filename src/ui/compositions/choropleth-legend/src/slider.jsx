@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { isFinite } from 'lodash';
 import { isWithinRange, percentOfRange } from '../../../../utils';
 import SliderHandle from './slider-handle';
