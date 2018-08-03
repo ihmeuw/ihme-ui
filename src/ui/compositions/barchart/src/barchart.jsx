@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import {
@@ -9,7 +10,6 @@ import {
   combineStyles,
   CommonPropTypes,
   memoizeByLastCall,
-  PureComponent,
 } from '../../../../utils';
 
 import styles from './style.css';
@@ -19,7 +19,7 @@ import Bars from './../../../bar/src/bars';
 import ResponsiveContainer from '../../../responsive-container';
 import Legend from './../../../legend';
 
-export default class BarChart extends PureComponent {
+export default class BarChart extends React.Component {
   constructor(props) {
     super(props);
 
@@ -315,6 +315,13 @@ BarChart.propTypes = {
    */
   titleStyle: PropTypes.object,
 
+  style: PropTypes.object,
+
+  height: PropTypes.number,
+
+  width: PropTypes.number,
+
+  className: PropTypes.string,
 };
 
 BarChart.defaultProps = {

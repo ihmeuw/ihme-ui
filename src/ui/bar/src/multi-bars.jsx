@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { scaleLinear, scaleBand, max } from 'd3';
 import { castArray, map, pick } from 'lodash';
@@ -11,11 +12,10 @@ import {
   CommonPropTypes,
   memoizeByLastCall,
   propResolver,
-  PureComponent,
   stackedDataArray,
 } from '../../../utils';
 
-export default class MultiBars extends PureComponent {
+export default class MultiBars extends React.Component {
   constructor(props) {
     super(props);
 
@@ -287,6 +287,8 @@ MultiBars.propTypes = {
    * inline style applied to outermost wrapping `<g>`
    */
   style: CommonPropTypes.style,
+
+  stacked: PropTypes.bool,
 
 };
 

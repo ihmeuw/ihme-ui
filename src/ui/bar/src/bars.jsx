@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { scaleLinear, scaleBand } from 'd3';
 import {
@@ -27,7 +28,6 @@ import {
   memoizeByLastCall,
   propResolver,
   propsChanged,
-  PureComponent,
   stateFromPropUpdates,
   setBandProps,
   getXValue,
@@ -38,7 +38,7 @@ import Bar from './bar';
 /**
  * `import { Bars } from 'ihme-ui'`
  */
-export default class Bars extends PureComponent {
+export default class Bars extends React.Component {
   constructor(props) {
     super(props);
 
@@ -378,6 +378,10 @@ Bars.propTypes = {
    * stacked are also supported.
    */
   type: PropTypes.oneOf(['Stacked', 'stacked', 'Grouped', 'grouped']),
+
+  stacked: PropTypes.bool,
+
+  grouped: PropTypes.bool,
 };
 
 
