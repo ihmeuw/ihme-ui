@@ -10,6 +10,24 @@ export {
 } from './array';
 
 export {
+  isDefault,
+  isVertical,
+  stackedDataArray,
+  getRenderingProps,
+  setBandProps,
+  getXPosition,
+  getXPositionStack,
+  getXValue,
+  getYPosition,
+  getYPositionStack,
+  getHeight,
+  getHeightStack,
+  getWidth,
+  getWidthStack,
+} from './bar';
+
+
+export {
   colorSteps,
   baseColorScale,
   getRandomColor,
@@ -99,3 +117,4 @@ export {
 export {
   getBackgroundColor,
 } from './window';
+

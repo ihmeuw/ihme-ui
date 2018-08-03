@@ -15,6 +15,8 @@ import {
   map,
   toString,
 } from 'lodash';
+
+
 import { scaleLinear } from 'd3';
 import Button from '../../../button';
 import Choropleth from '../../../choropleth';
@@ -34,6 +36,9 @@ import {
 } from '../../../../utils';
 
 import styles from './style.css';
+
+console.log(styles.title);
+console.log(styles);
 
 /**
  * @param {Array} extentPct
