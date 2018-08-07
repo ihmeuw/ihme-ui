@@ -31,31 +31,31 @@ export default class StackedBarChart extends React.Component {
 
   renderTitle() {
     const {
-      labelObject,
+      labelAccessors,
       titleClassName,
       titleStyle,
     } = this.props;
-    if (!labelObject.title) return null;
+    if (!labelAccessors.title) return null;
     return (
       <div className={classNames(styles.title, titleClassName)} style={titleStyle}>
-        {labelObject.title}
+        {labelAccessors.title}
       </div>
     );
   }
 
   renderLegend() {
     const {
-      legendObject,
+      legendAccessors,
       legendKey,
       legendClassName,
       legendStyle,
     } = this.props;
-    if (!legendObject) return null;
+    if (!legendAccessors) return null;
     return (
       <div className={classNames(styles.legend, legendClassName)} style={legendStyle}>
         <div className={styles['legend-wrapper']}>
           <Legend
-            items={legendObject}
+            items={legendAccessors}
             labelKey={legendKey.labelKey}
             shapeColorKey={legendKey.shapeColorKey}
             shapeTypeKey={legendKey.shapeTypeKey}
@@ -74,14 +74,14 @@ export default class StackedBarChart extends React.Component {
       chartStyle,
       fieldAccessors,
       focus,
-      labelObject,
+      labelAccessors,
       layerDomain,
       onClick,
       onMouseOver,
       onMouseLeave,
       onMouseMove,
       orientation,
-      scaleObject,
+      scaleAccessors,
     } = this.props;
 
     return (
@@ -90,16 +90,16 @@ export default class StackedBarChart extends React.Component {
         <ResponsiveContainer>
           {this.renderLegend()}
           <AxisChart
-            xDomain={scaleObject.xDomain}
-            yDomain={scaleObject.yDomain}
-            xScaleType={scaleObject.xScale}
-            yScaleType={scaleObject.yScale}
+            xDomain={scaleAccessors.xDomain}
+            yDomain={scaleAccessors.yDomain}
+            xScaleType={scaleAccessors.xScale}
+            yScaleType={scaleAccessors.yScale}
           >
             <XAxis
-              label={labelObject.xLabel ? labelObject.xLabel : 'X Axis'}
+              label={labelAccessors.xLabel ? labelAccessors.xLabel : 'X Axis'}
             />
             <YAxis
-              label={labelObject.yLabel ? labelObject.yLabel : 'Y Axis'}
+              label={labelAccessors.yLabel ? labelAccessors.yLabel : 'Y Axis'}
             />
             <MultiBars
               colorScale={colorScale}
@@ -247,7 +247,7 @@ StackedBarChart.propTypes = {
    *    xLabel: property used to access the xLabel of the composite component
    *    yLabel: property used to access the yLabel of the composite component
    */
-  labelObject: PropTypes.shape({
+  labelAccessors: PropTypes.shape({
     title: PropTypes.string,
     xLabel: PropTypes.string,
     yLabel: PropTypes.string
@@ -264,7 +264,7 @@ StackedBarChart.propTypes = {
    *    shapeColorKey: property used to access the path to shape color in item objects (e.g., 'color', 'properties.color')
    *    shapeTypeKey: property used to access the path to shape type in item objects (e.g., 'type', 'properties.type')
    */
-  legendObject: PropTypes.shape({
+  legendAccessors: PropTypes.shape({
     labelKey: PropTypes.string,
     shapeColorKey: PropTypes.string,
     shapeTypeKey: PropTypes.string
@@ -324,7 +324,7 @@ StackedBarChart.propTypes = {
    *    xScale: property used to access the xScale  of the scales object
    *    yScale: property used to access the yScale of the scales object
    */
-  scaleObject: PropTypes.shape({
+  scaleAccessors: PropTypes.shape({
     xDomain: PropTypes.string,
     yDomain: PropTypes.string,
     xScale: PropTypes.string,
