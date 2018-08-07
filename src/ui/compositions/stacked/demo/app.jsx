@@ -158,13 +158,13 @@ class App extends React.Component {
             key: 'key',
           }}
           focus={this.state.focus}
-          labelObject={{
+          labelAccessors={{
             title: "Population Between 2000-2009",
             yLabel: "Country",
             xLabel: "Population"
           }}
           layerDomain={yearFieldDomain}
-          legendObject={items}
+          legendAccessors={items}
           legendKey={{
             labelKey: "label",
             shapeColorKey: "shapeColor",
@@ -175,7 +175,7 @@ class App extends React.Component {
           onMouseMove={this.onMouseMove}
           onMouseOver={this.onMouseOver}
           orientation="horizontal"
-          scaleObject={{
+          scaleAccessors={{
             xScale: "linear",
             yScale:"band",
             xDomain: populationFieldDomain,

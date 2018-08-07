@@ -119,13 +119,13 @@ describe('<StackedBarChart />', () => {
         key: 'key',
       }}
       focus={noop}
-      labelObject={{
+      labelAccessors={{
         title: 'Population Between 2000-2009',
         yLabel: 'Country',
         xLabel: 'Population'
       }}
       layerDomain={yearFieldDomain}
-      legendObject={items}
+      legendAccessors={items}
       legendKey={{
         labelKey: 'label',
         shapeColorKey: 'shapeColor',
@@ -136,7 +136,7 @@ describe('<StackedBarChart />', () => {
       onMouseMove={noop}
       onMouseOver={noop}
       orientation="horizontal"
-      scaleObject={{
+      scaleAccessors={{
         xScale: 'linear',
         yScale: 'band',
         xDomain: populationFieldDomain,
