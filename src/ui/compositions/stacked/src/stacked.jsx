@@ -129,12 +129,12 @@ export default class StackedBarChart extends React.Component {
   }
 
   render() {
-    const { className, style, type } = this.props;
+    const { className, displayLegend, style } = this.props;
     return (
       <div className={classNames(styles['chart-container'], className)} style={style}>
         {this.renderTitle()}
         {this.renderBarChart()}
-        {(type === 'stacked') ? this.renderLegend() : ''}
+        {(displayLegend) ? this.renderLegend() : ''}
       </div>
     );
   }
@@ -224,6 +224,11 @@ StackedBarChart.propTypes = {
     value: PropTypes.string,
     layer: PropTypes.string,
   }).isRequired,
+
+  /**
+   * Boolean to display Legend or not
+   */
+  displayLegend: PropTypes.bool,
 
   /**
    * Accessors for objects within `props.data`
@@ -321,7 +326,7 @@ StackedBarChart.propTypes = {
    * Orientation in which bars should be created.
    * Defaults to vertical, but option for horizontal orientation supported.
    */
-  orientation: PropTypes.string,
+  orientation: PropTypes.oneOf(['Horizontal', 'horizontal', 'Vertical', 'vertical']),
 
   /**
    * Accessors to scales properties
@@ -338,6 +343,11 @@ StackedBarChart.propTypes = {
   }),
 
   /**
+   * inline styles applied to div wrapping the chart-container
+   */
+  style: PropTypes.object,
+
+  /**
    * className applied to div wrapping the title
    */
   titleClassName: CommonPropTypes.className,
@@ -349,18 +359,13 @@ StackedBarChart.propTypes = {
 
   /**
    * Type of bar chart to be created.
-   * Default is a simple vertically oriented bar graph. Options for grouped and
-   * stacked are also supported.
+   * Options for grouped and stacked
    */
   type: PropTypes.oneOf(['stacked', 'grouped']),
-
-  /**
-   * inline styles applied to div wrapping the chart-container
-   */
-  style: PropTypes.object,
 
 };
 
 StackedBarChart.defaultProps = {
   orientation: 'vertical',
+  displayLegend: false,
 };
