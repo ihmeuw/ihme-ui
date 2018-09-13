@@ -513,6 +513,7 @@ class App extends React.Component {
               layer: yearField,
               value: populationField,
             }}
+            displayLegend={true}
             colorScale={colorScale}
             fieldAccessors={{
               data: 'values',
@@ -556,6 +557,7 @@ class App extends React.Component {
               layer: yearField,
               value: populationField,
             }}
+            displayLegend={true}
             colorScale={colorScale}
             fieldAccessors={{
               data: 'values',
@@ -603,6 +605,7 @@ class App extends React.Component {
               layer: yearField,
               value: populationField,
             }}
+            displayLegend={true}
             colorScale={colorScale}
             fieldAccessors={{
               data: 'values',
@@ -646,6 +649,7 @@ class App extends React.Component {
               layer: yearField,
               value: populationField,
             }}
+            displayLegend={true}
             colorScale={colorScale}
             fieldAccessors={{
               data: 'values',

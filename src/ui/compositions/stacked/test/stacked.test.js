@@ -113,6 +113,7 @@ describe('<StackedBarChart />', () => {
         layer: yearField,
         value: populationField,
       }}
+      displayLegend
       colorScale={colorScale}
       fieldAccessors={{
         data: 'values',
