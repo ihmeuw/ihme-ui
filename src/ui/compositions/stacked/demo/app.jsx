@@ -10,7 +10,6 @@ import {
   uniqBy,
 } from 'lodash';
 
-
 import StackedBarChart from './../../stacked/src/stacked';
 
 import { dataGenerator } from '../../../../utils';
@@ -56,7 +55,6 @@ const STYLE = {
   height: true,
 };
 
-// Should these be passed or calculated from given dataset within the BarChart component?
 const populationFieldDomain = [minBy(data, populationField)[populationField], maxBy(data, populationField)[populationField]];
 const yearFieldDomain = map(uniqBy(data, yearField), (obj) => { return (obj[yearField]); });
 const locationFieldDomain = map(uniqBy(locationData, locationField), (obj) => { return (obj[locationField]); });
@@ -154,32 +152,6 @@ class App extends React.Component {
       focus: datum,
     });
   };
-
-
-  // onClick(event, datum) {
-  //   console.log(`${event.type}::${datum[yearField]},${datum[populationField]}`);
-  //   this.setState({
-  //     selectedItems: xor(this.state.selectedItems, [datum]),
-  //   });
-  // };
-  //
-  // onMouseLeave(event, datum) {
-  //   console.log(`${event.type}::${datum[yearField]},${datum[populationField]}`);
-  //   this.setState({
-  //     focus: {},
-  //   });
-  // };
-  //
-  // onMouseMove(event, datum) {
-  //   console.log(`${event.type}::${datum[yearField]},${datum[populationField]}`);
-  // };
-  //
-  // onMouseOver(event, datum) {
-  //   console.log(`${event.type}::${datum[yearField]},${datum[populationField]}`);
-  //   this.setState({
-  //     focus: datum,
-  //   });
-  // };
 
   render() {
     return (
