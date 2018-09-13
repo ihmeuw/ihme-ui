@@ -65,7 +65,7 @@ export default class StackedBarChart extends React.Component {
     );
   }
 
-  renderStackedBarChart() {
+  renderBarChart() {
     const {
       data,
       fill,
@@ -82,13 +82,12 @@ export default class StackedBarChart extends React.Component {
       onMouseMove,
       orientation,
       scaleAccessors,
+      type,
     } = this.props;
 
     return (
       <div className={classNames(styles.chart, chartStyle)}>
-        {this.renderTitle()}
         <ResponsiveContainer>
-          {this.renderLegend()}
           <AxisChart
             xDomain={scaleAccessors.xDomain}
             yDomain={scaleAccessors.yDomain}
@@ -108,6 +107,10 @@ export default class StackedBarChart extends React.Component {
               fieldAccessors={fieldAccessors}
               fill={fill}
               focus={focus}
+              focusedStyle={{
+                stroke: '#000',
+                strokeWidth: 2,
+              }}
               layerDomain={layerDomain}
               onClick={onClick}
               onMouseOver={onMouseOver}
@@ -116,7 +119,8 @@ export default class StackedBarChart extends React.Component {
               style={chartStyle}
               selection={this.state.selectedItems}
               orientation={orientation}
-              stacked
+              grouped={(type === 'grouped') ? true : undefined}
+              stacked={(type === 'stacked') ? true : undefined}
             />
           </AxisChart>
         </ResponsiveContainer>
@@ -125,10 +129,12 @@ export default class StackedBarChart extends React.Component {
   }
 
   render() {
-    const { className, style } = this.props;
+    const { className, style, type } = this.props;
     return (
       <div className={classNames(styles['chart-container'], className)} style={style}>
-        {this.renderStackedBarChart()}
+        {this.renderTitle()}
+        {this.renderBarChart()}
+        {(type === 'stacked') ? this.renderLegend() : ''}
       </div>
     );
   }
@@ -340,6 +346,13 @@ StackedBarChart.propTypes = {
    * inline styles applied to div wrapping the title
    */
   titleStyle: PropTypes.object,
+
+  /**
+   * Type of bar chart to be created.
+   * Default is a simple vertically oriented bar graph. Options for grouped and
+   * stacked are also supported.
+   */
+  type: PropTypes.oneOf(['stacked', 'grouped']),
 
   /**
    * inline styles applied to div wrapping the chart-container

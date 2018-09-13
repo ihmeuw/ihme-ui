@@ -1,15 +1,15 @@
 .legend {
   height: 100px;
   width: 100%;
+  flex: .2;
 }
 
 .legend-wrapper {
-  position: absolute;
-  right: 0px;
+
 }
 
 .chart {
-  flex: 1 0 auto;
+  flex: 4;
   width: 100%;
 }
 
@@ -21,7 +21,14 @@
 }
 
 .title {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
   text-align: center;
+  flex-direction: column;
+  justify-content: center;
 }
 
 
