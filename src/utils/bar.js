@@ -40,8 +40,8 @@ export function stackedDataArray(collection, layerField, valueField,
     insertObject.id = i;
 
     data[dataField].forEach(datum => {
-      const year = datum[layerField];
-      insertObject[year] = datum[valueField];
+      const layer = datum[layerField];
+      insertObject[layer] = datum[valueField];
     });
     return insertObject;
   });
@@ -75,18 +75,18 @@ export function setBandProps(scale, align, bandPadding, bandPaddingInner, bandPa
 
 /**
  * Returns the x position used to render the svg rect element of a normal and grouped bar chart
- * @param isGrouped : Boolean that represents whether the chart is grouped
+ * @param grouped : Boolean that represents whether the chart is grouped
  * @param layerOrdinal : Ordinal scale for the sub-categorical data within a grouped/stacked bar chart
  * @param ordinal : Ordinal scale for the categorical data with a grouped/stacked bar chart
  * @param orientation : String that represents the orientation of the chart
  * @param xValue : Value that corresponds to the X Axis used to calculate positioning from scales
  * @returns {number} : Value that represents the x position for the svg rect element
  */
-export function getXPosition(isGrouped, layerOrdinal, ordinal, orientation, xValue) {
+export function getXPosition(grouped, layerOrdinal, ordinal, orientation, xValue) {
   if (!isVertical(orientation)) {
     return 0;
   }
-  if (isGrouped) {
+  if (grouped) {
     return layerOrdinal(xValue);
   }
   return ordinal(xValue);

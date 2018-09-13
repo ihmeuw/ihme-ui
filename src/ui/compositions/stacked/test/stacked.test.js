@@ -144,6 +144,7 @@ describe('<StackedBarChart />', () => {
       }}
       selection={noop}
       titleClassName={'title-class'}
+      type={'stacked'}
     />
   );
 
