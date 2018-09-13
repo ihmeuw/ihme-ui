@@ -40,7 +40,6 @@ export default class MultiBars extends React.Component {
       selection,
       style,
       stacked,
-      grouped,
     } = this.props;
 
     const {
