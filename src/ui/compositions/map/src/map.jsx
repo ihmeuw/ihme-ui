@@ -35,9 +35,6 @@ import {
 
 import styles from './style.css';
 
-console.log(styles.title);
-console.log(styles);
-
 /**
  * @param {Array} extentPct
  * @param {Array} domain

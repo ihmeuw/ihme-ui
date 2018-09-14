@@ -66,7 +66,6 @@ export function setBandProps(scale, align, bandPadding, bandPaddingInner, bandPa
   } else {
     scale.padding(bandPadding);
   }
-
   if (align) {
     scale.align(align);
   }
@@ -161,7 +160,6 @@ export function getHeight(height, grouped, layerOrdinal, linear, ordinal, orient
   if (isVertical(orientation)) {
     return height - linear(yValue);
   }
-
   if (grouped) {
     return layerOrdinal.bandwidth();
   }

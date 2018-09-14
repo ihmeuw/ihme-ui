@@ -90,10 +90,15 @@ export default class Bar extends React.Component {
 
     return (
       <rect
-        className={classNames(className, {
-          [selectedClassName]: selected && selectedClassName,
-          [focusedClassName]: focused && focusedClassName,
-        }) || (void 0)}
+        className={
+          classNames(
+            className,
+            {
+              [selectedClassName]: selected && selectedClassName,
+              [focusedClassName]: focused && focusedClassName,
+            })
+          || (void 0)
+        }
         x={x}
         y={y}
         height={height}
@@ -225,7 +230,7 @@ Bar.propTypes = {
 
 Bar.defaultProps = {
   fill: 'steelblue',
-  foused: false,
+  focused: false,
   focusedClassName: 'focused',
   focusedStyle: {
     stroke: '#000',
