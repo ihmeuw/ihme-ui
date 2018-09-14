@@ -55,8 +55,9 @@ export default class MultiBars extends React.Component {
     } = fieldAccessors;
 
     // If stacked bar chart, the data must be transformed using d3.stack() function.
-    const plotData = stacked ?
-      stackedDataArray(data, layerField, valueField, stackField, dataField, layerDomain) : data;
+    const plotData = stacked
+      ? stackedDataArray(data, layerField, valueField, stackField, dataField, layerDomain)
+      : data;
 
     // Updates specific domains for each type of bar chart
     if (stacked) {

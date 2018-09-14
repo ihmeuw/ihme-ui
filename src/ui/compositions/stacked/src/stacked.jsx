@@ -362,7 +362,6 @@ StackedBarChart.propTypes = {
    * Options for grouped and stacked
    */
   type: PropTypes.oneOf(['stacked', 'grouped']),
-
 };
 
 StackedBarChart.defaultProps = {
