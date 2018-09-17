@@ -1,14 +1,12 @@
 import React from 'react';
 import { schemeCategory10, scaleOrdinal } from 'd3';
 import ReactDOM from 'react-dom';
-import {
-  bindAll,
-  xor,
-  maxBy,
-  minBy,
-  map,
-  uniqBy,
-} from 'lodash';
+import bindAll from 'lodash/bindAll';
+import xor from 'lodash/xor';
+import maxBy from 'lodash/maxBy';
+import minBy from 'lodash/minBy';
+import map from 'lodash/map';
+import uniqBy from 'lodash/uniqBy';
 
 import StackedBarChart from './../../stacked/src/stacked';
 

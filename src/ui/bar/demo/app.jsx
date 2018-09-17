@@ -1,6 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { bindAll, maxBy, minBy, map, uniqBy, xor } from 'lodash';
+import bindAll from 'lodash/bindAll';
+import maxBy from 'lodash/maxBy';
+import minBy from 'lodash/minBy';
+import map from 'lodash/map';
+import uniqBy from 'lodash/uniqBy';
+import xor from 'lodash/xor';
+
 import { dataGenerator } from '../../../utils';
 import AxisChart from '../../axis-chart';
 import { schemeCategory10, scaleOrdinal, max } from 'd3';

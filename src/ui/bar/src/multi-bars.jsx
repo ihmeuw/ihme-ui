@@ -2,7 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { scaleLinear, scaleBand, max } from 'd3';
-import { castArray, map, pick } from 'lodash';
+import castArray from 'lodash/castArray';
+import map from 'lodash/map';
+import pick from 'lodash/pick';
 import Bars from './bars';
 
 import {

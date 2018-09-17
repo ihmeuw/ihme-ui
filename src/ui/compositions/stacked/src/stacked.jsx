@@ -1,10 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import {
-  castArray,
-} from 'lodash';
-
+import castArray from 'lodash/castArray';
 import {
   combineStyles,
   CommonPropTypes,
