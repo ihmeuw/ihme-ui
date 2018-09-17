@@ -100,10 +100,10 @@ class App extends React.Component {
            fill="steelblue"
            data={data.filter((datum) => { return datum.location === 'India'; })}
            dataAccessors={{
-           fill: yearField,
-           key: 'id',
-           stack: yearField,    // x field
-           value: populationField   // y field
+             fill: yearField,
+             key: 'id',
+             stack: yearField,    // x field
+             value: populationField   // y field
            }}
            focus={this.state.focus}
            onClick={this.onClick}
@@ -159,10 +159,10 @@ class App extends React.Component {
            fill="steelblue"
            data={data.filter((datum) => { return datum.location === 'India'; })}
            dataAccessors={{
-           fill: yearField,
-           key: 'id',
-           stack: yearField,    // year_id
-           value: populationField   // population
+             fill: yearField,
+             key: 'id',
+             stack: yearField,    // year_id
+             value: populationField   // population
            }}
            focus={this.state.focus}
            onClick={this.onClick}
@@ -220,21 +220,20 @@ class App extends React.Component {
            colorScale={colorScale}
            data={locationData}
            dataAccessors={{
-           fill: yearField,
-           key: 'id',
-           stack: locationField, // stack field
-           layer: yearField,  // x axis
-           value: populationField, // y axis
+             fill: yearField,
+             key: 'id',
+             stack: locationField, // stack field
+             layer: yearField,  // x axis
+             value: populationField, // y axis
            }}
            fieldAccessors={{
-           data: 'values',
-           key: 'location',
-
+             data: 'values',
+             key: 'location',
            }}
            focus={this.state.focus}
            focusedStyle={{
-           stroke: '#000',
-           strokeWidth: 2,
+             stroke: '#000',
+             strokeWidth: 2,
            }}
            layerDomain={yearFieldDomain}
            onClick={this.onClick}
@@ -243,8 +242,8 @@ class App extends React.Component {
            onMouseOver={this.onMouseOver}
            selection={this.state.selectedItems}
            selectedStyle={{
-           stroke: '#000',
-           strokeWidth: 1,
+             stroke: '#000',
+             strokeWidth: 1,
            }}
            grouped
          />
@@ -310,20 +309,20 @@ class App extends React.Component {
              colorScale={colorScale}
              data={locationData}
              dataAccessors={{
-             fill: yearField,
-             key: 'id',
-             stack: locationField, // stack field
-             layer: populationField, // layer field
-             value: yearField,
+               fill: yearField,
+               key: 'id',
+               stack: locationField, // stack field
+               layer: populationField, // layer field
+               value: yearField,
              }}
              fieldAccessors={{
-             data: 'values',
-             key: 'location',
+               data: 'values',
+               key: 'location',
              }}
              focus={this.state.focus}
              focusedStyle={{
-             stroke: '#000',
-             strokeWidth: 2,
+               stroke: '#000',
+               strokeWidth: 2,
              }}
              layerDomain={yearFieldDomain}
              onClick={this.onClick}
@@ -333,8 +332,8 @@ class App extends React.Component {
              orientation='horizontal'
              selection={this.state.selectedItems}
              selectedStyle={{
-             stroke: '#000',
-             strokeWidth: 1,
+               stroke: '#000',
+               strokeWidth: 1,
              }}
              grouped
            />
@@ -401,20 +400,20 @@ class App extends React.Component {
            colorScale={colorScale}
            data={locationData}
            dataAccessors={{
-           fill: yearField,
-           key: 'id',
-           stack: locationField,
-           layer: yearField,
-           value: populationField,
+             fill: yearField,
+             key: 'id',
+             stack: locationField,
+             layer: yearField,
+             value: populationField,
            }}
            fieldAccessors={{
-           data: 'values',
-           key: 'key',
+             data: 'values',
+             key: 'key',
            }}
            focus={this.state.focus}
            focusedStyle={{
-           stroke: '#000',
-           strokeWidth: 2,
+             stroke: '#000',
+             strokeWidth: 2,
            }}
            layerDomain={yearFieldDomain}
            onClick={this.onClick}
@@ -423,8 +422,8 @@ class App extends React.Component {
            onMouseOver={this.onMouseOver}
            selection={this.state.selectedItems}
            selectedStyle={{
-           stroke: '#000',
-           strokeWidth: 1,
+             stroke: '#000',
+             strokeWidth: 1,
            }}
            stacked
          />
@@ -491,20 +490,20 @@ class App extends React.Component {
              colorScale={colorScale}
              data={locationData}
              dataAccessors={{
-             fill: yearField,
-             key: 'id', // rename to relate to inner grouping
-             layer: yearField,
-             value: populationField,
-             stack: locationField
+               fill: yearField,
+               key: 'id', // rename to relate to inner grouping
+               layer: yearField,
+               value: populationField,
+               stack: locationField
              }}
              fieldAccessors={{
-             data: 'values',
-             key: 'key',
+               data: 'values',
+               key: 'key',
              }}
              focus={this.state.focus}
              focusedStyle={{
-             stroke: '#000',
-             strokeWidth: 2,
+               stroke: '#000',
+               strokeWidth: 2,
              }}
              layerDomain={yearFieldDomain}
              onClick={this.onClick}
@@ -514,8 +513,8 @@ class App extends React.Component {
              orientation="horizontal"
              selection={this.state.selectedItems}
              selectedStyle={{
-             stroke: '#000',
-             strokeWidth: 1,
+               stroke: '#000',
+               strokeWidth: 1,
              }}
              stacked
            />
