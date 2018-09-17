@@ -37,6 +37,7 @@ export default class Select extends React.PureComponent {
     const {
       className,
       clearable,
+      disabled,
       hierarchical,
       multi,
       optionHeight,
@@ -62,6 +63,7 @@ export default class Select extends React.PureComponent {
         closeOnSelect={!multi}
         inputProps={multi ? { placeholder: `Add/Remove... (${value.length})` } : {}}
         inputRenderer={multi && inputRenderer}
+        isDisabled={disabled}
         menuContainerStyle={menuContainerStyle}
         menuStyle={menuStyle}
         multi={multi}
@@ -81,6 +83,9 @@ export default class Select extends React.PureComponent {
 const selectPropTypes = {
   /* render the clear selection "X" to reset the value */
   clearable: PropTypes.bool,
+
+  /* disable the select dropdown */
+  disabled: PropTypes.bool,
 
   /* drop down will flip up */
   menuUpward: PropTypes.bool,
@@ -108,6 +113,7 @@ Select.propTypes = assign({}, BaseSelect.propTypes, selectPropTypes);
 
 Select.defaultProps = {
   clearable: true,
+  disabled: false,
   optionHeight: 20,
   optionRenderer: defaultOptionRenderer,
   widthPad: 60,
