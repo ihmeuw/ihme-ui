@@ -180,11 +180,6 @@ class App extends React.Component {
               xLabel: "Year"
             }}
             layerDomain={yearFieldDomain}
-            legendKey={{
-              labelKey: "label",
-              shapeColorKey: "shapeColor",
-              shapeTypeKey: "shapeType",
-            }}
             onClick={this.onClick}
             onMouseLeave={this.onMouseLeave}
             onMouseMove={this.onMouseMove}
@@ -220,11 +215,6 @@ class App extends React.Component {
               xLabel: "Year"
             }}
             layerDomain={yearFieldDomain}
-            legendKey={{
-              labelKey: "label",
-              shapeColorKey: "shapeColor",
-              shapeTypeKey: "shapeType",
-            }}
             onClick={this.onClick}
             onMouseLeave={this.onMouseLeave}
             onMouseMove={this.onMouseMove}
@@ -263,11 +253,6 @@ class App extends React.Component {
               yLabel: "Year"
             }}
             layerDomain={yearFieldDomain}
-            legendKey={{
-              labelKey: "label",
-              shapeColorKey: "shapeColor",
-              shapeTypeKey: "shapeType",
-            }}
             onClick={this.onClick}
             onMouseLeave={this.onMouseLeave}
             onMouseMove={this.onMouseMove}
@@ -303,11 +288,6 @@ class App extends React.Component {
               yLabel: "Year"
             }}
             layerDomain={yearFieldDomain}
-            legendKey={{
-              labelKey: "label",
-              shapeColorKey: "shapeColor",
-              shapeTypeKey: "shapeType",
-            }}
             onClick={this.onClick}
             onMouseLeave={this.onMouseLeave}
             onMouseMove={this.onMouseMove}
@@ -347,12 +327,6 @@ class App extends React.Component {
               xLabel: "Country"
             }}
             layerDomain={yearFieldDomain}
-            legendAccessors={items}
-            legendKey={{
-              labelKey: "label",
-              shapeColorKey: "shapeColor",
-              shapeTypeKey: "shapeType",
-            }}
             onClick={this.onClick}
             onMouseLeave={this.onMouseLeave}
             onMouseMove={this.onMouseMove}
@@ -390,12 +364,6 @@ class App extends React.Component {
               xLabel: "Country"
             }}
             layerDomain={yearFieldDomain}
-            legendAccessors={items}
-            legendKey={{
-              labelKey: "label",
-              shapeColorKey: "shapeColor",
-              shapeTypeKey: "shapeType",
-            }}
             onClick={this.onClick}
             onMouseLeave={this.onMouseLeave}
             onMouseMove={this.onMouseMove}
@@ -436,12 +404,6 @@ class App extends React.Component {
               xLabel: "Population"
             }}
             layerDomain={yearFieldDomain}
-            legendAccessors={items}
-            legendKey={{
-              labelKey: "label",
-              shapeColorKey: "shapeColor",
-              shapeTypeKey: "shapeType",
-            }}
             onClick={this.onClick}
             onMouseLeave={this.onMouseLeave}
             onMouseMove={this.onMouseMove}
@@ -479,12 +441,6 @@ class App extends React.Component {
               xLabel: "Population"
             }}
             layerDomain={yearFieldDomain}
-            legendAccessors={items}
-            legendKey={{
-              labelKey: "label",
-              shapeColorKey: "shapeColor",
-              shapeTypeKey: "shapeType",
-            }}
             onClick={this.onClick}
             onMouseLeave={this.onMouseLeave}
             onMouseMove={this.onMouseMove}
