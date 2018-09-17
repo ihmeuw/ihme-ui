@@ -163,8 +163,9 @@ export default class Bars extends React.Component {
       >
         {
           map(sortedData, (datum) => {
-            const key = stacked ? propResolver(datum.data, dataAccessors.key) :
-              propResolver(datum, dataAccessors.key);
+            const key = stacked
+              ? propResolver(datum.data, dataAccessors.key)
+              : propResolver(datum, dataAccessors.key);
             const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.stack);
             const focusedDatumKey = focus && propResolver(focus, dataAccessors.key);
 
