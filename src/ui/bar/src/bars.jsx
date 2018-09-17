@@ -80,16 +80,20 @@ export default class Bars extends React.Component {
 
     const result = {};
 
-    const xPosition = stacked ? getXPositionStack(datum[0], linear, ordinal, orientation, xValue)
+    const xPosition = stacked
+      ? getXPositionStack(datum[0], linear, ordinal, orientation, xValue)
       : getXPosition(grouped, layerOrdinal, ordinal, orientation, xValue);
 
-    const yPosition = stacked ? getYPositionStack(datum[1], linear, ordinal, orientation, xValue)
+    const yPosition = stacked
+      ? getYPositionStack(datum[1], linear, ordinal, orientation, xValue)
       : getYPosition(grouped, layerOrdinal, linear, ordinal, orientation, xValue, yValue);
 
-    const barHeight = stacked ? getHeightStack(datum[0], linear, ordinal, orientation, yValue)
+    const barHeight = stacked
+      ? getHeightStack(datum[0], linear, ordinal, orientation, yValue)
       : getHeight(height, grouped, layerOrdinal, linear, ordinal, orientation, yValue);
 
-    const barWidth = stacked ? getWidthStack(datum[0], linear, ordinal, orientation, yValue)
+    const barWidth = stacked
+      ? getWidthStack(datum[0], linear, ordinal, orientation, yValue)
       : getWidth(grouped, layerOrdinal, linear, ordinal, orientation, xValue, yValue);
 
     result.xPosition = xPosition;
