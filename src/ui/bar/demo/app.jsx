@@ -30,19 +30,19 @@ const data = dataGenerator({
 });
 
 const locationData = [
-  { location: 'Brazil', values: data.filter((datum) => { return datum.location === 'Brazil'; }) },
-  { location: 'Russia', values: data.filter((datum) => { return datum.location === 'Russia'; }) },
-  { location: 'India', values: data.filter((datum) => { return datum.location === 'India'; }) },
-  { location: 'China', values: data.filter((datum) => { return datum.location === 'China'; }) },
-  { location: 'Mexico', values: data.filter((datum) => { return datum.location === 'Mexico'; }) },
-  { location: 'Indonesia', values: data.filter((datum) => { return datum.location === 'Indonesia'; }) },
-  { location: 'Nigeria', values: data.filter((datum) => { return datum.location === 'Nigeria'; }) },
-  { location: 'Vietnam', values: data.filter((datum) => { return datum.location === 'Vietnam'; }) }
+  { location: 'Brazil', values: data.filter(datum => datum.location === 'Brazil')},
+  { location: 'Russia', values: data.filter(datum => datum.location === 'Russia')},
+  { location: 'India', values: data.filter(datum => datum.location === 'India')},
+  { location: 'China', values: data.filter(datum => datum.location === 'China')},
+  { location: 'Mexico', values: data.filter(datum => datum.location === 'Mexico')},
+  { location: 'Indonesia', values: data.filter(datum => datum.location === 'Indonesia')},
+  { location: 'Nigeria', values: data.filter(datum => datum.location === 'Nigeria')},
+  { location: 'Vietnam', values: data.filter(datum => datum.location === 'Vietnam')}
 ];
 
 const populationFieldDomain = [minBy(data, populationField)[populationField], maxBy(data, populationField)[populationField]];
-const yearFieldDomain = map(uniqBy(data, yearField), (obj) => { return (obj[yearField]); });
-const locationFieldDomain = map(uniqBy(locationData, locationField), (obj) => { return (obj[locationField]); });
+const yearFieldDomain = map(uniqBy(data, yearField), obj => (obj[yearField]));
+const locationFieldDomain = map(uniqBy(locationData, locationField), obj => (obj[locationField]));
 const colorScale = scaleOrdinal(schemeCategory10);
 
 class App extends React.Component {
@@ -104,7 +104,7 @@ class App extends React.Component {
          <YAxis />
          <Bars
            fill="steelblue"
-           data={data.filter((datum) => { return datum.location === 'India'; })}
+           data={data.filter(datum => datum.location === 'India')}
            dataAccessors={{
              fill: yearField,
              key: 'id',
@@ -132,7 +132,7 @@ class App extends React.Component {
           <YAxis />
           <Bars
           fill="steelblue"
-          data={data.filter((datum) => { return datum.location === 'India'; })}
+          data={data.filter(datum => datum.location === 'India')}
           dataAccessors={{
             fill: yearField,
             key: 'id',
@@ -163,7 +163,7 @@ class App extends React.Component {
          <YAxis/>
          <Bars
            fill="steelblue"
-           data={data.filter((datum) => { return datum.location === 'India'; })}
+           data={data.filter(datum => datum.location === 'India')}
            dataAccessors={{
              fill: yearField,
              key: 'id',
@@ -192,7 +192,7 @@ class App extends React.Component {
           <YAxis/>
           <Bars
             fill="steelblue"
-            data={data.filter((datum) => { return datum.location === 'India'; })}
+            data={data.filter(datum => datum.location === 'India')}
             dataAccessors={{
               fill: yearField,
               key: 'id',
@@ -538,7 +538,6 @@ class App extends React.Component {
             <YAxis/>
             <MultiBars
               colorScale={colorScale}
-              // data={data.filter((datum) => { return datum.location === 'Indiaa'; })}
               data={locationData}
               dataAccessors={{
                 fill: yearField,

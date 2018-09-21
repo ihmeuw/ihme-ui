@@ -64,7 +64,7 @@ export default class MultiBars extends React.Component {
     // Updates specific domains for each type of bar chart
     if (stacked) {
       const stackedDomain =
-        [0, max(plotData, (datum) => { return max(datum, (d) => { return d[1]; }); })];
+        [0, max(plotData, datum => max(datum, d => d[1]))];
       const linear = (isVertical(orientation) ? scales.y : scales.x);
       linear.domain(stackedDomain);
     } else {

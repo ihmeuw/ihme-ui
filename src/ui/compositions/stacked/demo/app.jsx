@@ -26,27 +26,27 @@ const data = dataGenerator({
 });
 
 const yearData = [
-  { year: 2000, values: data.filter((datum) => { return (datum.location === 'Brazil') && (datum.year_id === 2000) }) },
-  { year: 2001, values: data.filter((datum) => { return (datum.location === 'Brazil') && (datum.year_id === 2001) }) },
-  { year: 2002, values: data.filter((datum) => { return (datum.location === 'Brazil') && (datum.year_id === 2002) }) },
-  { year: 2003, values: data.filter((datum) => { return (datum.location === 'Brazil') && (datum.year_id === 2003) }) },
-  { year: 2004, values: data.filter((datum) => { return (datum.location === 'Brazil') && (datum.year_id === 2004) }) },
-  { year: 2005, values: data.filter((datum) => { return (datum.location === 'Brazil') && (datum.year_id === 2005) }) },
-  { year: 2006, values: data.filter((datum) => { return (datum.location === 'Brazil') && (datum.year_id === 2006) }) },
-  { year: 2007, values: data.filter((datum) => { return (datum.location === 'Brazil') && (datum.year_id === 2007) }) },
-  { year: 2008, values: data.filter((datum) => { return (datum.location === 'Brazil') && (datum.year_id === 2008) }) },
-  { year: 2009, values: data.filter((datum) => { return (datum.location === 'Brazil') && (datum.year_id === 2009) }) },
+  { year: 2000, values: data.filter(datum => (datum.location === 'Brazil') && (datum.year_id === 2000)) },
+  { year: 2001, values: data.filter(datum => (datum.location === 'Brazil') && (datum.year_id === 2001)) },
+  { year: 2002, values: data.filter(datum => (datum.location === 'Brazil') && (datum.year_id === 2002)) },
+  { year: 2003, values: data.filter(datum => (datum.location === 'Brazil') && (datum.year_id === 2003)) },
+  { year: 2004, values: data.filter(datum => (datum.location === 'Brazil') && (datum.year_id === 2004)) },
+  { year: 2005, values: data.filter(datum => (datum.location === 'Brazil') && (datum.year_id === 2005)) },
+  { year: 2006, values: data.filter(datum => (datum.location === 'Brazil') && (datum.year_id === 2006)) },
+  { year: 2007, values: data.filter(datum => (datum.location === 'Brazil') && (datum.year_id === 2007)) },
+  { year: 2008, values: data.filter(datum => (datum.location === 'Brazil') && (datum.year_id === 2008)) },
+  { year: 2009, values: data.filter(datum => (datum.location === 'Brazil') && (datum.year_id === 2009)) },
 ];
 
 const locationData = [
-  { location: 'Brazil', values: data.filter((datum) => { return datum.location === 'Brazil'; }) },
-  { location: 'Russia', values: data.filter((datum) => { return datum.location === 'Russia'; }) },
-  { location: 'India', values: data.filter((datum) => { return datum.location === 'India'; }) },
-  { location: 'China', values: data.filter((datum) => { return datum.location === 'China'; }) },
-  { location: 'Mexico', values: data.filter((datum) => { return datum.location === 'Mexico'; }) },
-  { location: 'Indonesia', values: data.filter((datum) => { return datum.location === 'Indonesia'; }) },
-  { location: 'Nigeria', values: data.filter((datum) => { return datum.location === 'Nigeria'; }) },
-  { location: 'Vietnam', values: data.filter((datum) => { return datum.location === 'Vietnam'; }) }
+  { location: 'Brazil', values: data.filter(datum => datum.location === 'Brazil') },
+  { location: 'Russia', values: data.filter(datum => datum.location === 'Russia') },
+  { location: 'India', values: data.filter(datum => datum.location === 'India') },
+  { location: 'China', values: data.filter(datum => datum.location === 'China') },
+  { location: 'Mexico', values: data.filter(datum => datum.location === 'Mexico') },
+  { location: 'Indonesia', values: data.filter(datum => datum.location === 'Indonesia') },
+  { location: 'Nigeria', values: data.filter(datum => datum.location === 'Nigeria') },
+  { location: 'Vietnam', values: data.filter(datum => datum.location === 'Vietnam') },
 ];
 
 const STYLE = {
@@ -54,8 +54,8 @@ const STYLE = {
 };
 
 const populationFieldDomain = [minBy(data, populationField)[populationField], maxBy(data, populationField)[populationField]];
-const yearFieldDomain = map(uniqBy(data, yearField), (obj) => { return (obj[yearField]); });
-const locationFieldDomain = map(uniqBy(locationData, locationField), (obj) => { return (obj[locationField]); });
+const yearFieldDomain = map(uniqBy(data, yearField), obj => obj[yearField]);
+const locationFieldDomain = map(uniqBy(locationData, locationField), obj => obj[locationField]);
 const colorScale = scaleOrdinal(schemeCategory10);
 
 // create items given the data and the fields specified
