@@ -2,7 +2,12 @@ import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
-import { minBy, maxBy, uniqBy, map, noop } from 'lodash';
+import groupBy from 'lodash/groupBy';
+import maxBy from 'lodash/maxBy';
+import minBy from 'lodash/minBy';
+import map from 'lodash/map';
+import noop from 'lodash/noop';
+import uniqBy from 'lodash/uniqBy';
 import { schemeCategory10, scaleLinear, scaleBand, scaleOrdinal } from 'd3';
 import { dataGenerator } from '../../../utils';
 
@@ -16,41 +21,28 @@ describe('<MultiBars />', () => {
   const locationField = 'location';
 
   const data = dataGenerator({
-    primaryKeys: [
-      { name: 'location',
-        values: ['Brazil', 'Russia', 'India', 'China', 'Mexico', 'Indonesia', 'Nigeria',
-          'Vietnam'] }
-    ],
-    valueKeys: [
-      { name: populationField, range: [100, 900], uncertainty: true }
-    ]
+    primaryKeys: [{
+      name: 'location',
+      values: ['Brazil', 'Russia', 'India', 'China', 'Mexico', 'Indonesia', 'Nigeria', 'Vietnam']
+    }],
+    valueKeys: [{
+      name: populationField,
+      range: [100, 900],
+      uncertainty: true
+    }]
   });
 
+  const dataGroupedByLocation = groupBy(data, 'location');
+
   const locationData = [
-    { location: 'Brazil', values: data.filter((datum) => {
-      return datum.location === 'Brazil';
-    }) },
-    { location: 'Russia', values: data.filter((datum) => {
-      return datum.location === 'Russia';
-    }) },
-    { location: 'India', values: data.filter((datum) => {
-      return datum.location === 'India';
-    }) },
-    { location: 'China', values: data.filter((datum) => {
-      return datum.location === 'China';
-    }) },
-    { location: 'Mexico', values: data.filter((datum) => {
-      return datum.location === 'Mexico';
-    }) },
-    { location: 'Indonesia', values: data.filter((datum) => {
-      return datum.location === 'Indonesia';
-    }) },
-    { location: 'Nigeria', values: data.filter((datum) => {
-      return datum.location === 'Nigeria';
-    }) },
-    { location: 'Vietnam', values: data.filter((datum) => {
-      return datum.location === 'Vietnam';
-    }) }
+    { location: 'Brazil', values: dataGroupedByLocation.Brazil },
+    { location: 'Russia', values: dataGroupedByLocation.Russia },
+    { location: 'India', values: dataGroupedByLocation.India },
+    { location: 'China', values: dataGroupedByLocation.China },
+    { location: 'Mexico', values: dataGroupedByLocation.Mexico },
+    { location: 'Indonesia', values: dataGroupedByLocation.Indonesia },
+    { location: 'Nigeria', values: dataGroupedByLocation.Nigeria },
+    { location: 'Vietnam', values: dataGroupedByLocation.Vietnam },
   ];
 
   const chartDimensions = {
@@ -58,17 +50,21 @@ describe('<MultiBars />', () => {
     height: 400,
   };
 
-  const populationFieldDomain =
-    [minBy(data, populationField)[populationField], maxBy(data, populationField)[populationField]];
-  const yearFieldDomain = map(uniqBy(data, yearField), (obj) => { return (obj[yearField]); });
-  const locationFieldDomain =
-    map(uniqBy(locationData, locationField), (obj) => { return (obj[locationField]); });
+  const populationFieldDomain = [
+    minBy(data, populationField)[populationField],
+    maxBy(data, populationField)[populationField]
+  ];
+  const yearFieldDomain = map(uniqBy(data, yearField), obj => obj[yearField]);
+  const locationFieldDomain = map(uniqBy(locationData, locationField), obj => obj[locationField]);
   const colorScale = scaleOrdinal(schemeCategory10);
 
 
-  const ordinalScale = scaleBand().domain(locationFieldDomain).range([0, chartDimensions.width]);
-  const linearScale =
-    scaleLinear().domain(populationFieldDomain).range([chartDimensions.height, 0]);
+  const ordinalScale = scaleBand()
+    .domain(locationFieldDomain)
+    .range([0, chartDimensions.width]);
+  const linearScale = scaleLinear()
+    .domain(populationFieldDomain)
+    .range([chartDimensions.height, 0]);
 
   const component = (
     <MultiBars
@@ -105,27 +101,9 @@ describe('<MultiBars />', () => {
     />
   );
 
-  it('renders 10 bars', () => {
+  it('renders number of bars based on array length of prop `data`', () => {
     const wrapper = shallow(component);
     expect(wrapper.find(Bars)).to.have.length(10);
-  });
-
-  it('does not pass specified properties to its children', () => {
-    const nonInheritedProps = [
-      'barsClassName',
-      'barsStyle',
-      'className',
-      'clipPathId',
-      'fieldAccessors',
-    ];
-
-    const assertion = (bars) => {
-      nonInheritedProps.forEach(prop => {
-        expect(bars).to.not.have.prop(prop);
-      });
-    };
-
-    shallow(component).find(Bars).forEach(assertion);
   });
 
   it('passes specified properties to its children', () => {

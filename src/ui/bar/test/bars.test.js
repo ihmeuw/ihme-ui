@@ -41,14 +41,12 @@ describe('<Bars />', () => {
   ];
   const yearFieldDomain = map(uniqBy(data, yearField), obj => obj[yearField]);
 
-  const ordinalScale = scaleBand().domain(yearFieldDomain).range([
-    0,
-    chartDimensions.width
-  ]);
-  const linearScale = scaleLinear().domain(populationFieldDomain).range([
-    chartDimensions.height,
-    0
-  ]);
+  const ordinalScale = scaleBand()
+    .domain(yearFieldDomain)
+    .range([0, chartDimensions.width]);
+  const linearScale = scaleLinear()
+    .domain(populationFieldDomain)
+    .range([chartDimensions.height, 0]);
 
   const dataAccessors = {
     key: 'id',
