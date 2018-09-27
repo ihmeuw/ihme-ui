@@ -110,7 +110,7 @@ export default class MultiBars extends React.Component {
             const key = propResolver(datum, keyField);
             const values = stacked ? datum : propResolver(datum, dataField);
             const color = colorScale(colorField ? propResolver(datum, colorField) : key);
-            const outerOrdinal = (isVertical(orientation) ? scales.x : scales.y);
+            const outerOrdinal = isVertical(orientation) ? scales.x : scales.y;
             const translate = outerOrdinal(key);
 
             return (

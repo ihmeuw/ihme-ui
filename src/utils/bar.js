@@ -8,7 +8,7 @@ import { propResolver } from './objects';
  * @returns {boolean} : Returns whether the given argument is vertical
  */
 export function isVertical(orientation) {
-  return (orientation.toLowerCase() === 'vertical'.toLowerCase());
+  return (orientation.toLowerCase() === 'vertical');
 }
 
 /**
@@ -18,7 +18,7 @@ export function isVertical(orientation) {
  * @returns {boolean} : Returns whether the given argument is default
  */
 export function isDefault(type) {
-  return (type.toLowerCase() === 'default'.toLowerCase());
+  return (type.toLowerCase() === 'default');
 }
 
 /**
@@ -32,18 +32,29 @@ export function isDefault(type) {
  * @param layerDomain : Represents the domain of the subcategory of the stack field
  * @returns {object} Returns an object that is the d3 preferred stacked shape
  */
-export function stackedDataArray(collection, layerField, valueField,
-                                 stackField, dataField, layerDomain) {
-  const categoricalData = collection.map((data, i) => {
-    const insertObject = {};
-    insertObject[stackField] = data[stackField];
-    insertObject.id = i;
+export function stackedDataArray(
+  collection,
+  layerField,
+  valueField,
+  stackField,
+  dataField,
+  layerDomain
+) {
+  const categoricalData = collection.map((data, index) => {
+    const dataLayers = data[dataField].reduce((accum, datum) => {
+      const layerName = datum[layerField];
+      const layerValue = datum[valueField];
+      return {
+        ...accum,
+        [layerName]: layerValue,
+      };
+    }, {});
 
-    data[dataField].forEach(datum => {
-      const layer = datum[layerField];
-      insertObject[layer] = datum[valueField];
-    });
-    return insertObject;
+    return {
+      id: index,
+      [stackField]: data[stackField],
+      ...dataLayers,
+    };
   });
 
   return stack().keys(layerDomain)(categoricalData);

@@ -76,8 +76,6 @@ export default class Bars extends React.Component {
       grouped,
     } = this.props;
 
-    const result = {};
-
     const xPosition = stacked
       ? getXPositionStack(datum[0], linear, ordinal, orientation, xValue)
       : getXPosition(grouped, layerOrdinal, ordinal, orientation, xValue);
@@ -94,12 +92,12 @@ export default class Bars extends React.Component {
       ? getWidthStack(datum[0], linear, ordinal, orientation, yValue)
       : getWidth(grouped, layerOrdinal, linear, ordinal, orientation, xValue, yValue);
 
-    result.xPosition = xPosition;
-    result.yPosition = yPosition;
-    result.barHeight = barHeight;
-    result.barWidth = barWidth;
-
-    return result;
+    return {
+      xPosition,
+      yPosition,
+      barHeight,
+      barWidth,
+    };
   }
 
   render() {
