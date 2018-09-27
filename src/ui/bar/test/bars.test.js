@@ -19,13 +19,15 @@ describe('<Bars />', () => {
   const populationField = 'population';
 
   const data = dataGenerator({
-    primaryKeys: [
-      { name: 'location', values: ['Brazil', 'Russia', 'India', 'China', 'Mexico',
-        'Indonesia', 'Nigeria', 'Vietnam'] }
-    ],
-    valueKeys: [
-      { name: populationField, range: [100, 900], uncertainty: true }
-    ]
+    primaryKeys: [{
+      name: 'location',
+      values: ['Brazil', 'Russia', 'India', 'China', 'Mexico', 'Indonesia', 'Nigeria', 'Vietnam']
+    }],
+    valueKeys: [{
+      name: populationField,
+      range: [100, 900],
+      uncertainty: true
+    }]
   });
 
   const chartDimensions = {
@@ -33,13 +35,20 @@ describe('<Bars />', () => {
     height: 400
   };
 
-  const populationFieldDomain =
-    [minBy(data, populationField)[populationField], maxBy(data, populationField)[populationField]];
-  const yearFieldDomain = map(uniqBy(data, yearField), (obj) => { return (obj[yearField]); });
+  const populationFieldDomain = [
+    minBy(data, populationField)[populationField],
+    maxBy(data, populationField)[populationField]
+  ];
+  const yearFieldDomain = map(uniqBy(data, yearField), obj => obj[yearField]);
 
-  const ordinalScale = scaleBand().domain(yearFieldDomain).range([0, chartDimensions.width]);
-  const linearScale =
-    scaleLinear().domain(populationFieldDomain).range([chartDimensions.height, 0]);
+  const ordinalScale = scaleBand().domain(yearFieldDomain).range([
+    0,
+    chartDimensions.width
+  ]);
+  const linearScale = scaleLinear().domain(populationFieldDomain).range([
+    chartDimensions.height,
+    0
+  ]);
 
   const dataAccessors = {
     key: 'id',
@@ -47,7 +56,7 @@ describe('<Bars />', () => {
     value: populationField
   };
 
-  const dataFiltered = data.filter((datum) => { return datum.location === 'India'; });
+  const dataFiltered = data.filter(datum => datum.location === 'India');
 
   const component = (
     <Bars
@@ -66,39 +75,9 @@ describe('<Bars />', () => {
     />
   );
 
-  it('renders 10 bar', () => {
+  it('renders number of bars based on array length of prop `data`', () => {
     const wrapper = shallow(component);
     expect(wrapper.find(Bar)).to.have.length(10);
-  });
-
-  it('does not pass specific properties to its children', () => {
-    const nonInheritedProps = [
-      'bandPadding',
-      'bandPaddingInner',
-      'bandPaddingOuter',
-      'categoryTranslate',
-      'colorScale',
-      'clipPathId',
-      'data',
-      'dataAccessors',
-      'focus',
-      'layerOrdinal',
-      'orientation',
-      'scales',
-      'selection',
-      'rectClassName',
-      'rectStyle',
-      'stacked',
-      'grouped',
-    ];
-
-    const assertion = (bar) => {
-      nonInheritedProps.forEach(prop => {
-        expect(bar).to.not.have.prop(prop);
-      });
-    };
-
-    shallow(component).find(Bar).forEach(assertion);
   });
 
   it('passes specified properties to its children', () => {
@@ -124,29 +103,18 @@ describe('<Bars />', () => {
     shallow(component).find(Bar).forEach(assertion);
   });
 
-  it('selects a bar', () => {
+  it('selects on a bar when prop `selection` is passed', () => {
     const wrapper = shallow(component);
     expect(wrapper.find({ selected: true })).to.have.length(2);
   });
 
-  it('focuses a bar', () => {
+  it('focuses on a bar when prop `focused` is passed', () => {
     const wrapper = shallow(component);
     expect(wrapper.find({ focused: true })).to.have.length(1);
   });
 
-  it('has correct values for the rendering props', () => {
-    const assertion = (bar) => {
-      expect(bar).to.have.prop('fill').that.is.a('string');
-      expect(bar).to.have.prop('x').that.is.a('number');
-      expect(bar).to.have.prop('y').that.is.a('number');
-      expect(bar).to.have.prop('height').that.is.a('number');
-      expect(bar).to.have.prop('width').that.is.a('number');
-    };
-    shallow(component).find(Bar).forEach(assertion);
-  });
-
   describe('selection', () => {
-    it('renders selected bar last', () => {
+    it('when the prop `selection` is passed to Bars its associated bar is the final bar to render', () => {
       const selectedDatum = dataFiltered[0];
 
       const wrapper = shallow(
@@ -174,18 +142,12 @@ describe('<Bars />', () => {
       expect(wrapper
         .find('g')
         .find(Bar)
-        .first()
-        .prop('datum')
-      ).to.not.equal(selectedDatum);
-      expect(wrapper
-        .find('g')
-        .find(Bar)
         .last()
         .prop('datum')
       ).to.equal(selectedDatum);
     });
 
-    it('does a stable sort of the bar', () => {
+    it('when the prop `selection` is passed, Bars does a stable sort of the bars', () => {
       const wrapper = shallow(
         <Bars
           data={dataFiltered}
@@ -201,22 +163,22 @@ describe('<Bars />', () => {
         />
       );
 
+      const selectedDatum = dataFiltered[0];
+      const postSelectionExpectedBarOrder = drop(dataFiltered);
+      postSelectionExpectedBarOrder.push(selectedDatum);
+
       wrapper.find('g').find(Bar).forEach((node, idx) => {
         expect(node.prop('datum')).to.equal(dataFiltered[idx]);
       });
 
-      const selectedDatum = dataFiltered[0];
       wrapper.setProps({ selection: [selectedDatum] });
-      const expectedBarOrder = drop(dataFiltered);
-      expectedBarOrder.push(selectedDatum);
 
       wrapper.find('g').find(Bar).forEach((node, idx) => {
-        expect(node.prop('datum')).to.equal(expectedBarOrder[idx]);
+        expect(node.prop('datum')).to.equal(postSelectionExpectedBarOrder[idx]);
       });
     });
 
-    it(`does not update state.sortedData
-        if neither selection nor data have changed`, () => {
+    it('does not update state.sortedData if neither selection nor data have changed', () => {
       const wrapper = shallow(
         <Bars
 
