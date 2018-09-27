@@ -137,8 +137,8 @@ export default class Bars extends React.Component {
     ]);
 
     // Given the orientation, set the scales accordingly for the x & y axis
-    const ordinalScale = (isVertical(orientation) ? scales.x : scales.y);
-    const linear = (isVertical(orientation) ? scales.y : scales.x);
+    const ordinalScale = isVertical(orientation) ? scales.x : scales.y;
+    const linear = isVertical(orientation) ? scales.y : scales.x;
 
     // Check the padding properties and sets it accordingly.
     const ordinal = setBandProps(
