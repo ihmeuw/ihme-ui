@@ -3,15 +3,14 @@ import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 import { schemeCategory10, scaleOrdinal } from 'd3';
+import groupBy from 'lodash/groupBy';
 import maxBy from 'lodash/maxBy';
 import minBy from 'lodash/minBy';
 import map from 'lodash/map';
 import uniqBy from 'lodash/uniqBy';
 import noop from 'lodash/noop';
-
 import StackedBarChart from './../src/stacked';
 import { Legend } from './../../../';
-
 import { dataGenerator } from '../../../../utils';
 
 
@@ -21,33 +20,39 @@ describe('<StackedBarChart />', () => {
   const yearField = 'year_id';
   const populationField = 'population';
   const locationField = 'location';
+  const title = 'Population Between 2000-2009';
 
   const data = dataGenerator({
-    primaryKeys: [
-      { name: 'location', values: ['Brazil', 'Russia', 'India', 'China', 'Mexico'] }
-    ],
-    valueKeys: [
-      { name: populationField, range: [100, 900], uncertainty: true }
-    ]
+    primaryKeys: [{
+      name: 'location',
+      values: ['Brazil', 'Russia', 'India', 'China', 'Mexico']
+    }],
+    valueKeys: [{
+      name: populationField,
+      range: [100, 900],
+      uncertainty: true
+    }]
   });
 
+  const dataGroupedByLocation = groupBy(data, 'location');
+
   const locationData = [
-    { location: 'Brazil', values: data.filter((datum) => { return datum.location === 'Brazil'; }) },
-    { location: 'Russia', values: data.filter((datum) => { return datum.location === 'Russia'; }) },
-    { location: 'India', values: data.filter((datum) => { return datum.location === 'India'; }) },
-    { location: 'China', values: data.filter((datum) => { return datum.location === 'China'; }) },
-    { location: 'Mexico', values: data.filter((datum) => { return datum.location === 'Mexico'; }) }
+    { location: 'Brazil', values: dataGroupedByLocation.Brazil },
+    { location: 'Russia', values: dataGroupedByLocation.Russia },
+    { location: 'India', values: dataGroupedByLocation.India },
+    { location: 'China', values: dataGroupedByLocation.China },
+    { location: 'Mexico', values: dataGroupedByLocation.Mexico }
   ];
 
-// Should these be passed or calculated from given dataset within the BarChart component?
-  const populationFieldDomain =
-    [minBy(data, populationField)[populationField], maxBy(data, populationField)[populationField]];
-  const yearFieldDomain = map(uniqBy(data, yearField), (obj) => { return (obj[yearField]); });
-  const locationFieldDomain =
-    map(uniqBy(locationData, locationField), (obj) => { return (obj[locationField]); });
+  const populationFieldDomain = [
+    minBy(data, populationField)[populationField],
+    maxBy(data, populationField)[populationField]
+  ];
+  const yearFieldDomain = map(uniqBy(data, yearField), obj => obj[yearField]);
+  const locationFieldDomain = map(uniqBy(locationData, locationField), obj => obj[locationField]);
   const colorScale = scaleOrdinal(schemeCategory10);
 
-// create items given the data and the fields specified
+  // create items given the data and the fields specified
   const items = [
     {
       label: '2000',
@@ -119,7 +124,7 @@ describe('<StackedBarChart />', () => {
       }}
       focus={noop}
       labelAccessors={{
-        title: 'Population Between 2000-2009',
+        title,
         yLabel: 'Country',
         xLabel: 'Population'
       }}
@@ -155,7 +160,7 @@ describe('<StackedBarChart />', () => {
   it('renders appropriate chart title', () => {
     const wrapper = shallow(component);
     expect(wrapper.find('.title-class'))
-      .to.have.text('Population Between 2000-2009');
+      .to.have.text(title);
   });
 
   // Subsequent test are covered by each individual component itself
