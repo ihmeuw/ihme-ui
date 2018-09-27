@@ -3,13 +3,11 @@ import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 import { schemeCategory10, scaleOrdinal } from 'd3';
-import {
-  maxBy,
-  minBy,
-  map,
-  uniqBy,
-  noop,
-} from 'lodash';
+import maxBy from 'lodash/maxBy';
+import minBy from 'lodash/minBy';
+import map from 'lodash/map';
+import uniqBy from 'lodash/uniqBy';
+import noop from 'lodash/noop';
 
 import StackedBarChart from './../src/stacked';
 import { Legend } from './../../../';

@@ -2,7 +2,11 @@ import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
-import { drop, minBy, maxBy, uniqBy, map } from 'lodash';
+import drop from 'lodash/drop';
+import maxBy from 'lodash/maxBy';
+import minBy from 'lodash/minBy';
+import map from 'lodash/map';
+import uniqBy from 'lodash/uniqBy';
 import { scaleLinear, scaleBand } from 'd3';
 import { dataGenerator } from '../../../utils';
 
