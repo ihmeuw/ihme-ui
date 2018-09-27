@@ -17,7 +17,7 @@ import {
   stackedDataArray,
 } from '../../../utils';
 
-export default class MultiBars extends React.Component {
+export default class MultiBars extends React.PureComponent {
   constructor(props) {
     super(props);
 

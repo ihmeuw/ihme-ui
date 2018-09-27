@@ -15,7 +15,7 @@ import {
 /**
  * `import { Bar } from 'ihme-ui'`
  */
-export default class Bar extends React.Component {
+export default class Bar extends React.PureComponent {
   constructor(props) {
     super(props);
 

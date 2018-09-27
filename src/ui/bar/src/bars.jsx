@@ -36,7 +36,7 @@ import Bar from './bar';
 /**
  * `import { Bars } from 'ihme-ui'`
  */
-export default class Bars extends React.Component {
+export default class Bars extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -50,11 +50,11 @@ export default class Bars extends React.Component {
 
 
   /**
-   * Logic behind which values are computed given the configuration of the bar chart
+   * Logic by which values are computed given the configuration of the bar chart
    * @param {object} configObject : {
-    * datum : Represents the datum for that corresponding bar
-    * xValue : Represents the xValue for this particular bar component
-    * yValue Represents the yValue for this particular bar component
+    * datum : Represents the datum for the corresponding bar
+    * xValue : Represents the xValue for this bar component
+    * yValue Represents the yValue for this bar component
     * linear : Represents the scale for the data values plotted
     * ordinal : Represents the scale for the categorical data
    * @returns {object} : Returns an object that contains all the properties used to position and
@@ -140,7 +140,7 @@ export default class Bars extends React.Component {
     const ordinalScale = isVertical(orientation) ? scales.x : scales.y;
     const linear = isVertical(orientation) ? scales.y : scales.x;
 
-    // Check the padding properties and sets it accordingly.
+    // Checks the padding properties and sets the scale accordingly.
     const ordinal = setBandProps(
       ordinalScale,
       align,
@@ -154,8 +154,10 @@ export default class Bars extends React.Component {
         className={className && classNames(className)}
         clipPath={clipPathId && `url(#${clipPathId})`}
         style={this.combineStyles(style, data)}
-        transform={`translate(${isVertical(orientation) ? categoryTranslate : 0},
-           ${isVertical(orientation) ? 0 : categoryTranslate})`}
+        transform={`translate(
+          ${isVertical(orientation) ? categoryTranslate : 0},
+          ${isVertical(orientation) ? 0 : categoryTranslate}
+          )`}
       >
         {
           map(sortedData, (datum) => {
@@ -185,7 +187,7 @@ export default class Bars extends React.Component {
                 y={renderingProps.yPosition}
                 height={renderingProps.barHeight}
                 width={renderingProps.barWidth}
-                fill={colorScale && isFinite(fillValue) ? colorScale(fillValue) : fill}
+                fill={colorScale && (isFinite(fillValue) ? colorScale(fillValue) : fill)}
                 focused={focusedDatumKey === key}
                 selected={selectedDataMappedToKeys.hasOwnProperty(key)}
                 style={rectStyle}
