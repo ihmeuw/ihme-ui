@@ -43,7 +43,7 @@ describe('<Bar />', () => {
       stroke: 'blue',
     };
 
-    it('applies style as an object', () => {
+    it('accepts an object as prop `style`', () => {
       const wrapper = shallow(
         <Bar
           datum={datum}
@@ -57,7 +57,7 @@ describe('<Bar />', () => {
         .to.have.style('stroke-width', '10');
     });
 
-    it('applies style as a function', () => {
+    it('accepts a function as prop `style`', () => {
       const wrapper = shallow(
         <Bar
           datum={datum}
@@ -71,7 +71,7 @@ describe('<Bar />', () => {
         .to.have.style('stroke-width', '10');
     });
 
-    it('applies selectedStyle as an object', () => {
+    it('accepts an object as prop `selectedStyle`', () => {
       const wrapper = shallow(
         <Bar
           datum={datum}
@@ -87,7 +87,7 @@ describe('<Bar />', () => {
         .to.have.style('stroke-width', '20');
     });
 
-    it('applies selectedStyle as a function', () => {
+    it('accepts a function as prop `selectedStyle`', () => {
       const wrapper = shallow(
         <Bar
           datum={datum}
@@ -103,7 +103,7 @@ describe('<Bar />', () => {
         .to.have.style('stroke-width', '20');
     });
 
-    it('applies focusedStyle as an object', () => {
+    it('accepts an object as prop `focusedStyle`', () => {
       const wrapper = shallow(
         <Bar
           datum={datum}
@@ -121,7 +121,7 @@ describe('<Bar />', () => {
         .to.have.style('stroke-width', '20');
     });
 
-    it('applies focusedStyle as a function', () => {
+    it('accepts a function as prop `focusedStyle`', () => {
       const wrapper = shallow(
         <Bar
           datum={datum}
@@ -141,35 +141,41 @@ describe('<Bar />', () => {
   });
 
   describe('classnames', () => {
+    const classNames = {
+      base: 'base-classname',
+      focused: 'focused-classname',
+      selected: 'selected-classname'
+    };
+
     const wrapper = shallow(
       <Bar
-        className="base-classname"
-        focusedClassName="focused-classname"
-        selectedClassName="selected-classname"
+        className={classNames.base}
+        focusedClassName={classNames.focused}
+        selectedClassName={classNames.selected}
       />
     );
 
     it('applies a base classname', () => {
       expect(wrapper.find('rect'))
-        .to.have.className('base-classname');
+        .to.have.className(classNames.base);
     });
 
     it('applies a selectedClassName if the shape is selected', () => {
       wrapper.setProps({ selected: true });
       expect(wrapper.find('rect'))
-        .to.have.className('base-classname');
+        .to.have.className(classNames.base);
       expect(wrapper.find('rect'))
-        .to.have.className('selected-classname');
+        .to.have.className(classNames.selected);
     });
 
     it('applies a focusedClassName if the shape has focus', () => {
       wrapper.setProps({ focused: true });
       expect(wrapper.find('rect'))
-        .to.have.className('base-classname');
+        .to.have.className(classNames.base);
       expect(wrapper.find('rect'))
-        .to.have.className('selected-classname');
+        .to.have.className(classNames.selected);
       expect(wrapper.find('rect'))
-        .to.have.className('focused-classname');
+        .to.have.className(classNames.focused);
     });
   });
 
