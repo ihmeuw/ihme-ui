@@ -15,7 +15,12 @@ import MultiBars from './../../../bar/src/multi-bars';
 import ResponsiveContainer from '../../../responsive-container';
 import Legend from './../../../legend';
 
-export default class StackedBarChart extends React.Component {
+const FOCUSED_STYLE = {
+  stroke: '#000',
+  strokeWidth: 2,
+};
+
+export default class StackedBarChart extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -104,10 +109,7 @@ export default class StackedBarChart extends React.Component {
               fieldAccessors={fieldAccessors}
               fill={fill}
               focus={focus}
-              focusedStyle={{
-                stroke: '#000',
-                strokeWidth: 2,
-              }}
+              focusedStyle={FOCUSED_STYLE}
               layerDomain={layerDomain}
               onClick={onClick}
               onMouseOver={onMouseOver}
@@ -116,8 +118,8 @@ export default class StackedBarChart extends React.Component {
               style={chartStyle}
               selection={this.state.selectedItems}
               orientation={orientation}
-              grouped={(type === 'grouped') ? true : undefined}
-              stacked={(type === 'stacked') ? true : undefined}
+              grouped={type === 'grouped'}
+              stacked={type === 'stacked'}
             />
           </AxisChart>
         </ResponsiveContainer>
@@ -131,7 +133,7 @@ export default class StackedBarChart extends React.Component {
       <div className={classNames(styles['chart-container'], className)} style={style}>
         {this.renderTitle()}
         {this.renderBarChart()}
-        {(displayLegend) ? this.renderLegend() : ''}
+        {(displayLegend) ? this.renderLegend() : null}
       </div>
     );
   }

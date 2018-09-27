@@ -11,6 +11,7 @@ import uniqBy from 'lodash/uniqBy';
 import StackedBarChart from './../../stacked/src/stacked';
 
 import { dataGenerator } from '../../../../utils';
+import groupBy from "lodash/groupBy";
 
 const yearField = 'year_id';
 const populationField = 'population';
@@ -25,35 +26,42 @@ const data = dataGenerator({
   ]
 });
 
+const dataGroupedByLocation = groupBy(data, 'location');
+
+const brazilDataGroupedByYear = groupBy(dataGroupedByLocation.Brazil, 'year_id');
+
 const yearData = [
-  { year: 2000, values: data.filter(datum => (datum.location === 'Brazil') && (datum.year_id === 2000)) },
-  { year: 2001, values: data.filter(datum => (datum.location === 'Brazil') && (datum.year_id === 2001)) },
-  { year: 2002, values: data.filter(datum => (datum.location === 'Brazil') && (datum.year_id === 2002)) },
-  { year: 2003, values: data.filter(datum => (datum.location === 'Brazil') && (datum.year_id === 2003)) },
-  { year: 2004, values: data.filter(datum => (datum.location === 'Brazil') && (datum.year_id === 2004)) },
-  { year: 2005, values: data.filter(datum => (datum.location === 'Brazil') && (datum.year_id === 2005)) },
-  { year: 2006, values: data.filter(datum => (datum.location === 'Brazil') && (datum.year_id === 2006)) },
-  { year: 2007, values: data.filter(datum => (datum.location === 'Brazil') && (datum.year_id === 2007)) },
-  { year: 2008, values: data.filter(datum => (datum.location === 'Brazil') && (datum.year_id === 2008)) },
-  { year: 2009, values: data.filter(datum => (datum.location === 'Brazil') && (datum.year_id === 2009)) },
+  { year: 2000, values: brazilDataGroupedByYear[2000] },
+  { year: 2001, values: brazilDataGroupedByYear[2001] },
+  { year: 2002, values: brazilDataGroupedByYear[2002] },
+  { year: 2003, values: brazilDataGroupedByYear[2003] },
+  { year: 2004, values: brazilDataGroupedByYear[2004] },
+  { year: 2005, values: brazilDataGroupedByYear[2005] },
+  { year: 2006, values: brazilDataGroupedByYear[2006] },
+  { year: 2007, values: brazilDataGroupedByYear[2007] },
+  { year: 2008, values: brazilDataGroupedByYear[2008] },
+  { year: 2009, values: brazilDataGroupedByYear[2009] },
 ];
 
 const locationData = [
-  { location: 'Brazil', values: data.filter(datum => datum.location === 'Brazil') },
-  { location: 'Russia', values: data.filter(datum => datum.location === 'Russia') },
-  { location: 'India', values: data.filter(datum => datum.location === 'India') },
-  { location: 'China', values: data.filter(datum => datum.location === 'China') },
-  { location: 'Mexico', values: data.filter(datum => datum.location === 'Mexico') },
-  { location: 'Indonesia', values: data.filter(datum => datum.location === 'Indonesia') },
-  { location: 'Nigeria', values: data.filter(datum => datum.location === 'Nigeria') },
-  { location: 'Vietnam', values: data.filter(datum => datum.location === 'Vietnam') },
+  { location: 'Brazil', values: dataGroupedByLocation.Brazil },
+  { location: 'Russia', values: dataGroupedByLocation.Russia },
+  { location: 'India', values: dataGroupedByLocation.India },
+  { location: 'China', values: dataGroupedByLocation.China },
+  { location: 'Mexico', values: dataGroupedByLocation.Mexico },
+  { location: 'Indonesia', values: dataGroupedByLocation.Indonesia },
+  { location: 'Nigeria', values: dataGroupedByLocation.Nigeria },
+  { location: 'Vietnam', values: dataGroupedByLocation.Vietnam },
 ];
 
 const STYLE = {
   height: true,
 };
 
-const populationFieldDomain = [minBy(data, populationField)[populationField], maxBy(data, populationField)[populationField]];
+const populationFieldDomain = [
+  minBy(data, populationField)[populationField],
+  maxBy(data, populationField)[populationField]
+];
 const yearFieldDomain = map(uniqBy(data, yearField), obj => obj[yearField]);
 const locationFieldDomain = map(uniqBy(locationData, locationField), obj => obj[locationField]);
 const colorScale = scaleOrdinal(schemeCategory10);
@@ -142,7 +150,8 @@ class App extends React.Component {
   };
 
   onMouseMove(event, datum) {
-    console.log(`${event.type}::${datum}`);  };
+    console.log(`${event.type}::${datum}`);
+  };
 
   onMouseOver(event, datum) {
     console.log(`${event.type}::${datum}`);
