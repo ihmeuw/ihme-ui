@@ -225,21 +225,6 @@ export default class Map extends React.Component {
       topoObjects => concatTopoJSON(topoObjects, layers)
     );
 
-    const selectedConcatenatedLayers = memoizeByLastCall(
-      topoObjects => {
-        const concatenatedTopology = concatenatedLayers(topoObjects);
-        return {
-          type: concatenatedTopology.type,
-          geometries: filter(concatenatedTopology.geometries, geometry => {
-            const geometryKey = toString(propResolver(geometry, geometryKeyField));
-            const disputes = getValue(geometry, ['properties', 'disputes'], []);
-
-            return includes(selections, geometryKey) || disputes.length;
-          }),
-        };
-      }
-    );
-
     const meshes = [
       {
         name: 'disputed-borders',
@@ -257,7 +242,7 @@ export default class Map extends React.Component {
       },
       {
         name: 'selected-non-disputed-borders',
-        object: selectedConcatenatedLayers,
+        object: concatenatedLayers,
         style: { stroke: 'black', strokeWidth: '2px' },
         type: 'mesh',
         meshFilter: this.selectedBordersMeshFilter,
