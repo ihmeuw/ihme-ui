@@ -8,9 +8,6 @@ import {
   keyBy,
   flatMap,
   filter,
-  get as getValue,
-  includes,
-  intersection,
   intersectionWith,
   isEqual,
   map,
@@ -154,7 +151,7 @@ export default class Map extends React.Component {
     return meshType === this.classifyMesh(this.state.keysOfSelectedLocations, matches);
   }
 
-  classifyMesh(selected=[], matches) {
+  classifyMesh(selected = [], matches) {
     const claimants = new Set();
     const locations = new Set();
     const admins = new Set();
@@ -186,9 +183,8 @@ export default class Map extends React.Component {
       return 'selected-non-disputed-borders';
     } else if (!isExternal && isDisputed) {
       return 'disputed-borders';
-    } else {
-      return 'non-disputed-borders';
     }
+    return 'non-disputed-borders';
   }
 
   createLayers(layers) {
