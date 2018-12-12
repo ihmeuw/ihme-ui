@@ -599,7 +599,7 @@ Map.propTypes = {
    * title positioned on top of choropleth
    * in semi-opaque div that spans the full width of the component
    */
-  title: PropTypes.string,
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
 
   /**
    * className applied to div wrapping the title
