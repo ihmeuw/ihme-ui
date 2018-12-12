@@ -29,93 +29,132 @@ describe('<Map />', () => {
 
   describe('mesh filters', () => {
     const geometryKeyField = 'loc_id';
-    const props = {
-      geometryKeyField,
-    };
+
     const disputedTerritory = {
-      [geometryKeyField]: 1,
       properties: {
-        disputes: [2, 3],
+        claimants: ['2', '3'],
+        admins: ['3'],
       },
     };
 
-    const disputingCountry = {
-      [geometryKeyField]: 2,
+    const claimingCountry = {
+      properties: {
+        [geometryKeyField]: '2',
+      }
     };
 
-    const nonDisputingCountry = {
-      [geometryKeyField]: 4,
+    const administeringCountry = {
+      properties: {
+        [geometryKeyField]: '3',
+      }
+    };
+
+    const nonClaimingCountry = {
+      properties: {
+        [geometryKeyField]: '4',
+      },
     };
 
     describe('disputedBordersMeshFilter', () => {
-      it('returns false between a geometry and itself (outside border)', () => {
-        expect(Map.prototype.disputedBordersMeshFilter.call({ props }, disputedTerritory, disputedTerritory))
-          .to.be.false;
+      const disputedBordersMeshFilter = Map.prototype.getMeshFilter.bind(
+        { state: { keysOfSelectedLocations: [] } },
+        'disputed-borders',
+      );
+
+      it('returns false when there is not a dispute between two geometries', () => {
+        const result = disputedBordersMeshFilter(
+          disputedTerritory,
+          claimingCountry,
+          nonClaimingCountry,
+        );
+        expect(result).to.be.false;
       });
 
       it('returns true when there is a dispute between two geometries', () => {
-        expect(Map.prototype.disputedBordersMeshFilter.call({ props }, disputedTerritory, disputingCountry))
-          .to.be.true;
+        const result = disputedBordersMeshFilter(
+          disputedTerritory,
+          claimingCountry,
+          administeringCountry,
+        );
+        expect(result).to.be.true;
       });
 
-      it('returns false when there is not a dispute between two geometries', () => {
-        expect(Map.prototype.disputedBordersMeshFilter.call({ props }, disputedTerritory, nonDisputingCountry))
-          .to.be.false;
+      it('returns false when boundary is external', () => {
+        expect(disputedBordersMeshFilter(disputedTerritory, claimingCountry)).to.be.false;
+        expect(disputedBordersMeshFilter(disputedTerritory, administeringCountry)).to.be.false;
+        expect(disputedBordersMeshFilter(disputedTerritory, nonClaimingCountry)).to.be.false;
       });
     });
 
     describe('nonDisputedBordersMeshFilter', () => {
-      it('returns true between a geometry and itself (outside border)', () => {
-        expect(Map.prototype.nonDisputedBordersMeshFilter.call({ props }, disputedTerritory, disputedTerritory))
-          .to.be.true;
-      });
+      const nonDisputedBordersMeshFilter = Map.prototype.getMeshFilter.bind(
+        { state: { keysOfSelectedLocations: [] } },
+        'non-disputed-borders',
+      );
 
       it('returns true when there is not a dispute between two geometries', () => {
-        expect(Map.prototype.nonDisputedBordersMeshFilter.call({ props }, disputedTerritory, nonDisputingCountry))
-          .to.be.true;
+        const result = nonDisputedBordersMeshFilter(disputedTerritory,
+          disputedTerritory,
+          claimingCountry,
+          nonClaimingCountry,
+        );
+        expect(result).to.be.true;
       });
 
       it('returns false when there is a dispute between two geometries', () => {
-        expect(Map.prototype.nonDisputedBordersMeshFilter.call({ props }, disputedTerritory, disputingCountry))
-          .to.be.false;
+        const result = nonDisputedBordersMeshFilter(
+          disputedTerritory,
+          claimingCountry,
+          administeringCountry,
+        );
+        expect(result).to.be.false;
+      });
+
+      it('returns true between a geometry and itself (outside border)', () => {
+        expect(nonDisputedBordersMeshFilter(disputedTerritory, claimingCountry)).to.be.true;
+        expect(nonDisputedBordersMeshFilter(disputedTerritory, administeringCountry)).to.be.true;
+        expect(nonDisputedBordersMeshFilter(disputedTerritory, nonClaimingCountry)).to.be.true;
       });
     });
 
     describe('selectedBordersMeshFilter', () => {
       it('returns true when either geometry is selected and no disputed border is selected', () => {
-        const state = {
-          keysOfSelectedLocations: ['1'],
-        };
+        const selectedBordersMeshFilter = Map.prototype.getMeshFilter.bind(
+          { state: { keysOfSelectedLocations: ['4'] } },
+          'selected-non-disputed-borders',
+        );
 
-        expect(Map.prototype.selectedBordersMeshFilter.call({ props, state }, disputedTerritory, disputingCountry))
-          .to.be.true;
-      });
-
-      it('returns true when neither geometry is selected and a disputed border is selected', () => {
-        const state = {
-          keysOfSelectedLocations: ['3'],
-        };
-
-        expect(Map.prototype.selectedBordersMeshFilter.call({ props, state }, disputedTerritory, disputingCountry))
-          .to.be.true;
+        expect(selectedBordersMeshFilter(disputedTerritory, nonClaimingCountry)).to.be.true;
       });
 
       it('returns false when either geometry is selected and a disputed border is selected', () => {
-        const state = {
-          keysOfSelectedLocations: ['2'],
-        };
+        const selectedBordersMeshFilter = Map.prototype.getMeshFilter.bind(
+          { state: { keysOfSelectedLocations: ['2'] } },
+          'selected-non-disputed-borders',
+        );
 
-        expect(Map.prototype.selectedBordersMeshFilter.call({ props, state }, disputedTerritory, disputingCountry))
-          .to.be.false;
+        const result = selectedBordersMeshFilter(
+          disputedTerritory,
+          claimingCountry,
+          nonClaimingCountry,
+        );
+
+        expect(result).to.be.false;
       });
 
       it('returns false when neither geometry is selected and no disputed border is selected', () => {
-        const state = {
-          keysOfSelectedLocations: ['4'],
-        };
+        const selectedBordersMeshFilter = Map.prototype.getMeshFilter.bind(
+          { state: { keysOfSelectedLocations: ['5'] } },
+          'selected-non-disputed-borders',
+        );
 
-        expect(Map.prototype.selectedBordersMeshFilter.call({ props, state }, disputedTerritory, disputingCountry))
-          .to.be.false;
+        const result = selectedBordersMeshFilter(
+          disputedTerritory,
+          claimingCountry,
+          nonClaimingCountry,
+        );
+
+        expect(result).to.be.false;
       });
     });
   });
@@ -194,8 +233,8 @@ describe('<Map />', () => {
               type: 'LineString',
               arcs: [1],
               properties: {
-                [keyField]: 4,
-                disputes: [1, 2],
+                claimants: ['1', '2'],
+                admins: ['4'],
               },
             },
           ],
