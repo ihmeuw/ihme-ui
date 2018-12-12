@@ -1,3 +1,4 @@
+import Set from 'collections/set';
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -75,6 +76,7 @@ export default class Map extends React.Component {
     const rangeExtent = getRangeExtent(extentPct, domain);
 
     bindAll(this, [
+      'classifyMesh',
       'createLayers',
       'disputedBordersMeshFilter',
       'getGeometryIds',
@@ -150,48 +152,59 @@ export default class Map extends React.Component {
     );
   }
 
-  disputedBordersMeshFilter(geometry, neighborGeometry) {
-    /* eslint-disable max-len */
-    const { geometryKeyField } = this.props;
-    return geometry !== neighborGeometry && (
-      includes(getValue(geometry, ['properties', 'disputes'], []), propResolver(neighborGeometry, geometryKeyField)) ||
-      includes(getValue(neighborGeometry, ['properties', 'disputes'], []), propResolver(geometry, geometryKeyField))
-    );
-    /* eslint-enable max-len */
+  classifyMesh(selected=[], matches) {
+    const claimants = new Set();
+    const locations = new Set();
+    const admins = new Set();
+
+    matches.forEach(({ properties }) => {
+      if (properties.claimants) {
+        claimants.addEach(properties.claimants);
+      }
+
+      if (properties.admins) {
+        admins.addEach(properties.admins);
+      }
+
+      if (properties.loc_id) {
+        locations.add(properties.loc_id);
+      }
+    });
+
+    const locationsExclusive = locations.symmetricDifference(admins);
+
+    const claimantsHas = claimants.has.bind(claimants);
+    const locationsExclusiveHas = locationsExclusive.has.bind(locationsExclusive);
+
+    const isExternal = (locations.size === 1);
+    const isDisputed = (claimants.size && locations.every(claimantsHas));
+    const isSelected = (selected.some(locationsExclusiveHas) !== selected.some(claimantsHas));
+
+    if (isSelected) {
+      return 'selected-non-disputed-borders';
+    } else if (!isExternal && isDisputed) {
+      return 'disputed-borders';
+    } else {
+      return 'non-disputed-borders';
+    }
   }
 
-  nonDisputedBordersMeshFilter(geometry, neighborGeometry) {
-    /* eslint-disable max-len */
-    const { geometryKeyField } = this.props;
-    return geometry === neighborGeometry || !(
-      includes(getValue(geometry, ['properties', 'disputes'], []), propResolver(neighborGeometry, geometryKeyField)) ||
-      includes(getValue(neighborGeometry, ['properties', 'disputes'], []), propResolver(geometry, geometryKeyField))
-    );
-    /* eslint-enable max-len */
+  disputedBordersMeshFilter(...matches) {
+    const selected = this.state.keysOfSelectedLocations;
+    const classification = this.classifyMesh(selected, matches);
+    return classification === 'disputed-borders';
   }
 
-  selectedBordersMeshFilter(geometry, neighborGeometry) {
-    const { geometryKeyField } = this.props;
-    const { keysOfSelectedLocations } = this.state;
+  nonDisputedBordersMeshFilter(...matches) {
+    const selected = this.state.keysOfSelectedLocations;
+    const classification = this.classifyMesh(selected, matches);
+    return classification === 'non-disputed-borders';
+  }
 
-    const geometryKey = toString(propResolver(geometry, geometryKeyField));
-    const geometryDisputes = getValue(geometry, ['properties', 'disputes'], []).map(toString);
-    const neighborGeometryKey = toString(propResolver(neighborGeometry, geometryKeyField));
-    const neighborGeometryDisputes = getValue(neighborGeometry, [
-      'properties',
-      'disputes',
-    ], []).map(toString);
-
-    const keys = [geometryKey, neighborGeometryKey];
-    const disputes = [...geometryDisputes, ...neighborGeometryDisputes];
-
-    const geometrySelected = Boolean(intersection(keysOfSelectedLocations, keys).length);
-    const disputeSelected = Boolean(intersection(keysOfSelectedLocations, disputes).length);
-
-    return (
-      (geometrySelected && !disputeSelected) ||
-      (!geometrySelected && disputeSelected)
-    );
+  selectedBordersMeshFilter(...matches) {
+    const selected = this.state.keysOfSelectedLocations;
+    const classification = this.classifyMesh(selected, matches);
+    return classification === 'selected-non-disputed-borders';
   }
 
   createLayers(layers, selections) {
