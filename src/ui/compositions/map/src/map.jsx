@@ -191,9 +191,7 @@ export default class Map extends React.Component {
     }
   }
 
-  createLayers(layers, selections) {
-    const { geometryKeyField } = this.props;
-
+  createLayers(layers) {
     const styleReset = { stroke: 'none' };
     const features = map(layers, layer => (
       {
@@ -692,7 +690,7 @@ Map.propUpdates = {
     const keysOfSelectedLocations = map(nextProps.selectedLocations, datum =>
       toString(propResolver(datum, nextProps.keyField))
     );
-    const layers = context.createLayers(nextProps.topojsonObjects, keysOfSelectedLocations);
+    const layers = context.createLayers(nextProps.topojsonObjects);
 
     return assign({}, state, {
       keysOfSelectedLocations,
@@ -705,11 +703,7 @@ Map.propUpdates = {
     // corresponding geometry displayed on the choropleth
     if (isEqual(prevProps.topojsonObjects, nextProps.topojsonObjects)) return state;
 
-    // evaluate visibility of each layer
-    const selections = map(nextProps.selectedLocations, datum =>
-      toString(propResolver(datum, nextProps.keyField))
-    );
-    const layers = context.createLayers(nextProps.topojsonObjects, selections);
+    const layers = context.createLayers(nextProps.topojsonObjects);
     return assign({}, state, {
       layers,
       locationIdsOnMap: context.getGeometryIds(nextProps.topology, layers),
