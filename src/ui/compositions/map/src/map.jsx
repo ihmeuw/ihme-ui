@@ -78,10 +78,8 @@ export default class Map extends React.Component {
     bindAll(this, [
       'classifyMesh',
       'createLayers',
-      'disputedBordersMeshFilter',
       'getGeometryIds',
-      'nonDisputedBordersMeshFilter',
-      'selectedBordersMeshFilter',
+      'getMeshFilter',
       'onSetScale',
       'onResetScale',
     ]);
@@ -152,6 +150,10 @@ export default class Map extends React.Component {
     );
   }
 
+  getMeshFilter(meshType, ...matches) {
+    return meshType === this.classifyMesh(this.state.keysOfSelectedLocations, matches);
+  }
+
   classifyMesh(selected=[], matches) {
     const claimants = new Set();
     const locations = new Set();
@@ -189,24 +191,6 @@ export default class Map extends React.Component {
     }
   }
 
-  disputedBordersMeshFilter(...matches) {
-    const selected = this.state.keysOfSelectedLocations;
-    const classification = this.classifyMesh(selected, matches);
-    return classification === 'disputed-borders';
-  }
-
-  nonDisputedBordersMeshFilter(...matches) {
-    const selected = this.state.keysOfSelectedLocations;
-    const classification = this.classifyMesh(selected, matches);
-    return classification === 'non-disputed-borders';
-  }
-
-  selectedBordersMeshFilter(...matches) {
-    const selected = this.state.keysOfSelectedLocations;
-    const classification = this.classifyMesh(selected, matches);
-    return classification === 'selected-non-disputed-borders';
-  }
-
   createLayers(layers, selections) {
     const { geometryKeyField } = this.props;
 
@@ -231,21 +215,21 @@ export default class Map extends React.Component {
         object: concatenatedLayers,
         style: { stroke: 'black', strokeWidth: '1px', strokeDasharray: '5, 5' },
         type: 'mesh',
-        meshFilter: this.disputedBordersMeshFilter,
+        meshFilter: this.getMeshFilter.bind(this, 'disputed-borders'),
       },
       {
         name: 'non-disputed-borders',
         object: concatenatedLayers,
         style: { stroke: 'black', strokeWidth: '1px' },
         type: 'mesh',
-        meshFilter: this.nonDisputedBordersMeshFilter,
+        meshFilter: this.getMeshFilter.bind(this, 'non-disputed-borders'),
       },
       {
         name: 'selected-non-disputed-borders',
         object: concatenatedLayers,
         style: { stroke: 'black', strokeWidth: '2px' },
         type: 'mesh',
-        meshFilter: this.selectedBordersMeshFilter,
+        meshFilter: this.getMeshFilter.bind(this, 'selected-non-disputed-borders'),
       },
     ];
 
