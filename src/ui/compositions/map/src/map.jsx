@@ -66,6 +66,41 @@ export const filterData = memoizeByLastCall((data, locationIdsOnMap, keyField) =
  *
  */
 export default class Map extends React.Component {
+  static classifyMesh(selected = [], matches) {
+    const claimants = new Set();
+    const locations = new Set();
+    const admins = new Set();
+    matches.forEach(({ properties }) => {
+      if (properties.claimants) {
+        claimants.addEach(properties.claimants);
+      }
+
+      if (properties.admins) {
+        admins.addEach(properties.admins);
+      }
+
+      if (properties.loc_id) {
+        locations.add(properties.loc_id);
+      }
+    });
+
+    const locationsExclusive = locations.symmetricDifference(admins);
+
+    const claimantsHas = claimants.has.bind(claimants);
+    const locationsExclusiveHas = locationsExclusive.has.bind(locationsExclusive);
+
+    const isExternal = (locations.size === 1);
+    const isDisputed = (claimants.size && locations.every(claimantsHas));
+    const isSelected = (selected.some(locationsExclusiveHas) !== selected.some(claimantsHas));
+
+    if (isSelected) {
+      return 'selected-non-disputed-borders';
+    } else if (!isExternal && isDisputed) {
+      return 'disputed-borders';
+    }
+    return 'non-disputed-borders';
+  }
+
   constructor(props) {
     super(props);
 
@@ -73,7 +108,6 @@ export default class Map extends React.Component {
     const rangeExtent = getRangeExtent(extentPct, domain);
 
     bindAll(this, [
-      'classifyMesh',
       'createLayers',
       'getGeometryIds',
       'getMeshFilter',
@@ -148,43 +182,7 @@ export default class Map extends React.Component {
   }
 
   getMeshFilter(meshType, ...matches) {
-    return meshType === this.classifyMesh(this.state.keysOfSelectedLocations, matches);
-  }
-
-  classifyMesh(selected = [], matches) {
-    const claimants = new Set();
-    const locations = new Set();
-    const admins = new Set();
-
-    matches.forEach(({ properties }) => {
-      if (properties.claimants) {
-        claimants.addEach(properties.claimants);
-      }
-
-      if (properties.admins) {
-        admins.addEach(properties.admins);
-      }
-
-      if (properties.loc_id) {
-        locations.add(properties.loc_id);
-      }
-    });
-
-    const locationsExclusive = locations.symmetricDifference(admins);
-
-    const claimantsHas = claimants.has.bind(claimants);
-    const locationsExclusiveHas = locationsExclusive.has.bind(locationsExclusive);
-
-    const isExternal = (locations.size === 1);
-    const isDisputed = (claimants.size && locations.every(claimantsHas));
-    const isSelected = (selected.some(locationsExclusiveHas) !== selected.some(claimantsHas));
-
-    if (isSelected) {
-      return 'selected-non-disputed-borders';
-    } else if (!isExternal && isDisputed) {
-      return 'disputed-borders';
-    }
-    return 'non-disputed-borders';
+    return meshType === Map.classifyMesh(this.state.keysOfSelectedLocations, matches);
   }
 
   createLayers(layers) {
