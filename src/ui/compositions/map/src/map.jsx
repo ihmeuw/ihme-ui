@@ -1,7 +1,7 @@
-import Set from 'collections/set';
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import Set from 'collections/set';
 import {
   assign,
   bindAll,
@@ -66,11 +66,19 @@ export const filterData = memoizeByLastCall((data, locationIdsOnMap, keyField) =
  *
  */
 export default class Map extends React.Component {
-  static classifyMesh(selected = [], matches) {
+  static classifyMesh(geometryKeyField, matches, selected = []) {
     const claimants = new Set();
     const locations = new Set();
     const admins = new Set();
-    matches.forEach(({ properties }) => {
+
+    matches.forEach((feature) => {
+      const { properties } = feature;
+      const locId = propResolver(feature, geometryKeyField);
+
+      if (locId) {
+        locations.add(locId);
+      }
+
       if (properties.claimants) {
         claimants.addEach(properties.claimants);
       }
@@ -78,16 +86,11 @@ export default class Map extends React.Component {
       if (properties.admins) {
         admins.addEach(properties.admins);
       }
-
-      if (properties.loc_id) {
-        locations.add(properties.loc_id);
-      }
     });
 
     const locationsExclusive = locations.symmetricDifference(admins);
-
-    const claimantsHas = claimants.has.bind(claimants);
     const locationsExclusiveHas = locationsExclusive.has.bind(locationsExclusive);
+    const claimantsHas = claimants.has.bind(claimants);
 
     const isExternal = (locations.size === 1);
     const isDisputed = (claimants.size && locations.every(claimantsHas));
@@ -98,6 +101,7 @@ export default class Map extends React.Component {
     } else if (!isExternal && isDisputed) {
       return 'disputed-borders';
     }
+
     return 'non-disputed-borders';
   }
 
@@ -110,7 +114,7 @@ export default class Map extends React.Component {
     bindAll(this, [
       'createLayers',
       'getGeometryIds',
-      'getMeshFilter',
+      'meshFilter',
       'onSetScale',
       'onResetScale',
     ]);
@@ -181,8 +185,10 @@ export default class Map extends React.Component {
     );
   }
 
-  getMeshFilter(meshType, ...matches) {
-    return meshType === Map.classifyMesh(this.state.keysOfSelectedLocations, matches);
+  meshFilter(meshType, ...matches) {
+    const { geometryKeyField } = this.props;
+    const { keysOfSelectedLocations } = this.state;
+    return meshType === Map.classifyMesh(geometryKeyField, matches, keysOfSelectedLocations);
   }
 
   createLayers(layers) {
@@ -207,21 +213,21 @@ export default class Map extends React.Component {
         object: concatenatedLayers,
         style: { stroke: 'black', strokeWidth: '1px', strokeDasharray: '5, 5' },
         type: 'mesh',
-        meshFilter: this.getMeshFilter.bind(this, 'disputed-borders'),
+        meshFilter: this.meshFilter.bind(this, 'disputed-borders'),
       },
       {
         name: 'non-disputed-borders',
         object: concatenatedLayers,
         style: { stroke: 'black', strokeWidth: '1px' },
         type: 'mesh',
-        meshFilter: this.getMeshFilter.bind(this, 'non-disputed-borders'),
+        meshFilter: this.meshFilter.bind(this, 'non-disputed-borders'),
       },
       {
         name: 'selected-non-disputed-borders',
         object: concatenatedLayers,
         style: { stroke: 'black', strokeWidth: '2px' },
         type: 'mesh',
-        meshFilter: this.getMeshFilter.bind(this, 'selected-non-disputed-borders'),
+        meshFilter: this.meshFilter.bind(this, 'selected-non-disputed-borders'),
       },
     ];
 

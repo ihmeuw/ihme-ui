@@ -27,8 +27,10 @@ describe('<Map />', () => {
     });
   });
 
-  describe('mesh filters', () => {
-    const geometryKeyField = 'loc_id';
+  describe.only('mesh filters', () => {
+    const geometryKeyField = 'properties.loc_id';
+
+    const props = { geometryKeyField };
 
     const disputedTerritory = {
       properties: {
@@ -38,26 +40,20 @@ describe('<Map />', () => {
     };
 
     const claimingCountry = {
-      properties: {
-        [geometryKeyField]: '2',
-      }
+      properties: { loc_id: '2' }
     };
 
     const administeringCountry = {
-      properties: {
-        [geometryKeyField]: '3',
-      }
+      properties: { loc_id: '3' }
     };
 
     const nonClaimingCountry = {
-      properties: {
-        [geometryKeyField]: '4',
-      },
+      properties: { loc_id: '4' },
     };
 
     describe('disputedBordersMeshFilter', () => {
-      const disputedBordersMeshFilter = Map.prototype.getMeshFilter.bind(
-        { state: { keysOfSelectedLocations: [] } },
+      const disputedBordersMeshFilter = Map.prototype.meshFilter.bind(
+        { props, state: { keysOfSelectedLocations: [] } },
         'disputed-borders',
       );
 
@@ -87,8 +83,8 @@ describe('<Map />', () => {
     });
 
     describe('nonDisputedBordersMeshFilter', () => {
-      const nonDisputedBordersMeshFilter = Map.prototype.getMeshFilter.bind(
-        { state: { keysOfSelectedLocations: [] } },
+      const nonDisputedBordersMeshFilter = Map.prototype.meshFilter.bind(
+        { props, state: { keysOfSelectedLocations: [] } },
         'non-disputed-borders',
       );
 
@@ -119,8 +115,8 @@ describe('<Map />', () => {
 
     describe('selectedBordersMeshFilter', () => {
       it('returns true when either geometry is selected and no disputed border is selected', () => {
-        const selectedBordersMeshFilter = Map.prototype.getMeshFilter.bind(
-          { state: { keysOfSelectedLocations: ['4'] } },
+        const selectedBordersMeshFilter = Map.prototype.meshFilter.bind(
+          { props, state: { keysOfSelectedLocations: ['4'] } },
           'selected-non-disputed-borders',
         );
 
@@ -128,8 +124,8 @@ describe('<Map />', () => {
       });
 
       it('returns false when either geometry is selected and a disputed border is selected', () => {
-        const selectedBordersMeshFilter = Map.prototype.getMeshFilter.bind(
-          { state: { keysOfSelectedLocations: ['2'] } },
+        const selectedBordersMeshFilter = Map.prototype.meshFilter.bind(
+          { props, state: { keysOfSelectedLocations: ['2'] } },
           'selected-non-disputed-borders',
         );
 
@@ -143,8 +139,8 @@ describe('<Map />', () => {
       });
 
       it('returns false when neither geometry is selected and no disputed border is selected', () => {
-        const selectedBordersMeshFilter = Map.prototype.getMeshFilter.bind(
-          { state: { keysOfSelectedLocations: ['5'] } },
+        const selectedBordersMeshFilter = Map.prototype.meshFilter.bind(
+          { props, state: { keysOfSelectedLocations: ['5'] } },
           'selected-non-disputed-borders',
         );
 

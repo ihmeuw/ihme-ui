@@ -35,6 +35,7 @@ export {
   calcCenterPoint,
   calcScale,
   calcTranslate,
+  classifyMesh,
   computeBounds,
   concatAndComputeGeoJSONBounds,
   concatGeoJSON,
