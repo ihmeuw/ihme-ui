@@ -66,35 +66,39 @@ export const filterData = memoizeByLastCall((data, locationIdsOnMap, keyField) =
  *
  */
 export default class Map extends React.Component {
-  static classifyMesh(geometryKeyField, matches, selected = []) {
+  static classifyArc(geometryKeyField, matches, selected = []) {
+    // Bins for matched properties.
+    const nonDisputedLocations = new Set();
     const claimants = new Set();
-    const locations = new Set();
     const admins = new Set();
 
     matches.forEach((feature) => {
       const { properties } = feature;
       const locId = propResolver(feature, geometryKeyField);
 
+      // If a locId exists the feature is not disputed.
       if (locId) {
-        locations.add(locId);
-      }
-
-      if (properties.claimants) {
+        nonDisputedLocations.add(locId);
+      } else {
         claimants.addEach(properties.claimants);
-      }
-
-      if (properties.admins) {
         admins.addEach(properties.admins);
       }
     });
 
-    const locationsExclusive = locations.symmetricDifference(admins);
-    const locationsExclusiveHas = locationsExclusive.has.bind(locationsExclusive);
-    const claimantsHas = claimants.has.bind(claimants);
+    // List of nonDisputedLocations that don't exist in both `admins` and `nonDisputedLocations`.
+    // eg: admins=[1, 2], nonDisputedLocations=[2, 3] => xorLocations=[1, 3]
+    const xorLocations = nonDisputedLocations.symmetricDifference(admins);
+    // Convenience function that tests if a value is in `xorLocations`
+    const xorLocationsHas = xorLocations.has.bind(xorLocations);
+    // Convenience function that tests if a value is in `claimants`
+    const isClaimant = claimants.has.bind(claimants);
 
-    const isExternal = (locations.size === 1);
-    const isDisputed = (claimants.size && locations.every(claimantsHas));
-    const isSelected = (selected.some(locationsExclusiveHas) !== selected.some(claimantsHas));
+    // There is only one `nonDisputedLocations`.
+    const isExternal = nonDisputedLocations.size === 1;
+    // All `nonDisputedLocations` are in `claimants` and `claimants` is not empty.
+    const isDisputed = claimants.size && nonDisputedLocations.every(isClaimant);
+    // `selected` intersects one of `xorLocations` or `claimants`, and does not intersect both.
+    const isSelected = selected.some(xorLocationsHas) !== selected.some(isClaimant);
 
     if (isSelected) {
       return 'selected-non-disputed-borders';
@@ -188,7 +192,7 @@ export default class Map extends React.Component {
   meshFilter(meshType, ...matches) {
     const { geometryKeyField } = this.props;
     const { keysOfSelectedLocations } = this.state;
-    return meshType === Map.classifyMesh(geometryKeyField, matches, keysOfSelectedLocations);
+    return meshType === Map.classifyArc(geometryKeyField, matches, keysOfSelectedLocations);
   }
 
   createLayers(layers) {
