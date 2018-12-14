@@ -27,7 +27,7 @@ describe('<Map />', () => {
     });
   });
 
-  describe.only('mesh filters', () => {
+  describe('mesh filters', () => {
     const geometryKeyField = 'properties.loc_id';
 
     const props = { geometryKeyField };
