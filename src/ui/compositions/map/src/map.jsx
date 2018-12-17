@@ -66,10 +66,21 @@ export const filterData = memoizeByLastCall((data, locationIdsOnMap, keyField) =
  *
  */
 export default class Map extends React.Component {
+  /**
+   * @description Classifies arcs of a topojson collection.
+   * This function is passed to `topojson.mesh` which calls it for every arc passing in an array of
+   * features adjacent to the arc.
+   *
+   * @param geometryKeyField - field to resolve property on topojson feature object for geometry.
+   * @param matches - array of topojson features adjacent to the arc.
+   * @param selected - array of selected location ids.
+   * @returns {string} one of three classifiers: ('selected-non-disputed-borders'|'disputed-borders'|'non-disputed-borders')
+   */
   static classifyArc(geometryKeyField, matches, selected = []) {
-    // Bins for matched properties.
     const nonDisputedLocations = new Set();
+    // Locations that claim any disputed locations in the match.
     const claimants = new Set();
+    // Locations that administer data for any disputed locations in the match.
     const admins = new Set();
 
     matches.forEach((feature) => {
@@ -86,7 +97,9 @@ export default class Map extends React.Component {
     });
 
     // List of nonDisputedLocations that don't exist in both `admins` and `nonDisputedLocations`.
-    // eg: admins=[1, 2], nonDisputedLocations=[2, 3] => xorLocations=[1, 3]
+    // The resulting list will be of:
+    // - non-disputed in the match that don't administer any (disputed) locations in the match.
+    // - locations that administer a disputed location in the match that are not themselves in the match.
     const xorLocations = nonDisputedLocations.symmetricDifference(admins);
     // Convenience function that tests if a value is in `xorLocations`
     const isXorLocation = xorLocations.has.bind(xorLocations);
