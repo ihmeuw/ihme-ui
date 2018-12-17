@@ -89,7 +89,7 @@ export default class Map extends React.Component {
     // eg: admins=[1, 2], nonDisputedLocations=[2, 3] => xorLocations=[1, 3]
     const xorLocations = nonDisputedLocations.symmetricDifference(admins);
     // Convenience function that tests if a value is in `xorLocations`
-    const xorLocationsHas = xorLocations.has.bind(xorLocations);
+    const isXorLocation = xorLocations.has.bind(xorLocations);
     // Convenience function that tests if a value is in `claimants`
     const isClaimant = claimants.has.bind(claimants);
 
@@ -98,7 +98,7 @@ export default class Map extends React.Component {
     // All `nonDisputedLocations` are in `claimants` and `claimants` is not empty.
     const isDisputed = claimants.size && nonDisputedLocations.every(isClaimant);
     // `selected` intersects one of `xorLocations` or `claimants`, and does not intersect both.
-    const isSelected = selected.some(xorLocationsHas) !== selected.some(isClaimant);
+    const isSelected = selected.some(isXorLocation) !== selected.some(isClaimant);
 
     if (isSelected) {
       return 'selected-non-disputed-borders';
