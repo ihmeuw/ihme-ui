@@ -91,6 +91,7 @@
   "dependencies": {
     "babel-runtime": "~6.6",
     "classnames": "~2.2",
+    "collections": "~5.1.5",
     "d3": "^4.13.0",
     "interact.js": "~1.2",
     "lodash": "^4.17.5",

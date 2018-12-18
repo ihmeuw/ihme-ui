@@ -1,15 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import Set from 'collections/set';
 import {
   assign,
   bindAll,
   keyBy,
   flatMap,
   filter,
-  get as getValue,
-  includes,
-  intersection,
   intersectionWith,
   isEqual,
   map,
@@ -68,6 +66,62 @@ export const filterData = memoizeByLastCall((data, locationIdsOnMap, keyField) =
  *
  */
 export default class Map extends React.Component {
+  /**
+   * @description Classifies arcs of a topojson collection.
+   * This function is passed to `topojson.mesh` which calls it for every arc passing in an array of
+   * features adjacent to the arc.
+   *
+   * @param geometryKeyField - field to resolve property on topojson feature object for geometry.
+   * @param matches - array of topojson features adjacent to the arc.
+   * @param selected - array of selected location ids.
+   * @returns {string} one of three classifiers: ('selected-non-disputed-borders'|'disputed-borders'|'non-disputed-borders')
+   */
+  static classifyArc(geometryKeyField, matches, selected = []) {
+    const nonDisputedLocations = new Set();
+    // Locations that claim any disputed locations in the match.
+    const claimants = new Set();
+    // Locations that administer data for any disputed locations in the match.
+    const admins = new Set();
+
+    matches.forEach((feature) => {
+      const { properties } = feature;
+      const locId = propResolver(feature, geometryKeyField);
+
+      // If a locId exists the feature is not disputed.
+      if (locId) {
+        nonDisputedLocations.add(locId);
+      } else {
+        claimants.addEach(properties.claimants);
+        admins.addEach(properties.admins);
+      }
+    });
+
+    // List of nonDisputedLocations that don't exist in both `admins` and `nonDisputedLocations`.
+    // The resulting list will be of:
+    // - non-disputed in the match that don't administer any (disputed) locations in the match.
+    // - locations that administer a disputed location in the match that are not themselves in the match.
+    const xorLocations = nonDisputedLocations.symmetricDifference(admins);
+    // Convenience function that tests if a value is in `xorLocations`
+    const isXorLocation = xorLocations.has.bind(xorLocations);
+    // Convenience function that tests if a value is in `claimants`
+    const isClaimant = claimants.has.bind(claimants);
+
+    // There is only one `nonDisputedLocations`.
+    const isExternal = nonDisputedLocations.size === 1;
+    // All `nonDisputedLocations` are in `claimants` and `claimants` is not empty.
+    const isDisputed = claimants.size && nonDisputedLocations.every(isClaimant);
+    // `selected` intersects one of `xorLocations` or `claimants`, and does not intersect both.
+    const isSelected = selected.some(isXorLocation) !== selected.some(isClaimant);
+
+    if (isSelected) {
+      return 'selected-non-disputed-borders';
+    } else if (!isExternal && isDisputed) {
+      return 'disputed-borders';
+    }
+
+    return 'non-disputed-borders';
+  }
+
   constructor(props) {
     super(props);
 
@@ -76,10 +130,8 @@ export default class Map extends React.Component {
 
     bindAll(this, [
       'createLayers',
-      'disputedBordersMeshFilter',
       'getGeometryIds',
-      'nonDisputedBordersMeshFilter',
-      'selectedBordersMeshFilter',
+      'meshFilter',
       'onSetScale',
       'onResetScale',
     ]);
@@ -150,53 +202,13 @@ export default class Map extends React.Component {
     );
   }
 
-  disputedBordersMeshFilter(geometry, neighborGeometry) {
-    /* eslint-disable max-len */
-    const { geometryKeyField } = this.props;
-    return geometry !== neighborGeometry && (
-      includes(getValue(geometry, ['properties', 'disputes'], []), propResolver(neighborGeometry, geometryKeyField)) ||
-      includes(getValue(neighborGeometry, ['properties', 'disputes'], []), propResolver(geometry, geometryKeyField))
-    );
-    /* eslint-enable max-len */
-  }
-
-  nonDisputedBordersMeshFilter(geometry, neighborGeometry) {
-    /* eslint-disable max-len */
-    const { geometryKeyField } = this.props;
-    return geometry === neighborGeometry || !(
-      includes(getValue(geometry, ['properties', 'disputes'], []), propResolver(neighborGeometry, geometryKeyField)) ||
-      includes(getValue(neighborGeometry, ['properties', 'disputes'], []), propResolver(geometry, geometryKeyField))
-    );
-    /* eslint-enable max-len */
-  }
-
-  selectedBordersMeshFilter(geometry, neighborGeometry) {
+  meshFilter(meshType, ...matches) {
     const { geometryKeyField } = this.props;
     const { keysOfSelectedLocations } = this.state;
-
-    const geometryKey = toString(propResolver(geometry, geometryKeyField));
-    const geometryDisputes = getValue(geometry, ['properties', 'disputes'], []).map(toString);
-    const neighborGeometryKey = toString(propResolver(neighborGeometry, geometryKeyField));
-    const neighborGeometryDisputes = getValue(neighborGeometry, [
-      'properties',
-      'disputes',
-    ], []).map(toString);
-
-    const keys = [geometryKey, neighborGeometryKey];
-    const disputes = [...geometryDisputes, ...neighborGeometryDisputes];
-
-    const geometrySelected = Boolean(intersection(keysOfSelectedLocations, keys).length);
-    const disputeSelected = Boolean(intersection(keysOfSelectedLocations, disputes).length);
-
-    return (
-      (geometrySelected && !disputeSelected) ||
-      (!geometrySelected && disputeSelected)
-    );
+    return meshType === Map.classifyArc(geometryKeyField, matches, keysOfSelectedLocations);
   }
 
-  createLayers(layers, selections) {
-    const { geometryKeyField } = this.props;
-
+  createLayers(layers) {
     const styleReset = { stroke: 'none' };
     const features = map(layers, layer => (
       {
@@ -212,42 +224,27 @@ export default class Map extends React.Component {
       topoObjects => concatTopoJSON(topoObjects, layers)
     );
 
-    const selectedConcatenatedLayers = memoizeByLastCall(
-      topoObjects => {
-        const concatenatedTopology = concatenatedLayers(topoObjects);
-        return {
-          type: concatenatedTopology.type,
-          geometries: filter(concatenatedTopology.geometries, geometry => {
-            const geometryKey = toString(propResolver(geometry, geometryKeyField));
-            const disputes = getValue(geometry, ['properties', 'disputes'], []);
-
-            return includes(selections, geometryKey) || disputes.length;
-          }),
-        };
-      }
-    );
-
     const meshes = [
       {
         name: 'disputed-borders',
         object: concatenatedLayers,
         style: { stroke: 'black', strokeWidth: '1px', strokeDasharray: '5, 5' },
         type: 'mesh',
-        meshFilter: this.disputedBordersMeshFilter,
+        meshFilter: this.meshFilter.bind(this, 'disputed-borders'),
       },
       {
         name: 'non-disputed-borders',
         object: concatenatedLayers,
         style: { stroke: 'black', strokeWidth: '1px' },
         type: 'mesh',
-        meshFilter: this.nonDisputedBordersMeshFilter,
+        meshFilter: this.meshFilter.bind(this, 'non-disputed-borders'),
       },
       {
         name: 'selected-non-disputed-borders',
-        object: selectedConcatenatedLayers,
+        object: concatenatedLayers,
         style: { stroke: 'black', strokeWidth: '2px' },
         type: 'mesh',
-        meshFilter: this.selectedBordersMeshFilter,
+        meshFilter: this.meshFilter.bind(this, 'selected-non-disputed-borders'),
       },
     ];
 
@@ -599,7 +596,7 @@ Map.propTypes = {
    * title positioned on top of choropleth
    * in semi-opaque div that spans the full width of the component
    */
-  title: PropTypes.string,
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
 
   /**
    * className applied to div wrapping the title
@@ -710,7 +707,7 @@ Map.propUpdates = {
     const keysOfSelectedLocations = map(nextProps.selectedLocations, datum =>
       toString(propResolver(datum, nextProps.keyField))
     );
-    const layers = context.createLayers(nextProps.topojsonObjects, keysOfSelectedLocations);
+    const layers = context.createLayers(nextProps.topojsonObjects);
 
     return assign({}, state, {
       keysOfSelectedLocations,
@@ -723,11 +720,7 @@ Map.propUpdates = {
     // corresponding geometry displayed on the choropleth
     if (isEqual(prevProps.topojsonObjects, nextProps.topojsonObjects)) return state;
 
-    // evaluate visibility of each layer
-    const selections = map(nextProps.selectedLocations, datum =>
-      toString(propResolver(datum, nextProps.keyField))
-    );
-    const layers = context.createLayers(nextProps.topojsonObjects, selections);
+    const layers = context.createLayers(nextProps.topojsonObjects);
     return assign({}, state, {
       layers,
       locationIdsOnMap: context.getGeometryIds(nextProps.topology, layers),

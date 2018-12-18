@@ -18,8 +18,13 @@ import { dataGenerator, numberFormat, getRandomColor } from '../../../../utils';
 const keyField = 'loc_id';
 const valueField = (data, feature) => {
   if (!feature && data.hasOwnProperty('mean')) return data.mean;
-  if (feature && feature.properties.hasOwnProperty('admin_id') && data.hasOwnProperty(feature.properties.admin_id)) return data[feature.properties.admin_id].mean;
-  if (feature && feature.properties.hasOwnProperty('loc_id') && data.hasOwnProperty(feature.properties.loc_id)) return data[feature.properties.loc_id].mean;
+  if (
+    feature
+    && feature.properties.hasOwnProperty('loc_id')
+    && data.hasOwnProperty(feature.properties.loc_id)
+  ) {
+    return data[feature.properties.loc_id].mean;
+  }
   return null;
 };
 
@@ -33,9 +38,9 @@ function randomRange() {
 
 const MapLevel = {
   NATIONAL: 1,
-  1: ['admin0', 'admin0_disputes'],
+  1: ['admin0', 'disputes'],
   SUBNATIONAL: 2,
-  2: ['admin0', 'admin1', 'admin2', 'admin2_disputes'],
+  2: ['admin0', 'admin1', 'admin2', 'disputes'],
 };
 
 class App extends React.Component {
@@ -68,9 +73,9 @@ class App extends React.Component {
 
   onClick(event, locationDatum, Path) {
     let selectedDatum = locationDatum;
-    const adminId = getValue(Path, ['props', 'feature', 'properties', 'admin_id'], null);
-    if (adminId) {
-      selectedDatum = find(this.state.data, (datum) => datum[keyField] == adminId);
+    const loc_id = getValue(Path, ['props', 'feature', 'properties', 'loc_id'], null);
+    if (loc_id) {
+      selectedDatum = find(this.state.data, (datum) => datum[keyField] == loc_id);
     }
 
     this.setState({

@@ -5,8 +5,10 @@
 `<Map />` is a composition of `<Choropleth />` and `<ChoroplethLegend />`.
 It provides a mesh-filter-based implementation for displaying disputed territories. In order to take advantage of this feature,
 your topojson must conform to the following requirements:
- - geometries that are disputed must have an array of ids on their `properties` object on a key named `disputes`.
- - the above ids must be resolvable by `props.geometryKeyField`
+ - geometries that are disputed must have two array of ids on their `properties` object on keys named `claimants` and `admins`.
+   - `claimants`: Location ids that claim the disputed location.
+   -  `admins`: Location ids that administer data for the disputed location.
+   - while the above ids must correspond to the `props.geometryKeyField` in non-disputed geometries, disputed geometries themselves should not have a property assigned to the `props.geometryKeyField`. 
 
 [See it in action!](http://vizhub.healthdata.org/mortality/age-estimation)
 
@@ -44,7 +46,7 @@ Property | Required | Type(s) | Defaults | Description
 `title` |  | string |  | title positioned on top of choropleth<br />in semi-opaque div that spans the full width of the component
 `titleClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to div wrapping the title
 `titleStyle` |  | object |  | inline styles applied to div wrapping the title
-`topojsonObjects` |  | array of string | ['national'] | array of keys on topology.objects (e.g., ['national', 'ADM1', 'health_districts']);<br />if a key on topology.objects is omitted, it will not be rendered<br />if including disputed territories as separate layers, the disputes layer must be either<br />first or last in the array. E.g.: ['admin0', 'admin1', 'admin2', 'admin2_disputes']
+`topojsonObjects` |  | array of string | ['national'] | array of keys on topology.objects (e.g., ['national', 'ADM1', 'health_districts']);<br />if a key on topology.objects is omitted, it will not be rendered<br />if including disputed territories as separate layer, the disputes layer must be <br />last in the array. E.g.: ['admin0', 'admin1', 'admin2', 'disputes']
 `topology` | true | object |  | preprojected topojson;<br />for more information, see the [topojson wiki](https://github.com/topojson/topojson/wiki)
 `unit` |  | string |  | unit of data;<br />used as axis label in choropleth legend
 `valueField` | true | string, func |  | key of datum that holds the value to display (e.g., 'mean')<br />if a function, signature: (data, feature) => value
