@@ -1,7 +1,7 @@
 {
   "name": "ihme-ui",
   "description": "Visualization tools from the Institute for Health Metrics and Evaluation",
-  "version": "0.33.1",
+  "version": "0.34.0",
   "license": "MIT",
   "browser": "dist/ihme-ui.min.js",
   "main": "lib/index.js",
@@ -22,7 +22,7 @@
     "Aaron Keel <akeel@uw.edu>",
     "David Schneider <davschne@uw.edu>",
     "Katherine Beame <katherine.beame@gmail.com>",
-    "Jim Vermillion <vermijw@uw.edu>"
+    "Jim Vermillion <jam.mcmillion@gmail.com>"
   ],
   "repository": "https://github.com/ihmeuw/ihme-ui.git",
   "bugs": "https://github.com/ihmeuw/ihme-ui/issues",
