@@ -1,6 +1,6 @@
 import { JSDOM } from 'jsdom';
 import Enzyme from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import Adapter from 'enzyme-adapter-react-16.2';
 
 import { createElementMock } from './setup-canvas-jsdom';
 
