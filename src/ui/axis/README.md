@@ -2,9 +2,8 @@
 =====================
 `import { Axis } from 'ihme-ui'`
 
-
 Property | Required | Type(s) | Defaults | Description
-:---    |:---      |:---     |:---      |:---       
+:---    |:---      |:---     |:---      |:---
 `className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to outermost group element
 `height` |  | number | 30 | height of charting area, minus padding<br />required if translate is not provided
 `label` |  | string |  | the axis label
@@ -25,7 +24,7 @@ Property | Required | Type(s) | Defaults | Description
 `translate` |  | object |  | push axis in x or y direction<br />keys: 'x' (required), 'y' (required)<br />required if width and height are not provided
 `width` |  | number | 900 | width of charting area, minus padding<br />required if translate is not specified
 
---- 
+---
 
 #### \<XAxis />
 
@@ -62,4 +61,3 @@ Property | Required | Type(s) | Defaults | Description
 `scales` | | func | | required if and only if `props.scale` is not provided
 `tickFontFamily` | | string | 'Helvetica' | font-family of axis ticks; used when taking measurement of widest tick if autoFilterTickValues === true
 `tickFontSize` | | number | 12 | font size of axis ticks, in pixels; used when taking measurement of widest tick or to determine tick height if autoFilterTickValues === true
-

@@ -2,9 +2,8 @@
 =====================
 `import { ChoroplethLegend } from 'ihme-ui'`
 
-
 Property | Required | Type(s) | Defaults | Description
-:---    |:---      |:---     |:---      |:---       
+:---    |:---      |:---     |:---      |:---
 `axisTickFormat` |  | func | numberFormat | [format of axis ticks](https://github.com/d3/d3-axis#axis_tickFormat)
 `axisTranslate` |  | object | {<br />  x: 0,<br />  y: 20<br />} | shift axis in the x or y directions; use to put padding between the color gradient rect and the axis
 `colorAccessor` |  | string, func |  | if string, the color property of the datum object; if function, takes in datum object and returns a color string.
@@ -33,4 +32,3 @@ Property | Required | Type(s) | Defaults | Description
 `x2` |  | number | 100 | x-axis coord (as percentage) of the end of the gradient (e.g., 100)
 `xScale` |  | func | scaleLinear() | scale for positioning density plot along its x-axis; must expose `domain` and `range` methods
 `zoom` |  | number | 1 | float value used for implementing "zooming";<br />any element that needs to become larger in "presentation mode" should respond to this scale factor.<br />Guide<br />zoom: 0 -> smallest possible<br />zoom: 0.5 -> half of normal size<br />zoom: 1 -> normal size ()<br />zoom: 2 -> twice normal size
-

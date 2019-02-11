@@ -5,13 +5,12 @@ These components provide the "primitive" bar shapes for constructing bar charts.
 
 ---
 
-
 #### \<MultiBars />
 `import { MultiBars } from 'ihme-ui'`
 
 Property | Required | Type(s) | Defaults | Description
-:---    |:---      |:---     |:---      |:---    
-`barsClassName` |  |  [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to `<Bars />`'s outermost wrapping `<g>`  
+:---    |:---      |:---     |:---      |:---
+`barsClassName` |  |  [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to `<Bars />`'s outermost wrapping `<g>`
 `barsStyle` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | inline styles applied to `<Bars />`'s outermost wrapping `<g>`.
 `className` |  | object |  | className applied to outermost wrapping `<g>`
 `clipPathId` |  | string |  |  * If a clip path is applied to a container element (e.g., an `<AxisChart />`), clip all children of `<MultiBars />` to that container by passing in the clip path URL id.
@@ -31,18 +30,16 @@ Property | Required | Type(s) | Defaults | Description
 `orientation` |  | string |  | Orientation in which bars should be created. <br /> Defaults to vertical, but option for horizontal orientation supported
 `scales` |  | { x: func, y: func } |  |  `x` and `y` scales for positioning `<Bar />`s. Object with keys: `x`, and `y`.
 `selectedClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | Class name applied if selected.
-`selectedStyle` |  | object |  | Inline styles applied to selected `<Bar />`s. <br /> If an object, spread into inline styles. <br /> If a function, passed underlying datum corresponding to its `<Bar />` and return value spread into line styles  
+`selectedStyle` |  | object |  | Inline styles applied to selected `<Bar />`s. <br /> If an object, spread into inline styles. <br /> If a function, passed underlying datum corresponding to its `<Bar />` and return value spread into line styles
 `selection` |  | object or array |  | Datum object or array of datum objects corresponding to selected `<Bar />`s
 `style` |  | style [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | Base inline styles applied to `<Bar />`s. <br /> If an object, spread into inline styles.  <br /> If a function, passed underlying datum corresponding to its `<Bar />`.
 `stacked` |  | boolean |  | unused?
 
-
 #### \<Bars />
 `import { Bars } from 'ihme-ui'`
 
-
 Property | Required | Type(s) | Defaults | Description
-:---    |:---      |:---     |:---      |:---       
+:---    |:---      |:---     |:---      |:---
 `align` |  | number |  | [format of scaleBand](https://github.com/d3/d3-scale/blob/master/README.md#scaleBand)<br /> Ordinal scaleBand align property. Sets the alignment of `<Bars />`s to the to the specified value which must be in the range [0, 1].
 `bandPadding` |  | number [format of scaleBand](https://github.com/d3/d3-scale/blob/master/README.md#scaleBand) |  | Ordinal scaleBand padding property. A convenience method for setting the inner and outer padding of `<Bars />`s to the same padding value
 `bandPaddingInner` |  | number [format of scaleBand](https://github.com/d3/d3-scale/blob/master/README.md#scaleBand) |  | Sets the inner padding of `<Bars />`s to the specified value which must be in the range [0, 1].
@@ -73,15 +70,13 @@ Property | Required | Type(s) | Defaults | Description
 `grouped` |  | boolean |  | unused?
 `stacked` |  | boolean |  | unused?
 
-
 #### \<Bar />
 `import { Bar } from 'ihme-ui'`
 
-
 Property | Required | Type(s) | Defaults | Description
-:---    |:---      |:---     |:---      |:---       
+:---    |:---      |:---     |:---      |:---
 `className` |  | object |  | Class name applied to svg element rect.
-`clipPathId` |  | string |  | If a clip path is applied to a container element (e.g., an `<AxisChart />`)  clip this path to that container by passing in the clip path URL id. 
+`clipPathId` |  | string |  | If a clip path is applied to a container element (e.g., an `<AxisChart />`)  clip this path to that container by passing in the clip path URL id.
 `datum` |  | object |  | Datum object corresponding to svg element rect ("bound" data, in the language in D3)
 `fill` |  | string |  |  Fill color for svg element rect.
 `focused` |  | boolean |  | Whether svg element rect is selected.
@@ -94,7 +89,7 @@ Property | Required | Type(s) | Defaults | Description
 `onMouseOver` |  | func |  | event handler passed to both choropleth and choropleth legend;<br />signature: (SyntheticEvent, datum, Path) => {...}
 `selected` |  | boolean |  | Whether svg element rect is selected.
 `selectedClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | Class name applied if selected.
-`selectedStyle` |  | object |  | Inline styles applied to selected `<Bar />`s. <br /> If an object, spread into inline styles. <br /> If a function, passed underlying datum corresponding to its `<Bar />` and return value spread into line styles  
+`selectedStyle` |  | object |  | Inline styles applied to selected `<Bar />`s. <br /> If an object, spread into inline styles. <br /> If a function, passed underlying datum corresponding to its `<Bar />` and return value spread into line styles
 `style` |  | style [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | Base inline styles applied to `<Bar />`s. <br /> If an object, spread into inline styles.  <br /> If a function, passed underlying datum corresponding to its `<Bar />`.
 `width` |  | number |  | Width of svg element rect.
 `x` |  | number |  | Initial x position of svg element rect.

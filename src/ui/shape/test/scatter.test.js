@@ -398,7 +398,6 @@ describe('<Scatter />', () => {
       });
     });
 
-
     it('computeFill correctly calculates fill as expected', () => {
       rawData.forEach((rawDatum, index) => {
         const fill = Scatter.computeFill(

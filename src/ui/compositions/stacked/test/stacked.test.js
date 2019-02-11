@@ -13,7 +13,6 @@ import StackedBarChart from './../src/stacked';
 import { Legend } from './../../../';
 import { dataGenerator } from '../../../../utils';
 
-
 chai.use(chaiEnzyme());
 
 describe('<StackedBarChart />', () => {

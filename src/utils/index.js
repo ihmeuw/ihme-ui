@@ -26,7 +26,6 @@ export {
   getWidthStack,
 } from './bar';
 
-
 export {
   colorSteps,
   baseColorScale,

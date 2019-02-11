@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { default as getValue } from 'lodash/get';
 
-
 /**
  * Flat option label
  */

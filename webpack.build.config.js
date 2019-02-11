@@ -36,5 +36,4 @@ const buildConfig = _.mergeWith({}, config, {
   },
 }, customizer);
 
-
 module.exports = buildConfig;

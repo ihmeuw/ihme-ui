@@ -2,9 +2,8 @@
 =====================
 `import { Choropleth } from 'ihme-ui'`
 
-
 Property | Required | Type(s) | Defaults | Description
-:---    |:---      |:---     |:---      |:---       
+:---    |:---      |:---     |:---      |:---
 `className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to outermost div
 `colorAccessor` |  | string, func |  | if string, the color property of the datum object; if function, takes in datum object and returns a color string.
 `colorScale` | true | func |  | accepts value of `keyfield` (str), returns stroke color for line (str)
@@ -33,4 +32,3 @@ Property | Required | Type(s) | Defaults | Description
 `valueField` | true | string, func |  | key of datum that holds the value to display (e.g., 'mean')<br />if a function, signature: (data, feature) => value
 `width` |  | number | 600 | pixel width of containing element
 `zoomStep` |  | number | 1.1 | amount to zoom in/out from zoom controls.<br />current zoom scale is multiplied by prop value.<br />e.g. 1.1 is equal to 10% steps, 2.0 is equal to 100% steps
-

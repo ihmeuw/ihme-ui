@@ -118,7 +118,6 @@ export function getXPositionStack(datum, linear, ordinal, orientation, xValue) {
   return linear(datum);
 }
 
-
 /**
  * Returns the y position used to render the svg rect element of a normal and grouped bar chart
  * @param grouped : Represents whether it is a grouped bar chart

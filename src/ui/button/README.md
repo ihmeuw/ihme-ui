@@ -2,9 +2,8 @@
 =====================
 `import { Button } from 'ihme-ui'`
 
-
 Property | Required | Type(s) | Defaults | Description
-:---    |:---      |:---     |:---      |:---       
+:---    |:---      |:---     |:---      |:---
 `className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to button
 `disabled` |  | bool |  | set button as disabled
 `disabledClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) | styles.disabled | className applied to button when disabled
@@ -19,4 +18,3 @@ Property | Required | Type(s) | Defaults | Description
 `style` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L16) |  | inline styles to apply to button
 `text` |  | string |  | text to render within button tag
 `theme` |  | one of: 'green' |  | color scheme of component (see button.css)
-

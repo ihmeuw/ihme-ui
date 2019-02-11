@@ -168,7 +168,6 @@ StackedBarChart.propTypes = {
    */
   bandPaddingOuter: PropTypes.number,
 
-
   /**
    * Accessors to d3 scale band properties
    *    align: property used to access the align property to alter d3 scaleBand alignment
@@ -187,7 +186,6 @@ StackedBarChart.propTypes = {
    * inline styles applied to div wrapping the chart
    */
   chartStyle: PropTypes.object,
-
 
   /**
    * If provided will determine color of rendered `<Bar />`s

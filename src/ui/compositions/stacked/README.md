@@ -4,15 +4,13 @@
 
 `<Stacked />` is a composition of `<MultiBars />`, `<XAxis />`, `<YAxis />` and `<AxisChart />`.
 
-
-
 Property | Required | Type(s) | Defaults | Description
-:---    |:---      |:---     |:---      |:---       
+:---    |:---      |:---     |:---      |:---
 `align` |  | number |  | [format of scaleBand](https://github.com/d3/d3-scale/blob/master/README.md#scaleBand)<br /> Ordinal scaleBand align property. Sets the alignment of `<Bars />`s to the to the specified value which must be in the range [0, 1].
 `bandPadding` |  | number [format of scaleBand](https://github.com/d3/d3-scale/blob/master/README.md#scaleBand) |  | Ordinal scaleBand padding property. A convenience method for setting the inner and outer padding of `<Bars />`s to the same padding value
 `bandPaddingInner` |  | number [format of scaleBand](https://github.com/d3/d3-scale/blob/master/README.md#scaleBand) |  | Sets the inner padding of `<Bars />`s to the specified value which must be in the range [0, 1].
 `bandPaddingInner` |  | number [format of scaleBand](https://github.com/d3/d3-scale/blob/master/README.md#scaleBand) |  | Sets the outer padding of `<Bars />`s to the specified value which must be in the range [0, 1].
-`bandObject` |  | object |  |  Values used for the d3 scale band properties<br />bandObject description: {Object}<br /> - `align`: property used for the align property to alter d3 scaleBand alignment<br /> - `bandPadding`: property used for the bandPadding to alter d3 scaleBand inner and outer padding<br /> - `bandPaddingInner`: property used for the bandPaddingInner to alter d3 scaleBand inner padding<br /> - `bandPaddingOuter`: property used for the bandPaddingOuter to alter d3 scaleBand outer padding <br />                 
+`bandObject` |  | object |  |  Values used for the d3 scale band properties<br />bandObject description: {Object}<br /> - `align`: property used for the align property to alter d3 scaleBand alignment<br /> - `bandPadding`: property used for the bandPadding to alter d3 scaleBand inner and outer padding<br /> - `bandPaddingInner`: property used for the bandPaddingInner to alter d3 scaleBand inner padding<br /> - `bandPaddingOuter`: property used for the bandPaddingOuter to alter d3 scaleBand outer padding <br />
 `chartStyle` |  | object |  | inline styles applied to div wrapping the chart
 `colorScale` |  | func |  | If provided will determine color of rendered `<Bar />
 `className` |  | string |  | applied to chart-container
@@ -38,5 +36,4 @@ Property | Required | Type(s) | Defaults | Description
 `style` |  | object |  | inline styles applied to outermost wrapping div
 `titleClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to div wrapping the title
 `titleStyle` |  | object |  | inline styles applied to div wrapping the title
-`type` |  | string |  | Options 'stacked' or 'grouped'. Type of bar chart to be created. If regular bar, do not include. 
-
+`type` |  | string |  | Options 'stacked' or 'grouped'. Type of bar chart to be created. If regular bar, do not include.

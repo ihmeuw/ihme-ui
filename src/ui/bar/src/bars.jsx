@@ -48,7 +48,6 @@ export default class Bars extends React.PureComponent {
     this.setState(stateFromPropUpdates(Bars.propUpdates, this.props, nextProps, this.state));
   }
 
-
   /**
    * Logic by which values are computed given the configuration of the bar chart
    * @param {object} configObject : {
@@ -386,7 +385,6 @@ Bars.propTypes = {
 
   grouped: PropTypes.bool,
 };
-
 
 Bars.defaultProps = {
   fill: 'steelblue',

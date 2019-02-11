@@ -182,7 +182,7 @@ describe('<Bar />', () => {
   describe('events', () => {
     const eventHandler = sinon.spy();
 
-    it(`calls onClick, mouseDown, mouseMove, mouseOut, and mouseOver 
+    it(`calls onClick, mouseDown, mouseMove, mouseOut, and mouseOver
     with event, locationId, and the React element`, () => {
       const datum = {
         mean: 10

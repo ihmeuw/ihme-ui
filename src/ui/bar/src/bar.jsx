@@ -127,7 +127,6 @@ Bar.propTypes = {
    */
   clipPathId: PropTypes.string,
 
-
   /**
    * Datum object corresponding to svg element rect ("bound" data, in the language in D3)
    */

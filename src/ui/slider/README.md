@@ -3,9 +3,8 @@
 
 `import { Slider } from 'ihme-ui'`
 
-
 Property | Required | Type(s) | Defaults | Description
-:---    |:---      |:---     |:---      |:---       
+:---    |:---      |:---     |:---      |:---
 `disabled` |  | bool | false | Disable slider visually and functionally.
 `fill` |  | bool |  | Include fill in the track to indicate value.
 `fillClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | Class name applied to fill.

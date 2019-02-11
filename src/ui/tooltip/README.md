@@ -5,9 +5,8 @@
 
 A wrapper to provide bounded, absolute positioning for arbitrary content.
 
-
 Property | Required | Type(s) | Defaults | Description
-:---    |:---      |:---     |:---      |:---       
+:---    |:---      |:---     |:---      |:---
 `bounds` |  | object |  | Pixel bounds within which to render tooltip.<br />Defaults to [0, window.innerWidth], [0, window.innerHeight].
 `className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | Class name applied to outermost wrapping `<div>`.
 `mouseX` |  | number | 0 | Mouse postion (x; e.g., clientX)

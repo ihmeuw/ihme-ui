@@ -6,9 +6,8 @@ Legend
 ### \<Legend />
 `import { Legend } from 'ihme-ui'`
 
-
 Property | Required | Type(s) | Defaults | Description
-:---    |:---      |:---     |:---      |:---       
+:---    |:---      |:---     |:---      |:---
 `className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to outermost, wrapping `<div>`
 `items` |  | array of object | [] | legend items
 `ItemComponent` |  | func | LegendItem | component (must be passable to React.createElement) to render for each item;<br />passed props `className`, `item`, `labelKey`, `LabelComponent`, `onClear`, `onClick`,<br />`onMouseLeave`, `onMouseMove`, `onMouseOver`, `shapeColorKey`, `shapeTypeKey`, `style`<br />defaults to [LegendItem](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/legend/src/legend-item.jsx)
@@ -38,9 +37,8 @@ import { LegendItem } from 'ihme-ui';
 
 Default ItemComponent used by `<Legend />`.
 
-
 Property | Required | Type(s) | Defaults | Description
-:---    |:---      |:---     |:---      |:---       
+:---    |:---      |:---     |:---      |:---
 `className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | classname(s) to apply to li
 `item` | true | object |  | legend item to render
 `LabelComponent` |  | func |  | custom component to render for each label, passed current item;<br />must be passable to React.createElement
@@ -61,9 +59,8 @@ import { LegendTitle } from 'ihme-ui';
 
 Default TitleComponent used by `<Legend />`.
 
-
 Property | Required | Type(s) | Defaults | Description
-:---    |:---      |:---     |:---      |:---       
+:---    |:---      |:---     |:---      |:---
 `className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | classname applied to `<h3>`
 `items` | true | array of object |  | legend items
 `style` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L16) |  | inline styles applied to title component<br />if a function, passed items as argument.<br />Signature: (items): {} => { ... }.

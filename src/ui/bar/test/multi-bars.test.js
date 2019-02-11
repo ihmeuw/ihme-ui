@@ -58,7 +58,6 @@ describe('<MultiBars />', () => {
   const locationFieldDomain = map(uniqBy(locationData, locationField), obj => obj[locationField]);
   const colorScale = scaleOrdinal(schemeCategory10);
 
-
   const ordinalScale = scaleBand()
     .domain(locationFieldDomain)
     .range([0, chartDimensions.width]);
