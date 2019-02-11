@@ -1,28 +1,28 @@
 .legend {
-  height: 100px;
-  width: 100%;
-  flex: .2;
+    height: 100px;
+    width: 100%;
+    flex: .2;
 }
 
 .chart {
-  flex: 4;
-  width: 100%;
+    flex: 4;
+    width: 100%;
 }
 
 .chart-container {
-  height: 100%;
-  width: 100%;
-  display: flex;
-  position: relative;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    position: relative;
 }
 
 .title {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  display: flex;
-  text-align: center;
-  flex-direction: column;
-  justify-content: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    justify-content: center;
 }
