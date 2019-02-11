@@ -99,6 +99,53 @@ export default class Bars extends React.PureComponent {
     };
   }
 
+  renderBar(childProps, linear, ordinal, datum) {
+    const {
+      colorScale,
+      dataAccessors,
+      fill,
+      focus,
+      grouped,
+      rectClassName,
+      rectStyle,
+      stacked,
+    } = this.props;
+
+    const { selectedDataMappedToKeys } = this.state;
+
+    const key = stacked
+      ? propResolver(datum.data, dataAccessors.key)
+      : propResolver(datum, dataAccessors.key);
+    const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.stack);
+    const focusedDatumKey = focus && propResolver(focus, dataAccessors.key);
+    const xValue = getXValue(datum, dataAccessors, grouped, stacked);
+    const yValue = propResolver(datum, !stacked ? dataAccessors.value : 1);
+    const renderingProps = this.getRenderingProps({
+      datum,
+      xValue,
+      yValue,
+      linear,
+      ordinal
+    });
+
+    return (
+      <Bar
+        className={rectClassName}
+        key={key}
+        datum={datum}
+        x={renderingProps.xPosition}
+        y={renderingProps.yPosition}
+        height={renderingProps.barHeight}
+        width={renderingProps.barWidth}
+        fill={colorScale && (isFinite(fillValue) ? colorScale(fillValue) : fill)}
+        focused={focusedDatumKey === key}
+        selected={selectedDataMappedToKeys.hasOwnProperty(key)}
+        style={rectStyle}
+        {...childProps}
+      />
+    );
+  }
+
   render() {
     const {
       align,
@@ -108,21 +155,13 @@ export default class Bars extends React.PureComponent {
       categoryTranslate,
       className,
       clipPathId,
-      colorScale,
       data,
-      dataAccessors,
-      fill,
-      focus,
-      grouped,
       orientation,
       scales,
-      rectClassName,
-      rectStyle,
       style,
-      stacked,
     } = this.props;
 
-    const { selectedDataMappedToKeys, sortedData } = this.state;
+    const { sortedData } = this.state;
 
     const childProps = pick(this.props, [
       'focusedClassName',
@@ -158,43 +197,7 @@ export default class Bars extends React.PureComponent {
           ${isVertical(orientation) ? 0 : categoryTranslate}
           )`}
       >
-        {
-          map(sortedData, (datum) => {
-            const key = stacked
-              ? propResolver(datum.data, dataAccessors.key)
-              : propResolver(datum, dataAccessors.key);
-            const fillValue = propResolver(datum, dataAccessors.fill || dataAccessors.stack);
-            const focusedDatumKey = focus && propResolver(focus, dataAccessors.key);
-
-            const xValue = getXValue(datum, dataAccessors, grouped, stacked);
-
-            const yValue = propResolver(datum, !stacked ? dataAccessors.value : 1);
-            const renderingProps = this.getRenderingProps({
-              datum,
-              xValue,
-              yValue,
-              linear,
-              ordinal
-            });
-
-            return (
-              <Bar
-                className={rectClassName}
-                key={key}
-                datum={datum}
-                x={renderingProps.xPosition}
-                y={renderingProps.yPosition}
-                height={renderingProps.barHeight}
-                width={renderingProps.barWidth}
-                fill={colorScale && (isFinite(fillValue) ? colorScale(fillValue) : fill)}
-                focused={focusedDatumKey === key}
-                selected={selectedDataMappedToKeys.hasOwnProperty(key)}
-                style={rectStyle}
-                {...childProps}
-              />
-            );
-          })
-        }
+        {map(sortedData, this.renderBar.bind(this, childProps, linear, ordinal))}
       </g>
     );
   }
