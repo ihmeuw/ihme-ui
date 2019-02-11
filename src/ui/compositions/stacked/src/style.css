@@ -4,10 +4,6 @@
   flex: .2;
 }
 
-.legend-wrapper {
-
-}
-
 .chart {
   flex: 4;
   width: 100%;
@@ -30,5 +26,3 @@
   flex-direction: column;
   justify-content: center;
 }
-
-
