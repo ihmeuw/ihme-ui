@@ -205,7 +205,7 @@ export default class Bars extends React.PureComponent {
 
 Bars.propTypes = {
   /**
-   * Ordinal scaleBand align property. Sets the alignment of `<Bars />`s to the to the
+   * Ordinal scaleBand align property. Sets the alignment of `<Bars />`s to the
    * specified value which must be in the range [0, 1].
    * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
    */
