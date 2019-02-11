@@ -18,7 +18,6 @@ const populationField = 'population';
 const locationField = 'location';
 
 import Bars from '../src/bars';
-import Bar from '../src/bar';
 
 const data = dataGenerator({
   primaryKeys: [
@@ -58,7 +57,6 @@ class App extends React.Component {
       'onMouseMove',
       'onMouseOver',
     ]);
-
   }
 
   onClick(event, datum) {
