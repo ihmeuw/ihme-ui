@@ -147,33 +147,26 @@ describe('<Bar />', () => {
       selected: 'selected-classname'
     };
 
-    const wrapper = shallow(
-      <Bar
-        className={classNames.base}
-        focusedClassName={classNames.focused}
-        selectedClassName={classNames.selected}
-      />
-    );
+    const baseProps = {
+      className: classNames.base,
+      focusedClassName: classNames.focused,
+      selectedClassName: classNames.selected,
+    };
 
-    it('applies a base classname', () => {
+    it('always applies a base classname', () => {
+      const wrapper = shallow(<Bar {...baseProps} />);
       expect(wrapper.find('rect'))
         .to.have.className(classNames.base);
     });
 
     it('applies a selectedClassName if the shape is selected', () => {
-      wrapper.setProps({ selected: true });
-      expect(wrapper.find('rect'))
-        .to.have.className(classNames.base);
+      const wrapper = shallow(<Bar selected {...baseProps} />);
       expect(wrapper.find('rect'))
         .to.have.className(classNames.selected);
     });
 
     it('applies a focusedClassName if the shape has focus', () => {
-      wrapper.setProps({ focused: true });
-      expect(wrapper.find('rect'))
-        .to.have.className(classNames.base);
-      expect(wrapper.find('rect'))
-        .to.have.className(classNames.selected);
+      const wrapper = shallow(<Bar focused {...baseProps} />);
       expect(wrapper.find('rect'))
         .to.have.className(classNames.focused);
     });
