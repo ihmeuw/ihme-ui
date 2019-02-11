@@ -464,7 +464,7 @@ class App extends React.Component {
           />
         </section>
         <section>
-          <h3>Stacked Bar Chart Vertical Orientation</h3>
+          <h3>Stacked Bar Chart Vertical Orientation with Legend</h3>
           {/* <pre><code>
           <StackedBarChart
             chartStyle={STYLE}
@@ -556,7 +556,7 @@ class App extends React.Component {
         </section>
 
         <section>
-          <h3>Stacked Horizontal Bar Chart</h3>
+          <h3>Stacked Horizontal Bar Chart with Legend</h3>
           {/* <pre><code>
           <StackedBarChart
             chartStyle={STYLE}
