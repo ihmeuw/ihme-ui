@@ -65,10 +65,10 @@ export default class MultiBars extends React.PureComponent {
     if (stacked) {
       const stackedDomain =
         [0, max(plotData, datum => max(datum, d => d[1]))];
-      const linear = (isVertical(orientation) ? scales.y : scales.x);
+      const linear = isVertical(orientation) ? scales.y : scales.x;
       linear.domain(stackedDomain);
     } else {
-      const ordinal = (isVertical(orientation) ? scales.x : scales.y);
+      const ordinal = isVertical(orientation) ? scales.x : scales.y;
       layerOrdinal.domain(layerDomain).range([0, ordinal.bandwidth()]);
     }
 
