@@ -25,21 +25,55 @@ export default class MultiBars extends React.PureComponent {
     this.castSelectionAsArray = memoizeByLastCall((selection) => castArray(selection));
   }
 
-  render() {
+  renderBars(childProps, datum) {
     const {
       barsClassName,
       barsStyle,
+      colorScale,
+      fieldAccessors: {
+        color: colorField,
+        data: dataField,
+        key: keyField,
+      },
+      orientation,
+      scales,
+      selection,
+      stacked,
+    } = this.props;
+
+    const key = propResolver(datum, keyField);
+    const values = stacked ? datum : propResolver(datum, dataField);
+    const color = colorScale(colorField ? propResolver(datum, colorField) : key);
+    const outerOrdinal = isVertical(orientation) ? scales.x : scales.y;
+    const translate = outerOrdinal(key);
+
+    return (
+      <Bars
+        className={barsClassName}
+        data={values}
+        fill={color}
+        key={`bars:${key}`}
+        selection={this.castSelectionAsArray(selection)}
+        style={barsStyle}
+        categoryTranslate={translate}
+        {...childProps}
+      />
+    );
+  }
+
+  render() {
+    const {
       className,
       clipPathId,
-      colorScale,
       data,
       dataAccessors,
-      fieldAccessors,
+      fieldAccessors: {
+        data: dataField,
+      },
       layerDomain,
       layerOrdinal,
       orientation,
       scales,
-      selection,
       style,
       stacked,
     } = this.props;
@@ -49,12 +83,6 @@ export default class MultiBars extends React.PureComponent {
       value: valueField,
       stack: stackField,
     } = dataAccessors;
-
-    const {
-      color: colorField,
-      data: dataField,
-      key: keyField
-    } = fieldAccessors;
 
     // If stacked bar chart, the data must be transformed using d3.stack() function.
     const plotData = stacked
@@ -105,28 +133,7 @@ export default class MultiBars extends React.PureComponent {
         clipPath={clipPathId && `url(#${clipPathId})`}
         style={this.combineStyles(style, data)}
       >
-        {
-          map(plotData, (datum) => {
-            const key = propResolver(datum, keyField);
-            const values = stacked ? datum : propResolver(datum, dataField);
-            const color = colorScale(colorField ? propResolver(datum, colorField) : key);
-            const outerOrdinal = isVertical(orientation) ? scales.x : scales.y;
-            const translate = outerOrdinal(key);
-
-            return (
-              <Bars
-                className={barsClassName}
-                data={values}
-                fill={color}
-                key={`bars:${key}`}
-                selection={this.castSelectionAsArray(selection)}
-                style={barsStyle}
-                categoryTranslate={translate}
-                {...childProps}
-              />
-            );
-          })
-        }
+        {map(plotData, this.renderBars.bind(this, childProps))}
       </g>
     );
   }
