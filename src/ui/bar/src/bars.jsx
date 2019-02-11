@@ -195,7 +195,7 @@ export default class Bars extends React.PureComponent {
         transform={`translate(
           ${isVertical(orientation) ? categoryTranslate : 0},
           ${isVertical(orientation) ? 0 : categoryTranslate}
-          )`}
+        )`}
       >
         {map(sortedData, this.renderBar.bind(this, childProps, linear, ordinal))}
       </g>
