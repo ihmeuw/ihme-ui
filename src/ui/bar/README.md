@@ -15,7 +15,7 @@ Property | Required | Type(s) | Defaults | Description
 `className` |  | object |  | className applied to outermost wrapping `<g>`
 `clipPathId` |  | string |  |  * If a clip path is applied to a container element (e.g., an `<AxisChart />`), clip all children of `<MultiBars />` to that container by passing in the clip path URL id.
 `colorScale` |  | func |  | If provided and `dataAccessors.fill` is undefined, determines the color of bars.
-`data` | true | array of objects |  | Array of objects, e.g. [ {location: 'USA',values: []}, {location: 'Canada', values: []} ].
+`data` | true | array of objects |  | Array of objects, each of which is passed as prop `datum` to a `Bar` component.
 `dataAccessors` | true | object |  | Accessors on datum objects<br />dataAccessors description: {Object}<br /> - `fill`: property on datum to provide fill (will be passed to `props.colorScale`)<br /> - `key`: unique dimension of datum (required)<br /> - `stack`: property on datum to position bars svg element rect in x-direction<br /> - `value`: property on datum to position bars svg element rect in y-direction<br /> - `layer`: property on datum to position bars svg element rect in categorical format. (grouped/stacked) <br />
 `fieldAccessors` |  | object |  | Accessors for objects within `props.data`<br />fieldAccessors description: {Object}<br /> - `color`: (optional) color data as input to color scale<br /> - `data`: data provided to child components. default: `values`<br /> - `key`: unique key to apply to child components. used as input to color scale if color field is not specified. default: `key`
 `focus` |  | object |  | The datum object corresponding to the `<Bar />` currently focused.
@@ -47,7 +47,7 @@ Property | Required | Type(s) | Defaults | Description
 `className` |  | object |  | Class name applied to svg element rect.
 `clipPathId` |  | string |  |  * If a clip path is applied to a container element (e.g., an `<AxisChart />`), clip all children of `<MultiBars />` to that container by passing in the clip path URL id.
 `colorScale` |  | func |  | If provided and `dataAccessors.fill` is undefined, determines the color of bars.
-`data` | true | array of objects |  | Array of objects, e.g. [ {location: 'USA',values: []}, {location: 'Canada', values: []} ].
+`data` | true | array of objects |  | Array of objects, each of which is passed as prop `datum` to a `Bar` component.
 `dataAccessors` | true | object |  | Accessors on datum objects<br />dataAccessors description: {Object}<br /> - `fill`: property on datum to provide fill (will be passed to `props.colorScale`)<br /> - `key`: unique dimension of datum (required)<br /> - `stack`: property on datum to position bars svg element rect in x-direction<br /> - `value`: property on datum to position bars svg element rect in y-direction<br /> - `layer`: property on datum to position bars svg element rect in categorical format. (grouped/stacked) <br />
 `fill` |  | string |  |  Fill color for svg element rect.
 `focus` |  | object |  | The datum object corresponding to the `<Bar />` currently focused.
@@ -77,7 +77,7 @@ Property | Required | Type(s) | Defaults | Description
 :---    |:---      |:---     |:---      |:---
 `className` |  | object |  | Class name applied to svg element rect.
 `clipPathId` |  | string |  | If a clip path is applied to a container element (e.g., an `<AxisChart />`)  clip this path to that container by passing in the clip path URL id.
-`datum` |  | object |  | Datum object corresponding to svg element rect ("bound" data, in the language in D3)
+`datum` |  | object |  | Datum object corresponding to the bar. The component makes no assumptions about the shape of this object. It's only used as a parameter to client-supplied callbacks, like `onClick` and the function form of `style`.
 `fill` |  | string |  |  Fill color for svg element rect.
 `focused` |  | boolean |  | Whether svg element rect is selected.
 `focusedClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied if svg element rect has focus.
