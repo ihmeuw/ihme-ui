@@ -265,6 +265,12 @@ class App extends React.Component {
             onMouseMove={this.onMouseMove}
             onMouseOver={this.onMouseOver}
             orientation="horizontal"
+            padding={{
+              top: 20,
+              right: 20,
+              bottom: 50,
+              left: 60,
+            }}
             scaleAccessors={{
               yScale: "band",
               xScale: "linear",
@@ -300,6 +306,12 @@ class App extends React.Component {
             onMouseMove={this.onMouseMove}
             onMouseOver={this.onMouseOver}
             orientation="horizontal"
+            padding={{
+              top: 20,
+              right: 20,
+              bottom: 50,
+              left: 60,
+            }}
             scaleAccessors={{
               yScale: "band",
               xScale: "linear",
@@ -416,6 +428,12 @@ class App extends React.Component {
             onMouseMove={this.onMouseMove}
             onMouseOver={this.onMouseOver}
             orientation="horizontal"
+            padding={{
+              top: 20,
+              right: 20,
+              bottom: 50,
+              left: 80,
+            }}
             scaleAccessors={{
               yScale: "band",
               xScale: "linear",
@@ -453,6 +471,12 @@ class App extends React.Component {
             onMouseMove={this.onMouseMove}
             onMouseOver={this.onMouseOver}
             orientation="horizontal"
+            padding={{
+              top: 20,
+              right: 20,
+              bottom: 50,
+              left: 80,
+            }}
             scaleAccessors={{
               yScale: "band",
               xScale: "linear",
@@ -500,6 +524,12 @@ class App extends React.Component {
             onMouseMove={this.onMouseMove}
             onMouseOver={this.onMouseOver}
             orientation="vertical"
+            padding={{
+              top: 20,
+              right: 20,
+              bottom: 40,
+              left: 70,
+            }}
             scaleAccessors={{
               xScale: "band",
               yScale: "linear",
@@ -544,6 +574,12 @@ class App extends React.Component {
             onMouseMove={this.onMouseMove}
             onMouseOver={this.onMouseOver}
             orientation="vertical"
+            padding={{
+              top: 20,
+              right: 20,
+              bottom: 40,
+              left: 70,
+            }}
             scaleAccessors={{
               xScale: "band",
               yScale: "linear",
@@ -592,6 +628,12 @@ class App extends React.Component {
             onMouseMove={this.onMouseMove}
             onMouseOver={this.onMouseOver}
             orientation="horizontal"
+            padding={{
+              top: 20,
+              right: 20,
+              bottom: 50,
+              left: 80,
+            }}
             scaleAccessors={{
               xScale: "linear",
               yScale: "band",
@@ -636,6 +678,12 @@ class App extends React.Component {
             onMouseMove={this.onMouseMove}
             onMouseOver={this.onMouseOver}
             orientation="horizontal"
+            padding={{
+              top: 20,
+              right: 20,
+              bottom: 50,
+              left: 80,
+            }}
             scaleAccessors={{
               xScale: "linear",
               yScale: "band",
