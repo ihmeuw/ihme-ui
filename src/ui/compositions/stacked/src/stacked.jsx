@@ -83,6 +83,7 @@ export default class StackedBarChart extends React.PureComponent {
       onMouseLeave,
       onMouseMove,
       orientation,
+      padding,
       scaleAccessors,
       type,
     } = this.props;
@@ -91,6 +92,7 @@ export default class StackedBarChart extends React.PureComponent {
       <div className={classNames(styles.chart, chartStyle)}>
         <ResponsiveContainer>
           <AxisChart
+            padding={padding}
             xDomain={scaleAccessors.xDomain}
             yDomain={scaleAccessors.yDomain}
             xScaleType={scaleAccessors.xScale}
@@ -98,9 +100,11 @@ export default class StackedBarChart extends React.PureComponent {
           >
             <XAxis
               label={labelAccessors.xLabel ? labelAccessors.xLabel : 'X Axis'}
+              padding={padding}
             />
             <YAxis
               label={labelAccessors.yLabel ? labelAccessors.yLabel : 'Y Axis'}
+              padding={padding}
             />
             <MultiBars
               colorScale={colorScale}
@@ -324,6 +328,16 @@ StackedBarChart.propTypes = {
    * Defaults to vertical, but option for horizontal orientation supported.
    */
   orientation: PropTypes.oneOf(['Horizontal', 'horizontal', 'Vertical', 'vertical']),
+
+  /**
+   * padding around the chart contents
+   */
+  padding: PropTypes.shape({
+    top: PropTypes.number,
+    bottom: PropTypes.number,
+    right: PropTypes.number,
+    left: PropTypes.number,
+  }),
 
   /**
    * Accessors to scales properties

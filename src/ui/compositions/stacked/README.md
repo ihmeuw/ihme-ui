@@ -31,6 +31,7 @@ Property | Required | Type(s) | Defaults | Description
 `onMouseLeave` |  | func |  | event handler passed to both choropleth and choropleth legend;<br />signature: (SyntheticEvent, datum, Path) => {...}
 `onMouseMove` |  | func |  | event handler passed to both choropleth and choropleth legend;<br />signature: (SyntheticEvent, datum, Path) => {...}
 `onMouseOver` |  | func |  | event handler passed to both choropleth and choropleth legend;<br />signature: (SyntheticEvent, datum, Path) => {...}
+`padding` |  | object | {<br />  top: 20,<br />  right: 20,<br />  bottom: 30,<br />  left: 50,<br />} | padding around the chart contents
 `orientation` |  | string | vertical | Orientation in which bars should be created. <br /> Defaults to vertical, but option for horizontal orientation supported
 `scaleAccessors` |  | object |  | Accessors on scales properties<br />scaleAccessors description: {Object}<br /> - `xDomain`: property used to access the xDomain of the scales object<br /> - `yDomain`: property used to access the yDomain of the scales object<br /> - `xScale`: property used to access the xScale  of the scales object<br /> - `yScale`: property used to access the yScale of the scales object
 `style` |  | object |  | inline styles applied to outermost wrapping div
