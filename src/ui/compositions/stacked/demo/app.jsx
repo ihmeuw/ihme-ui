@@ -2,16 +2,16 @@ import React from 'react';
 import { schemeCategory10, scaleOrdinal } from 'd3';
 import ReactDOM from 'react-dom';
 import bindAll from 'lodash/bindAll';
-import xor from 'lodash/xor';
+import groupBy from 'lodash/groupBy';
+import map from 'lodash/map';
 import maxBy from 'lodash/maxBy';
 import minBy from 'lodash/minBy';
-import map from 'lodash/map';
 import uniqBy from 'lodash/uniqBy';
+import xor from 'lodash/xor';
 
 import StackedBarChart from './../../stacked/src/stacked';
 
 import { dataGenerator } from '../../../../utils';
-import groupBy from "lodash/groupBy";
 
 const yearField = 'year_id';
 const populationField = 'population';
