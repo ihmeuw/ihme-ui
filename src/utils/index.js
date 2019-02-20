@@ -1,120 +1,17 @@
-export {
-  animationProcessorFactory,
-  animationStartFactory,
-  getMethodIfExists,
-} from './animate';
-
-export {
-  linspace,
-  takeSkipping,
-} from './array';
-
-export {
-  isDefault,
-  isVertical,
-  stackedDataArray,
-  getRenderingProps,
-  setBandProps,
-  getXPosition,
-  getXPositionStack,
-  getXValue,
-  getYPosition,
-  getYPositionStack,
-  getHeight,
-  getHeightStack,
-  getWidth,
-  getWidthStack,
-} from './bar';
-
-export {
-  colorSteps,
-  baseColorScale,
-  getRandomColor,
-} from './colors';
-
-export {
-  dataGenerator,
-} from './data';
-
-export {
-  percentOfRange,
-  numFromPercent,
-  domainFromPercent,
-  isWithinRange,
-  ensureWithinRange,
-} from './domain';
-
-export {
-  eventHandleWrapper,
-} from './events';
-
-export {
-  calcCenterPoint,
-  calcScale,
-  calcTranslate,
-  classifyMesh,
-  computeBounds,
-  concatAndComputeGeoJSONBounds,
-  concatGeoJSON,
-  concatTopoJSON,
-  extractGeoJSON,
-} from './geo';
-
-export {
-  Float,
-  numberFormat,
-} from './numbers';
-
-export {
-  memoizeByLastCall,
-  propResolver,
-  quickMerge,
-  shallowEqual,
-} from './objects';
-
-export {
-  AnimatableValue,
-  AnimateEvents,
-  AnimateMethod,
-  AnimateProp,
-  AnimateStart,
-  AnimateTiming,
-  CommonPropTypes,
-  CommonDefaultProps,
-  atLeastOneOfProp,
-  exactlyOneOfProp,
-  propsChanged,
-  stateFromPropUpdates,
-  updateFunc,
-  applyFuncToProps,
-} from './props';
-
-export {
-  shouldPureComponentUpdate,
-} from './react';
-
-export {
-  clampedScale,
-  domainToRange,
-  getScale,
-  getScaleTypes,
-  rangeToDomain,
-} from './scale';
-
-export {
-  getShape,
-  shapeTypes,
-} from './shape';
-
-export {
-  getRenderedStringWidth,
-} from './strings';
-
-export {
-  combineStyles,
-} from './style';
-
-export {
-  getBackgroundColor,
-} from './window';
-
+export * from './animate';
+export * from './array';
+export * from './bar';
+export * from './colors';
+export * from './data';
+export * from './domain';
+export * from './events';
+export * from './geo';
+export * from './numbers';
+export * from './objects';
+export * from './props';
+export * from './react';
+export * from './scale';
+export * from './shape';
+export * from './strings';
+export * from './style';
+export * from './window';
