@@ -1,9 +1,9 @@
 import ChoroplethLegend from './choropleth-legend';
 import Map from './map';
-import Stacked from './stacked';
+import BarChart from './bar-chart';
 
 export {
   ChoroplethLegend,
   Map,
-  Stacked,
+  BarChart,
 };

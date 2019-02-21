@@ -15,29 +15,29 @@ import {
 } from '../../../../utils';
 
 import styles from './style.css';
-import AxisChart from './../../../axis-chart';
-import { XAxis, YAxis } from './../../../axis';
+import AxisChart from '../../../axis-chart';
+import { XAxis, YAxis } from '../../../axis';
 import {
   Bars,
   GroupedBars,
   StackedBars,
 } from '../../../bar';
 import ResponsiveContainer from '../../../responsive-container';
-import Legend from './../../../legend';
+import Legend from '../../../legend';
 
 const FOCUSED_STYLE = {
   stroke: '#000',
   strokeWidth: 2,
 };
 
-export default class StackedBarChart extends React.PureComponent {
+export default class BarChart extends React.PureComponent {
   constructor(props) {
     super(props);
 
     const initialState = {
       selectedItems: [],
     };
-    this.state = stateFromPropUpdates(StackedBarChart.propUpdates, {}, props, initialState);
+    this.state = stateFromPropUpdates(BarChart.propUpdates, {}, props, initialState);
     this.computeDataMax = memoizeByLastCall(computeDataMax);
     this.computeStackMax = memoizeByLastCall(computeStackMax);
 
@@ -48,7 +48,7 @@ export default class StackedBarChart extends React.PureComponent {
 
   componentWillReceiveProps(nextProps) {
     this.setState(
-      stateFromPropUpdates(StackedBarChart.propUpdates, this.props, nextProps, this.state)
+      stateFromPropUpdates(BarChart.propUpdates, this.props, nextProps, this.state)
     );
   }
 
@@ -224,7 +224,7 @@ export default class StackedBarChart extends React.PureComponent {
   }
 }
 
-StackedBarChart.propTypes = {
+BarChart.propTypes = {
   /**
    * Ordinal scaleBand align property. Sets the alignment of `<Bars />`s to the to the
    * specified value which must be in the range [0, 1].
@@ -423,7 +423,7 @@ StackedBarChart.propTypes = {
   type: PropTypes.oneOf(['normal', 'stacked', 'grouped']),
 };
 
-StackedBarChart.defaultProps = {
+BarChart.defaultProps = {
   orientation: 'vertical',
   displayLegend: false,
   type: 'normal',

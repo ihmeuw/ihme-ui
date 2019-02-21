@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import bindAll from 'lodash/bindAll';
 import xor from 'lodash/xor';
 
-import StackedBarChart from './../../stacked/src/stacked';
+import BarChart from '../src/bar-chart';
 
 import { dataGenerator } from '../../../../utils';
 
@@ -136,7 +136,7 @@ class App extends React.Component {
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <section>
           <h3>Normal Bar Chart Vertical Orientation</h3>
-          <StackedBarChart
+          <BarChart
             categories={years}
             chartStyle={STYLE}
             data={brazilData}
@@ -161,7 +161,7 @@ class App extends React.Component {
 
         <section>
           <h3>Normal Bar Chart Horizontal Orientation</h3>
-          <StackedBarChart
+          <BarChart
             categories={years}
             chartStyle={STYLE}
             data={brazilData}
@@ -191,7 +191,7 @@ class App extends React.Component {
 
         <section>
           <h3>Grouped Bar Chart Vertical Orientation</h3>
-          <StackedBarChart
+          <BarChart
             categories={locations}
             subcategories={years}
             data={data}
@@ -221,7 +221,7 @@ class App extends React.Component {
 
         <section>
           <h3>Grouped Bar Chart Horizontal Orientation</h3>
-          <StackedBarChart
+          <BarChart
             categories={locations}
             subcategories={years}
             data={data}
@@ -257,7 +257,7 @@ class App extends React.Component {
 
         <section>
           <h3>Stacked Bar Chart Vertical Orientation with Legend</h3>
-          <StackedBarChart
+          <BarChart
             chartStyle={STYLE}
             data={data}
             dataAccessors={{
@@ -299,7 +299,7 @@ class App extends React.Component {
 
         <section>
           <h3>Stacked Horizontal Bar Chart with Legend</h3>
-          <StackedBarChart
+          <BarChart
             categories={locations}
             subcategories={years}
             chartStyle={STYLE}

@@ -9,13 +9,13 @@ import minBy from 'lodash/minBy';
 import map from 'lodash/map';
 import uniqBy from 'lodash/uniqBy';
 import noop from 'lodash/noop';
-import StackedBarChart from './../src/stacked';
-import { Legend } from './../../../';
+import BarChart from '../src/bar-chart';
+import { Legend } from '../../..';
 import { dataGenerator } from '../../../../utils';
 
 chai.use(chaiEnzyme());
 
-describe('<StackedBarChart />', () => {
+describe('<BarChart />', () => {
   const yearField = 'year_id';
   const populationField = 'population';
   const locationField = 'location';
@@ -106,7 +106,7 @@ describe('<StackedBarChart />', () => {
   ];
 
   const component = (
-    <StackedBarChart
+    <BarChart
       data={locationData}
       dataAccessors={{
         fill: yearField,
