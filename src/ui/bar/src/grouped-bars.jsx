@@ -22,14 +22,14 @@ import {
 import Bar from './bar';
 
 /**
- * `import { Bars } from 'ihme-ui'`
+ * `import { GroupedBars } from 'ihme-ui'`
  */
-export default class Bars extends React.PureComponent {
+export default class GroupedBars extends React.PureComponent {
   constructor(props) {
     super(props);
 
     this.combineStyles = memoizeByLastCall(combineStyles);
-    this.state = stateFromPropUpdates(Bars.propUpdates, {}, props, {});
+    this.state = stateFromPropUpdates(GroupedBars.propUpdates, {}, props, {});
   }
 
   getDomainScale() {
@@ -83,11 +83,17 @@ export default class Bars extends React.PureComponent {
 
   render() {
     const {
+      bandPaddingGroup,
       className,
       clipPathId,
       colorScale,
       data,
-      dataAccessors,
+      dataAccessors: {
+        fill: fillAccessor,
+        category: groupAccessor,
+        subcategory: subgroupAccessor,
+        value: valueAccessor,
+      },
       fill,
       focus,
       height,
@@ -96,6 +102,7 @@ export default class Bars extends React.PureComponent {
       rectStyle,
       selection,
       style,
+      subcategories: subgroups,
     } = this.props;
 
     const childProps = pick(this.props, [
@@ -112,7 +119,16 @@ export default class Bars extends React.PureComponent {
     const vertical = isVertical(orientation);
     const domainScale = this.getDomainScale();
     const rangeScale = this.getRangeScale();
-    const bandwidth = domainScale.bandwidth();
+    const totalBandwidth = domainScale.bandwidth();
+    const bandPaddingPx = bandPaddingGroup * totalBandwidth;
+    const bandwidth = (totalBandwidth - bandPaddingPx * (subgroups.length - 1)) / subgroups.length;
+
+    function getDomainOffset(group, subgroup) {
+      const groupOffset = domainScale(group);
+      const subgroupIndex = subgroups.indexOf(subgroup);
+      const memberOffset = bandwidth * subgroupIndex + bandPaddingPx * subgroupIndex;
+      return groupOffset + memberOffset;
+    }
 
     return (
       <g
@@ -121,21 +137,22 @@ export default class Bars extends React.PureComponent {
         style={this.combineStyles(style, data)}
       >
         {data.map((datum) => {
-          const fillValue = propResolver(datum, dataAccessors.fill);
-          const category = propResolver(datum, dataAccessors.category);
-          const value = propResolver(datum, dataAccessors.value);
+          const fillValue = propResolver(datum, fillAccessor);
+          const group = propResolver(datum, groupAccessor);
+          const subgroup = propResolver(datum, subgroupAccessor);
+          const value = propResolver(datum, valueAccessor);
 
           /* eslint-disable no-multi-spaces */
-          const x         = vertical ? domainScale(category) : 0;
-          const y         = vertical ? rangeScale(value)     : domainScale(category);
-          const barHeight = vertical ? height - y            : bandwidth;
-          const barWidth  = vertical ? bandwidth             : rangeScale(value);
+          const x = vertical ? getDomainOffset(group, subgroup) : 0;
+          const y = vertical ? rangeScale(value)                : getDomainOffset(group, subgroup);
+          const barHeight = vertical ? height - y : bandwidth;
+          const barWidth  = vertical ? bandwidth  : rangeScale(value);
           /* eslint-enable no-multi-space */
 
           return (
             <Bar
               className={rectClassName}
-              key={category}
+              key={`${group}:${subgroup}`}
               datum={datum}
               x={x}
               y={y}
@@ -154,9 +171,9 @@ export default class Bars extends React.PureComponent {
   }
 }
 
-Bars.propTypes = {
+GroupedBars.propTypes = {
   /**
-   * Ordinal scaleBand align property. Sets the alignment of `<Bars />`s to the
+   * Ordinal scaleBand align property. Sets the alignment of `<GroupedBars />`s to the
    * specified value which must be in the range [0, 1].
    * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
    */
@@ -164,29 +181,26 @@ Bars.propTypes = {
 
   /**
    * Ordinal scaleBand padding property. A convenience method for setting the inner and
-   * outer padding of `<Bars />`s to the same padding value
+   * outer padding of `<GroupedBars />`s to the same padding value
    * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
    */
   bandPadding: PropTypes.number,
 
   /**
-   * Ordinal scaleBand paddingInner property. Sets the inner padding of `<Bars />`s to the
+   * Ordinal scaleBand paddingInner property. Sets the inner padding of `<GroupedBars />`s to the
    * specified value which must be in the range [0, 1].
    * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
    */
   bandPaddingInner: PropTypes.number,
 
   /**
-   * Ordinal scaleBand paddingOuter property. Sets the outer padding of `<Bars />`s to the
+   * Ordinal scaleBand paddingOuter property. Sets the outer padding of `<GroupedBars />`s to the
    * specified value which must be in the range [0, 1].
    * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
    */
   bandPaddingOuter: PropTypes.number,
 
-  categories: PropTypes.arrayOf(PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-  ])).isRequired,
+  bandPaddingGroup: PropTypes.number,
 
   /**
    * className applied to outermost wrapping `<g>`.
@@ -195,7 +209,7 @@ Bars.propTypes = {
 
   /**
    * If a clip path is applied to a container element (e.g., an `<AxisChart />`),
-   * clip all children of `<Bars />` to that container by passing in the clip path URL id.
+   * clip all children of `<GroupedBars />` to that container by passing in the clip path URL id.
    */
   clipPathId: PropTypes.string,
 
@@ -203,6 +217,16 @@ Bars.propTypes = {
    * If provided will determine color of rendered `<Bar />`s
    */
   colorScale: PropTypes.func,
+
+  categories: PropTypes.arrayOf(PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ])).isRequired,
+
+  subcategories: PropTypes.arrayOf(PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ])).isRequired,
 
   /**
    * Array of datum objects
@@ -326,12 +350,13 @@ Bars.propTypes = {
   style: CommonPropTypes.style,
 };
 
-Bars.defaultProps = {
+GroupedBars.defaultProps = {
   fill: 'steelblue',
   onClick: CommonDefaultProps.noop,
   onMouseLeave: CommonDefaultProps.noop,
   onMouseMove: CommonDefaultProps.noop,
   onMouseOver: CommonDefaultProps.noop,
   bandPadding: 0.05,
+  bandPaddingGroup: 0.01,
   orientation: 'vertical',
 };

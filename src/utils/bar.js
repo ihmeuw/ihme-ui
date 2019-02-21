@@ -1,4 +1,7 @@
-import { stack } from 'd3';
+import { scaleLinear, scaleBand } from 'd3';
+import keyBy from 'lodash/keyBy';
+import values from 'lodash/values';
+
 import { propResolver } from './objects';
 
 /**
@@ -11,242 +14,116 @@ export function isVertical(orientation) {
   return (orientation.toLowerCase() === 'vertical');
 }
 
-/**
- * Determines the type of the bars relative to the default orientation
- * of string "default".
- * @param type : A string that represents the type of the chart
- * @returns {boolean} : Returns whether the given argument is default
- */
-export function isDefault(type) {
-  return (type.toLowerCase() === 'default');
+export function computeDomainScale(categories, orientation, spaceAvailable) {
+  return scaleBand()
+    .domain(categories)
+    .range(isVertical(orientation) ? [0, spaceAvailable] : [spaceAvailable, 0]);
+}
+
+export function computeRangeScale(max, orientation, spaceAvailable) {
+  return scaleLinear()
+    .domain([0, max])
+    .range(isVertical(orientation) ? [spaceAvailable, 0] : [0, spaceAvailable]);
+}
+
+export function computeStackMax(data, stacks, stackAccessor, valueAccessor) {
+  // Iterate through the data, creating an object mapping stack name to the max value for the stack.
+  const maxPerStack = data.reduce((acc, datum) => {
+    const stack = propResolver(datum, stackAccessor);
+    const value = propResolver(datum, valueAccessor);
+    // If the key exists on the accumulator, add the current value to its value.
+    // Otherwise add the key, initializing its value with the current value.
+    /* eslint-disable no-param-reassign */
+    if (stack in acc) {
+      acc[stack] += value;
+    } else {
+      acc[stack] = value;
+    }
+    /* eslint-enable no-param-reassign */
+    return acc;
+  }, {});
+
+  // Return the max of the biggest stack.
+  return values(maxPerStack).reduce((prevMax, currMax) => Math.max(prevMax, currMax), 0);
+}
+
+export function computeStackDatumKey(stack, layer) {
+  return `${stack}:${layer}`;
 }
 
 /**
- * Converts the data object into the d3 preferred stacked shape in order to position the bars
- * within a stacked bar chart.
- * @param collection : Data collection used to convert into a stacked shape
- * @param layerField : Represents the subcategory of the stack field
- * @param valueField : Represents the values typically plotted against
- * @param stackField : Represents the category in which the data should be plotted against
- * @param dataField : Represents the field to access the data object within the obj object
- * @param layerDomain : Represents the domain of the subcategory of the stack field
- * @returns {object} Returns an object that is the d3 preferred stacked shape
+ * Computes the spatial offsets (start, end) for each bar in a stacked bar chart
+ *
+ * @param {datum[]} data - Array of datum objects, each of which must contain fields denoting the
+ *   stack, layer, and value.
+ * @param {string[]|number[]} stackDomain - names of the categories represented by each stack
+ * @param {string[]|number[]} layerDomain - names of the categories represented by each layer
+ * @param {string|number} stackField - property name of each datum object denoting the stack
+ * @param {string|number} layerField - property name on each datum object denoting the layer
+ * @param {number} valueField - property name on each datum object denoting the value
+ *
+ * @returns {object} - a mapping of keys in the form `${stack}:${layer}` to two-element arrays
+ *   in the form `[start, end]` denoting the spatial offsets for each bar
  */
-export function stackedDataArray(
-  collection,
+export function computeStackOffsets(
+  data,
+  stackDomain,
+  layerDomain,
+  stackField,
   layerField,
   valueField,
-  stackField,
-  dataField,
-  layerDomain
 ) {
-  const categoricalData = collection.map((data, index) => {
-    const dataLayers = data[dataField].reduce((accum, datum) => {
-      const layerName = datum[layerField];
-      const layerValue = datum[valueField];
-      return {
-        ...accum,
-        [layerName]: layerValue,
-      };
-    }, {});
+  // We create an object mapping keys `${stack}:${layer}` to each datum object.
+  // That allows us quick lookups to retrieve the value of each bar.
+  const dataByStackAndLayer = keyBy(
+    data,
+    datum => computeStackDatumKey(datum[stackField], datum[layerField]),
+  );
 
-    return {
-      id: index,
-      [stackField]: data[stackField],
-      ...dataLayers,
-    };
-  });
+  // Now we create an object mapping keys `${stack}:${layer}`, the same as in `dataByStackAndLayer`,
+  // to the spatial offsets [start, end] for each bar. It's important that we traverse each stack in
+  // the same order, so that the ordering of layers is consistent.
+  const offsetsByStackAndLayer = Object.create(null);
 
-  return stack().keys(layerDomain)(categoricalData);
+  // traverse the stacks
+  for (const stack of stackDomain) {
+    // In each stack, we keep track of where the previous layer ended.
+    // This will be the start of the next layer.
+    let prevEnd = 0;
+
+    // traverse the layers in a stack
+    for (const layer of layerDomain) {
+      const key = computeStackDatumKey(stack, layer);
+      const datum = dataByStackAndLayer[key];
+      const value = datum[valueField];
+      const start = prevEnd;
+      const end = start + value;
+
+      // store the starting and ending offsets for the current bar
+      offsetsByStackAndLayer[key] = [start, end];
+
+      // store the ending offset for use in the next iteration
+      prevEnd = end;
+    }
+  }
+
+  return offsetsByStackAndLayer;
 }
 
 /**
- * Sets the alignment and band padding for the given chart given the particular arguments
- * @param scale : Represents the ordinal scale for the chart
+ * Adjusts the domain scaling function with alignment and band padding
+ *
+ * @param scale : a function that computes the bar's position on the domain axis
  * @param align : Represents the alignment properties for the ordinal scale bandwidth
- * @param bandPadding : Represents the bandPadding property for the ordinal scale bandwidth
  * @param bandPaddingInner : Represents the inner band padding property for the ordinal scale bandwidth
  * @param bandPaddingOuter : Represents the outter band padding property for the ordinal scale bandwidth
  * @returns {function} : Returns a function that represents the ordinal scale for chart
  */
-export function setBandProps(scale, align, bandPadding, bandPaddingInner, bandPaddingOuter) {
-  if (bandPaddingOuter) {
-    scale.paddingOuter(bandPaddingOuter);
-  } else if (bandPaddingInner) {
-    scale.paddingInner(bandPaddingInner);
-  } else {
-    scale.padding(bandPadding);
-  }
+export function adjustDomainScale(scale, align, bandPaddingInner, bandPaddingOuter) {
+  scale.paddingInner(bandPaddingInner);
+  scale.paddingOuter(bandPaddingOuter);
   if (align) {
     scale.align(align);
   }
   return scale;
-}
-
-/**
- * Returns the x position used to render the svg rect element of a normal and grouped bar chart
- * @param grouped : Boolean that represents whether the chart is grouped
- * @param layerOrdinal : Ordinal scale for the sub-categorical data within a grouped/stacked bar chart
- * @param ordinal : Ordinal scale for the categorical data with a grouped/stacked bar chart
- * @param orientation : String that represents the orientation of the chart
- * @param xValue : Value that corresponds to the X Axis used to calculate positioning from scales
- * @returns {number} : Value that represents the x position for the svg rect element
- */
-export function getXPosition(grouped, layerOrdinal, ordinal, orientation, xValue) {
-  if (!isVertical(orientation)) {
-    return 0;
-  }
-  if (grouped) {
-    return layerOrdinal(xValue);
-  }
-  return ordinal(xValue);
-}
-
-/**
- * Returns the x position used to render the svg rect element of a stacked bar chart
- * @param datum : Object that represents the data used to render the bar chart
- * @param linear : Linear scale for the categorical data with a grouped/stacked bar chart
- * @param ordinal : Ordinal scale for the categorical data with a grouped/stacked bar chart
- * @param orientation : String that represents the orientation of the chart
- * @param xValue : Value that corresponds to the X Axis used to calculate positioning from scales
- * @returns {number} : Value that represents the x position for the svg rect element
- */
-export function getXPositionStack(datum, linear, ordinal, orientation, xValue) {
-  if (isVertical(orientation)) {
-    return ordinal(xValue);
-  }
-  return linear(datum);
-}
-
-/**
- * Returns the y position used to render the svg rect element of a normal and grouped bar chart
- * @param grouped : Represents whether it is a grouped bar chart
- * @param layerOrdinal : Represents the scale for the subcategory of the categorical data
- * @param linear : Linear scale for the categorical data with a grouped/stacked bar chart
- * @param ordinal : Represents the scale for the categorical data
- * @param orientation : String that represents the orientation of the chart
- * @param xValue : Value that corresponds to the X Axis used to calculate positioning from scales
- * @param yValue : Value that corresponds to the Y Axis used to calculate positioning from scales
- * @returns {number} : Value that represents the y position for the svg rect element
- */
-export function getYPosition(grouped, layerOrdinal, linear, ordinal, orientation, xValue, yValue) {
-  if (isVertical(orientation)) {
-    return linear(yValue);
-  }
-  if (grouped) {
-    return layerOrdinal(yValue);
-  }
-  return ordinal(xValue);
-}
-
-/**
- * Returns the x position used to render the svg rect element of a stacked bar chart
- * @param datum : Represents the datum for that corresponding bar
- * @param linear : Linear scale for the categorical data with a grouped/stacked bar chart
- * @param ordinal : Represents the scale for the categorical data
- * @param orientation : String that represents the orientation of the chart
- * @param xValue : Value that corresponds to the X Axis used to calculate positioning from scales
- * @returns {number} : Value that represents the y position for the svg rect element
- */
-export function getYPositionStack(datum, linear, ordinal, orientation, xValue) {
-  if (isVertical(orientation)) {
-    return linear(datum);
-  }
-  return ordinal(xValue);
-}
-
-/**
- * Returns the height position used to render the svg rect element of a normal and grouped bar chart
- * @param height : Represents the height of the chart
- * @param grouped : Represents whether it is a grouped bar chart
- * @param layerOrdinal : Represents the scale for the subcategory of the categorical data
- * @param linear : Linear scale for the categorical data with a grouped/stacked bar chart
- * @param ordinal : Represents the scale for the categorical data
- * @param orientation : String that represents the orientation of the chart
- * @param yValue : Value that corresponds to the Y Axis used to calculate positioning from scales
- * @returns {number} : Value that represents the height of the svg rect element
- */
-export function getHeight(height, grouped, layerOrdinal, linear, ordinal, orientation, yValue) {
-  if (isVertical(orientation)) {
-    return height - linear(yValue);
-  }
-  if (grouped) {
-    return layerOrdinal.bandwidth();
-  }
-  return ordinal.bandwidth();
-}
-
-/**
- * Returns the height position used to render the svg rect element of a stacked bar chart
- * @param datum : Represents the datum for that corresponding bar
- * @param linear : Linear scale for the categorical data with a grouped/stacked bar chart
- * @param ordinal : Represents the scale for the categorical data
- * @param orientation : String that represents the orientation of the chart
- * @param yValue : Value that corresponds to the Y Axis used to calculate positioning from scales
- * @returns {number} : Value that represents the height of the svg rect element
- */
-export function getHeightStack(datum, linear, ordinal, orientation, yValue) {
-  if (isVertical(orientation)) {
-    return linear(datum) - linear(yValue);
-  }
-  return ordinal.bandwidth();
-}
-
-/**
- * Returns the width position used to render the svg rect element of a normal and grouped bar chart
- * @param grouped : Represents whether it is a grouped bar chart
- * @param layerOrdinal : Represents the scale for the subcategory of the categorical data
- * @param linear : Linear scale for the categorical data with a grouped/stacked bar chart
- * @param ordinal : Represents the scale for the categorical data
- * @param orientation : String that represents the orientation of the chart
- * @param xValue : Value that corresponds to the X Axis used to calculate positioning from scales
- * @param yValue : Value that corresponds to the Y Axis used to calculate positioning from scales
- * @returns {number} : Value that represents the width of the svg rect element
- */
-export function getWidth(grouped, layerOrdinal, linear, ordinal, orientation, xValue, yValue) {
-  if (!grouped) {
-    if (isVertical(orientation)) {
-      return ordinal.bandwidth();
-    }
-    return linear(yValue);
-  }
-  if (isVertical(orientation)) {
-    return layerOrdinal.bandwidth();
-  }
-  return linear(xValue);
-}
-
-/**
- * Returns the width position used to render the svg rect element of a stacked bar chart
- * @param datum : Represents the datum for that corresponding bar
- * @param linear : Linear scale for the categorical data with a grouped/stacked bar chart
- * @param ordinal : Represents the scale for the categorical data
- * @param orientation : String that represents the orientation of the chart
- * @param yValue : Value that corresponds to the Y Axis used to calculate positioning from scales
- * @returns {number} : Value that represents the width of the svg rect element
- */
-export function getWidthStack(datum, linear, ordinal, orientation, yValue) {
-  if (isVertical(orientation)) {
-    return ordinal.bandwidth();
-  }
-  return linear(yValue) - linear(datum);
-}
-
-/**
- * Function to refactor logic behind what x value is required for each type of bar chart
- * @param datum : Represents the datum for that corresponding bar
- * @param dataAccessors : Object that represents the keys used to access the datum
- * @param grouped : Represents whether it is a grouped bar chart
- * @param stacked : Represents whether it is a stacked bar chart
- * @returns {number} : Returns a number that represents the correct x value used to calculate
- *  the values used to render the svg rect element
- */
-export function getXValue(datum, dataAccessors, grouped, stacked) {
-  if (grouped) {
-    return propResolver(datum, dataAccessors.layer);
-  }
-  if (stacked) {
-    return propResolver(datum.data, dataAccessors.stack);
-  }
-  return propResolver(datum, dataAccessors.stack);
 }

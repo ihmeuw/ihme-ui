@@ -1,35 +1,35 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import isFinite from 'lodash/isFinite';
+import castArray from 'lodash/castArray';
 import isUndefined from 'lodash/isUndefined';
 import pick from 'lodash/pick';
+
+import Bar from './bar';
 
 import {
   adjustDomainScale,
   combineStyles,
-  CommonDefaultProps,
   CommonPropTypes,
-  computeDataMax,
   computeDomainScale,
   computeRangeScale,
+  computeStackDatumKey,
+  computeStackMax,
+  computeStackOffsets,
   isVertical,
   memoizeByLastCall,
   propResolver,
-  stateFromPropUpdates,
 } from '../../../utils';
 
-import Bar from './bar';
-
 /**
- * `import { Bars } from 'ihme-ui'`
+ * `import { StackedBars } from 'ihme-ui'`
  */
-export default class Bars extends React.PureComponent {
+export default class StackedBars extends React.PureComponent {
   constructor(props) {
     super(props);
 
     this.combineStyles = memoizeByLastCall(combineStyles);
-    this.state = stateFromPropUpdates(Bars.propUpdates, {}, props, {});
+    this.castSelectionAsArray = memoizeByLastCall((selection) => castArray(selection));
   }
 
   getDomainScale() {
@@ -38,19 +38,18 @@ export default class Bars extends React.PureComponent {
       bandPadding,
       bandPaddingInner,
       bandPaddingOuter,
-      categories,
+      categories: stacks,
       orientation,
       scales,
-      width,
       height,
+      width,
     } = this.props;
 
     const vertical = isVertical(orientation);
-
     const domainScale = (vertical ? scales.x : scales.y)
-      || computeDomainScale(categories, orientation, vertical ? width : height);
+      || computeDomainScale(stacks, orientation, vertical ? width : height);
 
-    // Adjusts the domain scale based on alignment and padding.
+    // Adjust the domain scale based on alignment and padding.
     return adjustDomainScale(
       domainScale,
       align,
@@ -61,8 +60,12 @@ export default class Bars extends React.PureComponent {
 
   getRangeScale() {
     const {
+      categories: stacks,
       data,
-      dataAccessors,
+      dataAccessors: {
+        category: stackAccessor,
+        value: valueAccessor,
+      },
       orientation,
       rangeMax,
       scales,
@@ -77,25 +80,33 @@ export default class Bars extends React.PureComponent {
       return scale;
     }
 
-    const max = !isUndefined(rangeMax) ? rangeMax : computeDataMax(data, dataAccessors.value);
+    const max = !isUndefined(rangeMax)
+      ? rangeMax
+      : computeStackMax(data, stacks, stackAccessor, valueAccessor);
+
     return computeRangeScale(max, orientation, vertical ? height : width);
   }
 
   render() {
     const {
+      categories: stacks,
       className,
       clipPathId,
       colorScale,
       data,
-      dataAccessors,
-      fill,
+      dataAccessors: {
+        fill: fillAccessor,
+        category: stackAccessor,
+        subcategory: layerAccessor,
+        value: valueAccessor,
+      },
       focus,
-      height,
       orientation,
       rectClassName,
       rectStyle,
       selection,
       style,
+      subcategories: layers,
     } = this.props;
 
     const childProps = pick(this.props, [
@@ -114,6 +125,16 @@ export default class Bars extends React.PureComponent {
     const rangeScale = this.getRangeScale();
     const bandwidth = domainScale.bandwidth();
 
+    // compute spatial offsets for each bar
+    const offsetMap = computeStackOffsets(
+      data,
+      stacks,
+      layers,
+      stackAccessor,
+      layerAccessor,
+      valueAccessor,
+    );
+
     return (
       <g
         className={className && classNames(className)}
@@ -121,27 +142,29 @@ export default class Bars extends React.PureComponent {
         style={this.combineStyles(style, data)}
       >
         {data.map((datum) => {
-          const fillValue = propResolver(datum, dataAccessors.fill);
-          const category = propResolver(datum, dataAccessors.category);
-          const value = propResolver(datum, dataAccessors.value);
+          const stack = propResolver(datum, stackAccessor);
+          const layer = propResolver(datum, layerAccessor);
+          const key = computeStackDatumKey(stack, layer);
+          const fillValue = propResolver(datum, fillAccessor);
+          const [start, end] = offsetMap[key];
 
           /* eslint-disable no-multi-spaces */
-          const x         = vertical ? domainScale(category) : 0;
-          const y         = vertical ? rangeScale(value)     : domainScale(category);
-          const barHeight = vertical ? height - y            : bandwidth;
-          const barWidth  = vertical ? bandwidth             : rangeScale(value);
-          /* eslint-enable no-multi-space */
+          const x         = vertical ? domainScale(stack)    : rangeScale(start);
+          const y         = vertical ? rangeScale(end)       : domainScale(stack);
+          const barHeight = vertical ? rangeScale(start) - y : bandwidth;
+          const barWidth  = vertical ? bandwidth             : rangeScale(end) - x;
+          /* eslint-enable no-multi-spaces */
 
           return (
             <Bar
               className={rectClassName}
-              key={category}
+              key={key}
               datum={datum}
               x={x}
               y={y}
               height={barHeight}
               width={barWidth}
-              fill={colorScale && (isFinite(fillValue) ? colorScale(fillValue) : fill)}
+              fill={colorScale && isFinite(fillValue) && colorScale(fillValue)}
               focused={focus === datum}
               selected={selection.includes(datum)}
               style={rectStyle}
@@ -154,9 +177,9 @@ export default class Bars extends React.PureComponent {
   }
 }
 
-Bars.propTypes = {
+StackedBars.propTypes = {
   /**
-   * Ordinal scaleBand align property. Sets the alignment of `<Bars />`s to the
+   * Ordinal scaleBand align property. Sets the alignment of `<Bars />`s to the to the
    * specified value which must be in the range [0, 1].
    * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
    */
@@ -183,11 +206,6 @@ Bars.propTypes = {
    */
   bandPaddingOuter: PropTypes.number,
 
-  categories: PropTypes.arrayOf(PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-  ])).isRequired,
-
   /**
    * className applied to outermost wrapping `<g>`.
    */
@@ -195,25 +213,46 @@ Bars.propTypes = {
 
   /**
    * If a clip path is applied to a container element (e.g., an `<AxisChart />`),
-   * clip all children of `<Bars />` to that container by passing in the clip path URL id.
+   * clip all children of `<MultiBars />` to that container by passing in the clip path URL id.
    */
   clipPathId: PropTypes.string,
 
   /**
-   * If provided will determine color of rendered `<Bar />`s
+   * If provided and `dataAccessors.fill` is undefined, determines the color of bars.
    */
   colorScale: PropTypes.func,
 
+  categories: PropTypes.arrayOf(PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ])).isRequired,
+
+  subcategories: PropTypes.arrayOf(PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ])).isRequired,
+
   /**
-   * Array of datum objects
+   *  Pixel height of bar chart.
+   */
+  height: PropTypes.number,
+
+  /**
+   *  Pixel width of bar chart.
+   */
+  width: PropTypes.number,
+
+  /**
+   *  Array of objects, e.g. [ {location: 'USA',values: []}, {location: 'Canada', values: []} ].
    */
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
 
   /**
-   * Accessors on datum objects
-   *   fill          : property on datum denoting its fill color (will be passed to `props.colorScale`)
-   *   category (req): property on datum denoting its category (the chart domain)
-   *   value:   (req): property on datum denoting its data value (the chart range)
+   * Accessors on datum objects:
+   *   fill              : property denoting fill color (will be passed to `props.colorScale`)
+   *   category (req)    : property denoting category (the chart domain)
+   *   subcategory (req) : property denoting layer (of a stack) or member (of a group)
+   *   value:   (req)    : property denoting data value (the chart range)
    *
    * Each accessor can either be a string or function. If a string, it is assumed to be the name of a
    * property on datum objects; full paths to nested properties are supported (e.g., { `x`: 'values.year', ... }).
@@ -221,14 +260,10 @@ Bars.propTypes = {
    */
   dataAccessors: PropTypes.shape({
     fill: CommonPropTypes.dataAccessor,
-    category: CommonPropTypes.dataAccessor.isRequired,
-    value: CommonPropTypes.dataAccessor.isRequired,
+    category: CommonPropTypes.dataAccessor,
+    subcategory: CommonPropTypes.dataAccessor,
+    value: CommonPropTypes.dataAccessor,
   }).isRequired,
-
-  /**
-   * If `props.colorScale` is undefined, each `<Bar />` will be given this same fill value.
-   */
-  fill: PropTypes.string,
 
   /**
    * The datum object corresponding to the `<Bar />` currently focused.
@@ -241,23 +276,13 @@ Bars.propTypes = {
   focusedClassName: CommonPropTypes.className,
 
   /**
-   * inline styles applied to focused `<Bar />`
+   * Inline styles applied to focused `<Bar />`.
    * If an object, spread into inline styles.
    * If a function, passed underlying datum corresponding to its `<Bar />`,
    * and return value is spread into inline styles;
    * signature: (datum) => obj
    */
   focusedStyle: CommonPropTypes.style,
-
-  /**
-   *  Pixel height of bar chart.
-   */
-  height: PropTypes.number,
-
-  /**
-   *  Pixel width of bar chart.
-   */
-  width: PropTypes.number,
 
   /**
    * onClick callback.
@@ -289,8 +314,6 @@ Bars.propTypes = {
    */
   orientation: PropTypes.oneOf(['horizontal', 'vertical']),
 
-  rangeMax: PropTypes.number,
-
   /**
    * className applied to each `<Bar />`
    */
@@ -304,6 +327,9 @@ Bars.propTypes = {
   /**
    * `x` and `y` scales for positioning `<Bar />`s.
    * Object with keys: `x`, and `y`.
+   *
+   * The `scales` prop is an optional low-level interface. It's designed to integrate with
+   * AxisChart, which passes `scales` to its children.
    */
   scales: PropTypes.shape({
     x: PropTypes.func,
@@ -316,22 +342,32 @@ Bars.propTypes = {
   selectedClassName: CommonPropTypes.className,
 
   /**
-   * Array of datum objects corresponding to selected `<Bar />`s
+   * inline styles applied to selected `<Bar />`s.
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<Bar />`,
+   * and return value is spread into inline styles;
+   * signature: (datum) => obj
    */
-  selection: PropTypes.array,
+  selectedStyle: CommonPropTypes.style,
 
   /**
-   * Inline styles applied to wrapping element (`<g>`) of scatter shapes
+   * Datum object or array of datum objects corresponding to selected `<Bar />`s
+   */
+  selection: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.array,
+  ]),
+
+  rangeMax: PropTypes.number,
+
+  /**
+   * inline style applied to outermost wrapping `<g>`
    */
   style: CommonPropTypes.style,
 };
 
-Bars.defaultProps = {
-  fill: 'steelblue',
-  onClick: CommonDefaultProps.noop,
-  onMouseLeave: CommonDefaultProps.noop,
-  onMouseMove: CommonDefaultProps.noop,
-  onMouseOver: CommonDefaultProps.noop,
+StackedBars.defaultProps = {
   bandPadding: 0.05,
+  colorScale: () => 'steelblue',
   orientation: 'vertical',
 };
