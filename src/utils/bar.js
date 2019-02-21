@@ -26,7 +26,7 @@ export function computeRangeScale(max, orientation, spaceAvailable) {
     .range(isVertical(orientation) ? [spaceAvailable, 0] : [0, spaceAvailable]);
 }
 
-export function computeStackMax(data, stacks, stackAccessor, valueAccessor) {
+export function computeStackMax(data, stackAccessor, valueAccessor) {
   // Iterate through the data, creating an object mapping stack name to the max value for the stack.
   const maxPerStack = data.reduce((acc, datum) => {
     const stack = propResolver(datum, stackAccessor);
