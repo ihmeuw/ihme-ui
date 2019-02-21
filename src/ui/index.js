@@ -1,10 +1,9 @@
 import Axis, { orientAxis, XAxis, YAxis } from './axis';
 import AxisChart from './axis-chart';
-import { Bar, Bars, MultiBars } from './bar';
+import { Bar, Bars, GroupedBars, StackedBars } from './bar';
 import Button from './button';
 import Choropleth from './choropleth';
 import {
-  BarChart,
   Stacked,
   ChoroplethLegend,
   Map,
@@ -37,15 +36,14 @@ export {
   AxisChart,
   Bar,
   Bars,
-  MultiBars,
   Button,
-  BarChart,
   Stacked,
   Choropleth,
   ChoroplethLegend,
   Expandable,
   ExpansionContainer,
   Group,
+  GroupedBars,
   HtmlLabel,
   Legend,
   LegendItem,
@@ -61,9 +59,10 @@ export {
   Scatter,
   Select,
   SelectOption,
-  Slider,
-  SvgText,
   Shape,
+  Slider,
+  StackedBars,
+  SvgText,
   Tooltip,
   XAxis,
   YAxis,
