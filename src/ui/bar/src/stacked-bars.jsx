@@ -46,8 +46,13 @@ export default class StackedBars extends React.PureComponent {
     } = this.props;
 
     const vertical = isVertical(orientation);
-    const domainScale = (vertical ? scales.x : scales.y)
-      || computeDomainScale(stacks, orientation, vertical ? width : height);
+
+    const scale = (vertical ? scales.x : scales.y);
+    const domainScale = scale
+      // If a scaling function was passed via the `scales` prop, we make a copy of it (to avoid mutating the original).
+      ? scale.copy()
+      // Otherwise we compute the scaling function.
+      : computeDomainScale(stacks, orientation, vertical ? width : height);
 
     // Adjust the domain scale based on alignment and padding.
     return adjustDomainScale(
@@ -76,7 +81,7 @@ export default class StackedBars extends React.PureComponent {
 
     const scale = vertical ? scales.y : scales.x;
     if (scale) {
-      return scale;
+      return scale.copy();
     }
 
     const max = !isUndefined(rangeMax)

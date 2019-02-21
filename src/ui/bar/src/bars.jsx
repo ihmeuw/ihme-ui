@@ -46,10 +46,14 @@ export default class Bars extends React.PureComponent {
 
     const vertical = isVertical(orientation);
 
-    const domainScale = (vertical ? scales.x : scales.y)
-      || computeDomainScale(categories, orientation, vertical ? width : height);
+    const scale = (vertical ? scales.x : scales.y);
+    const domainScale = scale
+      // If a scaling function was passed via the `scales` prop, we make a copy of it (to avoid mutating the original).
+      ? scale.copy()
+      // Otherwise we compute the scaling function.
+      : computeDomainScale(categories, orientation, vertical ? width : height);
 
-    // Adjusts the domain scale based on alignment and padding.
+    // Adjust the domain scale based on alignment and padding.
     return adjustDomainScale(
       domainScale,
       align,
@@ -73,7 +77,7 @@ export default class Bars extends React.PureComponent {
 
     const scale = vertical ? scales.y : scales.x;
     if (scale) {
-      return scale;
+      return scale.copy();
     }
 
     const max = !isUndefined(rangeMax) ? rangeMax : this.computeDataMax(data, dataAccessors.value);
