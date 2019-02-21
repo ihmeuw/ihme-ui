@@ -1,20 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import isUndefined from 'lodash/isUndefined';
 import pick from 'lodash/pick';
 
 import Bar from './bar';
 
 import {
-  adjustDomainScale,
   combineStyles,
   CommonPropTypes,
-  computeDomainScale,
-  computeRangeScale,
   computeStackDatumKey,
-  computeStackMax,
   computeStackOffsets,
+  getDomainScale,
+  getRangeScale,
   isVertical,
   memoizeByLastCall,
   propResolver,
@@ -28,67 +25,7 @@ export default class StackedBars extends React.PureComponent {
     super(props);
 
     this.combineStyles = memoizeByLastCall(combineStyles);
-    this.computeStackMax = memoizeByLastCall(computeStackMax);
     this.computeStackOffsets = memoizeByLastCall(computeStackOffsets);
-  }
-
-  getDomainScale() {
-    const {
-      align,
-      bandPadding,
-      bandPaddingInner,
-      bandPaddingOuter,
-      categories: stacks,
-      orientation,
-      scales,
-      height,
-      width,
-    } = this.props;
-
-    const vertical = isVertical(orientation);
-
-    const scale = (vertical ? scales.x : scales.y);
-    const domainScale = scale
-      // If a scaling function was passed via the `scales` prop, we make a copy of it (to avoid mutating the original).
-      ? scale.copy()
-      // Otherwise we compute the scaling function.
-      : computeDomainScale(stacks, orientation, vertical ? width : height);
-
-    // Adjust the domain scale based on alignment and padding.
-    return adjustDomainScale(
-      domainScale,
-      align,
-      !isUndefined(bandPaddingInner) ? bandPaddingInner : bandPadding,
-      !isUndefined(bandPaddingOuter) ? bandPaddingOuter : bandPadding,
-    );
-  }
-
-  getRangeScale() {
-    const {
-      data,
-      dataAccessors: {
-        category: stackAccessor,
-        value: valueAccessor,
-      },
-      orientation,
-      rangeMax,
-      scales,
-      height,
-      width,
-    } = this.props;
-
-    const vertical = isVertical(orientation);
-
-    const scale = vertical ? scales.y : scales.x;
-    if (scale) {
-      return scale.copy();
-    }
-
-    const max = !isUndefined(rangeMax)
-      ? rangeMax
-      : this.computeStackMax(data, stackAccessor, valueAccessor);
-
-    return computeRangeScale(max, orientation, vertical ? height : width);
   }
 
   render() {
@@ -125,8 +62,8 @@ export default class StackedBars extends React.PureComponent {
     ]);
 
     const vertical = isVertical(orientation);
-    const domainScale = this.getDomainScale();
-    const rangeScale = this.getRangeScale();
+    const domainScale = getDomainScale(this.props);
+    const rangeScale = getRangeScale({ ...this.props, stacked: true });
     const bandwidth = domainScale.bandwidth();
 
     // compute spatial offsets for each bar

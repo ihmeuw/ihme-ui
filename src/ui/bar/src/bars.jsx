@@ -2,17 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import isFinite from 'lodash/isFinite';
-import isUndefined from 'lodash/isUndefined';
 import pick from 'lodash/pick';
 
 import {
-  adjustDomainScale,
   combineStyles,
   CommonDefaultProps,
   CommonPropTypes,
-  computeDataMax,
-  computeDomainScale,
-  computeRangeScale,
+  getDomainScale,
+  getRangeScale,
   isVertical,
   memoizeByLastCall,
   propResolver,
@@ -28,60 +25,6 @@ export default class Bars extends React.PureComponent {
     super(props);
 
     this.combineStyles = memoizeByLastCall(combineStyles);
-    this.computeDataMax = memoizeByLastCall(computeDataMax);
-  }
-
-  getDomainScale() {
-    const {
-      align,
-      bandPadding,
-      bandPaddingInner,
-      bandPaddingOuter,
-      categories,
-      orientation,
-      scales,
-      width,
-      height,
-    } = this.props;
-
-    const vertical = isVertical(orientation);
-
-    const scale = (vertical ? scales.x : scales.y);
-    const domainScale = scale
-      // If a scaling function was passed via the `scales` prop, we make a copy of it (to avoid mutating the original).
-      ? scale.copy()
-      // Otherwise we compute the scaling function.
-      : computeDomainScale(categories, orientation, vertical ? width : height);
-
-    // Adjust the domain scale based on alignment and padding.
-    return adjustDomainScale(
-      domainScale,
-      align,
-      !isUndefined(bandPaddingInner) ? bandPaddingInner : bandPadding,
-      !isUndefined(bandPaddingOuter) ? bandPaddingOuter : bandPadding,
-    );
-  }
-
-  getRangeScale() {
-    const {
-      data,
-      dataAccessors,
-      orientation,
-      rangeMax,
-      scales,
-      height,
-      width,
-    } = this.props;
-
-    const vertical = isVertical(orientation);
-
-    const scale = vertical ? scales.y : scales.x;
-    if (scale) {
-      return scale.copy();
-    }
-
-    const max = !isUndefined(rangeMax) ? rangeMax : this.computeDataMax(data, dataAccessors.value);
-    return computeRangeScale(max, orientation, vertical ? height : width);
   }
 
   render() {
@@ -113,8 +56,8 @@ export default class Bars extends React.PureComponent {
     ]);
 
     const vertical = isVertical(orientation);
-    const domainScale = this.getDomainScale();
-    const rangeScale = this.getRangeScale();
+    const domainScale = getDomainScale(this.props);
+    const rangeScale = getRangeScale(this.props);
     const bandwidth = domainScale.bandwidth();
 
     return (

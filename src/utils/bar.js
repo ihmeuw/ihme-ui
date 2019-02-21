@@ -1,7 +1,9 @@
 import { scaleLinear, scaleBand } from 'd3';
 import keyBy from 'lodash/keyBy';
+import isUndefined from 'lodash/isUndefined';
 import values from 'lodash/values';
 
+import { computeDataMax } from './data';
 import { propResolver } from './objects';
 
 /**
@@ -20,10 +22,67 @@ export function computeDomainScale(categories, orientation, spaceAvailable) {
     .range(isVertical(orientation) ? [0, spaceAvailable] : [spaceAvailable, 0]);
 }
 
+export function getDomainScale({
+  align,
+  bandPadding,
+  bandPaddingInner,
+  bandPaddingOuter,
+  categories,
+  orientation,
+  scales,
+  height,
+  width,
+}) {
+  const vertical = isVertical(orientation);
+
+  const scale = (vertical ? scales.x : scales.y);
+  const domainScale = scale
+    // If a scaling function was passed via the `scales` prop, we make a copy of it (to avoid mutating the original).
+    ? scale.copy()
+    // Otherwise we compute the scaling function.
+    : computeDomainScale(categories, orientation, vertical ? width : height);
+
+  // Adjust the domain scale based on alignment and padding.
+  return adjustDomainScale(
+    domainScale,
+    align,
+    !isUndefined(bandPaddingInner) ? bandPaddingInner : bandPadding,
+    !isUndefined(bandPaddingOuter) ? bandPaddingOuter : bandPadding,
+  );
+}
+
 export function computeRangeScale(max, orientation, spaceAvailable) {
   return scaleLinear()
     .domain([0, max])
     .range(isVertical(orientation) ? [spaceAvailable, 0] : [0, spaceAvailable]);
+}
+
+export function getRangeScale({
+  data,
+  dataAccessors,
+  orientation,
+  rangeMax,
+  scales: { x: scaleX, y: scaleY },
+  height,
+  width,
+  stacked = false,
+}) {
+  const vertical = isVertical(orientation);
+
+  const scale = vertical ? scaleY : scaleX;
+  if (scale) {
+    return scale.copy();
+  }
+
+  const max = !isUndefined(rangeMax)
+    ? rangeMax
+    : (
+      stacked
+      ? computeStackMax(data, dataAccessors.category, dataAccessors.value)
+      : computeDataMax(data, dataAccessors.value)
+    );
+
+  return computeRangeScale(max, orientation, vertical ? height : width);
 }
 
 export function computeStackMax(data, stackAccessor, valueAccessor) {
