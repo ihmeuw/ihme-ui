@@ -16,7 +16,6 @@ import {
   isVertical,
   memoizeByLastCall,
   propResolver,
-  stateFromPropUpdates,
 } from '../../../utils';
 
 import Bar from './bar';
@@ -29,7 +28,6 @@ export default class Bars extends React.PureComponent {
     super(props);
 
     this.combineStyles = memoizeByLastCall(combineStyles);
-    this.state = stateFromPropUpdates(Bars.propUpdates, {}, props, {});
   }
 
   getDomainScale() {

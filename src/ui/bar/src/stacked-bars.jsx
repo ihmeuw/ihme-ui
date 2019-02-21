@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import castArray from 'lodash/castArray';
 import isUndefined from 'lodash/isUndefined';
 import pick from 'lodash/pick';
 
@@ -29,7 +28,6 @@ export default class StackedBars extends React.PureComponent {
     super(props);
 
     this.combineStyles = memoizeByLastCall(combineStyles);
-    this.castSelectionAsArray = memoizeByLastCall((selection) => castArray(selection));
   }
 
   getDomainScale() {

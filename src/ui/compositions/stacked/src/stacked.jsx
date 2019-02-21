@@ -1,14 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-
 import bindAll from 'lodash/bindAll';
-import castArray from 'lodash/castArray';
 import pick from 'lodash/pick';
 import xor from 'lodash/xor';
 
 import {
-  combineStyles,
   CommonPropTypes,
   computeDataMax,
   memoizeByLastCall,
@@ -38,8 +35,6 @@ export default class StackedBarChart extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this.combineStyles = memoizeByLastCall(combineStyles);
-    this.castSelectionAsArray = memoizeByLastCall((selection) => castArray(selection));
     const initialState = {
       selectedItems: [],
     };
