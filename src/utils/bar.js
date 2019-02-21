@@ -16,75 +16,6 @@ export function isVertical(orientation) {
   return (orientation.toLowerCase() === 'vertical');
 }
 
-export function computeDomainScale(categories, orientation, spaceAvailable) {
-  return scaleBand()
-    .domain(categories)
-    .range(isVertical(orientation) ? [0, spaceAvailable] : [spaceAvailable, 0]);
-}
-
-export function getDomainScale({
-  align,
-  bandPadding,
-  bandPaddingInner,
-  bandPaddingOuter,
-  categories,
-  orientation,
-  scales,
-  height,
-  width,
-}) {
-  const vertical = isVertical(orientation);
-
-  const scale = (vertical ? scales.x : scales.y);
-  const domainScale = scale
-    // If a scaling function was passed via the `scales` prop, we make a copy of it (to avoid mutating the original).
-    ? scale.copy()
-    // Otherwise we compute the scaling function.
-    : computeDomainScale(categories, orientation, vertical ? width : height);
-
-  // Adjust the domain scale based on alignment and padding.
-  return adjustDomainScale(
-    domainScale,
-    align,
-    !isUndefined(bandPaddingInner) ? bandPaddingInner : bandPadding,
-    !isUndefined(bandPaddingOuter) ? bandPaddingOuter : bandPadding,
-  );
-}
-
-export function computeRangeScale(max, orientation, spaceAvailable) {
-  return scaleLinear()
-    .domain([0, max])
-    .range(isVertical(orientation) ? [spaceAvailable, 0] : [0, spaceAvailable]);
-}
-
-export function getRangeScale({
-  data,
-  dataAccessors,
-  orientation,
-  rangeMax,
-  scales: { x: scaleX, y: scaleY },
-  height,
-  width,
-  stacked = false,
-}) {
-  const vertical = isVertical(orientation);
-
-  const scale = vertical ? scaleY : scaleX;
-  if (scale) {
-    return scale.copy();
-  }
-
-  const max = !isUndefined(rangeMax)
-    ? rangeMax
-    : (
-      stacked
-      ? computeStackMax(data, dataAccessors.category, dataAccessors.value)
-      : computeDataMax(data, dataAccessors.value)
-    );
-
-  return computeRangeScale(max, orientation, vertical ? height : width);
-}
-
 export function computeStackMax(data, stackAccessor, valueAccessor) {
   // Iterate through the data, creating an object mapping stack name to the max value for the stack.
   const maxPerStack = data.reduce((acc, datum) => {
@@ -169,6 +100,12 @@ export function computeStackOffsets(
   return offsetsByStackAndLayer;
 }
 
+export function computeDomainScale(categories, orientation, spaceAvailable) {
+  return scaleBand()
+    .domain(categories)
+    .range(isVertical(orientation) ? [0, spaceAvailable] : [spaceAvailable, 0]);
+}
+
 /**
  * Adjusts the domain scaling function with alignment and band padding
  *
@@ -185,4 +122,67 @@ export function adjustDomainScale(scale, align, bandPaddingInner, bandPaddingOut
     scale.align(align);
   }
   return scale;
+}
+
+export function getDomainScale({
+  align,
+  bandPadding,
+  bandPaddingInner,
+  bandPaddingOuter,
+  categories,
+  orientation,
+  scales,
+  height,
+  width,
+}) {
+  const vertical = isVertical(orientation);
+
+  const scale = (vertical ? scales.x : scales.y);
+  const domainScale = scale
+    // If a scaling function was passed via the `scales` prop, we make a copy of it (to avoid mutating the original).
+    ? scale.copy()
+    // Otherwise we compute the scaling function.
+    : computeDomainScale(categories, orientation, vertical ? width : height);
+
+  // Adjust the domain scale based on alignment and padding.
+  return adjustDomainScale(
+    domainScale,
+    align,
+    !isUndefined(bandPaddingInner) ? bandPaddingInner : bandPadding,
+    !isUndefined(bandPaddingOuter) ? bandPaddingOuter : bandPadding,
+  );
+}
+
+export function computeRangeScale(max, orientation, spaceAvailable) {
+  return scaleLinear()
+    .domain([0, max])
+    .range(isVertical(orientation) ? [spaceAvailable, 0] : [0, spaceAvailable]);
+}
+
+export function getRangeScale({
+  data,
+  dataAccessors,
+  orientation,
+  rangeMax,
+  scales: { x: scaleX, y: scaleY },
+  height,
+  width,
+  stacked = false,
+}) {
+  const vertical = isVertical(orientation);
+
+  const scale = vertical ? scaleY : scaleX;
+  if (scale) {
+    return scale.copy();
+  }
+
+  const max = !isUndefined(rangeMax)
+    ? rangeMax
+    : (
+      stacked
+      ? computeStackMax(data, dataAccessors.category, dataAccessors.value)
+      : computeDataMax(data, dataAccessors.value)
+    );
+
+  return computeRangeScale(max, orientation, vertical ? height : width);
 }
