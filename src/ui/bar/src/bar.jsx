@@ -3,14 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import assign from 'lodash/assign';
 import bindAll from 'lodash/bindAll';
-import {
-  combineStyles,
-  CommonDefaultProps,
-  CommonPropTypes,
-  memoizeByLastCall,
-  propsChanged,
-  stateFromPropUpdates,
-} from '../../../utils';
+import * as util from '../../../utils';
 
 /**
  * `import { Bar } from 'ihme-ui'`
@@ -19,8 +12,8 @@ export default class Bar extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this.combineStyles = memoizeByLastCall(combineStyles);
-    this.state = stateFromPropUpdates(Bar.propUpdates, {}, props, {});
+    this.combineStyles = util.memoizeByLastCall(util.combineStyles);
+    this.state = util.stateFromPropUpdates(Bar.propUpdates, {}, props, {});
 
     bindAll(this, [
       'onClick',
@@ -31,7 +24,7 @@ export default class Bar extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState(stateFromPropUpdates(Bar.propUpdates, this.props, nextProps, {}));
+    this.setState(util.stateFromPropUpdates(Bar.propUpdates, this.props, nextProps, {}));
   }
 
   onClick(event) {
@@ -114,6 +107,11 @@ export default class Bar extends React.PureComponent {
     );
   }
 }
+
+const {
+  CommonDefaultProps,
+  CommonPropTypes,
+} = util;
 
 Bar.propTypes = {
   /**
@@ -250,7 +248,7 @@ Bar.defaultProps = {
 Bar.propUpdates = {
   // update rect if bar prop changes
   styles: (accum, propName, prevProps, nextProps) => {
-    if (!propsChanged(prevProps, nextProps, [
+    if (!util.propsChanged(prevProps, nextProps, [
       'fill',
       'focused',
       'focusedStyle',

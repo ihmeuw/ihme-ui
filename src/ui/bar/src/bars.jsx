@@ -4,16 +4,7 @@ import classNames from 'classnames';
 import isFinite from 'lodash/isFinite';
 import pick from 'lodash/pick';
 
-import {
-  combineStyles,
-  CommonDefaultProps,
-  CommonPropTypes,
-  getDomainScale,
-  getRangeScale,
-  isVertical,
-  memoizeByLastCall,
-  propResolver,
-} from '../../../utils';
+import * as util from '../../../utils';
 
 import Bar from './bar';
 
@@ -24,7 +15,7 @@ export default class Bars extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this.combineStyles = memoizeByLastCall(combineStyles);
+    this.combineStyles = util.memoizeByLastCall(util.combineStyles);
   }
 
   render() {
@@ -55,9 +46,9 @@ export default class Bars extends React.PureComponent {
       'selectedStyle',
     ]);
 
-    const vertical = isVertical(orientation);
-    const domainScale = getDomainScale(this.props);
-    const rangeScale = getRangeScale(this.props);
+    const vertical = util.isVertical(orientation);
+    const domainScale = util.getDomainScale(this.props);
+    const rangeScale = util.getRangeScale(this.props);
     const bandwidth = domainScale.bandwidth();
 
     return (
@@ -67,9 +58,9 @@ export default class Bars extends React.PureComponent {
         style={this.combineStyles(style, data)}
       >
         {data.map((datum) => {
-          const fillValue = propResolver(datum, dataAccessors.fill);
-          const category = propResolver(datum, dataAccessors.category);
-          const value = propResolver(datum, dataAccessors.value);
+          const fillValue = util.propResolver(datum, dataAccessors.fill);
+          const category = util.propResolver(datum, dataAccessors.category);
+          const value = util.propResolver(datum, dataAccessors.value);
 
           /* eslint-disable no-multi-spaces */
           const x         = vertical ? domainScale(category) : 0;
@@ -99,6 +90,11 @@ export default class Bars extends React.PureComponent {
     );
   }
 }
+
+const {
+  CommonDefaultProps,
+  CommonPropTypes,
+} = util;
 
 Bars.propTypes = {
   /**

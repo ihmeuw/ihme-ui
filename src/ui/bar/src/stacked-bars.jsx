@@ -5,17 +5,7 @@ import pick from 'lodash/pick';
 
 import Bar from './bar';
 
-import {
-  combineStyles,
-  CommonPropTypes,
-  computeStackDatumKey,
-  computeStackOffsets,
-  getDomainScale,
-  getRangeScale,
-  isVertical,
-  memoizeByLastCall,
-  propResolver,
-} from '../../../utils';
+import * as util from '../../../utils';
 
 /**
  * `import { StackedBars } from 'ihme-ui'`
@@ -24,8 +14,8 @@ export default class StackedBars extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this.combineStyles = memoizeByLastCall(combineStyles);
-    this.computeStackOffsets = memoizeByLastCall(computeStackOffsets);
+    this.combineStyles = util.memoizeByLastCall(util.combineStyles);
+    this.computeStackOffsets = util.memoizeByLastCall(util.computeStackOffsets);
   }
 
   render() {
@@ -61,9 +51,9 @@ export default class StackedBars extends React.PureComponent {
       'selectedStyle',
     ]);
 
-    const vertical = isVertical(orientation);
-    const domainScale = getDomainScale(this.props);
-    const rangeScale = getRangeScale({ ...this.props, stacked: true });
+    const vertical = util.isVertical(orientation);
+    const domainScale = util.getDomainScale(this.props);
+    const rangeScale = util.getRangeScale({ ...this.props, stacked: true });
     const bandwidth = domainScale.bandwidth();
 
     // compute spatial offsets for each bar
@@ -83,10 +73,10 @@ export default class StackedBars extends React.PureComponent {
         style={this.combineStyles(style, data)}
       >
         {data.map((datum) => {
-          const stack = propResolver(datum, stackAccessor);
-          const layer = propResolver(datum, layerAccessor);
-          const key = computeStackDatumKey(stack, layer);
-          const fillValue = propResolver(datum, fillAccessor);
+          const stack = util.propResolver(datum, stackAccessor);
+          const layer = util.propResolver(datum, layerAccessor);
+          const key = util.computeStackDatumKey(stack, layer);
+          const fillValue = util.propResolver(datum, fillAccessor);
           const [start, end] = offsetMap[key];
 
           /* eslint-disable no-multi-spaces */
@@ -117,6 +107,8 @@ export default class StackedBars extends React.PureComponent {
     );
   }
 }
+
+const { CommonPropTypes } = util;
 
 StackedBars.propTypes = {
   /**

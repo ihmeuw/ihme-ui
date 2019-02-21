@@ -5,14 +5,7 @@ import bindAll from 'lodash/bindAll';
 import pick from 'lodash/pick';
 import xor from 'lodash/xor';
 
-import {
-  CommonPropTypes,
-  computeDataMax,
-  memoizeByLastCall,
-  isVertical,
-  stateFromPropUpdates,
-  computeStackMax,
-} from '../../../../utils';
+import * as util from '../../../../utils';
 
 import styles from './style.css';
 import AxisChart from '../../../axis-chart';
@@ -37,9 +30,9 @@ export default class BarChart extends React.PureComponent {
     const initialState = {
       selectedItems: [],
     };
-    this.state = stateFromPropUpdates(BarChart.propUpdates, {}, props, initialState);
-    this.computeDataMax = memoizeByLastCall(computeDataMax);
-    this.computeStackMax = memoizeByLastCall(computeStackMax);
+    this.state = util.stateFromPropUpdates(BarChart.propUpdates, {}, props, initialState);
+    this.computeDataMax = util.memoizeByLastCall(util.computeDataMax);
+    this.computeStackMax = util.memoizeByLastCall(util.computeStackMax);
 
     bindAll(this, [
       'onClick',
@@ -48,7 +41,7 @@ export default class BarChart extends React.PureComponent {
 
   componentWillReceiveProps(nextProps) {
     this.setState(
-      stateFromPropUpdates(BarChart.propUpdates, this.props, nextProps, this.state)
+      util.stateFromPropUpdates(BarChart.propUpdates, this.props, nextProps, this.state)
     );
   }
 
@@ -191,7 +184,7 @@ export default class BarChart extends React.PureComponent {
 
     const chartRange = [0, this.computeRangeMax()];
 
-    const vertical = isVertical(orientation);
+    const vertical = util.isVertical(orientation);
 
     return (
       <div className={classNames(styles.chart, chartStyle)}>
@@ -223,6 +216,8 @@ export default class BarChart extends React.PureComponent {
     );
   }
 }
+
+const { CommonPropTypes } = util;
 
 BarChart.propTypes = {
   /**

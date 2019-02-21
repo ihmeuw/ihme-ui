@@ -4,16 +4,7 @@ import classNames from 'classnames';
 import isFinite from 'lodash/isFinite';
 import pick from 'lodash/pick';
 
-import {
-  combineStyles,
-  CommonDefaultProps,
-  CommonPropTypes,
-  getDomainScale,
-  getRangeScale,
-  isVertical,
-  memoizeByLastCall,
-  propResolver,
-} from '../../../utils';
+import * as util from '../../../utils';
 
 import Bar from './bar';
 
@@ -24,7 +15,7 @@ export default class GroupedBars extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this.combineStyles = memoizeByLastCall(combineStyles);
+    this.combineStyles = util.memoizeByLastCall(util.combineStyles);
   }
 
   render() {
@@ -62,9 +53,9 @@ export default class GroupedBars extends React.PureComponent {
       'selectedStyle',
     ]);
 
-    const vertical = isVertical(orientation);
-    const domainScale = getDomainScale(this.props);
-    const rangeScale = getRangeScale(this.props);
+    const vertical = util.isVertical(orientation);
+    const domainScale = util.getDomainScale(this.props);
+    const rangeScale = util.getRangeScale(this.props);
     const totalBandwidth = domainScale.bandwidth();
     const bandPaddingPx = bandPaddingGroup * totalBandwidth;
     const bandwidth = (totalBandwidth - bandPaddingPx * (subgroups.length - 1)) / subgroups.length;
@@ -83,10 +74,10 @@ export default class GroupedBars extends React.PureComponent {
         style={this.combineStyles(style, data)}
       >
         {data.map((datum) => {
-          const fillValue = propResolver(datum, fillAccessor);
-          const group = propResolver(datum, groupAccessor);
-          const subgroup = propResolver(datum, subgroupAccessor);
-          const value = propResolver(datum, valueAccessor);
+          const fillValue = util.propResolver(datum, fillAccessor);
+          const group = util.propResolver(datum, groupAccessor);
+          const subgroup = util.propResolver(datum, subgroupAccessor);
+          const value = util.propResolver(datum, valueAccessor);
 
           /* eslint-disable no-multi-spaces */
           const x = vertical ? getDomainOffset(group, subgroup) : 0;
@@ -116,6 +107,11 @@ export default class GroupedBars extends React.PureComponent {
     );
   }
 }
+
+const {
+  CommonDefaultProps,
+  CommonPropTypes,
+} = util;
 
 GroupedBars.propTypes = {
   /**
