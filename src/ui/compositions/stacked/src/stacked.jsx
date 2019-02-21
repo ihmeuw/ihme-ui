@@ -1,17 +1,31 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+
+import bindAll from 'lodash/bindAll';
 import castArray from 'lodash/castArray';
+import pick from 'lodash/pick';
+import xor from 'lodash/xor';
+
 import {
   combineStyles,
   CommonPropTypes,
+  computeDataMax,
   memoizeByLastCall,
+  isVertical,
+  propsChanged,
+  stateFromPropUpdates,
+  computeStackMax,
 } from '../../../../utils';
 
 import styles from './style.css';
 import AxisChart from './../../../axis-chart';
 import { XAxis, YAxis } from './../../../axis';
-import MultiBars from './../../../bar/src/multi-bars';
+import {
+  Bars,
+  GroupedBars,
+  StackedBars,
+} from '../../../bar';
 import ResponsiveContainer from '../../../responsive-container';
 import Legend from './../../../legend';
 
@@ -26,9 +40,26 @@ export default class StackedBarChart extends React.PureComponent {
 
     this.combineStyles = memoizeByLastCall(combineStyles);
     this.castSelectionAsArray = memoizeByLastCall((selection) => castArray(selection));
-    this.state = {
+    const initialState = {
       selectedItems: [],
     };
+    this.state = stateFromPropUpdates(StackedBarChart.propUpdates, {}, props, initialState);
+
+    bindAll(this, [
+      'onClick',
+    ]);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState(
+      stateFromPropUpdates(StackedBarChart.propUpdates, this.props, nextProps, this.state)
+    );
+  }
+
+  onClick(_, datum) {
+    this.setState({
+      selectedItems: xor(this.state.selectedItems, [datum]),
+    });
   }
 
   renderTitle() {
@@ -47,84 +78,126 @@ export default class StackedBarChart extends React.PureComponent {
 
   renderLegend() {
     const {
-      legendAccessors,
-      legendKey,
+      legendItems,
+      legendAccessors: {
+        labelKey,
+        shapeColorKey,
+        shapeTypeKey,
+      },
       legendClassName,
       legendStyle,
     } = this.props;
-    if (!legendAccessors) return null;
+    if (!legendItems) return null;
     return (
       <div className={classNames(styles.legend, legendClassName)} style={legendStyle}>
         <div className={styles['legend-wrapper']}>
           <Legend
-            items={legendAccessors}
-            labelKey={legendKey.labelKey}
-            shapeColorKey={legendKey.shapeColorKey}
-            shapeTypeKey={legendKey.shapeTypeKey}
+            items={legendItems}
+            labelKey={labelKey}
+            shapeColorKey={shapeColorKey}
+            shapeTypeKey={shapeTypeKey}
           />
         </div>
       </div>
     );
   }
 
-  renderBarChart() {
+  renderBars() {
     const {
-      data,
-      fill,
-      dataAccessors,
-      colorScale,
-      chartStyle,
-      fieldAccessors,
-      focus,
-      labelAccessors,
-      layerDomain,
-      onClick,
-      onMouseOver,
-      onMouseLeave,
-      onMouseMove,
-      orientation,
-      padding,
-      scaleAccessors,
       type,
+      chartStyle,
+      onClick = this.onClick,
     } = this.props;
+
+    const {
+      rangeMax,
+      selectedItems,
+    } = this.state;
+
+    const childProps = pick(this.props, [
+      'align',
+      'bandPadding',
+      'bandPaddingInner',
+      'bandPaddingOuter',
+      'categories',
+      'subcategories',
+      'colorScale',
+      'data',
+      'dataAccessors',
+      'fill',
+      'focus',
+      'onMouseMove',
+      'onMouseOver',
+      'onMouseLeave',
+      'orientation',
+    ]);
+
+    switch (type) {
+      case 'normal':
+        return (
+          <Bars
+            focusedStyle={FOCUSED_STYLE}
+            onClick={onClick}
+            selection={selectedItems}
+            style={chartStyle}
+            {...childProps}
+          />
+        );
+      case 'grouped':
+        return (
+          <GroupedBars
+            focusedStyle={FOCUSED_STYLE}
+            onClick={onClick}
+            rangeMax={rangeMax}
+            style={chartStyle}
+            selection={selectedItems}
+            {...childProps}
+          />
+        );
+      case 'stacked':
+        return (
+          <StackedBars
+            focusedStyle={FOCUSED_STYLE}
+            onClick={onClick}
+            rangeMax={rangeMax}
+            style={chartStyle}
+            selection={selectedItems}
+            {...childProps}
+          />
+        );
+      default:
+        throw Error(`chart type ${type} invalid; must be one of: 'normal', 'grouped', 'stacked'`);
+    }
+  }
+
+  renderChart() {
+    const {
+      categories,
+      chartStyle,
+      orientation,
+      labelAccessors,
+      padding,
+    } = this.props;
+
+    const { rangeMax } = this.state;
+
+    const chartRange = [0, rangeMax];
+
+    const vertical = isVertical(orientation);
 
     return (
       <div className={classNames(styles.chart, chartStyle)}>
         <ResponsiveContainer>
           <AxisChart
             padding={padding}
-            xDomain={scaleAccessors.xDomain}
-            yDomain={scaleAccessors.yDomain}
-            xScaleType={scaleAccessors.xScale}
-            yScaleType={scaleAccessors.yScale}
+            xDomain={vertical ? categories : chartRange}
+            yDomain={vertical ? chartRange : categories}
+            xScaleType={vertical ? 'band' : 'linear'}
+            yScaleType={vertical ? 'linear' : 'band'}
           >
-            <XAxis
-              label={labelAccessors.xLabel ? labelAccessors.xLabel : 'X Axis'}
-              padding={padding}
-            />
-            <YAxis
-              label={labelAccessors.yLabel ? labelAccessors.yLabel : 'Y Axis'}
-              padding={padding}
-            />
-            <MultiBars
-              colorScale={colorScale}
-              data={data}
-              dataAccessors={dataAccessors}
-              fieldAccessors={fieldAccessors}
-              fill={fill}
-              focus={focus}
-              focusedStyle={FOCUSED_STYLE}
-              layerDomain={layerDomain}
-              onClick={onClick}
-              onMouseOver={onMouseOver}
-              onMouseMove={onMouseMove}
-              onMouseLeave={onMouseLeave}
-              style={chartStyle}
-              selection={this.state.selectedItems}
-              orientation={orientation}
-              grouped={type === 'grouped'}
-              stacked={type === 'stacked'}
-            />
+            <XAxis label={labelAccessors.xLabel ? labelAccessors.xLabel : 'X Axis'} />
+            <YAxis label={labelAccessors.yLabel ? labelAccessors.yLabel : 'Y Axis'} />
+            {this.renderBars()}
           </AxisChart>
         </ResponsiveContainer>
       </div>
@@ -136,12 +209,41 @@ export default class StackedBarChart extends React.PureComponent {
     return (
       <div className={classNames(styles['chart-container'], className)} style={style}>
         {this.renderTitle()}
-        {this.renderBarChart()}
-        {(displayLegend) ? this.renderLegend() : null}
+        {this.renderChart()}
+        {displayLegend ? this.renderLegend() : null}
       </div>
     );
   }
 }
+
+StackedBarChart.propUpdates = {
+  // Compute the upper value for the chart range.
+  rangeMax: (state, _, prevProps, nextProps) => {
+    if (!propsChanged(prevProps, nextProps, [
+      'data', 'type', 'categories', 'subcategories', 'dataAccessors',
+    ])) {
+      return state;
+    }
+    const {
+      data,
+      categories,
+      dataAccessors: {
+        category: categoryAccessor,
+        value: valueAccessor,
+      },
+      type,
+    } = nextProps;
+
+    // If it's a stacked bar chart, we need to compute the range by adding all the values in each
+    // stack and then finding the max. Otherwise, we can just use the max data value.
+    return {
+      ...state,
+      rangeMax: type === 'stacked'
+        ? computeStackMax(data, categories, categoryAccessor, valueAccessor)
+        : computeDataMax(data, valueAccessor),
+    };
+  },
+};
 
 StackedBarChart.propTypes = {
   /**
@@ -171,20 +273,6 @@ StackedBarChart.propTypes = {
    * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
    */
   bandPaddingOuter: PropTypes.number,
-
-  /**
-   * Accessors to d3 scale band properties
-   *    align: property used to access the align property to alter d3 scaleBand alignment
-   *    bandPadding: property used to access the bandPadding to alter d3 scaleBand inner and outer padding
-   *    bandPaddingInner: property used to access the bandPaddingInner to alter d3 scaleBand inner padding
-   *    bandPaddingOuter: property used to access the bandPaddingOuter to alter d3 scaleBand outer padding
-   */
-  bandObject: PropTypes.shape({
-    align: PropTypes.number,
-    bandPadding: PropTypes.number,
-    bandPaddingInner: PropTypes.number,
-    bandPaddingOuter: PropTypes.number
-  }),
 
   /**
    * inline styles applied to div wrapping the chart
@@ -220,28 +308,15 @@ StackedBarChart.propTypes = {
    */
   dataAccessors: PropTypes.shape({
     fill: PropTypes.string,
-    key: PropTypes.string.isRequired,
-    stack: PropTypes.string,
-    value: PropTypes.string,
-    layer: PropTypes.string,
+    category: PropTypes.string.isRequired,
+    subcategory: PropTypes.string,
+    value: PropTypes.string.isRequired,
   }).isRequired,
 
   /**
    * Boolean to display Legend or not
    */
   displayLegend: PropTypes.bool,
-
-  /**
-   * Accessors for objects within `props.data`
-   *   color: (optional) color data as input to color scale.
-   *   data: data provided to child components. default: 'values'
-   *   key: unique key to apply to child components. used as input to color scale if color field is not specified. default: 'key'
-   */
-  fieldAccessors: PropTypes.shape({
-    color: CommonPropTypes.dataAccessor,
-    data: CommonPropTypes.dataAccessor.isRequired,
-    key: CommonPropTypes.dataAccessor.isRequired,
-  }),
 
   /**
    * If `props.colorScale` is undefined, each `<Bar />` will be given this same fill value.
@@ -268,7 +343,12 @@ StackedBarChart.propTypes = {
   /**
    * Domain use for the layerOrdinal prop that scales the layer categorical data together.
    */
-  layerDomain: PropTypes.array,
+  categories: PropTypes.arrayOf(PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ])).isRequired,
+
+  subcategories: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])),
 
   /**
    * Accessors to legend properties
@@ -282,12 +362,7 @@ StackedBarChart.propTypes = {
     shapeTypeKey: PropTypes.string
   }),
 
-  /**
-   * path to label in item objects (e.g., 'name', 'properties.label')
-   * or a function to resolve the label
-   * signature: function (item) {...}
-   */
-  legendKey: PropTypes.string,
+  legendItems: PropTypes.arrayOf(PropTypes.object),
 
   /**
    * className applied to div wrapping the title
@@ -327,7 +402,7 @@ StackedBarChart.propTypes = {
    * Orientation in which bars should be created.
    * Defaults to vertical, but option for horizontal orientation supported.
    */
-  orientation: PropTypes.oneOf(['Horizontal', 'horizontal', 'Vertical', 'vertical']),
+  orientation: PropTypes.oneOf(['horizontal', 'vertical']),
 
   /**
    * padding around the chart contents
@@ -340,18 +415,12 @@ StackedBarChart.propTypes = {
   }),
 
   /**
-   * Accessors to scales properties
-   *    xDomain: property used to access the xDomain of the scales object
-   *    yDomain: property used to access the yDomain of the scales object
-   *    xScale: property used to access the xScale  of the scales object
-   *    yScale: property used to access the yScale of the scales object
+   * Datum object or array of datum objects corresponding to selected `<Bar />`s
    */
-  scaleAccessors: PropTypes.shape({
-    xDomain: PropTypes.string,
-    yDomain: PropTypes.string,
-    xScale: PropTypes.string,
-    yScale: PropTypes.string,
-  }),
+  selection: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.array,
+  ]),
 
   /**
    * inline styles applied to div wrapping the chart-container
@@ -372,10 +441,11 @@ StackedBarChart.propTypes = {
    * Type of bar chart to be created.
    * Options for grouped and stacked
    */
-  type: PropTypes.oneOf(['stacked', 'grouped']),
+  type: PropTypes.oneOf(['normal', 'stacked', 'grouped']),
 };
 
 StackedBarChart.defaultProps = {
   orientation: 'vertical',
   displayLegend: false,
+  type: 'normal',
 };
