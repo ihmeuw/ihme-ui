@@ -224,7 +224,6 @@ Bar.propTypes = {
    * Initial y position of svg element rect.
    */
   y: PropTypes.number,
-
 };
 
 Bar.defaultProps = {
