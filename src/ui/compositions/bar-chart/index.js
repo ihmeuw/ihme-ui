@@ -1,1 +1,1 @@
-export { default as default } from './src/bar-chart';
+export { default } from './src/bar-chart';
