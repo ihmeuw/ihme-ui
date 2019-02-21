@@ -28,6 +28,7 @@ export default class GroupedBars extends React.PureComponent {
     super(props);
 
     this.combineStyles = memoizeByLastCall(combineStyles);
+    this.computeDataMax = memoizeByLastCall(computeDataMax);
   }
 
   getDomainScale() {
@@ -75,7 +76,7 @@ export default class GroupedBars extends React.PureComponent {
       return scale;
     }
 
-    const max = !isUndefined(rangeMax) ? rangeMax : computeDataMax(data, dataAccessors.value);
+    const max = !isUndefined(rangeMax) ? rangeMax : this.computeDataMax(data, dataAccessors.value);
     return computeRangeScale(max, orientation, vertical ? height : width);
   }
 

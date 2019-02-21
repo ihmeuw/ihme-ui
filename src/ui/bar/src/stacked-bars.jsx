@@ -28,6 +28,8 @@ export default class StackedBars extends React.PureComponent {
     super(props);
 
     this.combineStyles = memoizeByLastCall(combineStyles);
+    this.computeStackMax = memoizeByLastCall(computeStackMax);
+    this.computeStackOffsets = memoizeByLastCall(computeStackOffsets);
   }
 
   getDomainScale() {
@@ -58,7 +60,6 @@ export default class StackedBars extends React.PureComponent {
 
   getRangeScale() {
     const {
-      categories: stacks,
       data,
       dataAccessors: {
         category: stackAccessor,
@@ -80,7 +81,7 @@ export default class StackedBars extends React.PureComponent {
 
     const max = !isUndefined(rangeMax)
       ? rangeMax
-      : computeStackMax(data, stacks, stackAccessor, valueAccessor);
+      : this.computeStackMax(data, stackAccessor, valueAccessor);
 
     return computeRangeScale(max, orientation, vertical ? height : width);
   }
@@ -124,7 +125,7 @@ export default class StackedBars extends React.PureComponent {
     const bandwidth = domainScale.bandwidth();
 
     // compute spatial offsets for each bar
-    const offsetMap = computeStackOffsets(
+    const offsetMap = this.computeStackOffsets(
       data,
       stacks,
       layers,

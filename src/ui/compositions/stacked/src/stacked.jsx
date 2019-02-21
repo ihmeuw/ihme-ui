@@ -10,7 +10,6 @@ import {
   computeDataMax,
   memoizeByLastCall,
   isVertical,
-  propsChanged,
   stateFromPropUpdates,
   computeStackMax,
 } from '../../../../utils';
@@ -39,6 +38,8 @@ export default class StackedBarChart extends React.PureComponent {
       selectedItems: [],
     };
     this.state = stateFromPropUpdates(StackedBarChart.propUpdates, {}, props, initialState);
+    this.computeDataMax = memoizeByLastCall(computeDataMax);
+    this.computeStackMax = memoizeByLastCall(computeStackMax);
 
     bindAll(this, [
       'onClick',
@@ -55,6 +56,18 @@ export default class StackedBarChart extends React.PureComponent {
     this.setState({
       selectedItems: xor(this.state.selectedItems, [datum]),
     });
+  }
+
+  computeRangeMax() {
+    const {
+      data,
+      dataAccessors,
+      type,
+    } = this.props;
+
+    return type === 'stacked'
+      ? this.computeStackMax(data, dataAccessors.category, dataAccessors.value)
+      : this.computeDataMax(data, dataAccessors.value);
   }
 
   renderTitle() {
@@ -105,9 +118,10 @@ export default class StackedBarChart extends React.PureComponent {
     } = this.props;
 
     const {
-      rangeMax,
       selectedItems,
     } = this.state;
+
+    const rangeMax = this.computeRangeMax();
 
     const childProps = pick(this.props, [
       'align',
@@ -133,6 +147,7 @@ export default class StackedBarChart extends React.PureComponent {
           <Bars
             focusedStyle={FOCUSED_STYLE}
             onClick={onClick}
+            rangeMax={rangeMax}
             selection={selectedItems}
             style={chartStyle}
             {...childProps}
@@ -174,9 +189,7 @@ export default class StackedBarChart extends React.PureComponent {
       padding,
     } = this.props;
 
-    const { rangeMax } = this.state;
-
-    const chartRange = [0, rangeMax];
+    const chartRange = [0, this.computeRangeMax()];
 
     const vertical = isVertical(orientation);
 
@@ -210,35 +223,6 @@ export default class StackedBarChart extends React.PureComponent {
     );
   }
 }
-
-StackedBarChart.propUpdates = {
-  // Compute the upper value for the chart range.
-  rangeMax: (state, _, prevProps, nextProps) => {
-    if (!propsChanged(prevProps, nextProps, [
-      'data', 'type', 'categories', 'subcategories', 'dataAccessors',
-    ])) {
-      return state;
-    }
-    const {
-      data,
-      categories,
-      dataAccessors: {
-        category: categoryAccessor,
-        value: valueAccessor,
-      },
-      type,
-    } = nextProps;
-
-    // If it's a stacked bar chart, we need to compute the range by adding all the values in each
-    // stack and then finding the max. Otherwise, we can just use the max data value.
-    return {
-      ...state,
-      rangeMax: type === 'stacked'
-        ? computeStackMax(data, categories, categoryAccessor, valueAccessor)
-        : computeDataMax(data, valueAccessor),
-    };
-  },
-};
 
 StackedBarChart.propTypes = {
   /**
