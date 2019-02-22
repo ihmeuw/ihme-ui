@@ -141,7 +141,6 @@ class App extends React.Component {
             chartStyle={STYLE}
             data={brazilData}
             dataAccessors={{
-              fill: yearField,
               category: yearField,
               value: populationField,
             }}
@@ -166,7 +165,6 @@ class App extends React.Component {
             chartStyle={STYLE}
             data={brazilData}
             dataAccessors={{
-              fill: yearField,
               category: yearField,
               value: populationField,
             }}
@@ -196,13 +194,12 @@ class App extends React.Component {
             subcategories={years}
             data={data}
             dataAccessors={{
-              fill: yearField,
               category: locationField,
               subcategory: yearField,
               value: populationField,
             }}
             chartStyle={STYLE}
-            colorScale={colorScale}
+            fill={(datum) => colorScale(datum[yearField])}
             focus={this.state.focus}
             labelAccessors={{
               title: "Population Between 2000-2009",
@@ -226,13 +223,12 @@ class App extends React.Component {
             subcategories={years}
             data={data}
             dataAccessors={{
-              fill: yearField,
               category: locationField,
               subcategory: yearField,
               value: populationField,
             }}
             chartStyle={STYLE}
-            colorScale={colorScale}
+            fill={(datum) => colorScale(datum[yearField])}
             focus={this.state.focus}
             labelAccessors={{
               title: "Population Between 2000-2009",
@@ -261,13 +257,12 @@ class App extends React.Component {
             chartStyle={STYLE}
             data={data}
             dataAccessors={{
-              fill: yearField,
               category: locationField,
               subcategory: yearField,
               value: populationField,
             }}
             displayLegend
-            colorScale={colorScale}
+            fill={(datum) => colorScale(datum[yearField])}
             focus={this.state.focus}
             labelAccessors={{
               title: "Population Between 2000-2009",
@@ -305,13 +300,12 @@ class App extends React.Component {
             chartStyle={STYLE}
             data={data}
             dataAccessors={{
-              fill: yearField,
               category: locationField,
               subcategory: yearField,
               value: populationField,
             }}
             displayLegend
-            colorScale={colorScale}
+            fill={(datum) => colorScale(datum[yearField])}
             focus={this.state.focus}
             labelAccessors={{
               title: "Population Between 2000-2009",
