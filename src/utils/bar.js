@@ -176,6 +176,7 @@ export function getRangeScale({
     return scale.copy();
   }
 
+  /* eslint-disable no-nested-ternary */
   const max = !isUndefined(rangeMax)
     ? rangeMax
     : (
@@ -183,6 +184,7 @@ export function getRangeScale({
       ? computeStackMax(data, dataAccessors.category, dataAccessors.value)
       : computeDataMax(data, dataAccessors.value)
     );
+  /* eslint-enable no-nested-ternary */
 
   return computeRangeScale(max, orientation, vertical ? height : width);
 }
