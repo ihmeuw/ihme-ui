@@ -17,17 +17,17 @@ Property | Required | Type(s) | Default | Description
 `datum` |  | object |  | Datum object associated with the bar. The component makes no assumptions about the shape of this object. It's only used as a parameter to client-supplied callbacks, like `onClick` and the function form of `style`.
 `fill` |  | string | `'steelblue'` |  Fill color for svg element rect.
 `focused` |  | boolean | `false` | Whether svg element rect is selected.
-`focusedClassName` |  | [CommonPropTypes.className](../../utils/props.js#L11) | `'focused'` | className applied if svg element rect has focus.
-`focusedStyle` |  | [CommonPropTypes.style](../../utils/props.js#L11) | `{ stroke: '#000', strokeWidth: 1 }` | Inline styles applied if svg element rect has focus < br/> If an object, spread directly into inline styles. <br /> If a function, called with `props.datum` as argument and return value is spread into inline styles
+`focusedClassName` |  | [CommonPropTypes.className](../../../utils/props.js#L13) | `'focused'` | className applied if svg element rect has focus.
+`focusedStyle` |  | [CommonPropTypes.style](../../utils/props.js#L18) | `{ stroke: '#000', strokeWidth: 1 }` | Inline styles applied if svg element rect has focus < br/> If an object, spread directly into inline styles. <br /> If a function, called with `props.datum` as argument and return value is spread into inline styles
 `height` | true | number |  | Height of svg element rect.
 `onClick` |  | func | no-op | handler for 'click' event. signature: (SyntheticEvent, datum, Path) => {...}
 `onMouseLeave` |  | func | no-op | handler for 'mouseleave' event. signature: (SyntheticEvent, datum, Path) => {...}
 `onMouseMove` |  | func | no-op | handler for 'mousemove' event. signature: (SyntheticEvent, datum, Path) => {...}
 `onMouseOver` |  | func | no-op | handler for 'mouseover' event. signature: (SyntheticEvent, datum, Path) => {...}
 `selected` |  | boolean | `false` | Whether svg element rect is selected.
-`selectedClassName` |  | [CommonPropTypes.className](../../utils/props.js#L11) | `'selected'` | Class name applied if selected.
+`selectedClassName` |  | [CommonPropTypes.className](../../../utils/props.js#L13) | `'selected'` | Class name applied if selected.
 `selectedStyle` |  | object | `{ stroke: '#000', strokeWidth: 1 }` | Inline styles applied to selected `<Bar/>`s. <br /> If an object, spread into inline styles. <br /> If a function, passed underlying datum corresponding to its `<Bar/>` and return value spread into line styles
-`style` |  | style [CommonPropTypes.style](../../utils/props.js#L11) | `{}` | Base inline styles applied to `<Bar/>`s. <br /> If an object, spread into inline styles.  <br /> If a function, passed underlying datum corresponding to its `<Bar/>`.
+`style` |  | style [CommonPropTypes.style](../../utils/props.js#L18) | `{}` | Base inline styles applied to `<Bar/>`s. <br /> If an object, spread into inline styles.  <br /> If a function, passed underlying datum corresponding to its `<Bar/>`.
 `width` | true | number |  | Width of svg element rect.
 `x` | true | number |  | Initial x position of svg element rect.
 `y` | true | number |  | Initial y position of svg element rect.
@@ -43,13 +43,13 @@ Property | Required | Type(s) | Default | Description
 `innerPadding` |  | number | | Padding between bars, specified as a proportion of the band width (i.e. the space allocated for each bar). The value must be in the range [0, 1], where: <br/> - 0 represents no padding between bars <br/> - 0.5 represents padding of the same width as the bars <br/> - 1 represents all padding, giving bars a width of 0 (probably not very useful) <br/> See: https://github.com/d3/d3-scale/blob/master/README.md#band_paddingInner
 `outerPadding` |  | number | | Padding before the first bar and after the last bar, specified as a proportion (or multiple) of the band width (i.e. the space allocated for each bar). See: https://github.com/d3/d3-scale/blob/master/README.md#band_paddingOuter
 `categories` | true | string[] or number[] | | List of category names used in the bar chart. Categories are arrayed across the domain. For a normal bar chart, each category is represented by a single bar. For stacked bars, each category is represented by a single stack. For grouped bars, each category is represented by a single group.
-`className` |  | object |  | className applied to outermost wrapping `<g>`
+`className` |  | [CommonPropTypes.className](../../../utils/props.js#L13) |  | className applied to outermost wrapping `<g>`
 `clipPathId` |  | string |  | If a clip path is applied to a container element, clip all children to that container by passing in the clip path URL id.
 `data` | true | array of objects |  | Array of datum objects. A datum object can be just about anything. The only restriction is that it must be possible to obtain the category and value (and, for grouped or stacked bar charts, the subcategory) of each datum using the `dataAccessors`.
 `fill` |  | string or function | | either a string representing the fill color (in which case the same color is used for all bars) or a function taking the `datum` and returning a string representing the fill color
 `focus` |  | object |  | the datum object corresponding to the `<Bar/>` currently focused
-`focusedClassName` |  | [CommonPropTypes.className](../../utils/props.js#L11) |  | className applied if `<Bar/>` has focus
-`focusedStyle` |  | [CommonPropTypes.style](../../utils/props.js#L11) |  | inline styles applied to focused `<Bar/>`. If an object, spread into inline styles. If a function, passed underlying datum corresponding to its `<Bar/>`, and return value is spread into inline styles. <br/> `signature: (datum) => obj`
+`focusedClassName` |  | [CommonPropTypes.className](../../../utils/props.js#L13) |  | className applied if `<Bar/>` has focus
+`focusedStyle` |  | [CommonPropTypes.style](../../utils/props.js#L18) |  | inline styles applied to focused `<Bar/>`. If an object, spread into inline styles. If a function, passed underlying datum corresponding to its `<Bar/>`, and return value is spread into inline styles. <br/> `signature: (datum) => obj`
 `height` | true | number |  | height, in pixels, of bar chart
 `width` | true | number | | width, in pixels, of bar chart
 `onClick` |  | func | no-op | onClick callback applied to each `<Bar/>`. <br/> signature: (SyntheticEvent, datum, instance) => {...}
@@ -58,13 +58,13 @@ Property | Required | Type(s) | Default | Description
 `onMouseOver` |  | func | no-op | onMouseOver callback applied to each `<Bar/>`. <br/> signature: (SyntheticEvent, datum, instance) => {...}
 `orientation` |  | `'vertical'` or `'horizontal'` | `'vertical'` | orientation of bar chart, representing the direction in which bars extend from the domain axis
 `rangeMax` | | number | | maximum value (on the range axis) the chart needs to support. If not provided, it will be computed from the data.
-`rectClassName` |  | [CommonPropTypes.className](../../utils/props.js#L11) |  | className applied to each `<Bar/>`
-`rectStyle` |  | [CommonPropTypes.style](../../utils/props.js#L11) |  |  inline styles passed to each `<Bar/>`
+`rectClassName` |  | [CommonPropTypes.className](../../../utils/props.js#L13) |  | className applied to each `<Bar/>`
+`rectStyle` |  | [CommonPropTypes.style](../../utils/props.js#L18) |  |  inline styles passed to each `<Bar/>`
 `scales` |  | `{ x: func, y: func }` |  |  Object with keys: `x`, and `y`, representing D3 scaling functions used for positioning `<Bar/>`s. The domain axis is assumed to use a band scale, the range axis a linear scale. See: <br/> - https://github.com/d3/d3-scale/blob/master/README.md#band-scales <br/> - https://github.com/d3/d3-scale/blob/master/README.md#linear-scales <br/> `scales` is an optional low-level interface designed to integrate with AxisChart, which passes this prop to its children. If not provided, appropriate scaling functions will be computed based on the `data` and the chart `height` and `width`.
-`selectedClassName` |  | [CommonPropTypes.className](../../utils/props.js#L11) |  | className applied to `<Bar/>`s if selected
-`selectedStyle` | | [CommonPropTypes.style](../../utils/props.js#L11) | | inline styles applied to selected `<Bar/>`s. If an object, spread into inline styles. If a function, passed underlying datum corresponding to its `<Bar/>`, and return value is spread into inline styles. `signature: (datum) => obj`
+`selectedClassName` |  | [CommonPropTypes.className](../../../utils/props.js#L13) |  | className applied to `<Bar/>`s if selected
+`selectedStyle` | | [CommonPropTypes.style](../../utils/props.js#L18) | | inline styles applied to selected `<Bar/>`s. If an object, spread into inline styles. If a function, passed underlying datum corresponding to its `<Bar/>`, and return value is spread into inline styles. `signature: (datum) => obj`
 `selection` |  | object or array |  | datum object or array of datum objects corresponding to selected `<Bar/>`s
-`style` |  | [CommonPropTypes.style](../../utils/props.js#L11) |  | inline styles applied to wrapping `<g>` element
+`style` |  | [CommonPropTypes.style](../../utils/props.js#L18) |  | inline styles applied to wrapping `<g>` element
 
 ---
 
