@@ -79,16 +79,16 @@ export default class BarChart extends React.PureComponent {
 
   renderLegend() {
     const {
-      legendItems,
       legendAccessors: {
         labelKey,
         shapeColorKey,
         shapeTypeKey,
       },
       legendClassName,
+      legendItems,
       legendStyle,
     } = this.props;
-    if (!legendItems) return null;
+
     return (
       <div className={classNames(styles.legend, legendClassName)} style={legendStyle}>
         <div className={styles['legend-wrapper']}>
@@ -207,9 +207,25 @@ export default class BarChart extends React.PureComponent {
     const {
       className,
       displayLegend,
+      legendAccessors,
+      legendItems,
       style,
       title,
     } = this.props;
+
+    // If displaying a legend, check that we have all needed props.
+    if (
+      displayLegend
+      && !(
+        legendItems && legendItems.length > 0
+        && legendAccessors
+        && legendAccessors.labelKey && legendAccessors.shapeColorKey && legendAccessors.shapeTypeKey
+      )
+    ) {
+      throw Error(
+        'When prop `displayLegend` is true, `legendItems` and `legendAccessors` must be provided.'
+      );
+    }
 
     return (
       <div className={classNames(styles['chart-container'], className)} style={style}>
@@ -368,9 +384,9 @@ BarChart.propTypes = {
    * Required if `displayLegend` is `true`.
    */
   legendAccessors: PropTypes.shape({
-    labelKey: CommonPropTypes.dataAccessor,
-    shapeColorKey: CommonPropTypes.dataAccessor,
-    shapeTypeKey: CommonPropTypes.dataAccessor,
+    labelKey: CommonPropTypes.dataAccessor.isRequired,
+    shapeColorKey: CommonPropTypes.dataAccessor.isRequired,
+    shapeTypeKey: CommonPropTypes.dataAccessor.isRequired,
   }),
 
   /**
