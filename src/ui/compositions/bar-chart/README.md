@@ -1,40 +1,45 @@
-\<Stacked />
+#### \<BarChart />
 =====================
-`import { Stacked } from 'ihme-ui'`
+`import { BarChart } from 'ihme-ui'`
 
-`<Stacked />` is a composition of `<MultiBars />`, `<XAxis />`, `<YAxis />` and `<AxisChart />`.
+`<BarChart />` is a composition that can be used for producing normal, grouped, and stacked bar charts, including x- and y-axes, title, and an optional legend.
 
-Property | Required | Type(s) | Defaults | Description
+Property | Required | Type(s) | Default | Description
 :---    |:---      |:---     |:---      |:---
-`align` |  | number |  | [format of scaleBand](https://github.com/d3/d3-scale/blob/master/README.md#scaleBand)<br /> Ordinal scaleBand align property. Sets the alignment of `<Bars />`s to the to the specified value which must be in the range [0, 1].
-`bandPadding` |  | number [format of scaleBand](https://github.com/d3/d3-scale/blob/master/README.md#scaleBand) |  | Ordinal scaleBand padding property. A convenience method for setting the inner and outer padding of `<Bars />`s to the same padding value
-`bandPaddingInner` |  | number [format of scaleBand](https://github.com/d3/d3-scale/blob/master/README.md#scaleBand) |  | Sets the inner padding of `<Bars />`s to the specified value which must be in the range [0, 1].
-`bandPaddingInner` |  | number [format of scaleBand](https://github.com/d3/d3-scale/blob/master/README.md#scaleBand) |  | Sets the outer padding of `<Bars />`s to the specified value which must be in the range [0, 1].
-`bandObject` |  | object |  |  Values used for the d3 scale band properties<br />bandObject description: {Object}<br /> - `align`: property used for the align property to alter d3 scaleBand alignment<br /> - `bandPadding`: property used for the bandPadding to alter d3 scaleBand inner and outer padding<br /> - `bandPaddingInner`: property used for the bandPaddingInner to alter d3 scaleBand inner padding<br /> - `bandPaddingOuter`: property used for the bandPaddingOuter to alter d3 scaleBand outer padding <br />
-`chartStyle` |  | object |  | inline styles applied to div wrapping the chart
-`colorScale` |  | func |  | If provided will determine color of rendered `<Bar />
-`className` |  | string |  | applied to chart-container
-`data` | true | array |  | array of datum objects
-`dataAccessors` | true | object |  | Accessors on datum objects<br />dataAccessors description: {Object}<br /> - `fill`: property on datum to provide fill (will be passed to `props.colorScale`)<br /> - `key`: unique dimension of datum (required)<br /> - `stack`: property on datum to position bars svg element rect in x-direction<br /> - `value`: property on datum to position bars svg element rect in y-direction<br /> - `layer`: property on datum to position bars svg element rect in categorical format. (grouped/stacked) <br />
-`displayLegend` |  | boolean | false | when true display the legend component
-`fieldAccessors` |  | object |  | Accessors for objects within `props.data`<br />fieldAccessors description: {Object}<br /> - `color`: (optional) color data as input to color scale<br /> - `data`: data provided to child components. default: `values`<br /> - `key`: unique key to apply to child components. used as input to color scale if color field is not specified. default: `key`
-`fill` |  | string |  |  If `props.colorScale` is undefined, each `<Bar />` will be given this same fill value.
-`focus` |  | object |  | The datum object corresponding to the `<Shape />` currently focused.
-`labelAccessors` |  | object |  | Accessors on label objects<br />labelAccessors description: {Object}<br /> - `title`: property used to access the title of the composite component<br /> - `xLabel`: property used to access the xLabel of the composite component<br /> - `yLabel`: property used to access the yLabel of the composite component
-`width` |  | number |  | Domain use for the layerOrdinal prop that scales the layer categorical data together.
-`layerDomain` |  | array|  | Domain used for the layerOrdinal prop that scales the layer categorical data together.
-`legendAccessors` |  | object |  | Accessors on label objects<br />legendAccessors description: {Object}<br /> - `labelKey`: property used to access the path to label in item objects (e.g., 'name', 'properties.label')<br /> - `shapeColorKey`: property used to access the path to shape color in item objects (e.g., 'color', 'properties.color')<br /> - `shapeTypeKey`: property used to access the path to shape type in item objects (e.g., 'type', 'properties.type')
-`legendKey` |  | string |  | path to label in item objects (e.g., 'name', 'properties.label') or a function to resolve the label | |
-`legendClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to div wrapping the title
-`legendStyle` |  | object |  | inline style object applied to div containing choropleth legend
-`onClick` |  | func |  | event handler passed to both choropleth and choropleth legend;<br />signature: (SyntheticEvent, datum, Path) => {...}
-`onMouseLeave` |  | func |  | event handler passed to both choropleth and choropleth legend;<br />signature: (SyntheticEvent, datum, Path) => {...}
-`onMouseMove` |  | func |  | event handler passed to both choropleth and choropleth legend;<br />signature: (SyntheticEvent, datum, Path) => {...}
-`onMouseOver` |  | func |  | event handler passed to both choropleth and choropleth legend;<br />signature: (SyntheticEvent, datum, Path) => {...}
-`padding` |  | object | {<br />  top: 20,<br />  right: 20,<br />  bottom: 30,<br />  left: 50,<br />} | padding around the chart contents
-`orientation` |  | string | vertical | Orientation in which bars should be created. <br /> Defaults to vertical, but option for horizontal orientation supported
-`scaleAccessors` |  | object |  | Accessors on scales properties<br />scaleAccessors description: {Object}<br /> - `xDomain`: property used to access the xDomain of the scales object<br /> - `yDomain`: property used to access the yDomain of the scales object<br /> - `xScale`: property used to access the xScale  of the scales object<br /> - `yScale`: property used to access the yScale of the scales object
-`style` |  | object |  | inline styles applied to outermost wrapping div
-`titleClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to div wrapping the title
-`titleStyle` |  | object |  | inline styles applied to div wrapping the title
-`type` |  | string |  | Options 'stacked' or 'grouped'. Type of bar chart to be created. If regular bar, do not include.
+`axisLabels`| | { domain: string, range: string } | | label text for axes
+`align` |  | number | | Alignment of each bar within its band. If there is any padding between bars, this property specifies how that space will be allocated. The value must be in the range [0, 1], where: <br/> - 0 represents left alignment <br/> - 0.5 represents center alignment <br/> - 1 represents right alignment <br/> See: https://github.com/d3/d3-scale/blob/master/README.md#band_align
+`bandPadding` |  | number | | A convenience for setting the `bandInnerPadding` and `bandOuterPadding` to the same value. See: https://github.com/d3/d3-scale/blob/master/README.md#band_padding
+`bandInnerGroupPadding` | | number | | Padding between the bars of each group, specified as a proportion of the band width (i.e. the space allocated for each group).
+`bandInnerPadding` |  | number | | Padding between bars, specified as a proportion of the band width (i.e. the space allocated for each bar). The value must be in the range [0, 1], where: <br/> - 0 represents no padding between bars <br/> - 0.5 represents padding of the same width as the bars <br/> - 1 represents all padding, giving bars a width of 0 (probably not very useful) <br/> See: https://github.com/d3/d3-scale/blob/master/README.md#band_paddingInner
+`bandOuterPadding` |  | number | | Padding before the first bar and after the last bar, specified as a proportion (or multiple) of the band width (i.e. the space allocated for each bar). See: https://github.com/d3/d3-scale/blob/master/README.md#band_paddingOuter
+`categories` | true | string[] or number[] | | List of category names used in the bar chart. Categories are arrayed across the domain. For a normal bar chart, each category is represented by a single bar. For stacked bars, each category is represented by a single stack. For grouped bars, each category is represented by a single group.
+`subcategories` | true | string[] or number[] | | List of subcategory names used in the bar chart. In a stacked bar chart, each stack contains a layer for each subcategory. In a grouped bar chart, each group contains a bar for each subcategory.
+`chartStyle` | | [CommonPropTypes.style](../../../utils/props.js#L13) | | inline styles applied to the element wrapping the chart (included axes)
+`className` |  | [CommonPropTypes.className](../../../utils/props.js#L13) |  | className applied to outermost container element
+`data` | true | array of objects |  | Array of datum objects. A datum object can be just about anything. The only restriction is that it must be possible to obtain the category and value (and, for grouped or stacked bar charts, the subcategory) of each datum using the `dataAccessors`.
+`dataAccessors` | true | { category: [CommonPropTypes.dataAccessor](../../utils/props.js#L30), subcategory: [CommonPropTypes.dataAccessor](../../utils/props.js#L30), value: [CommonPropTypes.dataAccessor](../../utils/props.js#L30) } | | Accessors on datum objects: <br/> - category: used to determine the bar's category (to plot it on the chart domain). In a stacked bar chart, it represents the stack. In a grouped bar chart, it represents the group. <br/> - subcategory: for a grouped or stacked bar chart, used to determine the bar's subcategory (layer in a stack or member of group) <br/> - value: used to obtain the bar's data value (to plot it on the chart range) <br/> Each accessor can either be a string or function. If a string, it is assumed to be the name of a property on datum objects; full paths to nested properties are supported (e.g. `{ x: 'values.year', ... }`). If a function, it is passed the datum as its first and only argument.
+`displayLegend` | | bool | `false` | display a legend?
+`fill` |  | string or function | | either a string representing the fill color (in which case the same color is used for all bars) or a function taking the `datum` and returning a string representing the fill color
+`focus` |  | object |  | the datum object corresponding to the `<Bar/>` currently focused
+`focusedClassName` |  | [CommonPropTypes.className](../../../utils/props.js#L13) |  | className applied if `<Bar/>` has focus
+`focusedStyle` |  | [CommonPropTypes.style](../../../utils/props.js#L18) |  | inline styles applied to focused `<Bar/>`. If an object, spread into inline styles. If a function, passed underlying datum corresponding to its `<Bar/>`, and return value is spread into inline styles. <br/> `signature: (datum) => obj`
+`legendAccessors` | if `displayLegend` | { labelKey: [CommonPropTypes.dataAccessor](../../utils/props.js#L30), shapeColorKey: [CommonPropTypes.dataAccessor](../../utils/props.js#L30), shapeTypeKey: [CommonPropTypes.dataAccessor](../../utils/props.js#L30) } | | Accessors to `legendItems` objects: <br/> - labelKey: used to get the legend item label <br/> - shapeColorKey: used to get the shape color <br/> - shapeTypeKey: used to get the shape type <br/> Required if `displayLegend` is `true`.
+`legendItems` | if `displayLegend` | object[] | | Array of objects used to build items in the legend. These objects can be just about anything. The only restriction is that it must be possible to obtain the label, shape color, and shape type for the legend item using the `legendAccessors`. Required if `displayLegend` is `true`.
+`legendClassName` | | [CommonPropTypes.className](../../../utils/props.js#L13) | | className applied to element wrapping the legend
+`legendStyle | | [CommonPropTypes.style](../../../utils/props.js#L18) | | inline styles applied to element wrapping the legend
+`onClick` |  | func | selects (or deselects) clicked bars | onClick callback applied to each `<Bar/>`. <br/> signature: (SyntheticEvent, datum, instance) => {...}
+`onMouseLeave` |  | func | | onMouseLeave callback applied to each `<Bar/>`. <br/> signature: (SyntheticEvent, datum, instance) => {...}
+`onMouseMove` |  | func | | onMouseMove callback applied to each `<Bar/>`. <br/> signature: (SyntheticEvent, datum, instance) => {...}
+`onMouseOver` |  | func | | onMouseOver callback applied to each `<Bar/>`. <br/> signature: (SyntheticEvent, datum, instance) => {...}
+`orientation` |  | `'vertical'` or `'horizontal'` | `'vertical'` | orientation of bar chart, representing the direction in which bars extend from the domain axis
+`padding` | | { top: number, bottom: number, left: number, right: number } | | padding around the chart contents
+`rectClassName` |  | [CommonPropTypes.className](../../../utils/props.js#L13) |  | className applied to each `<Bar/>`
+`rectStyle` |  | [CommonPropTypes.style](../../../utils/props.js#L18) |  |  inline styles passed to each `<Bar/>`
+`selectedClassName` |  | [CommonPropTypes.className](../../../utils/props.js#L13) |  | className applied to `<Bar/>`s if selected
+`selectedStyle` | | [CommonPropTypes.style](../../../utils/props.js#L18) | | inline styles applied to selected `<Bar/>`s. If an object, spread into inline styles. If a function, passed underlying datum corresponding to its `<Bar/>`, and return value is spread into inline styles. `signature: (datum) => obj`
+`selection` |  | object or array |  | datum object or array of datum objects corresponding to selected `<Bar/>`s
+`style` |  | [CommonPropTypes.style](../../../utils/props.js#L18) |  | inline styles applied to outermost container element
+`title` | | string | | title text for the chart
+`titleClassName` | | [CommonPropTypes.className](../../../utils/props.js#L13) | | className applied to element wrapping the title
+`titleStyle` | | [CommonPropTypes.style](../../../utils/props.js#L18) | | inline styles applied to element wrapping the title
+`type` | | `'normal'`, `'stacked'`, or `'grouped'` | `'normal'` | bar chart type

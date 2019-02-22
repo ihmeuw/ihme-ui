@@ -128,10 +128,16 @@ export default class BarChart extends React.PureComponent {
       'dataAccessors',
       'fill',
       'focus',
+      'focusedClassName',
+      'focusedStyle',
       'onMouseMove',
       'onMouseOver',
       'onMouseLeave',
       'orientation',
+      'rectClassName',
+      'rectStyle',
+      'selectedClassName',
+      'selectedStyle',
     ]);
 
     const commonProps = {
@@ -219,16 +225,28 @@ const { CommonPropTypes } = util;
 
 BarChart.propTypes = {
   /**
-   * Ordinal scaleBand align property. Sets the alignment of `<Bars />`s to the to the
-   * specified value which must be in the range [0, 1].
-   * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
+   * label text for axes
+   */
+  axisLabels: PropTypes.shape({
+    domain: PropTypes.string,
+    range: PropTypes.string
+  }),
+
+  /**
+   * Alignment of each bar within its band. If there is any padding between bars, this property
+   * specifies how that space will be allocated. The value must be in the range [0, 1], where:
+   * - 0 represents left alignment
+   * - 0.5 represents center alignment
+   * - 1 represents right alignment
+   *
+   * See: https://github.com/d3/d3-scale/blob/master/README.md#band_align
    */
   align: PropTypes.number,
 
   /**
-   * Ordinal scaleBand padding property. A convenience method for setting the inner and
-   * outer padding of `<Bars />`s to the same padding value
-   * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
+   * A convenience for setting the `bandInnerPadding` and `bandOuterPadding` to the same value.
+   *
+   * See: https://github.com/d3/d3-scale/blob/master/README.md#band_padding
    */
   bandPadding: PropTypes.number,
 
@@ -239,54 +257,81 @@ BarChart.propTypes = {
   bandInnerGroupPadding: PropTypes.number,
 
   /**
-   * Ordinal scaleBand paddingInner property. Sets the inner padding of `<Bars />`s to the
-   * specified value which must be in the range [0, 1].
-   * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
+   * Padding between bars, specified as a proportion of the band width (i.e. the space allocated
+   * for each bar). The value must be in the range [0, 1], where:
+   * - 0 represents no padding between bars
+   * - 0.5 represents padding of the same width as the bars
+   * - 1 represents all padding, giving bars a width of 0 (probably not very useful)
+   *
+   * See: https://github.com/d3/d3-scale/blob/master/README.md#band_paddingInner
    */
   bandInnerPadding: PropTypes.number,
 
   /**
-   * Ordinal scaleBand paddingOuter property. Sets the outer padding of `<Bars />`s to the
-   * specified value which must be in the range [0, 1].
-   * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
+   * Padding before the first bar and after the last bar, specified as a proportion (or multiple)
+   * of the band width (i.e. the space allocated for each bar).
+   *
+   * See: https://github.com/d3/d3-scale/blob/master/README.md#band_paddingOuter
    */
   bandOuterPadding: PropTypes.number,
 
   /**
-   * inline styles applied to div wrapping the chart
+   * List of category names used in the bar chart. Categories are arrayed across the domain.
+   * For a normal bar chart, each category is represented by a single bar.
+   * For stacked bars, each category is represented by a single stack.
+   * For grouped bars, each category is represented by a single group.
    */
-  chartStyle: PropTypes.object,
+  categories: PropTypes.arrayOf(PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ])).isRequired,
 
   /**
-   * applied to chart-container
+   * List of subcategory names used in the bar chart.
+   * In a stacked bar chart, each stack contains a layer for each subcategory.
+   * In a grouped bar chart, each group contains a bar for each subcategory.
    */
-  className: PropTypes.string,
+  subcategories: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])),
 
   /**
-   * Array of datum objects
+   * inline styles applied to the element wrapping the chart (included axes)
+   */
+  chartStyle: CommonPropTypes.style,
+
+  /**
+   * className applied to outermost container element
+   */
+  className: CommonPropTypes.className,
+
+  /**
+   * Array of datum objects. A datum object can be just about anything. The only restriction is
+   * that it must be possible to obtain the category and value (and, for grouped or stacked bar
+   * charts, the subcategory) of each datum using the `dataAccessors`.
    */
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
 
   /**
-   * Accessors on datum objects
-   *   key: unique dimension of datum (required)
-   *   stack: property on datum to position bars svg element rect in x-direction
-   *   value: property on datum to position bars svg element rect in y-direction
-   *   layer: property on datum to position bars svg element rect in categorical format. (grouped/stacked)
+   * Accessors on datum objects:
+   *   category: used to determine the bar's category (to plot it on the chart domain).
+   *     In a stacked bar chart, it represents the stack.
+   *     In a grouped bar chart, it represents the group.
+   *   subcategory: for a grouped or stacked bar chart, used to determine the bar's subcategory
+   *     (layer in a stack or member of group)
+   *   value: used to obtain the bar's data value (to plot it on the chart range)
    *
-   * Each accessor can either be a string or function. If a string, it is assumed to be the name of a
-   * property on datum objects; full paths to nested properties are supported (e.g., { `x`: 'values.year', ... }).
-   * If a function, it is passed datum objects as its first and only argument.
+   * Each accessor can either be a string or function.
+   * If a string, it is assumed to be the name of a property on datum objects; full paths to nested
+   * properties are supported (e.g. `{ x: 'values.year', ... }`).
+   * If a function, it is passed the datum as its first and only argument.
    */
   dataAccessors: PropTypes.shape({
-    fill: PropTypes.string,
     category: PropTypes.string.isRequired,
     subcategory: PropTypes.string,
     value: PropTypes.string.isRequired,
   }).isRequired,
 
   /**
-   * Boolean to display Legend or not
+   * display a legend?
    */
   displayLegend: PropTypes.bool,
 
@@ -297,79 +342,82 @@ BarChart.propTypes = {
   fill: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
 
   /**
-   * The datum object corresponding to the `<Bar />` currently focused.
+   * the datum object corresponding to the `<Bar />` currently focused
    */
   focus: PropTypes.object,
 
   /**
-   * label text for axes
+   * className applied if `<Bar />` has focus
    */
-  axisLabels: PropTypes.shape({
-    domain: PropTypes.string,
-    range: PropTypes.string
-  }),
+  focusedClassName: CommonPropTypes.className,
 
   /**
-   * Domain use for the layerOrdinal prop that scales the layer categorical data together.
+   * inline styles applied to focused `<Bar />`
+   * If an object, spread into inline styles. If a function, passed underlying datum corresponding
+   * to its `<Bar />`, and return value is spread into inline styles.
+   * signature: (datum) => obj
    */
-  categories: PropTypes.arrayOf(PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-  ])).isRequired,
-
-  subcategories: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])),
+  focusedStyle: CommonPropTypes.style,
 
   /**
-   * Accessors to legend properties
-   *    labelKey: property used to access the path to label in item objects (e.g., 'name', 'properties.label')
-   *    shapeColorKey: property used to access the path to shape color in item objects (e.g., 'color', 'properties.color')
-   *    shapeTypeKey: property used to access the path to shape type in item objects (e.g., 'type', 'properties.type')
+   * Accessors to `legendItems` objects:
+   *    labelKey: used to get the legend item label
+   *    shapeColorKey: used to get the shape color
+   *    shapeTypeKey: used to get the shape type
+   *
+   * Required if `displayLegend` is `true`.
    */
   legendAccessors: PropTypes.shape({
-    labelKey: PropTypes.string,
-    shapeColorKey: PropTypes.string,
-    shapeTypeKey: PropTypes.string
+    labelKey: CommonPropTypes.dataAccessor,
+    shapeColorKey: CommonPropTypes.dataAccessor,
+    shapeTypeKey: CommonPropTypes.dataAccessor,
   }),
 
+  /**
+   * Array of objects used to build items in the legend. These objects can be just about anything.
+   * The only restriction is that it must be possible to obtain the label, shape color, and shape
+   * type for the legend item using the `legendAccessors`.
+   *
+   * Required if `displayLegend` is `true`.
+   */
   legendItems: PropTypes.arrayOf(PropTypes.object),
 
   /**
-   * className applied to div wrapping the title
+   * className applied to element wrapping the legend
    */
   legendClassName: CommonPropTypes.className,
 
   /**
-   * inline styles applied to div wrapping the legend
+   * inline styles applied to element wrapping the legend
    */
-  legendStyle: PropTypes.object,
+  legendStyle: CommonPropTypes.style,
 
   /**
-   * onClick callback.
+   * onClick callback applied to each `<Bar />`.
    * signature: (SyntheticEvent, datum, instance) => {...}
    */
   onClick: PropTypes.func,
 
   /**
-   * onMouseLeave callback.
+   * onMouseLeave callback applied to each `<Bar />`.
    * signature: (SyntheticEvent, datum, instance) => {...}
    */
   onMouseLeave: PropTypes.func,
 
   /**
-   * onMouseMove callback.
+   * onMouseMove callback applied to each `<Bar />`.
    * signature: (SyntheticEvent, datum, instance) => {...}
    */
   onMouseMove: PropTypes.func,
 
   /**
-   * onMouseOver callback.
+   * onMouseOver callback applied to each `<Bar />`.
    * signature: (SyntheticEvent, datum, instance) => {...}
    */
   onMouseOver: PropTypes.func,
 
   /**
-   * Orientation in which bars should be created.
-   * Defaults to vertical, but option for horizontal orientation supported.
+   * orientation of bar chart, representing the direction in which bars extend from the domain axis
    */
   orientation: PropTypes.oneOf(['horizontal', 'vertical']),
 
@@ -384,7 +432,31 @@ BarChart.propTypes = {
   }),
 
   /**
-   * Datum object or array of datum objects corresponding to selected `<Bar />`s
+   * className applied to each `<Bar />`
+   */
+  rectClassName: CommonPropTypes.className,
+
+  /**
+   * inline styles passed to each `<Bar />`
+   */
+  rectStyle: CommonPropTypes.style,
+
+  /**
+   * className applied to `<Bar />`s if selected
+   */
+  selectedClassName: CommonPropTypes.className,
+
+  /**
+   * inline styles applied to selected `<Bar />`s.
+   * If an object, spread into inline styles.
+   * If a function, passed underlying datum corresponding to its `<Bar />`,
+   * and return value is spread into inline styles;
+   * signature: (datum) => obj
+   */
+  selectedStyle: CommonPropTypes.style,
+
+  /**
+   * datum object or array of datum objects corresponding to selected `<Bar />`s
    */
   selection: PropTypes.oneOfType([
     PropTypes.object,
@@ -392,9 +464,9 @@ BarChart.propTypes = {
   ]),
 
   /**
-   * inline styles applied to div wrapping the chart-container
+   * inline styles applied to outermost container element
    */
-  style: PropTypes.object,
+  style: CommonPropTypes.style,
 
   /**
    * title text for the chart
@@ -402,18 +474,17 @@ BarChart.propTypes = {
   title: PropTypes.string,
 
   /**
-   * className applied to div wrapping the title
+   * className applied to element wrapping the title
    */
   titleClassName: CommonPropTypes.className,
 
   /**
-   * inline styles applied to div wrapping the title
+   * inline styles applied to element wrapping the title
    */
-  titleStyle: PropTypes.object,
+  titleStyle: CommonPropTypes.style,
 
   /**
-   * Type of bar chart to be created.
-   * Options for grouped and stacked
+   * bar chart type
    */
   type: PropTypes.oneOf(['normal', 'stacked', 'grouped']),
 };
