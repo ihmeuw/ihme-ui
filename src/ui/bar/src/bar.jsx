@@ -164,25 +164,25 @@ Bar.propTypes = {
   height: PropTypes.number.isRequired,
 
   /**
-   * onClick callback.
+   * handler for 'click' event.
    * signature: (SyntheticEvent, datum, instance) => {...}
    */
   onClick: PropTypes.func,
 
   /**
-   * onMouseLeave callback.
+   * handler for 'mouseleave' event.
    * signature: (SyntheticEvent, datum, instance) => {...}
    */
   onMouseLeave: PropTypes.func,
 
   /**
-   * onMouseMove callback.
+   * handler for 'mousemove' event.
    * signature: (SyntheticEvent, datum, instance) => {...}
    */
   onMouseMove: PropTypes.func,
 
   /**
-   * onMouseOver callback.
+   * handler for 'mouseover' event.
    * signature: (SyntheticEvent, datum, instance) => {...}
    */
   onMouseOver: PropTypes.func,

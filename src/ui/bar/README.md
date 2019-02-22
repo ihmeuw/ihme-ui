@@ -20,10 +20,10 @@ Property | Required | Type(s) | Default | Description
 `focusedClassName` |  | [CommonPropTypes.className](../../utils/props.js#L11) | `'focused'` | className applied if svg element rect has focus.
 `focusedStyle` |  | [CommonPropTypes.style](../../utils/props.js#L11) | `{ stroke: '#000', strokeWidth: 1 }` | Inline styles applied if svg element rect has focus < br/> If an object, spread directly into inline styles. <br /> If a function, called with `props.datum` as argument and return value is spread into inline styles
 `height` | true | number |  | Height of svg element rect.
-`onClick` |  | func | no-op | event handler passed to both choropleth and choropleth legend;<br />signature: (SyntheticEvent, datum, Path) => {...}
-`onMouseLeave` |  | func | no-op | event handler passed to both choropleth and choropleth legend;<br />signature: (SyntheticEvent, datum, Path) => {...}
-`onMouseMove` |  | func | no-op | event handler passed to both choropleth and choropleth legend;<br />signature: (SyntheticEvent, datum, Path) => {...}
-`onMouseOver` |  | func | no-op | event handler passed to both choropleth and choropleth legend;<br />signature: (SyntheticEvent, datum, Path) => {...}
+`onClick` |  | func | no-op | handler for 'click' event. signature: (SyntheticEvent, datum, Path) => {...}
+`onMouseLeave` |  | func | no-op | handler for 'mouseleave' event. signature: (SyntheticEvent, datum, Path) => {...}
+`onMouseMove` |  | func | no-op | handler for 'mousemove' event. signature: (SyntheticEvent, datum, Path) => {...}
+`onMouseOver` |  | func | no-op | handler for 'mouseover' event. signature: (SyntheticEvent, datum, Path) => {...}
 `selected` |  | boolean | `false` | Whether svg element rect is selected.
 `selectedClassName` |  | [CommonPropTypes.className](../../utils/props.js#L11) | `'selected'` | Class name applied if selected.
 `selectedStyle` |  | object | `{ stroke: '#000', strokeWidth: 1 }` | Inline styles applied to selected `<Bar/>`s. <br /> If an object, spread into inline styles. <br /> If a function, passed underlying datum corresponding to its `<Bar/>` and return value spread into line styles
