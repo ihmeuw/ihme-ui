@@ -10,6 +10,8 @@ import commonProps from './commonProps';
 
 /**
  * `import { Bars } from 'ihme-ui'`
+ *
+ * Creates the bars for a conventional bar chart (i.e. one bar for each category)
  */
 export default class Bars extends React.PureComponent {
   constructor(props) {
@@ -121,11 +123,11 @@ Bars.propTypes = {
 };
 
 Bars.defaultProps = {
+  bandPadding: 0.05,
   fill: 'steelblue',
   onClick: CommonDefaultProps.noop,
   onMouseLeave: CommonDefaultProps.noop,
   onMouseMove: CommonDefaultProps.noop,
   onMouseOver: CommonDefaultProps.noop,
-  bandPadding: 0.05,
   orientation: 'vertical',
 };

@@ -10,6 +10,9 @@ import commonProps from './commonProps';
 
 /**
  * `import { StackedBars } from 'ihme-ui'`
+ *
+ * Creates the bars for a stacked bar chart.
+ * Each category represents a stack, and each subcategory represents a layer in each stack.
  */
 export default class StackedBars extends React.PureComponent {
   constructor(props) {
@@ -152,6 +155,10 @@ StackedBars.propTypes = {
 
 StackedBars.defaultProps = {
   bandPadding: 0.05,
-  colorScale: () => 'steelblue',
+  fill: 'steelblue',
+  onClick: CommonDefaultProps.noop,
+  onMouseLeave: CommonDefaultProps.noop,
+  onMouseMove: CommonDefaultProps.noop,
+  onMouseOver: CommonDefaultProps.noop,
   orientation: 'vertical',
 };

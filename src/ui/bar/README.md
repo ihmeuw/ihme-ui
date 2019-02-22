@@ -1,96 +1,104 @@
-Bar
+Bars
 =====================
 
-These components provide the "primitive" bar shapes for constructing bar charts.
+components for creating bar charts
 
 ---
 
-#### \<MultiBars />
-`import { MultiBars } from 'ihme-ui'`
-
-Property | Required | Type(s) | Defaults | Description
-:---    |:---      |:---     |:---      |:---
-`barsClassName` |  |  [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to `<Bars />`'s outermost wrapping `<g>`
-`barsStyle` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | inline styles applied to `<Bars />`'s outermost wrapping `<g>`.
-`className` |  | object |  | className applied to outermost wrapping `<g>`
-`clipPathId` |  | string |  |  * If a clip path is applied to a container element (e.g., an `<AxisChart />`), clip all children of `<MultiBars />` to that container by passing in the clip path URL id.
-`colorScale` |  | func |  | If provided and `dataAccessors.fill` is undefined, determines the color of bars.
-`data` | true | array of objects |  | Array of objects, each of which is passed as prop `datum` to a `Bar` component.
-`dataAccessors` | true | object |  | Accessors on datum objects<br />dataAccessors description: {Object}<br /> - `fill`: property on datum to provide fill (will be passed to `props.colorScale`)<br /> - `key`: unique dimension of datum (required)<br /> - `stack`: property on datum to position bars svg element rect in x-direction<br /> - `value`: property on datum to position bars svg element rect in y-direction<br /> - `layer`: property on datum to position bars svg element rect in categorical format. (grouped/stacked) <br />
-`fieldAccessors` |  | object |  | Accessors for objects within `props.data`<br />fieldAccessors description: {Object}<br /> - `color`: (optional) color data as input to color scale<br /> - `data`: data provided to child components. default: `values`<br /> - `key`: unique key to apply to child components. used as input to color scale if color field is not specified. default: `key`
-`focus` |  | object |  | The datum object corresponding to the `<Bar />` currently focused.
-`focusedClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied if `<Bar />` has focus.
-`focusedStyle` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | Inline styles applied if svg element rect has focus < br/> If an object, spread directly into inline styles. <br /> If a function, called with `props.datum` as argument and return value is spread into inline styles
-`layerDomain` |  | array of objects |  | Accessors on label objects<br />layer description: {Object}<br /> - `labelKey`: property used to access the path to label in item objects (e.g., 'name', 'properties.label')<br /> - `shapeColorKey`: property used to access the path to shape color in item objects (e.g., 'color', 'properties.color')<br /> - `shapeTypeKey`: property used to access the path to shape type in item objects (e.g., 'type', 'properties.type')
-`layerOrdinal` |  | func |  | Layer ordinal scale for categorical data within a grouped/stacked bar chart.
-`onClick` |  | func |  | onClick callback;<br />signature: (SyntheticEvent, datum, Path) => {...}
-`onMouseLeave` |  | func |  | onMouseLeave callback.;<br />signature: (SyntheticEvent, datum, Path) => {...}
-`onMouseMove` |  | func |  | onMouseMove callback.;<br />signature: (SyntheticEvent, datum, Path) => {...}
-`onMouseOver` |  | func |  | onMouseOver callback.;<br />signature: (SyntheticEvent, datum, Path) => {...}
-`orientation` |  | string |  | Orientation in which bars should be created. <br /> Defaults to vertical, but option for horizontal orientation supported
-`scales` |  | { x: func, y: func } |  |  `x` and `y` scales for positioning `<Bar />`s. Object with keys: `x`, and `y`.
-`selectedClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | Class name applied if selected.
-`selectedStyle` |  | object |  | Inline styles applied to selected `<Bar />`s. <br /> If an object, spread into inline styles. <br /> If a function, passed underlying datum corresponding to its `<Bar />` and return value spread into line styles
-`selection` |  | object or array |  | Datum object or array of datum objects corresponding to selected `<Bar />`s
-`style` |  | style [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | Base inline styles applied to `<Bar />`s. <br /> If an object, spread into inline styles.  <br /> If a function, passed underlying datum corresponding to its `<Bar />`.
-`stacked` |  | boolean |  | unused?
-
-#### \<Bars />
-`import { Bars } from 'ihme-ui'`
-
-Property | Required | Type(s) | Defaults | Description
-:---    |:---      |:---     |:---      |:---
-`align` |  | number |  | [format of scaleBand](https://github.com/d3/d3-scale/blob/master/README.md#scaleBand)<br /> Ordinal scaleBand align property. Sets the alignment of `<Bars />`s to the to the specified value which must be in the range [0, 1].
-`bandPadding` |  | number [format of scaleBand](https://github.com/d3/d3-scale/blob/master/README.md#scaleBand) |  | Ordinal scaleBand padding property. A convenience method for setting the inner and outer padding of `<Bars />`s to the same padding value
-`bandPaddingInner` |  | number [format of scaleBand](https://github.com/d3/d3-scale/blob/master/README.md#scaleBand) |  | Sets the inner padding of `<Bars />`s to the specified value which must be in the range [0, 1].
-`bandPaddingInner` |  | number [format of scaleBand](https://github.com/d3/d3-scale/blob/master/README.md#scaleBand) |  | Sets the outer padding of `<Bars />`s to the specified value which must be in the range [0, 1].
-`className` |  | object |  | Class name applied to svg element rect.
-`clipPathId` |  | string |  |  * If a clip path is applied to a container element (e.g., an `<AxisChart />`), clip all children of `<MultiBars />` to that container by passing in the clip path URL id.
-`colorScale` |  | func |  | If provided and `dataAccessors.fill` is undefined, determines the color of bars.
-`data` | true | array of objects |  | Array of objects, each of which is passed as prop `datum` to a `Bar` component.
-`dataAccessors` | true | object |  | Accessors on datum objects<br />dataAccessors description: {Object}<br /> - `fill`: property on datum to provide fill (will be passed to `props.colorScale`)<br /> - `key`: unique dimension of datum (required)<br /> - `stack`: property on datum to position bars svg element rect in x-direction<br /> - `value`: property on datum to position bars svg element rect in y-direction<br /> - `layer`: property on datum to position bars svg element rect in categorical format. (grouped/stacked) <br />
-`fill` |  | string |  |  Fill color for svg element rect.
-`focus` |  | object |  | The datum object corresponding to the `<Bar />` currently focused.
-`focusedClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied if svg element rect has focus.
-`focusedStyle` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | Inline styles applied if svg element rect has focus < br/> If an object, spread directly into inline styles. <br /> If a function, called with `props.datum` as argument and return value is spread into inline styles
-`height` |  | number |  | Height of svg element rect.
-`layerOrdinal` |  | func |  | Layer ordinal scale for categorical data within a grouped/stacked bar chart.
-`onClick` |  | func |  | onClick callback;<br />signature: (SyntheticEvent, datum, Path) => {...}
-`onMouseLeave` |  | func |  | onMouseLeave callback.;<br />signature: (SyntheticEvent, datum, Path) => {...}
-`onMouseMove` |  | func |  | onMouseMove callback.;<br />signature: (SyntheticEvent, datum, Path) => {...}
-`onMouseOver` |  | func |  | onMouseOver callback.;<br />signature: (SyntheticEvent, datum, Path) => {...}
-`orientation` |  | string |  | Orientation in which bars should be created. <br /> Defaults to vertical, but option for horizontal orientation supported
-`rectClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to each `<Bar />`
-`rectStyle` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  |  Inline styles passed to each `<Bar />`
-`scales` |  | { x: func, y: func } |  |  `x` and `y` scales for positioning `<Bar />`s. Object with keys: `x`, and `y`.
-`selectedClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | Class name applied if selected.
-`selection` |  | object or array |  | Datum object or array of datum objects corresponding to selected `<Bar />`s
-`style` |  | style [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | Base inline styles applied to `<Bar />`s. <br /> If an object, spread into inline styles.  <br /> If a function, passed underlying datum corresponding to its `<Bar />`.
-`type` |  | PropTypes.oneOf(['Stacked', 'stacked', 'Grouped', 'grouped'] |  | Type of bar chart to be created. <br />Default is a simple vertically oriented bar graph. Options for grouped and stacked are also supported.
-`grouped` |  | boolean |  | unused?
-`stacked` |  | boolean |  | unused?
-
-#### \<Bar />
+#### \<Bar/>
 `import { Bar } from 'ihme-ui'`
 
-Property | Required | Type(s) | Defaults | Description
+A low-level component representing a simple rectangle, used as a primitive element in `Bars`, `GroupedBars`, and `StackedBars`.
+
+Property | Required | Type(s) | Default | Description
 :---    |:---      |:---     |:---      |:---
 `className` |  | object |  | Class name applied to svg element rect.
 `clipPathId` |  | string |  | If a clip path is applied to a container element (e.g., an `<AxisChart />`)  clip this path to that container by passing in the clip path URL id.
-`datum` |  | object |  | Datum object corresponding to the bar. The component makes no assumptions about the shape of this object. It's only used as a parameter to client-supplied callbacks, like `onClick` and the function form of `style`.
-`fill` |  | string |  |  Fill color for svg element rect.
-`focused` |  | boolean |  | Whether svg element rect is selected.
-`focusedClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied if svg element rect has focus.
-`focusedStyle` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | Inline styles applied if svg element rect has focus < br/> If an object, spread directly into inline styles. <br /> If a function, called with `props.datum` as argument and return value is spread into inline styles
-`height` |  | number |  | Height of svg element rect.
-`onClick` |  | func |  | event handler passed to both choropleth and choropleth legend;<br />signature: (SyntheticEvent, datum, Path) => {...}
-`onMouseLeave` |  | func |  | event handler passed to both choropleth and choropleth legend;<br />signature: (SyntheticEvent, datum, Path) => {...}
-`onMouseMove` |  | func |  | event handler passed to both choropleth and choropleth legend;<br />signature: (SyntheticEvent, datum, Path) => {...}
-`onMouseOver` |  | func |  | event handler passed to both choropleth and choropleth legend;<br />signature: (SyntheticEvent, datum, Path) => {...}
-`selected` |  | boolean |  | Whether svg element rect is selected.
-`selectedClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | Class name applied if selected.
-`selectedStyle` |  | object |  | Inline styles applied to selected `<Bar />`s. <br /> If an object, spread into inline styles. <br /> If a function, passed underlying datum corresponding to its `<Bar />` and return value spread into line styles
-`style` |  | style [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | Base inline styles applied to `<Bar />`s. <br /> If an object, spread into inline styles.  <br /> If a function, passed underlying datum corresponding to its `<Bar />`.
-`width` |  | number |  | Width of svg element rect.
-`x` |  | number |  | Initial x position of svg element rect.
-`y` |  | number |  | Initial y position of svg element rect.
+`datum` |  | object |  | Datum object associated with the bar. The component makes no assumptions about the shape of this object. It's only used as a parameter to client-supplied callbacks, like `onClick` and the function form of `style`.
+`fill` |  | string | `'steelblue'` |  Fill color for svg element rect.
+`focused` |  | boolean | `false` | Whether svg element rect is selected.
+`focusedClassName` |  | [CommonPropTypes.className](../../utils/props.js#L11) | `'focused'` | className applied if svg element rect has focus.
+`focusedStyle` |  | [CommonPropTypes.style](../../utils/props.js#L11) | `{ stroke: '#000', strokeWidth: 1 }` | Inline styles applied if svg element rect has focus < br/> If an object, spread directly into inline styles. <br /> If a function, called with `props.datum` as argument and return value is spread into inline styles
+`height` | true | number |  | Height of svg element rect.
+`onClick` |  | func | no-op | event handler passed to both choropleth and choropleth legend;<br />signature: (SyntheticEvent, datum, Path) => {...}
+`onMouseLeave` |  | func | no-op | event handler passed to both choropleth and choropleth legend;<br />signature: (SyntheticEvent, datum, Path) => {...}
+`onMouseMove` |  | func | no-op | event handler passed to both choropleth and choropleth legend;<br />signature: (SyntheticEvent, datum, Path) => {...}
+`onMouseOver` |  | func | no-op | event handler passed to both choropleth and choropleth legend;<br />signature: (SyntheticEvent, datum, Path) => {...}
+`selected` |  | boolean | `false` | Whether svg element rect is selected.
+`selectedClassName` |  | [CommonPropTypes.className](../../utils/props.js#L11) | `'selected'` | Class name applied if selected.
+`selectedStyle` |  | object | `{ stroke: '#000', strokeWidth: 1 }` | Inline styles applied to selected `<Bar/>`s. <br /> If an object, spread into inline styles. <br /> If a function, passed underlying datum corresponding to its `<Bar/>` and return value spread into line styles
+`style` |  | style [CommonPropTypes.style](../../utils/props.js#L11) | `{}` | Base inline styles applied to `<Bar/>`s. <br /> If an object, spread into inline styles.  <br /> If a function, passed underlying datum corresponding to its `<Bar/>`.
+`width` | true | number |  | Width of svg element rect.
+`x` | true | number |  | Initial x position of svg element rect.
+`y` | true | number |  | Initial y position of svg element rect.
+
+---
+
+#### Common Props for \<Bars/>, \<GroupedBars/>, and \<StackedBars/>
+
+Property | Required | Type(s) | Default | Description
+:---    |:---      |:---     |:---      |:---
+`align` |  | number | 0.5 | Alignment of each bar within its band. If there is any padding between bars, this property specifies how that space will be allocated. The value must be in the range [0, 1], where: <br/> - 0 represents left alignment <br/> - 0.5 represents center alignment <br/> - 1 represents right alignment <br/> See: https://github.com/d3/d3-scale/blob/master/README.md#band_align
+`bandPadding` |  | number | 0.05 | A convenience for setting the `bandPaddingInner` and `bandPaddingOuter` to the same value. See: https://github.com/d3/d3-scale/blob/master/README.md#band_padding
+`bandPaddingInner` |  | number | 0.05 | Padding between bars, specified as a proportion of the band width (i.e. the space allocated for each bar). The value must be in the range [0, 1], where: <br/> - 0 represents no padding between bars <br/> - 0.5 represents padding of the same width as the bars <br/> - 1 represents all padding, giving bars a width of 0 (probably not very useful) <br/> See: https://github.com/d3/d3-scale/blob/master/README.md#band_paddingInner
+`bandPaddingOuter` |  | number | 0.05 | Padding before the first bar and after the last bar, specified as a proportion (or multiple) of the band width (i.e. the space allocated for each bar). See: https://github.com/d3/d3-scale/blob/master/README.md#band_paddingOuter
+`categories` | true | string[] or number[] | | List of category names used in the bar chart. Categories are arrayed across the domain. For a normal bar chart, each category is represented by a single bar. For stacked bars, each category is represented by a single stack. For grouped bars, each category is represented by a single group.
+`className` |  | object |  | className applied to outermost wrapping `<g>`
+`clipPathId` |  | string |  | If a clip path is applied to a container element, clip all children to that container by passing in the clip path URL id.
+`colorScale` |  | func |  | If `colorScale` and `dataAccessors.fill` are both provided, they will be used to determine the fill color for each bar as follows: <br/> (1) `dataAccessors.fill` will be used to obtain some value from the `datum`. <br/> (2) The `colorScale` function will be called with this value and should return a string representing the color (e.g. in hex, rgb, or rgba format). If these props are not provided, `fill` will be used for the fill color instead.
+`data` | true | array of objects |  | Array of datum objects. A datum object can be just about anything. The only restriction is that it must be possible to obtain the category and value (and, for grouped or stacked bar charts, the subcategory) of each datum using the `dataAccessors`.
+`fill` |  | string | 'steelblue' | If `colorScale` and `dataAccessors.fill` are not provided, each bar will get this same fill value..
+`focus` |  | object |  | the datum object corresponding to the `<Bar/>` currently focused
+`focusedClassName` |  | [CommonPropTypes.className](../../utils/props.js#L11) |  | className applied if `<Bar/>` has focus
+`focusedStyle` |  | [CommonPropTypes.style](../../utils/props.js#L11) |  | inline styles applied to focused `<Bar/>`. If an object, spread into inline styles. If a function, passed underlying datum corresponding to its `<Bar/>`, and return value is spread into inline styles. <br/> `signature: (datum) => obj`
+`height` | true | number |  | height, in pixels, of bar chart
+`width` | true | number | | width, in pixels, of bar chart
+`onClick` |  | func | no-op | onClick callback applied to each `<Bar/>`. <br/> signature: (SyntheticEvent, datum, instance) => {...}
+`onMouseLeave` |  | func | no-op | onMouseLeave callback applied to each `<Bar/>`. <br/> signature: (SyntheticEvent, datum, instance) => {...}
+`onMouseMove` |  | func | no-op | onMouseMove callback applied to each `<Bar/>`. <br/> signature: (SyntheticEvent, datum, instance) => {...}
+`onMouseOver` |  | func | no-op | onMouseOver callback applied to each `<Bar/>`. <br/> signature: (SyntheticEvent, datum, instance) => {...}
+`orientation` |  | `'vertical'` or `'horizontal'` | `'vertical'` | orientation of bar chart, representing the direction in which bars extend from the domain axis
+`rangeMax` | | number | | maximum value (on the range axis) the chart needs to support. If not provided, it will be computed from the data.
+`rectClassName` |  | [CommonPropTypes.className](../../utils/props.js#L11) |  | className applied to each `<Bar/>`
+`rectStyle` |  | [CommonPropTypes.style](../../utils/props.js#L11) |  |  inline styles passed to each `<Bar/>`
+`scales` |  | `{ x: func, y: func }` |  |  Object with keys: `x`, and `y`, representing D3 scaling functions used for positioning `<Bar/>`s. The domain axis is assumed to use a band scale, the range axis a linear scale. See: <br/> - https://github.com/d3/d3-scale/blob/master/README.md#band-scales <br/> - https://github.com/d3/d3-scale/blob/master/README.md#linear-scales <br/> `scales` is an optional low-level interface designed to integrate with AxisChart, which passes this prop to its children. If not provided, appropriate scaling functions will be computed based on the `data` and the chart `height` and `width`.
+`selectedClassName` |  | [CommonPropTypes.className](../../utils/props.js#L11) |  | className applied to `<Bar/>`s if selected
+`selectedStyle` | | [CommonPropTypes.style](../../utils/props.js#L11) | | inline styles applied to selected `<Bar/>`s. If an object, spread into inline styles. If a function, passed underlying datum corresponding to its `<Bar/>`, and return value is spread into inline styles. `signature: (datum) => obj`
+`selection` |  | object or array |  | datum object or array of datum objects corresponding to selected `<Bar/>`s
+`style` |  | [CommonPropTypes.style](../../utils/props.js#L11) |  | inline styles applied to wrapping `<g>` element
+
+---
+
+#### \<Bars/>
+`import { Bars } from 'ihme-ui'`
+
+Creates the bars for a conventional bar chart (i.e. one bar for each category)
+
+Property | Required | Type(s) | Default | Description
+:---    |:---      |:---     |:---      |:---
+`dataAccessors` | true | { fill: [CommonPropTypes.dataAccessor](../../utils/props.js#L30), category: [CommonPropTypes.dataAccessor](../../utils/props.js#L30), value: [CommonPropTypes.dataAccessor](../../utils/props.js#L30) } | | Accessors on datum objects: <br/> - `fill`: used to compute the bar's fill color (the result will be passed to `props.colorScale`) <br/> - `category` (req): used to determine the bar's category (to plot it on the chart domain) <br/> - `value` (req): used to obtain the bar's data value (to plot it on the chart range) <br/> Each accessor can either be a string or function. If a string, it is assumed to be the name of a property on datum objects; full paths to nested properties are supported (e.g. `{ x: 'values.year', ... }`). If a function, it is passed the datum as its first and only argument.
+
+---
+
+#### \<GroupedBars/>
+`import { GroupedBars } from 'ihme-ui'`
+
+Creates the bars for a grouped bar chart. Each category represents a group, and each subcategory represents a single bar in each group.
+
+Property | Required | Type(s) | Default | Description
+:---    |:---      |:---     |:---      |:---
+`bandPaddingGroup` | | number | 0.02 | Padding between the bars of each group, specified as a proportion of the band width (i.e. the space allocated for each group).
+`dataAccessors` | true | { fill: [CommonPropTypes.dataAccessor](../../utils/props.js#L30), category: [CommonPropTypes.dataAccessor](../../utils/props.js#L30), subcategory: [CommonPropTypes.dataAccessor](../../utils/props.js#L30), value: [CommonPropTypes.dataAccessor](../../utils/props.js#L30) } | | Accessors on datum objects: <br/> - fill: used to compute the bar's fill color (the result will be passed to `props.colorScale`) <br/> - category (req): used to determine the bar's group (to plot it on the chart domain) <br/> - subcategory (req): used to determine the bar's subcategory within its group <br/> - value (req): used to obtain the bar's data value (to plot it on the chart range) <br/> Each accessor can either be a string or function. If a string, it is assumed to be the name of a property on datum objects; full paths to nested properties are supported (e.g. `{ x: 'values.year', ... }`). If a function, it is passed the datum as its first and only argument.
+`subcategories` | true | string[] or number[] | | List of subcategory names used in the bar chart. In a grouped bar chart, each group contains a bar for each subcategory.
+
+---
+
+#### \<StackedBars/>
+`import { StackedBars } from 'ihme-ui'`
+
+Creates the bars for a stacked bar chart. Each category represents a stack, and each subcategory represents a layer in each stack.
+
+Property | Required | Type(s) | Default | Description
+:---    |:---      |:---     |:---      |:---
+`dataAccessors` | true | { fill: [CommonPropTypes.dataAccessor](../../utils/props.js#L30), category: [CommonPropTypes.dataAccessor](../../utils/props.js#L30), subcategory: [CommonPropTypes.dataAccessor](../../utils/props.js#L30), value: [CommonPropTypes.dataAccessor](../../utils/props.js#L30) } | | Accessors on datum objects: <br/> - fill: used to compute the bar's fill color (the result will be passed to `props.colorScale`) <br/> - category (req): used to determine the bar's stack (to plot it on the chart domain) <br/> - subcategory (req): used to determine the bar's layer within its stack <br/> - value (req): used to obtain the bar's data value (to plot it on the chart range) <br/> Each accessor can either be a string or function. If a string, it is assumed to be the name of a property on datum objects; full paths to nested properties are supported (e.g. `{ x: 'values.year', ... }`). If a function, it is passed the datum as its first and only argument.
+`subcategories` | true | string[] or number[] | | List of subcategory names used in the bar chart. In a stacked bar chart, each stack contains a layer for each subcategory.

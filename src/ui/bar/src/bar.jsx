@@ -7,6 +7,9 @@ import * as util from '../../../utils';
 
 /**
  * `import { Bar } from 'ihme-ui'`
+ *
+ * A low-level component representing a simple rectangle, used as a primitive element in `Bars`,
+ * `GroupedBars`, and `StackedBars`.
  */
 export default class Bar extends React.PureComponent {
   constructor(props) {
@@ -126,7 +129,9 @@ Bar.propTypes = {
   clipPathId: PropTypes.string,
 
   /**
-   * Datum object corresponding to svg element rect ("bound" data, in the language in D3)
+   * Datum object associated with the bar. The component makes no assumptions about the shape of
+   * this object. It's only used as a parameter to client-supplied callbacks, like `onClick` and
+   * the function form of `style`.
    */
   datum: PropTypes.object,
 
@@ -156,7 +161,7 @@ Bar.propTypes = {
   /**
    * Height of svg element rect.
    */
-  height: PropTypes.number,
+  height: PropTypes.number.isRequired,
 
   /**
    * onClick callback.
@@ -211,17 +216,17 @@ Bar.propTypes = {
   /**
    * Width of svg element rect.
    */
-  width: PropTypes.number,
+  width: PropTypes.number.isRequired,
 
   /**
    * Initial x position of svg element rect.
    */
-  x: PropTypes.number,
+  x: PropTypes.number.isRequired,
 
   /**
    * Initial y position of svg element rect.
    */
-  y: PropTypes.number,
+  y: PropTypes.number.isRequired,
 };
 
 Bar.defaultProps = {
@@ -238,7 +243,7 @@ Bar.defaultProps = {
   onMouseOver: CommonDefaultProps.noop,
   selected: false,
   selectedClassName: 'selected',
-  selectedStyles: {
+  selectedStyle: {
     stroke: '#000',
     strokeWidth: 1,
   },

@@ -10,6 +10,9 @@ import commonProps from './commonProps';
 
 /**
  * `import { GroupedBars } from 'ihme-ui'`
+ *
+ * Creates the bars for a grouped bar chart.
+ * Each category represents a group, and each subcategory represents a single bar in each group.
  */
 export default class GroupedBars extends React.PureComponent {
   constructor(props) {
@@ -155,12 +158,12 @@ GroupedBars.propTypes = {
 };
 
 GroupedBars.defaultProps = {
+  bandPadding: 0.05,
+  bandPaddingGroup: 0.01,
   fill: 'steelblue',
   onClick: CommonDefaultProps.noop,
   onMouseLeave: CommonDefaultProps.noop,
   onMouseMove: CommonDefaultProps.noop,
   onMouseOver: CommonDefaultProps.noop,
-  bandPadding: 0.05,
-  bandPaddingGroup: 0.01,
   orientation: 'vertical',
 };
