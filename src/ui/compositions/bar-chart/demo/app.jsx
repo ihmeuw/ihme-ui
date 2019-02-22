@@ -12,7 +12,7 @@ const yearField = 'year_id';
 const populationField = 'population';
 const locationField = 'location';
 
-const years = [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009];
+const years = [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007];
 
 const locations = [
   'Brazil',
@@ -100,7 +100,7 @@ class App extends React.Component {
             }}
             focus={this.state.focus}
             labelAccessors={{
-              title: "Population Between 2000-2009",
+              title: "Brazil Population, 2000-2007",
               yLabel: "Population",
               xLabel: "Year"
             }}
@@ -124,7 +124,7 @@ class App extends React.Component {
             }}
             focus={this.state.focus}
             labelAccessors={{
-              title: "Population Between 2000-2009",
+              title: "Brazil Population, 2000-2007",
               xLabel: "Population",
               yLabel: "Year"
             }}
@@ -156,7 +156,7 @@ class App extends React.Component {
             fill={(datum) => colorScale(datum[yearField])}
             focus={this.state.focus}
             labelAccessors={{
-              title: "Population Between 2000-2009",
+              title: "Population, 2000-2007",
               yLabel: "Population",
               xLabel: "Country"
             }}
@@ -185,7 +185,7 @@ class App extends React.Component {
             fill={(datum) => colorScale(datum[yearField])}
             focus={this.state.focus}
             labelAccessors={{
-              title: "Population Between 2000-2009",
+              title: "Population, 2000-2007",
               yLabel: "Country",
               xLabel: "Population"
             }}
@@ -219,7 +219,7 @@ class App extends React.Component {
             fill={(datum) => colorScale(datum[yearField])}
             focus={this.state.focus}
             labelAccessors={{
-              title: "Population Between 2000-2009",
+              title: "Population, 2000-2007",
               yLabel: "Population",
               xLabel: "Country"
             }}
@@ -262,7 +262,7 @@ class App extends React.Component {
             fill={(datum) => colorScale(datum[yearField])}
             focus={this.state.focus}
             labelAccessors={{
-              title: "Population Between 2000-2009",
+              title: "Population, 2000-2007",
               yLabel: "Country",
               xLabel: "Population"
             }}
