@@ -111,13 +111,13 @@ export function computeDomainScale(categories, orientation, spaceAvailable) {
  *
  * @param scale : a function that computes the bar's position on the domain axis
  * @param align : Represents the alignment properties for the ordinal scale bandwidth
- * @param bandPaddingInner : Represents the inner band padding property for the ordinal scale bandwidth
- * @param bandPaddingOuter : Represents the outter band padding property for the ordinal scale bandwidth
+ * @param innerPadding : Represents the inner band padding property for the ordinal scale bandwidth
+ * @param outerPadding : Represents the outter band padding property for the ordinal scale bandwidth
  * @returns {function} : Returns a function that represents the ordinal scale for chart
  */
-export function adjustDomainScale(scale, align, bandPaddingInner, bandPaddingOuter) {
-  scale.paddingInner(bandPaddingInner);
-  scale.paddingOuter(bandPaddingOuter);
+export function adjustDomainScale(scale, align, innerPadding, outerPadding) {
+  scale.paddingInner(innerPadding);
+  scale.paddingOuter(outerPadding);
   if (align) {
     scale.align(align);
   }
@@ -127,8 +127,8 @@ export function adjustDomainScale(scale, align, bandPaddingInner, bandPaddingOut
 export function getDomainScale({
   align,
   bandPadding,
-  bandPaddingInner,
-  bandPaddingOuter,
+  innerPadding,
+  outerPadding,
   categories,
   orientation,
   scales,
@@ -148,8 +148,8 @@ export function getDomainScale({
   return adjustDomainScale(
     domainScale,
     align,
-    !isUndefined(bandPaddingInner) ? bandPaddingInner : bandPadding,
-    !isUndefined(bandPaddingOuter) ? bandPaddingOuter : bandPadding,
+    !isUndefined(innerPadding) ? innerPadding : bandPadding,
+    !isUndefined(outerPadding) ? outerPadding : bandPadding,
   );
 }
 

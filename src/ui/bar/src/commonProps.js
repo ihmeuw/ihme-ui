@@ -18,7 +18,7 @@ export default {
   align: PropTypes.number,
 
   /**
-   * A convenience for setting the `bandPaddingInner` and `bandPaddingOuter` to the same value.
+   * A convenience for setting the `innerPadding` and `outerPadding` to the same value.
    *
    * See: https://github.com/d3/d3-scale/blob/master/README.md#band_padding
    */
@@ -33,7 +33,7 @@ export default {
    *
    * See: https://github.com/d3/d3-scale/blob/master/README.md#band_paddingInner
    */
-  bandPaddingInner: PropTypes.number,
+  innerPadding: PropTypes.number,
 
   /**
    * Padding before the first bar and after the last bar, specified as a proportion (or multiple)
@@ -41,7 +41,7 @@ export default {
    *
    * See: https://github.com/d3/d3-scale/blob/master/README.md#band_paddingOuter
    */
-  bandPaddingOuter: PropTypes.number,
+  outerPadding: PropTypes.number,
 
   /**
    * List of category names used in the bar chart. Categories are arrayed across the domain.

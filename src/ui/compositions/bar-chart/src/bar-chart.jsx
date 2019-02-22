@@ -105,13 +105,16 @@ export default class BarChart extends React.PureComponent {
 
   renderBars() {
     const {
-      type,
-      chartStyle,
+      bandInnerGroupPadding: innerGroupPadding,
+      bandInnerPadding: innerPadding,
+      bandOuterPadding: outerPadding,
+      chartStyle: style,
       onClick = this.onClick,
+      type,
     } = this.props;
 
     const {
-      selectedItems,
+      selectedItems: selection,
     } = this.state;
 
     const rangeMax = this.computeRangeMax();
@@ -119,8 +122,6 @@ export default class BarChart extends React.PureComponent {
     const childProps = pick(this.props, [
       'align',
       'bandPadding',
-      'bandPaddingInner',
-      'bandPaddingOuter',
       'categories',
       'subcategories',
       'data',
@@ -133,38 +134,27 @@ export default class BarChart extends React.PureComponent {
       'orientation',
     ]);
 
+    const commonProps = {
+      innerPadding,
+      outerPadding,
+      focusedStyle: FOCUSED_STYLE,
+      onClick,
+      rangeMax,
+      selection,
+      style,
+    };
+
     switch (type) {
       case 'normal':
-        return (
-          <Bars
-            focusedStyle={FOCUSED_STYLE}
-            onClick={onClick}
-            rangeMax={rangeMax}
-            selection={selectedItems}
-            style={chartStyle}
-            {...childProps}
-          />
-        );
+        return <Bars {...childProps} {...commonProps} />;
+      case 'stacked':
+        return <StackedBars {...childProps} {...commonProps} />;
       case 'grouped':
         return (
           <GroupedBars
-            focusedStyle={FOCUSED_STYLE}
-            onClick={onClick}
-            rangeMax={rangeMax}
-            style={chartStyle}
-            selection={selectedItems}
+            innerGroupPadding={innerGroupPadding}
             {...childProps}
-          />
-        );
-      case 'stacked':
-        return (
-          <StackedBars
-            focusedStyle={FOCUSED_STYLE}
-            onClick={onClick}
-            rangeMax={rangeMax}
-            style={chartStyle}
-            selection={selectedItems}
-            {...childProps}
+            {...commonProps}
           />
         );
       default:
@@ -234,18 +224,24 @@ BarChart.propTypes = {
   bandPadding: PropTypes.number,
 
   /**
+   * Padding between the bars of each group, specified as a proportion of the band width (i.e. the
+   * space allocated for each group). Only used for a grouped bar chart.
+   */
+  bandInnerGroupPadding: PropTypes.number,
+
+  /**
    * Ordinal scaleBand paddingInner property. Sets the inner padding of `<Bars />`s to the
    * specified value which must be in the range [0, 1].
    * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
    */
-  bandPaddingInner: PropTypes.number,
+  bandInnerPadding: PropTypes.number,
 
   /**
    * Ordinal scaleBand paddingOuter property. Sets the outer padding of `<Bars />`s to the
    * specified value which must be in the range [0, 1].
    * See https://github.com/d3/d3-scale/blob/master/README.md#scaleBand for reference.
    */
-  bandPaddingOuter: PropTypes.number,
+  bandOuterPadding: PropTypes.number,
 
   /**
    * inline styles applied to div wrapping the chart

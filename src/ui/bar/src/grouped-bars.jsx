@@ -23,7 +23,7 @@ export default class GroupedBars extends React.PureComponent {
 
   render() {
     const {
-      bandPaddingGroup,
+      innerGroupPadding,
       className,
       clipPathId,
       data,
@@ -58,7 +58,7 @@ export default class GroupedBars extends React.PureComponent {
     const domainScale = util.getDomainScale(this.props);
     const rangeScale = util.getRangeScale(this.props);
     const totalBandwidth = domainScale.bandwidth();
-    const bandPaddingPx = bandPaddingGroup * totalBandwidth;
+    const bandPaddingPx = innerGroupPadding * totalBandwidth;
     const bandwidth = (totalBandwidth - bandPaddingPx * (subgroups.length - 1)) / subgroups.length;
 
     function getDomainOffset(group, subgroup) {
@@ -120,7 +120,7 @@ GroupedBars.propTypes = {
    * Padding between the bars of each group, specified as a proportion of the band width (i.e. the
    * space allocated for each group).
    */
-  bandPaddingGroup: PropTypes.number,
+  innerGroupPadding: PropTypes.number,
 
   /**
    * Accessors on datum objects:
@@ -151,7 +151,7 @@ GroupedBars.propTypes = {
 
 GroupedBars.defaultProps = {
   bandPadding: 0.05,
-  bandPaddingGroup: 0.01,
+  innerGroupPadding: 0.01,
   onClick: CommonDefaultProps.noop,
   onMouseLeave: CommonDefaultProps.noop,
   onMouseMove: CommonDefaultProps.noop,
