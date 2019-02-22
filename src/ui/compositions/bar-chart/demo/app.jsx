@@ -44,59 +44,11 @@ const STYLE = {
 
 const colorScale = scaleOrdinal(schemeCategory10);
 
-// create items given the data and the fields specified
-const legendItems = [
-  {
-    label: '2000',
-    shapeColor: colorScale('2000'),
-    shapeType: 'square'
-  },
-  {
-    label: '2001',
-    shapeColor: colorScale('2001'),
-    shapeType: 'square'
-  },
-  {
-    label: '2002',
-    shapeColor: colorScale('2002'),
-    shapeType: 'square'
-  },
-  {
-    label: '2003',
-    shapeColor: colorScale('2003'),
-    shapeType: 'square'
-  },
-  {
-    label: '2004',
-    shapeColor: colorScale('2004'),
-    shapeType: 'square'
-  },
-  {
-    label: '2005',
-    shapeColor: colorScale('2005'),
-    shapeType: 'square'
-  },
-  {
-    label: '2006',
-    shapeColor: colorScale('2006'),
-    shapeType: 'square'
-  },
-  {
-    label: '2007',
-    shapeColor: colorScale('2007'),
-    shapeType: 'square'
-  },
-  {
-    label: '2008',
-    shapeColor: colorScale('2008'),
-    shapeType: 'square'
-  },
-  {
-    label: '2009',
-    shapeColor: colorScale('2009'),
-    shapeType: 'square'
-  }
-];
+const legendItems = years.map((year) => ({
+  label: year,
+  shapeColor: colorScale(year),
+  shapeType: 'square',
+}));
 
 class App extends React.Component {
   constructor(props) {
