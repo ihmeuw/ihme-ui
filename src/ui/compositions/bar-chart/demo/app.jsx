@@ -31,7 +31,9 @@ const data = dataGenerator({
   ],
   valueKeys: [
     { name: populationField, range: [100, 900], uncertainty: true }
-  ]
+  ],
+  year: years[0],
+  length: years.length,
 });
 
 const brazilData = data.filter(({ location }) => location === 'Brazil');
