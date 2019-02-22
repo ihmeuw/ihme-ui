@@ -24,7 +24,6 @@ export default class Bars extends React.PureComponent {
     const {
       className,
       clipPathId,
-      colorScale,
       data,
       dataAccessors,
       fill,
@@ -60,10 +59,6 @@ export default class Bars extends React.PureComponent {
         style={this.combineStyles(style, data)}
       >
         {data.map((datum) => {
-          const fillValue =
-            colorScale && dataAccessors.fill
-            ? colorScale(util.propResolver(datum, dataAccessors.fill))
-            : fill;
           const category = util.propResolver(datum, dataAccessors.category);
           const value = util.propResolver(datum, dataAccessors.value);
 
@@ -83,7 +78,7 @@ export default class Bars extends React.PureComponent {
               y={y}
               height={barHeight}
               width={barWidth}
-              fill={fillValue}
+              fill={typeof fill === 'function' ? fill(datum) : fill}
               focused={focus === datum}
               selected={selection.includes(datum)}
               style={rectStyle}
@@ -106,9 +101,8 @@ Bars.propTypes = {
 
   /**
    * Accessors on datum objects:
-   *   fill: used to compute the bar's fill color (the result will be passed to `props.colorScale`)
-   *   category (req): used to determine the bar's category (to plot it on the chart domain)
-   *   value (req): used to obtain the bar's data value (to plot it on the chart range)
+   *   category: used to determine the bar's category (to plot it on the chart domain)
+   *   value: used to obtain the bar's data value (to plot it on the chart range)
    *
    * Each accessor can either be a string or function.
    * If a string, it is assumed to be the name of a property on datum objects; full paths to nested
@@ -116,7 +110,6 @@ Bars.propTypes = {
    * If a function, it is passed the datum as its first and only argument.
    */
   dataAccessors: PropTypes.shape({
-    fill: CommonPropTypes.dataAccessor,
     category: CommonPropTypes.dataAccessor.isRequired,
     value: CommonPropTypes.dataAccessor.isRequired,
   }).isRequired,
@@ -124,7 +117,6 @@ Bars.propTypes = {
 
 Bars.defaultProps = {
   bandPadding: 0.05,
-  fill: 'steelblue',
   onClick: CommonDefaultProps.noop,
   onMouseLeave: CommonDefaultProps.noop,
   onMouseMove: CommonDefaultProps.noop,

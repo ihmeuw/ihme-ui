@@ -26,10 +26,8 @@ export default class GroupedBars extends React.PureComponent {
       bandPaddingGroup,
       className,
       clipPathId,
-      colorScale,
       data,
       dataAccessors: {
-        fill: fillAccessor,
         category: groupAccessor,
         subcategory: subgroupAccessor,
         value: valueAccessor,
@@ -77,10 +75,6 @@ export default class GroupedBars extends React.PureComponent {
         style={this.combineStyles(style, data)}
       >
         {data.map((datum) => {
-          const fillValue =
-            colorScale && fillAccessor
-            ? colorScale(util.propResolver(datum, fillAccessor))
-            : fill;
           const group = util.propResolver(datum, groupAccessor);
           const subgroup = util.propResolver(datum, subgroupAccessor);
           const value = util.propResolver(datum, valueAccessor);
@@ -101,7 +95,7 @@ export default class GroupedBars extends React.PureComponent {
               y={y}
               height={barHeight}
               width={barWidth}
-              fill={fillValue}
+              fill={typeof fill === 'function' ? fill(datum) : fill}
               focused={focus === datum}
               selected={selection.includes(datum)}
               style={rectStyle}
@@ -130,10 +124,9 @@ GroupedBars.propTypes = {
 
   /**
    * Accessors on datum objects:
-   *   fill: used to compute the bar's fill color (the result will be passed to `props.colorScale`)
-   *   category (req): used to determine the bar's group (to plot it on the chart domain)
-   *   subcateogry (req): used to determine the bar's subcategory within its group
-   *   value (req): used to obtain the bar's data value (to plot it on the chart range)
+   *   category: used to determine the bar's group (to plot it on the chart domain)
+   *   subcateogry: used to determine the bar's subcategory within its group
+   *   value: used to obtain the bar's data value (to plot it on the chart range)
    *
    * Each accessor can either be a string or function.
    * If a string, it is assumed to be the name of a property on datum objects; full paths to nested
@@ -141,15 +134,14 @@ GroupedBars.propTypes = {
    * If a function, it is passed the datum as its first and only argument.
    */
   dataAccessors: PropTypes.shape({
-    fill: CommonPropTypes.dataAccessor,
     category: CommonPropTypes.dataAccessor.isRequired,
     subcategory: CommonPropTypes.dataAccessor.isRequired,
     value: CommonPropTypes.dataAccessor.isRequired,
   }).isRequired,
 
   /**
-   * List of subcategory names used in the bar chart. In a grouped bar chart, each group contains
-   * a bar for each subcategory.
+   * List of subcategory names used in the bar chart.
+   * In a grouped bar chart, each group contains a bar for each subcategory.
    */
   subcategories: PropTypes.arrayOf(PropTypes.oneOfType([
     PropTypes.string,
@@ -160,7 +152,6 @@ GroupedBars.propTypes = {
 GroupedBars.defaultProps = {
   bandPadding: 0.05,
   bandPaddingGroup: 0.01,
-  fill: 'steelblue',
   onClick: CommonDefaultProps.noop,
   onMouseLeave: CommonDefaultProps.noop,
   onMouseMove: CommonDefaultProps.noop,

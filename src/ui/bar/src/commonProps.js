@@ -66,17 +66,6 @@ export default {
   clipPathId: PropTypes.string,
 
   /**
-   * If `colorScale` and `dataAccessors.fill` are both provided, they will be used to determine
-   * the fill color for each bar as follows:
-   * (1) `dataAccessors.fill` will be used to obtain some value from the `datum`.
-   * (2) The `colorScale` function will be called with this value and should return a string
-   * representing the color (e.g. in hex, rgb, or rgba format).
-   *
-   * If these props are not provided, `fill` will be used for the fill color instead.
-   */
-  colorScale: PropTypes.func,
-
-  /**
    * Array of datum objects. A datum object can be just about anything. The only restriction is
    * that it must be possible to obtain the category and value (and, for grouped or stacked bar
    * charts, the subcategory) of each datum using the `dataAccessors`.
@@ -84,10 +73,10 @@ export default {
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
 
   /**
-   * If `colorScale` and `dataAccessors.fill` are not provided, each bar will get this same fill
-   * value.
+   * either a string representing the fill color (in which case the same color is used for all bars)
+   * or a function taking the `datum` and returning a string representing the fill color
    */
-  fill: PropTypes.string,
+  fill: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
 
   /**
    * the datum object corresponding to the `<Bar />` currently focused

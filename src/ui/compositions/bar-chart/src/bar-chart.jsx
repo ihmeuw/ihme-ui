@@ -123,7 +123,6 @@ export default class BarChart extends React.PureComponent {
       'bandPaddingOuter',
       'categories',
       'subcategories',
-      'colorScale',
       'data',
       'dataAccessors',
       'fill',
@@ -254,11 +253,6 @@ BarChart.propTypes = {
   chartStyle: PropTypes.object,
 
   /**
-   * If provided will determine color of rendered `<Bar />`s
-   */
-  colorScale: PropTypes.func,
-
-  /**
    * applied to chart-container
    */
   className: PropTypes.string,
@@ -270,7 +264,6 @@ BarChart.propTypes = {
 
   /**
    * Accessors on datum objects
-   *   fill: property on datum to provide fill (will be passed to `props.colorScale`)
    *   key: unique dimension of datum (required)
    *   stack: property on datum to position bars svg element rect in x-direction
    *   value: property on datum to position bars svg element rect in y-direction
@@ -293,9 +286,10 @@ BarChart.propTypes = {
   displayLegend: PropTypes.bool,
 
   /**
-   * If `props.colorScale` is undefined, each `<Bar />` will be given this same fill value.
+   * either a string representing the fill color (in which case the same color is used for all bars)
+   * or a function taking the `datum` and returning a string representing the fill color
    */
-  fill: PropTypes.string,
+  fill: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
 
   /**
    * The datum object corresponding to the `<Bar />` currently focused.
