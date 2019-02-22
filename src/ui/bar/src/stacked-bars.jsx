@@ -31,6 +31,7 @@ export default class StackedBars extends React.PureComponent {
         subcategory: layerAccessor,
         value: valueAccessor,
       },
+      fill,
       focus,
       orientation,
       rectClassName,
@@ -73,10 +74,13 @@ export default class StackedBars extends React.PureComponent {
         style={this.combineStyles(style, data)}
       >
         {data.map((datum) => {
+          const fillValue =
+            colorScale && fillAccessor
+            ? colorScale(util.propResolver(datum, fillAccessor))
+            : fill;
           const stack = util.propResolver(datum, stackAccessor);
           const layer = util.propResolver(datum, layerAccessor);
           const key = util.computeStackDatumKey(stack, layer);
-          const fillValue = util.propResolver(datum, fillAccessor);
           const [start, end] = offsetMap[key];
 
           /* eslint-disable no-multi-spaces */
@@ -95,7 +99,7 @@ export default class StackedBars extends React.PureComponent {
               y={y}
               height={barHeight}
               width={barWidth}
-              fill={colorScale && isFinite(fillValue) && colorScale(fillValue)}
+              fill={fillValue}
               focused={focus === datum}
               selected={selection.includes(datum)}
               style={rectStyle}

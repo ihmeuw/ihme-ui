@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import isFinite from 'lodash/isFinite';
 import pick from 'lodash/pick';
 
 import * as util from '../../../utils';
@@ -58,7 +57,10 @@ export default class Bars extends React.PureComponent {
         style={this.combineStyles(style, data)}
       >
         {data.map((datum) => {
-          const fillValue = util.propResolver(datum, dataAccessors.fill);
+          const fillValue =
+            colorScale && dataAccessors.fill
+            ? colorScale(util.propResolver(datum, dataAccessors.fill))
+            : fill;
           const category = util.propResolver(datum, dataAccessors.category);
           const value = util.propResolver(datum, dataAccessors.value);
 
@@ -78,7 +80,7 @@ export default class Bars extends React.PureComponent {
               y={y}
               height={barHeight}
               width={barWidth}
-              fill={colorScale && (isFinite(fillValue) ? colorScale(fillValue) : fill)}
+              fill={fillValue}
               focused={focus === datum}
               selected={selection.includes(datum)}
               style={rectStyle}
