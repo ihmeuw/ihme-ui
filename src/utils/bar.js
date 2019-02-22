@@ -118,9 +118,7 @@ export function computeDomainScale(categories, orientation, spaceAvailable) {
 export function adjustDomainScale(scale, align, innerPadding, outerPadding) {
   scale.paddingInner(innerPadding);
   scale.paddingOuter(outerPadding);
-  if (align) {
-    scale.align(align);
-  }
+  scale.align(align);
   return scale;
 }
 

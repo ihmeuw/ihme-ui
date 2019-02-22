@@ -146,6 +146,7 @@ StackedBars.propTypes = {
 };
 
 StackedBars.defaultProps = {
+  align: 0.5,
   bandPadding: 0.05,
   onClick: CommonDefaultProps.noop,
   onMouseLeave: CommonDefaultProps.noop,

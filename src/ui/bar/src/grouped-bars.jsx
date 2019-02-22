@@ -150,6 +150,7 @@ GroupedBars.propTypes = {
 };
 
 GroupedBars.defaultProps = {
+  align: 0.5,
   bandPadding: 0.05,
   innerGroupPadding: 0.01,
   onClick: CommonDefaultProps.noop,
