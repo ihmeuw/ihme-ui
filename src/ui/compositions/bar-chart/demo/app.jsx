@@ -91,6 +91,7 @@ class App extends React.Component {
         <section>
           <h3>Normal Bar Chart Vertical Orientation</h3>
           <BarChart
+            title="Brazil Population, 2000-2007"
             categories={years}
             chartStyle={STYLE}
             data={brazilData}
@@ -99,10 +100,9 @@ class App extends React.Component {
               value: populationField,
             }}
             focus={this.state.focus}
-            labelAccessors={{
-              title: "Brazil Population, 2000-2007",
-              yLabel: "Population",
-              xLabel: "Year"
+            axisLabels={{
+              domain: "Year",
+              range: "Population",
             }}
             onClick={this.onClick}
             onMouseLeave={this.onMouseLeave}
@@ -115,6 +115,7 @@ class App extends React.Component {
         <section>
           <h3>Normal Bar Chart Horizontal Orientation</h3>
           <BarChart
+            title="Brazil Population, 2000-2007"
             categories={years}
             chartStyle={STYLE}
             data={brazilData}
@@ -123,10 +124,9 @@ class App extends React.Component {
               value: populationField,
             }}
             focus={this.state.focus}
-            labelAccessors={{
-              title: "Brazil Population, 2000-2007",
-              xLabel: "Population",
-              yLabel: "Year"
+            axisLabels={{
+              domain: "Year",
+              range: "Population",
             }}
             onClick={this.onClick}
             onMouseLeave={this.onMouseLeave}
@@ -144,6 +144,7 @@ class App extends React.Component {
         <section>
           <h3>Grouped Bar Chart Vertical Orientation</h3>
           <BarChart
+            title="Population, 2000-2007"
             categories={locations}
             subcategories={years}
             data={data}
@@ -155,10 +156,9 @@ class App extends React.Component {
             chartStyle={STYLE}
             fill={(datum) => colorScale(datum[yearField])}
             focus={this.state.focus}
-            labelAccessors={{
-              title: "Population, 2000-2007",
-              yLabel: "Population",
-              xLabel: "Country"
+            axisLabels={{
+              domain: "Country",
+              range: "Population",
             }}
             onClick={this.onClick}
             onMouseLeave={this.onMouseLeave}
@@ -173,6 +173,7 @@ class App extends React.Component {
         <section>
           <h3>Grouped Bar Chart Horizontal Orientation</h3>
           <BarChart
+            title="Population, 2000-2007"
             categories={locations}
             subcategories={years}
             data={data}
@@ -184,10 +185,9 @@ class App extends React.Component {
             chartStyle={STYLE}
             fill={(datum) => colorScale(datum[yearField])}
             focus={this.state.focus}
-            labelAccessors={{
-              title: "Population, 2000-2007",
-              yLabel: "Country",
-              xLabel: "Population"
+            axisLabels={{
+              domain: "Country",
+              range: "Population"
             }}
             onClick={this.onClick}
             onMouseLeave={this.onMouseLeave}
@@ -208,6 +208,7 @@ class App extends React.Component {
         <section>
           <h3>Stacked Bar Chart Vertical Orientation with Legend</h3>
           <BarChart
+            title="Population, 2000-2007"
             chartStyle={STYLE}
             data={data}
             dataAccessors={{
@@ -218,10 +219,9 @@ class App extends React.Component {
             displayLegend
             fill={(datum) => colorScale(datum[yearField])}
             focus={this.state.focus}
-            labelAccessors={{
-              title: "Population, 2000-2007",
-              yLabel: "Population",
-              xLabel: "Country"
+            axisLabels={{
+              domain: "Country",
+              range: "Population",
             }}
             categories={locations}
             subcategories={years}
@@ -249,6 +249,7 @@ class App extends React.Component {
         <section>
           <h3>Stacked Horizontal Bar Chart with Legend</h3>
           <BarChart
+            title="Population, 2000-2007"
             categories={locations}
             subcategories={years}
             chartStyle={STYLE}
@@ -261,10 +262,9 @@ class App extends React.Component {
             displayLegend
             fill={(datum) => colorScale(datum[yearField])}
             focus={this.state.focus}
-            labelAccessors={{
-              title: "Population, 2000-2007",
-              yLabel: "Country",
-              xLabel: "Population"
+            axisLabels={{
+              domain: "Country",
+              range: "Population",
             }}
             legendItems={legendItems}
             legendAccessors={{

@@ -65,14 +65,14 @@ export default class BarChart extends React.PureComponent {
 
   renderTitle() {
     const {
-      labelAccessors,
+      title,
       titleClassName,
       titleStyle,
     } = this.props;
-    if (!labelAccessors.title) return null;
+
     return (
       <div className={classNames(styles.title, titleClassName)} style={titleStyle}>
-        {labelAccessors.title}
+        {title}
       </div>
     );
   }
@@ -167,7 +167,10 @@ export default class BarChart extends React.PureComponent {
       categories,
       chartStyle,
       orientation,
-      labelAccessors,
+      axisLabels: {
+        domain: domainLabel,
+        range: rangeLabel,
+      },
       padding,
     } = this.props;
 
@@ -185,8 +188,8 @@ export default class BarChart extends React.PureComponent {
             xScaleType={vertical ? 'band' : 'linear'}
             yScaleType={vertical ? 'linear' : 'band'}
           >
-            <XAxis label={labelAccessors.xLabel ? labelAccessors.xLabel : 'X Axis'} />
-            <YAxis label={labelAccessors.yLabel ? labelAccessors.yLabel : 'Y Axis'} />
+            <XAxis label={vertical ? domainLabel : rangeLabel} />
+            <YAxis label={vertical ? rangeLabel : domainLabel} />
             {this.renderBars()}
           </AxisChart>
         </ResponsiveContainer>
@@ -195,10 +198,16 @@ export default class BarChart extends React.PureComponent {
   }
 
   render() {
-    const { className, displayLegend, style } = this.props;
+    const {
+      className,
+      displayLegend,
+      style,
+      title,
+    } = this.props;
+
     return (
       <div className={classNames(styles['chart-container'], className)} style={style}>
-        {this.renderTitle()}
+        {title ? this.renderTitle() : null}
         {this.renderChart()}
         {displayLegend ? this.renderLegend() : null}
       </div>
@@ -293,15 +302,11 @@ BarChart.propTypes = {
   focus: PropTypes.object,
 
   /**
-   * Accessors to label properties
-   *    title: property used to access the title of the composite component
-   *    xLabel: property used to access the xLabel of the composite component
-   *    yLabel: property used to access the yLabel of the composite component
+   * label text for axes
    */
-  labelAccessors: PropTypes.shape({
-    title: PropTypes.string,
-    xLabel: PropTypes.string,
-    yLabel: PropTypes.string
+  axisLabels: PropTypes.shape({
+    domain: PropTypes.string,
+    range: PropTypes.string
   }),
 
   /**
@@ -390,6 +395,11 @@ BarChart.propTypes = {
    * inline styles applied to div wrapping the chart-container
    */
   style: PropTypes.object,
+
+  /**
+   * title text for the chart
+   */
+  title: PropTypes.string,
 
   /**
    * className applied to div wrapping the title
