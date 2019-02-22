@@ -121,7 +121,7 @@ StackedBars.propTypes = {
    /**
    * Accessors on datum objects:
    *   category: used to determine the bar's stack (to plot it on the chart domain)
-   *   subcateogry: used to determine the bar's layer within its stack
+   *   subcategory: used to determine the bar's layer within its stack
    *   value: used to obtain the bar's data value (to plot it on the chart range)
    *
    * Each accessor can either be a string or function.

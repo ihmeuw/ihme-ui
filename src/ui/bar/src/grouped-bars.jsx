@@ -125,7 +125,7 @@ GroupedBars.propTypes = {
   /**
    * Accessors on datum objects:
    *   category: used to determine the bar's group (to plot it on the chart domain)
-   *   subcateogry: used to determine the bar's subcategory within its group
+   *   subcategory: used to determine the bar's subcategory within its group
    *   value: used to obtain the bar's data value (to plot it on the chart range)
    *
    * Each accessor can either be a string or function.
