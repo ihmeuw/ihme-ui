@@ -52,8 +52,7 @@ export function computeStackDatumKey(stack, layer) {
  * @param {string|number} layerField - property name on each datum object denoting the layer
  * @param {number} valueField - property name on each datum object denoting the value
  *
- * @returns {object} - a mapping of keys in the form `${stack}:${layer}` to two-element arrays
- *   in the form `[start, end]` denoting the spatial offsets for each bar
+ * @returns {object} - a mapping of keys in the form `${stack}:${layer}` to each bar's spatial offset
  */
 export function computeStackOffsets(
   data,
@@ -87,13 +86,12 @@ export function computeStackOffsets(
       const datum = dataByStackAndLayer[key];
       const value = datum[valueField];
       const start = prevEnd;
-      const end = start + value;
 
-      // store the starting and ending offsets for the current bar
-      offsetsByStackAndLayer[key] = [start, end];
+      // store the starting offset for the current bar
+      offsetsByStackAndLayer[key] = start;
 
       // store the ending offset for use in the next iteration
-      prevEnd = end;
+      prevEnd = start + value;
     }
   }
 

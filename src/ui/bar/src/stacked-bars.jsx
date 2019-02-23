@@ -59,7 +59,7 @@ export default class StackedBars extends React.PureComponent {
     const rangeScale = util.getRangeScale({ ...this.props, stacked: true });
     const bandwidth = domainScale.bandwidth();
 
-    // compute spatial offsets for each bar
+    // compute spatial offset for each bar
     const offsetMap = this.computeStackOffsets(
       data,
       stacks,
@@ -78,8 +78,10 @@ export default class StackedBars extends React.PureComponent {
         {data.map((datum) => {
           const stack = util.propResolver(datum, stackAccessor);
           const layer = util.propResolver(datum, layerAccessor);
+          const value = util.propResolver(datum, valueAccessor);
           const key = util.computeStackDatumKey(stack, layer);
-          const [start, end] = offsetMap[key];
+          const start = offsetMap[key];
+          const end = start + value;
 
           /* eslint-disable no-multi-spaces */
           const x         = vertical ? domainScale(stack)    : rangeScale(start);
