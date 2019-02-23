@@ -18,16 +18,20 @@ describe('<Bars />', () => {
   const yearField = 'year_id';
   const populationField = 'population';
 
+  const years = [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009];
+
   const data = dataGenerator({
     primaryKeys: [{
       name: 'location',
-      values: ['Brazil', 'Russia', 'India', 'China', 'Mexico', 'Indonesia', 'Nigeria', 'Vietnam']
+      values: ['India'],
     }],
     valueKeys: [{
       name: populationField,
       range: [100, 900],
-      uncertainty: true
-    }]
+      uncertainty: false,
+    }],
+    year: years[0],
+    length: years.length,
   });
 
   const chartDimensions = {
@@ -35,36 +39,21 @@ describe('<Bars />', () => {
     height: 400
   };
 
-  const populationFieldDomain = [
-    minBy(data, populationField)[populationField],
-    maxBy(data, populationField)[populationField]
-  ];
-  const yearFieldDomain = map(uniqBy(data, yearField), obj => obj[yearField]);
-
-  const ordinalScale = scaleBand()
-    .domain(yearFieldDomain)
-    .range([0, chartDimensions.width]);
-  const linearScale = scaleLinear()
-    .domain(populationFieldDomain)
-    .range([chartDimensions.height, 0]);
-
-  const dataAccessors = {
-    key: 'id',
-    stack: yearField,
-    value: populationField
-  };
-
-  const dataFiltered = data.filter(datum => datum.location === 'India');
+  const focus = data[2];
+  const selection = [data[1], data[3]];
 
   const component = (
     <Bars
-      data={dataFiltered}
-      dataAccessors={dataAccessors}
-      scales={{ x: ordinalScale, y: linearScale }}
+      categories={years}
+      data={data}
+      dataAccessors={{
+        category: yearField,
+        value: populationField,
+      }}
       fill="steelblue"
-      focus={dataFiltered[2]}
+      focus={focus}
       focusedClassName="focused"
-      selection={[dataFiltered[1], dataFiltered[3]]}
+      selection={selection}
       selectedClassName="selected"
       selectedStyle={{ stroke: 'aqua' }}
       rectClassName="symbol"
@@ -75,7 +64,7 @@ describe('<Bars />', () => {
 
   it('renders number of bars based on array length of prop `data`', () => {
     const wrapper = shallow(component);
-    expect(wrapper.find(Bar)).to.have.length(10);
+    expect(wrapper.find(Bar)).to.have.length(data.length);
   });
 
   it('passes specified properties to its children', () => {
@@ -101,102 +90,13 @@ describe('<Bars />', () => {
     shallow(component).find(Bar).forEach(assertion);
   });
 
-  it('selects on a bar when prop `selection` is passed', () => {
+  it('selects a bar when prop `selection` is passed', () => {
     const wrapper = shallow(component);
-    expect(wrapper.find({ selected: true })).to.have.length(2);
+    expect(wrapper.find({ selected: true })).to.have.length(selection.length);
   });
 
   it('focuses on a bar when prop `focused` is passed', () => {
     const wrapper = shallow(component);
     expect(wrapper.find({ focused: true })).to.have.length(1);
-  });
-
-  describe('selection', () => {
-    it('when the prop `selection` is passed to Bars its associated bar is the final bar to render', () => {
-      const selectedDatum = dataFiltered[0];
-
-      const wrapper = shallow(
-        <Bars
-          data={dataFiltered}
-          dataAccessors={{
-            key: (d) => d.id,
-            stack: (d) => d.year_id,
-            value: (d) => d.population,
-          }}
-          scales={{
-            x: ordinalScale,
-            y: linearScale,
-          }}
-        />
-      );
-
-      expect(wrapper
-        .find('g')
-        .find(Bar)
-        .first()
-        .prop('datum')
-      ).to.equal(selectedDatum);
-      wrapper.setProps({ selection: [selectedDatum] });
-      expect(wrapper
-        .find('g')
-        .find(Bar)
-        .last()
-        .prop('datum')
-      ).to.equal(selectedDatum);
-    });
-
-    it('when the prop `selection` is passed, Bars does a stable sort of the bars', () => {
-      const wrapper = shallow(
-        <Bars
-          data={dataFiltered}
-          dataAccessors={{
-            key: (d) => d.id,
-            stack: (d) => d.year_id,
-            layer: (d) => d.population,
-          }}
-          scales={{
-            x: ordinalScale,
-            y: linearScale,
-          }}
-        />
-      );
-
-      const selectedDatum = dataFiltered[0];
-      const postSelectionExpectedBarOrder = drop(dataFiltered);
-      postSelectionExpectedBarOrder.push(selectedDatum);
-
-      wrapper.find('g').find(Bar).forEach((node, idx) => {
-        expect(node.prop('datum')).to.equal(dataFiltered[idx]);
-      });
-
-      wrapper.setProps({ selection: [selectedDatum] });
-
-      wrapper.find('g').find(Bar).forEach((node, idx) => {
-        expect(node.prop('datum')).to.equal(postSelectionExpectedBarOrder[idx]);
-      });
-    });
-
-    it('does not update state.sortedData if neither selection nor data have changed', () => {
-      const wrapper = shallow(
-        <Bars
-
-          data={dataFiltered}
-          dataAccessors={{
-            key: (d) => d.id,
-            stack: (d) => d.year_id,
-            value: (d) => d.population,
-          }}
-          scales={{
-            x: ordinalScale,
-            y: linearScale,
-          }}
-        />
-      );
-
-      const initialState = wrapper.state('sortedData');
-      expect(initialState).to.deep.equal(dataFiltered);
-      wrapper.update();
-      expect(initialState).to.equal(wrapper.state('sortedData'));
-    });
   });
 });
