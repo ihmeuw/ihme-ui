@@ -133,7 +133,7 @@ export function getDomainScale({
 }) {
   const vertical = isVertical(orientation);
 
-  const scale = (vertical ? scales.x : scales.y);
+  const scale = scales && (vertical ? scales.x : scales.y);
   const domainScale = scale
     // If a scaling function was passed via the `scales` prop, we make a copy of it (to avoid mutating the original).
     ? scale.copy()
@@ -160,14 +160,14 @@ export function getRangeScale({
   dataAccessors,
   orientation,
   rangeMax,
-  scales: { x: scaleX, y: scaleY },
+  scales,
   height,
   width,
   stacked = false,
 }) {
   const vertical = isVertical(orientation);
 
-  const scale = vertical ? scaleY : scaleX;
+  const scale = scales && (vertical ? scales.y : scales.x);
   if (scale) {
     return scale.copy();
   }
