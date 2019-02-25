@@ -16,6 +16,14 @@ export function isVertical(orientation) {
   return (orientation.toLowerCase() === 'vertical');
 }
 
+export function isInSelection(datum, selection) {
+  return selection && (
+    Array.isArray(selection)
+    ? selection.includes(datum)
+    : selection === datum
+  );
+}
+
 export function computeStackMax(data, stackAccessor, valueAccessor) {
   // Iterate through the data, creating an object mapping stack name to the max value for the stack.
   const maxPerStack = data.reduce((acc, datum) => {

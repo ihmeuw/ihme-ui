@@ -80,8 +80,8 @@ export default class Bars extends React.PureComponent {
               width={barWidth}
               fill={typeof fill === 'function' ? fill(datum) : fill}
               focused={focus === datum}
-              selected={selection.includes(datum)}
               style={rectStyle}
+              selected={util.isInSelection(datum, selection)}
               {...childProps}
             />
           );
