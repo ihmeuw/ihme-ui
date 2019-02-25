@@ -71,7 +71,6 @@ export default class Bars extends React.PureComponent {
 
           return (
             <Bar
-              className={rectClassName}
               key={category}
               datum={datum}
               x={x}
@@ -79,8 +78,9 @@ export default class Bars extends React.PureComponent {
               height={barHeight}
               width={barWidth}
               fill={typeof fill === 'function' ? fill(datum) : fill}
-              focused={focus === datum}
+              className={rectClassName}
               style={rectStyle}
+              focused={focus === datum}
               selected={util.isInSelection(datum, selection)}
               {...childProps}
             />
