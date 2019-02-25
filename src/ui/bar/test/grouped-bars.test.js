@@ -2,9 +2,8 @@ import React from 'react';
 import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
-import maxBy from 'lodash/maxBy';
 import noop from 'lodash/noop';
-import { schemeCategory10, scaleLinear, scaleBand, scaleOrdinal } from 'd3';
+import { schemeCategory10, scaleOrdinal } from 'd3';
 import { dataGenerator } from '../../../utils';
 
 import {
@@ -15,73 +14,65 @@ import {
 chai.use(chaiEnzyme());
 
 describe('<GroupedBars />', () => {
-  const yearField = 'year_id';
-  const populationField = 'population';
-  const locationField = 'location';
-
-  const years = [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007];
-  const locations = [
-    'Brazil',
-    'Russia',
-    'India',
-    'China',
-    'Mexico',
-    'Indonesia',
-    'Nigeria',
-    'Vietnam',
-  ];
-
-  const data = dataGenerator({
-    primaryKeys: [{
-      name: 'location',
-      values: locations,
-    }],
-    valueKeys: [{
-      name: populationField,
-      range: [100, 900],
-      uncertainty: true
-    }],
-    year: years[0],
-    length: years.length,
-  });
-
   const chartDimensions = {
     width: 600,
     height: 400,
   };
 
-  const dataRange = [0, maxBy(data, populationField)[populationField]];
+  // used to compute fill color
   const colorScale = scaleOrdinal(schemeCategory10);
 
-  const domainScale = scaleBand()
-    .domain(locations)
-    .range([0, chartDimensions.width]);
-  const rangeScale = scaleLinear()
-    .domain(dataRange)
-    .range([chartDimensions.height, 0]);
+  // groups
+  const categoryField = 'location';
+  const categories = ['Brazil', 'Russia'];
+  // subgroups
+  const subcategoryField = 'year_id';
+  const subcategories = [2016, 2017, 2018];
+
+  const valueField = 'population';
+
+  const data = dataGenerator({
+    primaryKeys: [{
+      name: categoryField,
+      values: categories,
+    }],
+    valueKeys: [{
+      name: valueField,
+      range: [100, 900],
+      uncertainty: false,
+    }],
+    year: subcategories[0],
+    length: subcategories.length,
+  });
+
+  const focus = data[0];
+  const selection = [data[1], data[2]];
 
   const component = (
     <GroupedBars
-      categories={locations}
-      subcategories={years}
+      categories={categories}
+      subcategories={subcategories}
       data={data}
       dataAccessors={{
-        category: locationField,
-        subcategory: yearField,
-        value: populationField,
+        category: categoryField,
+        subcategory: subcategoryField,
+        value: valueField,
       }}
-      rectClassName="grouped-bars"
-      fill={(datum) => colorScale(datum[yearField])}
+      fill={(datum) => colorScale(datum[subcategoryField])}
+      className="bars"
+      style={{ strokeWeight: 2 }}
+      rectClassName="bar"
+      rectStyle={{ opacity: 0.9 }}
+      focus={focus}
       focusedClassName="focused"
       focusedStyle={{ stroke: 'yellow' }}
-      focus={data[0]}
+      selection={selection}
+      selectedClassName="selected"
+      selectedStyle={{ stroke: 'red' }}
       onClick={noop}
       onMouseLeave={noop}
       onMouseMove={noop}
       onMouseOver={noop}
-      selectedClassName="selected"
-      selectedStyle={{ stroke: 'red' }}
-      style={{ strokeWeight: 2 }}
       {...chartDimensions}
     />
   );
@@ -91,12 +82,12 @@ describe('<GroupedBars />', () => {
   //   test that it can render with scales
   //   test that it determines positioning correctly
 
-  it('renders number of a `Bar` for each element in `data`', () => {
+  it('renders a `Bar` component for each element in `data`', () => {
     const wrapper = shallow(component);
     expect(wrapper.find(Bar)).to.have.length(data.length);
   });
 
-  it('passes specified properties to its children', () => {
+  it('passes specified properties to its descendant `Bar` components', () => {
     const childProps = [
       'x',
       'y',
@@ -123,5 +114,20 @@ describe('<GroupedBars />', () => {
         expect(bar).to.have.prop(prop);
       });
     });
+  });
+
+  it('focuses on a `Bar` whose `datum` prop matches the value of prop `focus`', () => {
+    const wrapper = shallow(component);
+    const focusedBar = wrapper.find(Bar).filter({
+      focused: true,
+      datum: focus,
+    });
+    expect(focusedBar).to.have.length(1);
+  });
+
+  it('selects every `Bar` whose `datum` prop is included in prop `selection`', () => {
+    const wrapper = shallow(component);
+    const selectedBars = wrapper.find(Bar).filter({ selected: true });
+    expect(selectedBars).to.have.length(selection.length);
   });
 });

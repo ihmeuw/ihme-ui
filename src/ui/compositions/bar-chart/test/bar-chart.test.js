@@ -3,11 +3,6 @@ import chai, { expect } from 'chai';
 import chaiEnzyme from 'chai-enzyme';
 import { shallow } from 'enzyme';
 import { schemeCategory10, scaleOrdinal } from 'd3';
-import groupBy from 'lodash/groupBy';
-import maxBy from 'lodash/maxBy';
-import minBy from 'lodash/minBy';
-import map from 'lodash/map';
-import uniqBy from 'lodash/uniqBy';
 import noop from 'lodash/noop';
 import BarChart from '../src/bar-chart';
 import { Legend } from '../../..';
@@ -16,151 +11,102 @@ import { dataGenerator } from '../../../../utils';
 chai.use(chaiEnzyme());
 
 describe('<BarChart />', () => {
-  const yearField = 'year_id';
-  const populationField = 'population';
-  const locationField = 'location';
-  const title = 'Population Between 2000-2009';
+  const chartDimensions = {
+    width: 600,
+    height: 400,
+  };
+
+  // used to compute fill color
+  const colorScale = scaleOrdinal(schemeCategory10);
+
+  const title = 'Population by year';
+  const titleClassName = 'title';
+
+  // stacks
+  const categoryField = 'location';
+  const categories = ['Brazil', 'Russia'];
+  // layers
+  const subcategoryField = 'year_id';
+  const subcategories = [2016, 2017, 2019];
+
+  const valueField = 'population';
 
   const data = dataGenerator({
     primaryKeys: [{
-      name: 'location',
-      values: ['Brazil', 'Russia', 'India', 'China', 'Mexico']
+      name: categoryField,
+      values: categories,
     }],
     valueKeys: [{
-      name: populationField,
+      name: valueField,
       range: [100, 900],
-      uncertainty: true
-    }]
+      uncertainty: false,
+    }],
+    year: subcategories[0],
+    length: subcategories.length,
   });
 
-  const dataGroupedByLocation = groupBy(data, 'location');
+  // create legend item for each layer/subgroup
+  const legendItems = subcategories.map((datum) => ({
+    label: datum[subcategoryField],
+    shapeColor: colorScale(datum[subcategoryField]),
+    shapeType: 'square'
+  }));
 
-  const locationData = [
-    { location: 'Brazil', values: dataGroupedByLocation.Brazil },
-    { location: 'Russia', values: dataGroupedByLocation.Russia },
-    { location: 'India', values: dataGroupedByLocation.India },
-    { location: 'China', values: dataGroupedByLocation.China },
-    { location: 'Mexico', values: dataGroupedByLocation.Mexico }
-  ];
-
-  const populationFieldDomain = [
-    minBy(data, populationField)[populationField],
-    maxBy(data, populationField)[populationField]
-  ];
-  const yearFieldDomain = map(uniqBy(data, yearField), obj => obj[yearField]);
-  const locationFieldDomain = map(uniqBy(locationData, locationField), obj => obj[locationField]);
-  const colorScale = scaleOrdinal(schemeCategory10);
-
-  // create items given the data and the fields specified
-  const items = [
-    {
-      label: '2000',
-      shapeColor: colorScale('2000'),
-      shapeType: 'square'
-    },
-    {
-      label: '2001',
-      shapeColor: colorScale('2001'),
-      shapeType: 'square'
-    },
-    {
-      label: '2002',
-      shapeColor: colorScale('2002'),
-      shapeType: 'square'
-    },
-    {
-      label: '2003',
-      shapeColor: colorScale('2003'),
-      shapeType: 'square'
-    },
-    {
-      label: '2004',
-      shapeColor: colorScale('2004'),
-      shapeType: 'square'
-    },
-    {
-      label: '2005',
-      shapeColor: colorScale('2005'),
-      shapeType: 'square'
-    },
-    {
-      label: '2006',
-      shapeColor: colorScale('2006'),
-      shapeType: 'square'
-    },
-    {
-      label: '2007',
-      shapeColor: colorScale('2007'),
-      shapeType: 'square'
-    },
-    {
-      label: '2008',
-      shapeColor: colorScale('2008'),
-      shapeType: 'square'
-    },
-    {
-      label: '2009',
-      shapeColor: colorScale('2009'),
-      shapeType: 'square'
-    }
-  ];
+  const focus = data[0];
+  const selection = [data[1], data[2]];
 
   const component = (
     <BarChart
-      data={locationData}
-      dataAccessors={{
-        fill: yearField,
-        key: 'id',
-        stack: locationField,
-        layer: yearField,
-        value: populationField,
+      type="stacked"
+      orientation="horizontal"
+      title={title}
+      titleClassName={titleClassName}
+      axisLabels={{
+        domain: 'Country',
+        range: 'Population',
       }}
       displayLegend
-      colorScale={colorScale}
-      fieldAccessors={{
-        data: 'values',
-        key: 'key',
-      }}
-      focus={noop}
-      labelAccessors={{
-        title,
-        yLabel: 'Country',
-        xLabel: 'Population'
-      }}
-      layerDomain={yearFieldDomain}
-      legendAccessors={items}
-      legendKey={{
+      legendItems={legendItems}
+      legendAccessors={{
         labelKey: 'label',
         shapeColorKey: 'shapeColor',
         shapeTypeKey: 'shapeType',
       }}
+      categories={categories}
+      subcategories={subcategories}
+      data={data}
+      dataAccessors={{
+        category: categoryField,
+        subcategory: subcategoryField,
+        value: valueField,
+      }}
+      fill={(datum) => colorScale(datum[subcategoryField])}
+      className="bars"
+      style={{ strokeWeight: 2 }}
+      rectClassName="bar"
+      rectStyle={{ opacity: 0.9 }}
+      focus={focus}
+      focusedClassName="focused"
+      focusedStyle={{ stroke: 'yellow' }}
+      selection={selection}
+      selectedClassName="selected"
+      selectedStyle={{ stroke: 'red' }}
       onClick={noop}
       onMouseLeave={noop}
       onMouseMove={noop}
       onMouseOver={noop}
-      orientation="horizontal"
-      scaleAccessors={{
-        xScale: 'linear',
-        yScale: 'band',
-        xDomain: populationFieldDomain,
-        yDomain: locationFieldDomain
-      }}
-      selection={noop}
-      titleClassName={'title-class'}
-      type={'stacked'}
+      {...chartDimensions}
     />
   );
 
-  it('renders a legend', () => {
+  // eslint-disable-next-line max-len
+  it('renders a legend when `displayLegend` is true and `legendItems` and `legendAccessors` are supplied', () => {
     const wrapper = shallow(component);
     expect(wrapper.find(Legend)).to.have.length(1);
   });
 
-  it('renders appropriate chart title', () => {
+  it('renders a title using the text passed as prop `title`', () => {
     const wrapper = shallow(component);
-    expect(wrapper.find('.title-class'))
-      .to.have.text(title);
+    expect(wrapper.find(`.${titleClassName}`)).to.have.text(title);
   });
-
-  // Subsequent test are covered by each individual component itself
 });
