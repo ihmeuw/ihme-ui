@@ -54,8 +54,8 @@ export function computeStackDatumKey(stack, layer) {
  *
  * @param {datum[]} data - Array of datum objects, each of which must contain fields denoting the
  *   stack, layer, and value.
- * @param {string[]|number[]} stackDomain - names of the categories represented by each stack
- * @param {string[]|number[]} layerDomain - names of the categories represented by each layer
+ * @param {string[]|number[]} stacks - names of the categories represented by each stack
+ * @param {string[]|number[]} layers - names of the categories represented by each layer
  * @param {string|number} stackField - property name of each datum object denoting the stack
  * @param {string|number} layerField - property name on each datum object denoting the layer
  * @param {number} valueField - property name on each datum object denoting the value
@@ -64,8 +64,8 @@ export function computeStackDatumKey(stack, layer) {
  */
 export function computeStackOffsets(
   data,
-  stackDomain,
-  layerDomain,
+  stacks,
+  layers,
   stackField,
   layerField,
   valueField,
@@ -83,13 +83,13 @@ export function computeStackOffsets(
   const offsetsByStackAndLayer = Object.create(null);
 
   // traverse the stacks
-  for (const stack of stackDomain) {
+  for (const stack of stacks) {
     // In each stack, we keep track of where the previous layer ended.
     // This will be the start of the next layer.
     let prevEnd = 0;
 
     // traverse the layers in a stack
-    for (const layer of layerDomain) {
+    for (const layer of layers) {
       const key = computeStackDatumKey(stack, layer);
       const datum = dataByStackAndLayer[key];
       const value = datum[valueField];
