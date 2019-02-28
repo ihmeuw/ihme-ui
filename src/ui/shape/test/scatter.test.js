@@ -457,24 +457,11 @@ describe('<Scatter />', () => {
             x: xScale,
             y: yScale,
           }}
+          selection={[selectedDatum]}
         />
       );
 
       expect(wrapper
-        .find('g')
-        .find(Shape)
-        .first()
-        .prop('datum')
-      ).to.equal(selectedDatum);
-      wrapper.setProps({ selection: [selectedDatum] });
-      expect(wrapper
-        .find('g')
-        .find(Shape)
-        .first()
-        .prop('datum')
-      ).to.not.equal(selectedDatum);
-      expect(wrapper
-        .find('g')
         .find(Shape)
         .last()
         .prop('datum')
@@ -482,6 +469,14 @@ describe('<Scatter />', () => {
     });
 
     it('does a stable sort of the shapes', () => {
+      const [selectedDatum, ...rest] = data;
+      // selecting the first shape should change the order as follows:
+      // original index | new index
+      //             0 -> 2
+      //             1 -> 0
+      //             2 -> 1
+      const expectedShapeOrder = [...rest, selectedDatum];
+
       const wrapper = shallow(
         <Scatter
           data={data}
@@ -494,29 +489,16 @@ describe('<Scatter />', () => {
             x: xScale,
             y: yScale,
           }}
+          selection={[selectedDatum]}
         />
       );
 
-      wrapper.find('g').find(Shape).forEach((node, idx) => {
-        expect(node.prop('datum')).to.equal(data[idx]);
-      });
-
-      // selecting the first shape should result in the following order:
-      // newIndex :|: oldIndex
-      //        0 -> 1
-      //        1 -> 2
-      //        2 -> 0
-      const selectedDatum = data[0];
-      wrapper.setProps({ selection: [selectedDatum] });
-      const expectedShapeOrder = drop(data);
-      expectedShapeOrder.push(selectedDatum);
-
-      wrapper.find('g').find(Shape).forEach((node, idx) => {
+      wrapper.find(Shape).forEach((node, idx) => {
         expect(node.prop('datum')).to.equal(expectedShapeOrder[idx]);
       });
     });
 
-    it(`does not update state.sortedData 
+    it(`does not update state.sortedData
         if neither selection nor data have changed`, () => {
       const wrapper = shallow(
         <Scatter
