@@ -84,8 +84,8 @@ export default class Tooltip extends React.PureComponent {
     const offsetYCoordinate = mouseY - offsetY;
     const absOffsetY = Math.abs(offsetY);
     let y = (offsetY < 0)
-          ? offsetYCoordinate // assume tooltip should be placed below mouse
-          : offsetYCoordinate - height; // otherwise, assume tooltip should be placed above mouse
+      ? offsetYCoordinate // assume tooltip should be placed below mouse
+      : offsetYCoordinate - height; // otherwise, assume tooltip should be placed above mouse
 
     // guard against placing tooltip out of its top-bound
     if (y < topBound + paddingY) {

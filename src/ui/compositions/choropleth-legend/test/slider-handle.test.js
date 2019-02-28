@@ -9,9 +9,7 @@ import SliderHandle from '../src/slider-handle';
 chai.use(chaiEnzyme());
 
 describe('ChoroplethLegend <SliderHandle />', () => {
-  const onSliderMove = sinon.spy((extent) => {
-    return extent;
-  });
+  const onSliderMove = sinon.spy((extent) => extent);
 
   afterEach(() => {
     onSliderMove.reset();

@@ -14,9 +14,7 @@ describe('ChoroplethLegend <Slider />', () => {
     .domain(domain)
     .range([0, width])
     .clamp(true);
-  const onSliderMove = sinon.spy((extent) => {
-    return extent;
-  });
+  const onSliderMove = sinon.spy((extent) => extent);
   const minExtent = 25;
   const maxExtent = 75;
 

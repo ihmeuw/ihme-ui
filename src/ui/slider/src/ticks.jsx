@@ -16,18 +16,16 @@ export default class Ticks extends React.PureComponent {
         height="100%"
       >
         {
-          map(this.props.x, (x) => {
-            return (
-              <line
-                key={x}
-                className={this.props.tickClassName}
-                style={this.props.tickStyle}
-                x1={x} x2={x}
-                y1="0%" y2="100%"
-                stroke="black"
-              />
-            );
-          })
+          map(this.props.x, (x) => (
+            <line
+              key={x}
+              className={this.props.tickClassName}
+              style={this.props.tickStyle}
+              x1={x} x2={x}
+              y1="0%" y2="100%"
+              stroke="black"
+            />
+          ))
         }
       </svg>
     );

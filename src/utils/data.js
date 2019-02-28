@@ -15,21 +15,17 @@ export const dataGenerator = (config = {}) => {
     length = 10
   } = config;
 
-/**
+  /*
   Collect primary key values.
   [
     [{k_1:v_1}, {k_1:v_2}, {k_1:v_3}],
     [{k_2:v_1}, {k_2:v_2}, {k_2:v_3}],
     [{k_3:v_1}, {k_3:v_2}]
   ]
-*/
-  const keyStore = map(primaryKeys, (k) => {
-    return map(k.values, (v) => {
-      return { [k.name]: v };
-    });
-  });
+  */
+  const keyStore = map(primaryKeys, (k) => map(k.values, (v) => ({ [k.name]: v })));
 
-/**
+  /*
   Create unique composite keys.
   [
     {k_1:v_1, k_2:v_1, k_3:v_1},
@@ -51,14 +47,14 @@ export const dataGenerator = (config = {}) => {
     {k_1:v_2, k_2:v_3, k_3:v_2},
     {k_1:v_3, k_2:v_3, k_3:v_2},
   ]
-*/
-  const uniqKeys = reduce(keyStore, (uniqueCombinations, primaryKeyOptions) => {
-    return flatMap(primaryKeyOptions, (keyOption) => {
-      return map(uniqueCombinations, (intermediateCombo) => {
-        return assign({}, keyOption, intermediateCombo);
-      });
-    });
-  });
+  */
+  const uniqKeys = reduce(keyStore,
+    (uniqueCombinations, primaryKeyOptions) => flatMap(primaryKeyOptions,
+      (keyOption) => map(uniqueCombinations,
+        (intermediateCombo) => assign({}, keyOption, intermediateCombo)
+      )
+    )
+  );
 
   /**
    * Floor function modified to cut off at tenths digit.
@@ -93,7 +89,7 @@ export const dataGenerator = (config = {}) => {
     return Math.sin(x);
   }
 
-/**
+  /*
   Create data for value keys.
   [
     [
@@ -116,7 +112,7 @@ export const dataGenerator = (config = {}) => {
       {k_a:v_18, k_b:v_18, k_c:v_18, k_d:v_18},
     ],
   ]
-*/
+  */
   const valueData = [];
   for (let j = 0; j < length; j++) {
     const segment = [];
@@ -139,21 +135,19 @@ export const dataGenerator = (config = {}) => {
     valueData.push(segment);
   }
 
-/**
+  /*
   Populate rows.
   [
     {k_1:v_1, k_2:v_1, k_3:v_1, k_a:v_1, k_b:v_1, k_c:v_1, k_d:v_1},
     {k_1:v_2, k_2:v_1, k_3:v_1, k_a:v_2, k_b:v_2, k_c:v_2, k_d:v_2},
     ...
   ]
-*/
-  const rows = flatMap(valueData, (listOfValueKeys) => {
-    return map(listOfValueKeys, (valueKey, i) => {
-      return assign({}, valueKey, uniqKeys[i]);
-    });
-  });
+  */
+  const rows = flatMap(valueData,
+    (listOfValueKeys) => map(listOfValueKeys,
+      (valueKey, i) => assign({}, valueKey, uniqKeys[i])
+    )
+  );
 
-  return map(rows, (r) => {
-    return assign({ id: uniqueId() }, r);
-  });
+  return map(rows, (r) => assign({ id: uniqueId() }, r));
 };

@@ -43,7 +43,7 @@ describe('object utilities', () => {
     };
 
     it('calls a function with the given object', () => {
-      const resolver = (item) => { return item.foo; };
+      const resolver = (item) => item.foo;
       expect(propResolver(obj, resolver)).to.equal('bar');
     });
 

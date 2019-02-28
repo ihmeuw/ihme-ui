@@ -30,15 +30,13 @@ const LinearGradient = (props) => {
           y1="0%"
           y2="0%"
         >
-          {map(colors, (color, index) => {
-            return (
-              <stop
-                key={`${color}-${index}`}
-                offset={index / offsetDivisor}
-                stopColor={color}
-              />
-            );
-          })}
+          {map(colors, (color, index) => (
+            <stop
+              key={`${color}-${index}`}
+              offset={index / offsetDivisor}
+              stopColor={color}
+            />
+          ))}
         </linearGradient>
       </defs>
       <rect

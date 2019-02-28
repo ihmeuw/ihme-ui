@@ -133,10 +133,10 @@ Select.propUpdates = {
     }
 
     const menuWidth = getWidestLabel(
-        nextProps.options,
-        nextProps.labelKey,
-        nextProps.hierarchical
-      ) + nextProps.widthPad;
+      nextProps.options,
+      nextProps.labelKey,
+      nextProps.hierarchical
+    ) + nextProps.widthPad;
 
     // if menu width changes, also set menuStyle and menuContainerStyle
     // also create new HoC for menuRenderer

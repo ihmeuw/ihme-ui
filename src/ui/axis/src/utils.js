@@ -101,16 +101,16 @@ export function filterTickValuesByWidth(ticks, {
     /* eslint-disable max-len */
     const canvasContext = window && window.document.createElement('canvas').getContext('2d');
     widestTickLabelLength = reduce(map(ticks, tickFormat), (widest, tick) =>
-        Math.max(
-          widest,
-          getRenderedStringWidth(String(tick), `${tickFontSize}px ${tickFontFamily}`, canvasContext),
-        )
-      , 0);
+      Math.max(
+        widest,
+        getRenderedStringWidth(String(tick), `${tickFontSize}px ${tickFontFamily}`, canvasContext),
+      )
+    , 0);
     /* eslint-enable max-len */
   } catch (err) {
     widestTickLabelLength = reduce(map(ticks, tickFormat), (widest, tick) =>
-        Math.max(widest, String(tick).length * tickFontSize)
-      , 0);
+      Math.max(widest, String(tick).length * tickFontSize)
+    , 0);
   }
 
   const numTicksThatFit = Math.floor(width / widestTickLabelLength);

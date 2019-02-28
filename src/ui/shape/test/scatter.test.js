@@ -7,7 +7,6 @@ import {
   shallow,
 } from 'enzyme';
 import {
-  drop,
   forEach,
   map,
   minBy,

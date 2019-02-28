@@ -17,7 +17,7 @@ describe('<Option />', () => {
   });
 
   it('renders another type of element', () => {
-    const Component = () => { return <a />; };
+    const Component = () => <a />;
     const wrapper = shallow(<Option type={Component} />);
     expect(wrapper).to.have.exactly(1).descendants('Component');
   });

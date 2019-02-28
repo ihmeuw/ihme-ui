@@ -154,17 +154,23 @@ export default class Choropleth extends React.Component {
 
       if (state.bounds) {
         // if state.bounds is set when topology or layers change drastically, reset calculations
-        state.translate = calcTranslate(nextProps.width, nextProps.height,
-                                        state.scaleBase, bounds);
+        state.translate = calcTranslate(
+          nextProps.width, nextProps.height,
+          state.scaleBase, bounds,
+        );
       } else {
         // get current zoom transform (scale and translate)
         const transform = this.currentZoomTransform();
 
         // else calculate new translate from previous center point
-        const center = calcCenterPoint(this.props.width, this.props.height,
-                                        transform.k, [transform.x, transform.y]);
-        state.translate = calcTranslate(nextProps.width, nextProps.height,
-                                        state.scale, bounds, center);
+        const center = calcCenterPoint(
+          this.props.width, this.props.height,
+          transform.k, [transform.x, transform.y],
+        );
+        state.translate = calcTranslate(
+          nextProps.width, nextProps.height,
+          state.scale, bounds, center,
+        );
       }
 
       state.pathGenerator = this.createPathGenerator(
@@ -267,8 +273,10 @@ export default class Choropleth extends React.Component {
   }
 
   zoomReset() {
-    const [x, y] = calcTranslate(this.props.width, this.props.height,
-                                this.state.scaleBase, this.state.bounds);
+    const [x, y] = calcTranslate(
+      this.props.width, this.props.height,
+      this.state.scaleBase, this.state.bounds,
+    );
 
     this._svgSelection.call(
       this.zoom.transform,

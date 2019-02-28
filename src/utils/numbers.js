@@ -35,7 +35,7 @@ export const Float = {
   maxMultiplier(...rest) {
     return rest.reduce((prev, next) =>
       Math.max(prev, this.floatToIntMultiplier(next)),
-     -Infinity);
+    -Infinity);
   },
 
   add(...rest) {

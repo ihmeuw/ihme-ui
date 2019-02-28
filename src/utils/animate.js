@@ -31,8 +31,8 @@ export function getMethodIfExists(methodMap, key) {
   const potentialMethod = get(methodMap, [key]);
   return (
     typeof potentialMethod === 'function'
-    ? potentialMethod
-    : null
+      ? potentialMethod
+      : null
   );
 }
 

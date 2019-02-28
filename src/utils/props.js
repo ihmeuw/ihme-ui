@@ -129,9 +129,12 @@ export function atLeastOneOfProp(propTypes) {
 }
 
 export function propsChanged(prevProps, nextProps, propsToCompare, propsToOmit, comparator = eq) {
-  return !reduce(propsToCompare || Object.keys(nextProps), (acc, prop) => {
-    return acc && (includes(propsToOmit, prop) || comparator(prevProps[prop], nextProps[prop]));
-  }, true);
+  return !reduce(propsToCompare || Object.keys(nextProps),
+    (acc, prop) => acc && (
+      includes(propsToOmit, prop) || comparator(prevProps[prop], nextProps[prop])
+    ),
+    true
+  );
 }
 
 /**
@@ -151,9 +154,10 @@ export function propsChanged(prevProps, nextProps, propsToCompare, propsToOmit, 
  * @returns {Object} accumulated state.
  */
 export function stateFromPropUpdates(propUpdates, prevProps, nextProps, state, context) {
-  return reduce(propUpdates, (acc, value, key) => {
-    return value(acc, key, prevProps, nextProps, context);
-  }, state);
+  return reduce(propUpdates,
+    (acc, value, key) => value(acc, key, prevProps, nextProps, context),
+    state
+  );
 }
 
 /**
@@ -168,11 +172,11 @@ export function stateFromPropUpdates(propUpdates, prevProps, nextProps, state, c
  * @returns {comparisonActionCallback} comparison action callback.
  */
 export function updateFunc(func) {
-  return (acc, key, prevProps = {}, nextProps, context) => {
-    return prevProps[key] !== nextProps[key] ?
-      { ...acc, ...func(nextProps[key], key, nextProps, acc, context) } :
-      acc;
-  };
+  return (acc, key, prevProps = {}, nextProps, context) => (
+    prevProps[key] !== nextProps[key]
+      ? { ...acc, ...func(nextProps[key], key, nextProps, acc, context) }
+      : acc
+  );
 }
 
 /**
@@ -185,14 +189,12 @@ export function updateFunc(func) {
  * @returns {Object}
  */
 export function applyFuncToProps(prevProps, nextProps, propNames, firstFunc, ...restFuncs) {
-  return reduce(propNames || Object.keys(nextProps), (acc, prop) => {
-    return {
-      ...acc,
-      [prop]: reduce(restFuncs, (funcAcc, func) => {
-        return func(funcAcc);
-      }, (firstFunc || identity)(prevProps[prop], nextProps[prop])),
-    };
-  }, {});
+  return reduce(propNames || Object.keys(nextProps), (acc, prop) => ({
+    ...acc,
+    [prop]: reduce(restFuncs, (funcAcc, func) =>
+      func(funcAcc), (firstFunc || identity)(prevProps[prop], nextProps[prop])
+    ),
+  }), {});
 }
 
 /**

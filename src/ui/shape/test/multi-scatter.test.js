@@ -42,30 +42,30 @@ describe('<MultiScatter />', () => {
     const scatterData = [
       {
         location: 'USA',
-        values: data.filter((datum) => { return datum.location === 'USA'; })
+        values: data.filter((datum) => datum.location === 'USA')
       },
       {
         location: 'Canada',
-        values: data.filter((datum) => { return datum.location === 'Canada'; })
+        values: data.filter((datum) => datum.location === 'Canada')
       },
       {
         location: 'Mexico',
-        values: data.filter((datum) => { return datum.location === 'Mexico'; })
+        values: data.filter((datum) => datum.location === 'Mexico')
       }
     ];
 
     const yDomain = [minBy(data, 'population').population, maxBy(data, 'population').population];
-    const xDomain = map(uniqBy(data, 'year_id'), (obj) => { return (obj.year_id); });
+    const xDomain = map(uniqBy(data, 'year_id'), (obj) => obj.year_id);
 
     const xScale = scalePoint().domain(xDomain).range([0, chartDimensions.width]);
     const yScale = scaleLinear().domain(yDomain).range([chartDimensions.height, 0]);
 
     const shapeScale = scaleOrdinal()
-        .domain(['USA', 'Canada', 'Mexico'])
-        .range(['circle', 'star', 'square']);
+      .domain(['USA', 'Canada', 'Mexico'])
+      .range(['circle', 'star', 'square']);
     const colorScale = scaleOrdinal()
-        .domain(['USA', 'Canada', 'Mexico'])
-        .range(['red', 'blue', 'green']);
+      .domain(['USA', 'Canada', 'Mexico'])
+      .range(['red', 'blue', 'green']);
 
     let component;
 
