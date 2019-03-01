@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import bindAll from 'lodash/bindAll';
 import xor from 'lodash/xor';
 
-import { BarChart } from '../';
+import BarChart from '../';
 
 import { dataGenerator } from '../../../../utils';
 
