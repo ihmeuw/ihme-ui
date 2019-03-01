@@ -90,6 +90,28 @@ class App extends React.Component {
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <section>
           <h3>Normal Bar Chart Vertical Orientation</h3>
+{/* <pre><code>
+<BarChart
+  title="Brazil Population, 2000-2007"
+  categories={years}
+  chartStyle={STYLE}
+  data={brazilData}
+  dataAccessors={{
+    category: yearField,
+    value: populationField,
+  }}
+  focus={this.state.focus}
+  axisLabels={{
+    domain: "Year",
+    range: "Population",
+  }}
+  onClick={this.onClick}
+  onMouseLeave={this.onMouseLeave}
+  onMouseOver={this.onMouseOver}
+  orientation="vertical"
+  selection={this.state.selectedItems}
+/>
+</code></pre> */}
           <BarChart
             title="Brazil Population, 2000-2007"
             categories={years}
@@ -114,6 +136,33 @@ class App extends React.Component {
 
         <section>
           <h3>Normal Bar Chart Horizontal Orientation</h3>
+{/* <pre><code>
+<BarChart
+  title="Brazil Population, 2000-2007"
+  categories={years}
+  chartStyle={STYLE}
+  data={brazilData}
+  dataAccessors={{
+    category: yearField,
+    value: populationField,
+  }}
+  focus={this.state.focus}
+  axisLabels={{
+    domain: "Year",
+    range: "Population",
+  }}
+  onClick={this.onClick}
+  onMouseLeave={this.onMouseLeave}
+  onMouseOver={this.onMouseOver}
+  orientation="horizontal"
+  padding={{
+    top: 20,
+    right: 20,
+    bottom: 50,
+    left: 60,
+  }}
+/>
+</code></pre> */}
           <BarChart
             title="Brazil Population, 2000-2007"
             categories={years}
@@ -143,6 +192,33 @@ class App extends React.Component {
 
         <section>
           <h3>Grouped Bar Chart Vertical Orientation</h3>
+{/* <pre><code>
+<BarChart
+  title="Population, 2000-2007"
+  categories={locations}
+  subcategories={years}
+  data={data}
+  dataAccessors={{
+    category: locationField,
+    subcategory: yearField,
+    value: populationField,
+  }}
+  chartStyle={STYLE}
+  fill={(datum) => colorScale(datum[yearField])}
+  focus={this.state.focus}
+  axisLabels={{
+    domain: "Country",
+    range: "Population",
+  }}
+  onClick={this.onClick}
+  onMouseLeave={this.onMouseLeave}
+  onMouseMove={this.onMouseMove}
+  onMouseOver={this.onMouseOver}
+  orientation="vertical"
+  selection={this.state.selectedItems}
+  type="grouped"
+/>
+</code></pre> */}
           <BarChart
             title="Population, 2000-2007"
             categories={locations}
@@ -172,6 +248,39 @@ class App extends React.Component {
 
         <section>
           <h3>Grouped Bar Chart Horizontal Orientation</h3>
+{/* <pre><code>
+<BarChart
+  title="Population, 2000-2007"
+  categories={locations}
+  subcategories={years}
+  data={data}
+  dataAccessors={{
+    category: locationField,
+    subcategory: yearField,
+    value: populationField,
+  }}
+  chartStyle={STYLE}
+  fill={(datum) => colorScale(datum[yearField])}
+  focus={this.state.focus}
+  axisLabels={{
+    domain: "Country",
+    range: "Population"
+  }}
+  onClick={this.onClick}
+  onMouseLeave={this.onMouseLeave}
+  onMouseMove={this.onMouseMove}
+  onMouseOver={this.onMouseOver}
+  orientation="horizontal"
+  padding={{
+    top: 20,
+    right: 20,
+    bottom: 50,
+    left: 80,
+  }}
+  selection={this.state.selectedItems}
+  type="grouped"
+/>
+</code></pre> */}
           <BarChart
             title="Population, 2000-2007"
             categories={locations}
@@ -207,6 +316,45 @@ class App extends React.Component {
 
         <section>
           <h3>Stacked Bar Chart Vertical Orientation with Legend</h3>
+{/* <pre><code>
+<BarChart
+  title="Population, 2000-2007"
+  chartStyle={STYLE}
+  data={data}
+  dataAccessors={{
+    category: locationField,
+    subcategory: yearField,
+    value: populationField,
+  }}
+  displayLegend
+  fill={(datum) => colorScale(datum[yearField])}
+  focus={this.state.focus}
+  axisLabels={{
+    domain: "Country",
+    range: "Population",
+  }}
+  categories={locations}
+  subcategories={years}
+  legendItems={legendItems}
+  legendAccessors={{
+    labelKey: "label",
+    shapeColorKey: "shapeColor",
+    shapeTypeKey: "shapeType",
+  }}
+  onClick={this.onClick}
+  onMouseLeave={this.onMouseLeave}
+  onMouseOver={this.onMouseOver}
+  orientation="vertical"
+  padding={{
+    top: 20,
+    right: 20,
+    bottom: 40,
+    left: 70,
+  }}
+  selection={this.state.selectedItems}
+  type="stacked"
+/>
+</code></pre> */}
           <BarChart
             title="Population, 2000-2007"
             chartStyle={STYLE}
@@ -248,6 +396,45 @@ class App extends React.Component {
 
         <section>
           <h3>Stacked Horizontal Bar Chart with Legend</h3>
+{/* <pre><code>
+<BarChart
+  title="Population, 2000-2007"
+  categories={locations}
+  subcategories={years}
+  chartStyle={STYLE}
+  data={data}
+  dataAccessors={{
+    category: locationField,
+    subcategory: yearField,
+    value: populationField,
+  }}
+  displayLegend
+  fill={(datum) => colorScale(datum[yearField])}
+  focus={this.state.focus}
+  axisLabels={{
+    domain: "Country",
+    range: "Population",
+  }}
+  legendItems={legendItems}
+  legendAccessors={{
+    labelKey: "label",
+    shapeColorKey: "shapeColor",
+    shapeTypeKey: "shapeType",
+  }}
+  onClick={this.onClick}
+  onMouseLeave={this.onMouseLeave}
+  onMouseOver={this.onMouseOver}
+  orientation="horizontal"
+  padding={{
+    top: 20,
+    right: 20,
+    bottom: 50,
+    left: 80,
+  }}
+  selection={this.state.selectedItems}
+  type="stacked"
+/>
+</code></pre> */}
           <BarChart
             title="Population, 2000-2007"
             categories={locations}

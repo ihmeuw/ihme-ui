@@ -93,6 +93,24 @@ class App extends React.Component {
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <section>
           <h3>Bar, manually sized and positioned</h3>
+{/* <pre><code>
+<svg height={200} width={200}>
+  <Bar
+    x={50}
+    y={0}
+    height={200}
+    width={100}
+    datum={data[0]}
+    fill="orange"
+    focused={this.state.focus === data[0]}
+    selected={this.state.selectedItems.includes(data[0])}
+    onClick={this.onClick}
+    onMouseLeave={this.onMouseLeave}
+    onMouseMove={this.onMouseMove}
+    onMouseOver={this.onMouseOver}
+  />
+</svg>
+</code></pre> */}
           <svg height={200} width={200}>
             <Bar
               x={50}
@@ -113,6 +131,27 @@ class App extends React.Component {
 
         <section>
           <h3>Bars, no axes</h3>
+{/* <pre><code>
+<svg height={300} width={500}>
+  <Bars
+    categories={years}
+    data={indiaData}
+    dataAccessors={{
+      category: yearField,
+      value: populationField
+    }}
+    fill="steelblue"
+    focus={this.state.focus}
+    height={300}
+    width={500}
+    onClick={this.onClick}
+    onMouseLeave={this.onMouseLeave}
+    onMouseMove={this.onMouseMove}
+    onMouseOver={this.onMouseOver}
+    selection={this.state.selectedItems}
+  />
+</svg>
+</code></pre> */}
           <svg height={300} width={500}>
             <Bars
               categories={years}
@@ -136,6 +175,35 @@ class App extends React.Component {
 
         <section>
           <h3>Bars with axes, horizontal orientation</h3>
+{/* <pre><code>
+<AxisChart
+  height={300}
+  width={500}
+  xDomain={[0, util.computeDataMax(indiaData, populationField)]}
+  yDomain={years}
+  xScaleType="linear"
+  yScaleType="band"
+>
+  <XAxis/>
+  <YAxis/>
+  <Bars
+    categories={years}
+    data={indiaData}
+    dataAccessors={{
+      category: yearField,
+      value: populationField
+    }}
+    fill="steelblue"
+    focus={this.state.focus}
+    onClick={this.onClick}
+    onMouseLeave={this.onMouseLeave}
+    onMouseMove={this.onMouseMove}
+    onMouseOver={this.onMouseOver}
+    orientation="horizontal"
+    selection={this.state.selectedItems}
+  />
+</AxisChart>
+</code></pre> */}
           <AxisChart
             height={300}
             width={500}
@@ -167,6 +235,44 @@ class App extends React.Component {
 
         <section>
           <h3>GroupedBars with axes, vertical orientation</h3>
+{/* <pre><code>
+<AxisChart
+  height={500}
+  width={800}
+  xDomain={locations}
+  yDomain={[0, util.computeDataMax(data, populationField)]}
+  xScaleType="band"
+  yScaleType="linear"
+>
+  <XAxis/>
+  <YAxis/>
+  <GroupedBars
+    categories={locations}
+    subcategories={years}
+    data={data}
+    dataAccessors={{
+      category: locationField,
+      subcategory: yearField,
+      value: populationField,
+    }}
+    fill={(datum) => colorScale(datum[yearField])}
+    focus={this.state.focus}
+    focusedStyle={{
+      stroke: '#000',
+      strokeWidth: 2,
+    }}
+    onClick={this.onClick}
+    onMouseLeave={this.onMouseLeave}
+    onMouseMove={this.onMouseMove}
+    onMouseOver={this.onMouseOver}
+    selection={this.state.selectedItems}
+    selectedStyle={{
+      stroke: '#000',
+      strokeWidth: 1,
+    }}
+  />
+</AxisChart>
+</code></pre> */}
           <AxisChart
             height={500}
             width={800}
@@ -207,6 +313,45 @@ class App extends React.Component {
 
         <section>
           <h3>StackedBars with axes, horizontal orientation</h3>
+{/* <pre><code>
+<AxisChart
+  height={800}
+  width={800}
+  xDomain={[0, util.computeStackMax(data, locationField, populationField)]}
+  yDomain={locations}
+  xScaleType="linear"
+  yScaleType="band"
+>
+  <XAxis/>
+  <YAxis/>
+  <StackedBars
+    categories={locations}
+    subcategories={years}
+    data={data}
+    dataAccessors={{
+      category: locationField,
+      subcategory: yearField,
+      value: populationField,
+    }}
+    fill={(datum) => colorScale(datum[yearField])}
+    focus={this.state.focus}
+    focusedStyle={{
+      stroke: '#000',
+      strokeWidth: 2,
+    }}
+    onClick={this.onClick}
+    onMouseLeave={this.onMouseLeave}
+    onMouseMove={this.onMouseMove}
+    onMouseOver={this.onMouseOver}
+    orientation="horizontal"
+    selection={this.state.selectedItems}
+    selectedStyle={{
+      stroke: '#000',
+      strokeWidth: 1,
+    }}
+  />
+</AxisChart>
+</code></pre> */}
           <AxisChart
             height={800}
             width={800}
