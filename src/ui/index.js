@@ -4,7 +4,7 @@ import { Bar, Bars, GroupedBars, StackedBars } from './bar';
 import Button from './button';
 import Choropleth from './choropleth';
 import {
-  Stacked,
+  BarChart,
   ChoroplethLegend,
   Map,
 } from './compositions';
@@ -35,9 +35,9 @@ export {
   Axis,
   AxisChart,
   Bar,
+  BarChart,
   Bars,
   Button,
-  Stacked,
   Choropleth,
   ChoroplethLegend,
   Expandable,
