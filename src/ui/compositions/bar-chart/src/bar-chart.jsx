@@ -173,10 +173,7 @@ export default class BarChart extends React.PureComponent {
       categories,
       chartStyle,
       orientation,
-      axisLabels: {
-        domain: domainLabel,
-        range: rangeLabel,
-      },
+      axisLabels,
       padding,
     } = this.props;
 
@@ -194,8 +191,8 @@ export default class BarChart extends React.PureComponent {
             xScaleType={vertical ? 'band' : 'linear'}
             yScaleType={vertical ? 'linear' : 'band'}
           >
-            <XAxis label={vertical ? domainLabel : rangeLabel} />
-            <YAxis label={vertical ? rangeLabel : domainLabel} />
+            <XAxis label={axisLabels && (vertical ? axisLabels.domain : axisLabels.range)} />
+            <YAxis label={axisLabels && (vertical ? axisLabels.range : axisLabels.domain)} />
             {this.renderBars()}
           </AxisChart>
         </ResponsiveContainer>
