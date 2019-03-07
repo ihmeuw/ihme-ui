@@ -191,8 +191,14 @@ export default class BarChart extends React.PureComponent {
             xScaleType={vertical ? 'band' : 'linear'}
             yScaleType={vertical ? 'linear' : 'band'}
           >
-            <XAxis label={axisLabels && (vertical ? axisLabels.domain : axisLabels.range)} />
-            <YAxis label={axisLabels && (vertical ? axisLabels.range : axisLabels.domain)} />
+            <XAxis
+              autoFilterTickValues={!vertical}
+              label={axisLabels && (vertical ? axisLabels.domain : axisLabels.range)}
+            />
+            <YAxis
+              autoFilterTickValues={vertical}
+              label={axisLabels && (vertical ? axisLabels.range : axisLabels.domain)}
+            />
             {this.renderBars()}
           </AxisChart>
         </ResponsiveContainer>
