@@ -11,13 +11,11 @@ describe('<Legend />', () => {
   const labelKey = 'label';
   const shapeColorKey = 'shapeColor';
   const shapeTypeKey = 'shapeType';
-  const items = Array(5).fill(1).map((_, idx) => {
-    return {
-      [labelKey]: idx,
-      [shapeColorKey]: 'red',
-      [shapeTypeKey]: 'square'
-    };
-  });
+  const items = Array(5).fill(1).map((_, idx) => ({
+    [labelKey]: idx,
+    [shapeColorKey]: 'red',
+    [shapeTypeKey]: 'square'
+  }));
 
   it('renders an empty ul if given no legend items', () => {
     [{ items: [], }, { items: (void 0) }, { items: {} }].forEach((test) => {

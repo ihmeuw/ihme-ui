@@ -48,8 +48,8 @@ describe('animate factory functions', () => {
     );
 
     const [
-      animationStartMethod,     // `start` is a bit different than
-      ...otherAnimationMethods  // `enter`, `update`, `leave`, so its ideal to keep them separate.
+      animationStartMethod, // `start` is a bit different than
+      ...otherAnimationMethods // `enter`, `update`, `leave`, so its ideal to keep them separate.
     ] = animationMethodNames.map(animationProcessor);
 
     return [animationStartMethod, otherAnimationMethods];

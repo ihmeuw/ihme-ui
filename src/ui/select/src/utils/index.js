@@ -15,19 +15,17 @@ export const getWidestLabel = (
   labelKey = '',
   hierarchical = false,
   levelPadding = 5
-) => {
-  return options.reduce((maxWidth, option) => {
-    const canvasContext = window && window.document.createElement('canvas').getContext('2d');
-    const labelWidth = getRenderedStringWidth(option[labelKey], '12px Verdana', canvasContext);
+) => options.reduce((maxWidth, option) => {
+  const canvasContext = window && window.document.createElement('canvas').getContext('2d');
+  const labelWidth = getRenderedStringWidth(option[labelKey], '12px Verdana', canvasContext);
 
-    // take padding into account for hierarchically displayed list
-    const fullWidth = hierarchical
-      ? labelWidth + levelPadding * option.level
-      : labelWidth;
+  // take padding into account for hierarchically displayed list
+  const fullWidth = hierarchical
+    ? labelWidth + levelPadding * option.level
+    : labelWidth;
 
-    return Math.max(maxWidth, fullWidth);
-  }, 0);
-};
+  return Math.max(maxWidth, fullWidth);
+}, 0);
 
 export const FLIP_MENU_UPWARDS_INLINE_STYLE = {
   borderRadius: '4px 4px 0 0',

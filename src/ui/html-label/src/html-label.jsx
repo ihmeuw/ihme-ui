@@ -10,20 +10,18 @@ import styles from './html-label.css';
  *
  * An HTML `<label>` to wrap interactive content.
  */
-const HtmlLabel = (props) => {
-  return (
-    <label
-      className={classNames(styles[props.theme], props.className)}
-      htmlFor={props.htmlFor}
-      onClick={props.onClick}
-      onMouseOver={props.onMouseOver}
-    >
-      {props.icon && <img alt="" src={props.icon} />}
-      {props.text}
-      {props.children}
-    </label>
-  );
-};
+const HtmlLabel = (props) => (
+  <label
+    className={classNames(styles[props.theme], props.className)}
+    htmlFor={props.htmlFor}
+    onClick={props.onClick}
+    onMouseOver={props.onMouseOver}
+  >
+    {props.icon && <img alt="" src={props.icon} />}
+    {props.text}
+    {props.children}
+  </label>
+);
 
 HtmlLabel.propTypes = {
   children: PropTypes.element,

@@ -37,8 +37,9 @@ export function extractGeoJSON(topology, layers) {
           mesh: {
             ...acc.mesh,
             [layer.name]: topojson.mesh(topology,
-                                        propResolver(topology.objects, layer.object),
-                                        layer.meshFilter || defaultMeshFilter),
+              propResolver(topology.objects, layer.object),
+              layer.meshFilter || defaultMeshFilter
+            ),
           },
         };
       case 'feature':
@@ -78,10 +79,10 @@ export function concatTopoJSON(objects, order) {
 export function concatGeoJSON(extractedGeoJSON) {
   // iterate over each property of extractedGeoJSON ('mesh' & 'feature')
   // reduce to single array of features
-  return reduce(extractedGeoJSON, (collection, type) => {
+  return reduce(extractedGeoJSON, (collection, type) =>
     // extractedGeoJSON[type] will be one of [extractedGeoJSON.mesh, extractedGeoJSON.feature]
     // each is an object with geoJSON features or geometric objects
-    return [...collection, ...reduce(type, (intermediateCollection, geoJSON) => {
+    [...collection, ...reduce(type, (intermediateCollection, geoJSON) => {
       switch (geoJSON.type) {
         // topojson::feature will only return GeoJSON Feature or FeatureCollection
         // topojson::mesh is excluded because it is not used in bounds calculations
@@ -92,8 +93,8 @@ export function concatGeoJSON(extractedGeoJSON) {
         default:
           return intermediateCollection;
       }
-    }, [])];
-  }, []);
+    }, [])]
+  , []);
 }
 
 /**

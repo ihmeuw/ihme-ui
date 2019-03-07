@@ -24,7 +24,7 @@ describe('<AxisChart />', () => {
   let component;
 
   const yDomain = [minBy(data, valueField)[valueField], maxBy(data, valueField)[valueField]];
-  const xDomain = map(uniqBy(data, keyField), (obj) => { return (obj[keyField]); });
+  const xDomain = map(uniqBy(data, keyField), (obj) => (obj[keyField]));
 
   before(() => {
     component = (
@@ -38,11 +38,9 @@ describe('<AxisChart />', () => {
         clipPath
       >
         {
-          map(lineData, (dataSet) => {
-            return (
-              <p key={dataSet.location} />
-            );
-          })
+          map(lineData, (dataSet) => (
+            <p key={dataSet.location} />
+          ))
         }
       </AxisChart>
     );

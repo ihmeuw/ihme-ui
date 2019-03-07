@@ -17,7 +17,7 @@ export const colorSteps = [
   '#abd9e9',
   '#74add1',
   '#4575b4',
-  '#313695',  // dark blue
+  '#313695', // dark blue
 ];
 
 /**

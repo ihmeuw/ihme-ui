@@ -62,8 +62,4 @@ export const getGeoJSON = (feature, type = 'feature') => {
   return topojson.feature(topology, topology.objects[feature]);
 };
 
-export const getLocationIds = (features) => {
-  return features.map(feature => {
-    return feature.id;
-  });
-};
+export const getLocationIds = (features) => features.map(feature => feature.id);

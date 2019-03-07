@@ -80,7 +80,7 @@ describe('data generator', () => {
     for (let i = 0; i < data.length - 1; i++) {
       for (let j = i + 1; j < data.length; j++) {
         expect([data[i].AAA, data[i].BBB, data[i].CCC, data[i].year_id])
-        .to.not.eql([data[j].AAA, data[j].BBB, data[j].CCC, data[j].year_id]);
+          .to.not.eql([data[j].AAA, data[j].BBB, data[j].CCC, data[j].year_id]);
       }
     }
   });
@@ -97,7 +97,7 @@ describe('data generator', () => {
     const data = dataGenerator(config);
     for (let i = 0; i < data.length; i++) {
       expect(data[i]).to.be.an('object')
-      .with.property('unicorns', 'rainbows');
+        .with.property('unicorns', 'rainbows');
     }
   });
 });

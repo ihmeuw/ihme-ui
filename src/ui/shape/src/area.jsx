@@ -243,12 +243,10 @@ Area.processStyle = (style, { fill, stroke, strokeWidth }) => ({
   strokeWidth,
 });
 
-Area.getPathGenerator = props => {
-  return area()
-    .x((datum) => props.scales.x(propResolver(datum, props.dataAccessors.x)))
-    .y0((datum) => props.scales.y(propResolver(datum, props.dataAccessors.y0)))
-    .y1((datum) => props.scales.y(propResolver(datum, props.dataAccessors.y1)));
-};
+Area.getPathGenerator = props => area()
+  .x((datum) => props.scales.x(propResolver(datum, props.dataAccessors.x)))
+  .y0((datum) => props.scales.y(propResolver(datum, props.dataAccessors.y0)))
+  .y1((datum) => props.scales.y(propResolver(datum, props.dataAccessors.y1)));
 
 Area.dataProcessor = (props, data) => ({
   d: Area.getPathGenerator(props)(data),

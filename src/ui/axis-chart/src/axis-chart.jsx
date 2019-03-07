@@ -41,9 +41,11 @@ export default class AxisChart extends React.Component {
     const state = {};
 
     if (propsChanged(this.props, nextProps, ['width', 'height', 'padding'])) {
-      state.chartDimensions = calcChartDimensions(nextProps.width,
-                                                  nextProps.height,
-                                                  nextProps.padding);
+      state.chartDimensions = calcChartDimensions(
+        nextProps.width,
+        nextProps.height,
+        nextProps.padding
+      );
     }
 
     const xChanged = state.chartDimensions ||
@@ -93,19 +95,17 @@ export default class AxisChart extends React.Component {
             </rect>
           </clipPath>
         </defs>)
-        : null
-      }
+          : null
+        }
         <g transform={`translate(${props.padding.left}, ${props.padding.top})`}>
-           {
-             React.Children.map(props.children, (child) => {
-               return child && React.cloneElement(child, {
-                 scales,
-                 padding: props.padding,
-                 clipPathId: props.clipPath ? clipPathId : (void 0),
-                 ...chartDimensions,
-               });
-             })
-           }
+          {
+            React.Children.map(props.children, (child) => child && React.cloneElement(child, {
+              scales,
+              padding: props.padding,
+              clipPathId: props.clipPath ? clipPathId : (void 0),
+              ...chartDimensions,
+            }))
+          }
         </g>
       </svg>
     );

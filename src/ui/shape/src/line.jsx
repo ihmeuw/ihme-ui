@@ -239,11 +239,9 @@ Line.processStyle = (style, { stroke, strokeWidth }) => ({
   strokeWidth,
 });
 
-Line.getPathGenerator = props => {
-  return line()
-    .x(datum => props.scales.x(propResolver(datum, props.dataAccessors.x)))
-    .y(datum => props.scales.y(propResolver(datum, props.dataAccessors.y)));
-};
+Line.getPathGenerator = props => line()
+  .x(datum => props.scales.x(propResolver(datum, props.dataAccessors.x)))
+  .y(datum => props.scales.y(propResolver(datum, props.dataAccessors.y)));
 
 Line.dataProcessor = (props, data) => ({
   d: Line.getPathGenerator(props)(data),

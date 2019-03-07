@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { isFinite } from 'lodash';
+import isFinite from 'lodash/isFinite';
+import noop from 'lodash/noop';
 import { isWithinRange, percentOfRange } from '../../../../utils';
 import SliderHandle from './slider-handle';
 
@@ -125,7 +126,7 @@ export default class Slider extends React.Component {
         >
         </rect>
         <SliderHandle
-          which={"x1"}
+          which={'x1'}
           position={leftEdgeinPx}
           label={minExtent}
           labelFormat={labelFormat}
@@ -206,5 +207,5 @@ Slider.defaultProps = {
   marginTop: 0,
   marginLeft: 0,
   translateY: 1,
-  onSliderMove: () => { return; }
+  onSliderMove: noop,
 };

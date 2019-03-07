@@ -306,8 +306,8 @@ Axis.propUpdates = {
     }
 
     return assign({}, accum, {
-      translate: nextProps.translate || calcTranslate(nextProps.orientation, nextProps.width,
-                                                      nextProps.height)
+      translate: nextProps.translate
+      || calcTranslate(nextProps.orientation, nextProps.width, nextProps.height)
     });
   },
 };
