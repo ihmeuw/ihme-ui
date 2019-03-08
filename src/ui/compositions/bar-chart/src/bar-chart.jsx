@@ -91,14 +91,12 @@ export default class BarChart extends React.PureComponent {
 
     return (
       <div className={classNames(styles.legend, legendClassName)} style={legendStyle}>
-        <div className={styles['legend-wrapper']}>
-          <Legend
-            items={legendItems}
-            labelKey={labelKey}
-            shapeColorKey={shapeColorKey}
-            shapeTypeKey={shapeTypeKey}
-          />
-        </div>
+        <Legend
+          items={legendItems}
+          labelKey={labelKey}
+          shapeColorKey={shapeColorKey}
+          shapeTypeKey={shapeTypeKey}
+        />
       </div>
     );
   }
