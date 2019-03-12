@@ -19,8 +19,8 @@ export function isVertical(orientation) {
 export function isInSelection(datum, selection) {
   return selection && (
     Array.isArray(selection)
-    ? selection.includes(datum)
-    : selection === datum
+      ? selection.includes(datum)
+      : selection === datum
   );
 }
 
@@ -185,8 +185,8 @@ export function getRangeScale({
     ? rangeMax
     : (
       stacked
-      ? computeStackMax(data, dataAccessors.category, dataAccessors.value)
-      : computeDataMax(data, dataAccessors.value)
+        ? computeStackMax(data, dataAccessors.category, dataAccessors.value)
+        : computeDataMax(data, dataAccessors.value)
     );
   /* eslint-enable no-nested-ternary */
 

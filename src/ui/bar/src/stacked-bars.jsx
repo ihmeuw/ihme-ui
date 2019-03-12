@@ -120,7 +120,7 @@ const {
 StackedBars.propTypes = {
   ...commonProps,
 
-   /**
+  /**
    * Accessors on datum objects:
    *   category: used to determine the bar's stack (to plot it on the chart domain)
    *   subcategory: used to determine the bar's layer within its stack
