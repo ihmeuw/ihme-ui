@@ -38,10 +38,6 @@ const data = dataGenerator({
 
 const brazilData = data.filter(({ location }) => location === 'Brazil');
 
-const STYLE = {
-  height: true,
-};
-
 const colorScale = scaleOrdinal(schemeCategory10);
 
 const legendItems = years.map((year) => ({
@@ -94,7 +90,6 @@ class App extends React.Component {
 <BarChart
   title="Brazil Population, 2000-2007"
   categories={years}
-  chartStyle={STYLE}
   data={brazilData}
   dataAccessors={{
     category: yearField,
@@ -115,7 +110,6 @@ class App extends React.Component {
           <BarChart
             title="Brazil Population, 2000-2007"
             categories={years}
-            chartStyle={STYLE}
             data={brazilData}
             dataAccessors={{
               category: yearField,
@@ -140,7 +134,6 @@ class App extends React.Component {
 <BarChart
   title="Brazil Population, 2000-2007"
   categories={years}
-  chartStyle={STYLE}
   data={brazilData}
   dataAccessors={{
     category: yearField,
@@ -166,7 +159,6 @@ class App extends React.Component {
           <BarChart
             title="Brazil Population, 2000-2007"
             categories={years}
-            chartStyle={STYLE}
             data={brazilData}
             dataAccessors={{
               category: yearField,
@@ -203,7 +195,6 @@ class App extends React.Component {
     subcategory: yearField,
     value: populationField,
   }}
-  chartStyle={STYLE}
   fill={(datum) => colorScale(datum[yearField])}
   focus={this.state.focus}
   axisLabels={{
@@ -229,7 +220,6 @@ class App extends React.Component {
               subcategory: yearField,
               value: populationField,
             }}
-            chartStyle={STYLE}
             fill={(datum) => colorScale(datum[yearField])}
             focus={this.state.focus}
             axisLabels={{
@@ -259,7 +249,6 @@ class App extends React.Component {
     subcategory: yearField,
     value: populationField,
   }}
-  chartStyle={STYLE}
   fill={(datum) => colorScale(datum[yearField])}
   focus={this.state.focus}
   axisLabels={{
@@ -291,7 +280,6 @@ class App extends React.Component {
               subcategory: yearField,
               value: populationField,
             }}
-            chartStyle={STYLE}
             fill={(datum) => colorScale(datum[yearField])}
             focus={this.state.focus}
             axisLabels={{
@@ -319,7 +307,6 @@ class App extends React.Component {
 {/* <pre><code>
 <BarChart
   title="Population, 2000-2007"
-  chartStyle={STYLE}
   data={data}
   dataAccessors={{
     category: locationField,
@@ -357,7 +344,6 @@ class App extends React.Component {
 </code></pre> */}
           <BarChart
             title="Population, 2000-2007"
-            chartStyle={STYLE}
             data={data}
             dataAccessors={{
               category: locationField,
@@ -401,7 +387,6 @@ class App extends React.Component {
   title="Population, 2000-2007"
   categories={locations}
   subcategories={years}
-  chartStyle={STYLE}
   data={data}
   dataAccessors={{
     category: locationField,
@@ -439,7 +424,6 @@ class App extends React.Component {
             title="Population, 2000-2007"
             categories={locations}
             subcategories={years}
-            chartStyle={STYLE}
             data={data}
             dataAccessors={{
               category: locationField,
