@@ -143,12 +143,6 @@ class App extends React.Component {
   onMouseLeave={this.onMouseLeave}
   onMouseOver={this.onMouseOver}
   orientation="horizontal"
-  padding={{
-    top: 20,
-    right: 20,
-    bottom: 50,
-    left: 60,
-  }}
   selection={this.state.selectedItems}
 />
 </code></pre> */}
@@ -169,12 +163,6 @@ class App extends React.Component {
             onMouseLeave={this.onMouseLeave}
             onMouseOver={this.onMouseOver}
             orientation="horizontal"
-            padding={{
-              top: 20,
-              right: 20,
-              bottom: 50,
-              left: 60,
-            }}
             selection={this.state.selectedItems}
           />
         </section>
@@ -258,10 +246,10 @@ class App extends React.Component {
   onMouseOver={this.onMouseOver}
   orientation="horizontal"
   padding={{
-    top: 20,
-    right: 20,
+    top: 10,
+    right: 10,
     bottom: 50,
-    left: 80,
+    left: 70,
   }}
   selection={this.state.selectedItems}
   type="grouped"
@@ -289,10 +277,10 @@ class App extends React.Component {
             onMouseOver={this.onMouseOver}
             orientation="horizontal"
             padding={{
-              top: 20,
-              right: 20,
+              top: 10,
+              right: 10,
               bottom: 50,
-              left: 80,
+              left: 70,
             }}
             selection={this.state.selectedItems}
             type="grouped"
@@ -329,12 +317,6 @@ class App extends React.Component {
   onMouseLeave={this.onMouseLeave}
   onMouseOver={this.onMouseOver}
   orientation="vertical"
-  padding={{
-    top: 20,
-    right: 20,
-    bottom: 40,
-    left: 70,
-  }}
   selection={this.state.selectedItems}
   type="stacked"
 />
@@ -366,12 +348,6 @@ class App extends React.Component {
             onMouseLeave={this.onMouseLeave}
             onMouseOver={this.onMouseOver}
             orientation="vertical"
-            padding={{
-              top: 20,
-              right: 20,
-              bottom: 40,
-              left: 70,
-            }}
             selection={this.state.selectedItems}
             type="stacked"
           />
@@ -408,8 +384,8 @@ class App extends React.Component {
   onMouseOver={this.onMouseOver}
   orientation="horizontal"
   padding={{
-    top: 20,
-    right: 20,
+    top: 10,
+    right: 10,
     bottom: 50,
     left: 80,
   }}
@@ -445,8 +421,8 @@ class App extends React.Component {
             onMouseOver={this.onMouseOver}
             orientation="horizontal"
             padding={{
-              top: 20,
-              right: 20,
+              top: 10,
+              right: 10,
               bottom: 50,
               left: 80,
             }}
