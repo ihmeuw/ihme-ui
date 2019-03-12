@@ -65,9 +65,15 @@ import { AxisChart, linspace } from 'ihme-ui';
 * Components
   * [\<Axis /\>](src/ui/axis/README.md)
   * [\<AxisChart /\>](src/ui/axis-chart/README.md)
+  * [Bar](src/ui/bar/README.md)
+    * \<Bar /\>
+    * \<Bars /\>
+    * \<GroupedBars /\>
+    * \<StackedBars /\>
   * [\<Button /\>](src/ui/button/README.md)
   * [\<Choropleth /\>](src/ui/choropleth/README.md)
   * [Compositions](src/ui/compositions/README.md)
+    * [\<BarChart /\>](src/ui/compositions/bar-chart/README.md)
     * [\<ChoroplethLegend /\>](src/ui/compositions/choropleth-legend/README.md)
     * [\<Map /\>](src/ui/compositions/map/README.md)
   * [\<ExpansionContainer /\>](src/ui/expansion-container/README.md)
@@ -81,6 +87,7 @@ import { AxisChart, linspace } from 'ihme-ui';
     * \<Area /\>
     * \<Line /\>
     * \<MultiLine /\>
+    * \<MultiScatter /\>
     * \<Scatter /\>
     * \<Shape /\>
   * [\<Slider /\>](src/ui/slider/README.md)
