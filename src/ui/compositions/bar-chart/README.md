@@ -30,6 +30,10 @@ Property | Required | Type(s) | Default | Description
 `legendItems` | if `displayLegend` | object[] | | Array of objects used to build items in the legend. These objects can be just about anything. The only restriction is that it must be possible to obtain the label, shape color, and shape type for the legend item using the `legendAccessors`. Required if `displayLegend` is `true`.
 `legendClassName` | | [CommonPropTypes.className](../../../utils/props.js#L13) | | className applied to element wrapping the legend
 `legendStyle` | | [CommonPropTypes.style](../../../utils/props.js#L18) | | inline styles applied to element wrapping the legend
+`legendListClassName` | | [CommonPropTypes.className](../../../utils/props.js#L13) | | className applied to `<ul>`, which wraps legend items
+`legendListStyle` | | [CommonPropTypes.style](../../../utils/props.js#L18) | | inline styles applied to `<ul>`, which wraps legend items; if a function, passed items as argument
+`legendItemClassName` | | [CommonPropTypes.className](../../../utils/props.js#L13) | | classname applied to legend item elements
+`legendItemStyle` | | [CommonPropTypes.style](../../../utils/props.js#L18) | | inline styles applied to legend item elements; if passed an object, will be applied directly inline to the `<li>`; if passed a function, will be called with the current item obj
 `onClick` |  | func | selects (or deselects) clicked bars | onClick callback applied to each `<Bar/>`. <br/> signature: (SyntheticEvent, datum, instance) => {...}
 `onMouseLeave` |  | func | | onMouseLeave callback applied to each `<Bar/>`. <br/> signature: (SyntheticEvent, datum, instance) => {...}
 `onMouseMove` |  | func | | onMouseMove callback applied to each `<Bar/>`. <br/> signature: (SyntheticEvent, datum, instance) => {...}

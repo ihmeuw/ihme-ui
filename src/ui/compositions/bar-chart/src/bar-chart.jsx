@@ -100,6 +100,10 @@ export default class BarChart extends React.PureComponent {
       legendClassName,
       legendItems,
       legendStyle,
+      legendListClassName,
+      legendListStyle,
+      legendItemClassName,
+      legendItemStyle,
     } = this.props;
 
     return (
@@ -111,6 +115,10 @@ export default class BarChart extends React.PureComponent {
           shapeTypeKey={shapeTypeKey}
           className={legendClassName}
           style={legendStyle}
+          listClassName={legendListClassName}
+          listStyle={legendListStyle}
+          itemClassName={legendItemClassName}
+          itemStyle={legendItemStyle}
         />
       </div>
     );
@@ -442,6 +450,29 @@ BarChart.propTypes = {
    * inline styles applied to element wrapping the legend
    */
   legendStyle: CommonPropTypes.style,
+
+  /**
+   * className applied to `<ul>`, which wraps legend items
+   */
+  legendListClassName: CommonPropTypes.className,
+
+  /**
+   * inline styles applied to `<ul>`, which wraps legend items
+   * if a function, passed items as argument. Signature: (items): {} => { ... }.
+   */
+  legendListStyle: CommonPropTypes.style,
+
+  /**
+   * classname applied to legend item elements
+   */
+  legendItemClassName: CommonPropTypes.className,
+
+  /**
+   * inline styles applied to legend item elements
+   * if passed an object, will be applied directly inline to the `<li>`
+   * if passed a function, will be called with the current item obj
+   */
+  legendItemStyle: CommonPropTypes.style,
 
   /**
    * onClick callback applied to each `<Bar />`.
