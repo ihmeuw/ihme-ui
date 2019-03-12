@@ -154,6 +154,7 @@ class App extends React.Component {
     bottom: 50,
     left: 60,
   }}
+  selection={this.state.selectedItems}
 />
 </code></pre> */}
           <BarChart
@@ -179,6 +180,7 @@ class App extends React.Component {
               bottom: 50,
               left: 60,
             }}
+            selection={this.state.selectedItems}
           />
         </section>
 
