@@ -15,12 +15,25 @@ import {
   GroupedBars,
   StackedBars,
 } from '../../../bar';
-import ResponsiveContainer from '../../../responsive-container';
 import Legend from '../../../legend';
 
 const FOCUSED_STYLE = {
   stroke: '#000',
   strokeWidth: 2,
+};
+
+const DEFAULT_PADDING_NO_AXIS_LABELS = {
+  top: 10,
+  right: 10,
+  bottom: 20,
+  left: 30,
+};
+
+const DEFAULT_PADDING_WITH_AXIS_LABELS = {
+  top: 10,
+  right: 10,
+  bottom: 50,
+  left: 60,
 };
 
 export default class BarChart extends React.PureComponent {
@@ -90,12 +103,14 @@ export default class BarChart extends React.PureComponent {
     } = this.props;
 
     return (
-      <div className={classNames(styles.legend, legendClassName)} style={legendStyle}>
+      <div>
         <Legend
           items={legendItems}
           labelKey={labelKey}
           shapeColorKey={shapeColorKey}
           shapeTypeKey={shapeTypeKey}
+          className={legendClassName}
+          style={legendStyle}
         />
       </div>
     );
@@ -106,6 +121,7 @@ export default class BarChart extends React.PureComponent {
       bandInnerGroupPadding: innerGroupPadding,
       bandInnerPadding: innerPadding,
       bandOuterPadding: outerPadding,
+      chartClassName: className,
       chartStyle: style,
       onClick = this.onClick,
       type,
@@ -139,6 +155,7 @@ export default class BarChart extends React.PureComponent {
     ]);
 
     const commonProps = {
+      className,
       innerPadding,
       outerPadding,
       focusedStyle: FOCUSED_STYLE,
@@ -169,10 +186,11 @@ export default class BarChart extends React.PureComponent {
   renderChart() {
     const {
       categories,
-      chartStyle,
       orientation,
       axisLabels,
       padding,
+      chartHeight,
+      chartWidth,
     } = this.props;
 
     const chartRange = [0, this.computeRangeMax()];
@@ -180,27 +198,28 @@ export default class BarChart extends React.PureComponent {
     const vertical = util.isVertical(orientation);
 
     return (
-      <div className={classNames(styles.chart, chartStyle)}>
-        <ResponsiveContainer>
-          <AxisChart
-            padding={padding}
-            xDomain={vertical ? categories : chartRange}
-            yDomain={vertical ? chartRange : categories}
-            xScaleType={vertical ? 'band' : 'linear'}
-            yScaleType={vertical ? 'linear' : 'band'}
-          >
-            <XAxis
-              autoFilterTickValues={!vertical}
-              label={axisLabels && (vertical ? axisLabels.domain : axisLabels.range)}
-            />
-            <YAxis
-              autoFilterTickValues={vertical}
-              label={axisLabels && (vertical ? axisLabels.range : axisLabels.domain)}
-            />
-            {this.renderBars()}
-          </AxisChart>
-        </ResponsiveContainer>
-      </div>
+      <AxisChart
+        height={chartHeight}
+        width={chartWidth}
+        padding={
+          padding
+          || (axisLabels ? DEFAULT_PADDING_WITH_AXIS_LABELS : DEFAULT_PADDING_NO_AXIS_LABELS)
+        }
+        xDomain={vertical ? categories : chartRange}
+        yDomain={vertical ? chartRange : categories}
+        xScaleType={vertical ? 'band' : 'linear'}
+        yScaleType={vertical ? 'linear' : 'band'}
+      >
+        <XAxis
+          autoFilterTickValues={!vertical}
+          label={axisLabels && (vertical ? axisLabels.domain : axisLabels.range)}
+        />
+        <YAxis
+          autoFilterTickValues={vertical}
+          label={axisLabels && (vertical ? axisLabels.range : axisLabels.domain)}
+        />
+        {this.renderBars()}
+      </AxisChart>
     );
   }
 
@@ -229,7 +248,7 @@ export default class BarChart extends React.PureComponent {
     }
 
     return (
-      <div className={classNames(styles['chart-container'], className)} style={style}>
+      <div className={classNames(styles.container, className)} style={style}>
         {title ? this.renderTitle() : null}
         {this.renderChart()}
         {displayLegend ? this.renderLegend() : null}
@@ -311,9 +330,24 @@ BarChart.propTypes = {
   subcategories: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])),
 
   /**
-   * inline styles applied to the element wrapping the chart (included axes)
+   * className applied to the chart element
+   */
+  chartClassName: CommonPropTypes.className,
+
+  /**
+   * inline styles applied to the chart element
    */
   chartStyle: CommonPropTypes.style,
+
+  /**
+   * height of the chart in pixels
+   */
+  chartHeight: PropTypes.number,
+
+  /**
+   * width of the chart in pixels
+   */
+  chartWidth: PropTypes.number,
 
   /**
    * className applied to outermost container element
@@ -510,4 +544,6 @@ BarChart.defaultProps = {
   orientation: 'vertical',
   displayLegend: false,
   type: 'normal',
+  chartHeight: 400,
+  chartWidth: 600,
 };
