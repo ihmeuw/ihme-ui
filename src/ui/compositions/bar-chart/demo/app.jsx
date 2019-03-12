@@ -2,6 +2,7 @@ import React from 'react';
 import { schemeCategory10, scaleOrdinal } from 'd3';
 import ReactDOM from 'react-dom';
 import bindAll from 'lodash/bindAll';
+import identity from 'lodash/identity';
 import xor from 'lodash/xor';
 
 import BarChart from '../';
@@ -39,12 +40,6 @@ const data = dataGenerator({
 const brazilData = data.filter(({ location }) => location === 'Brazil');
 
 const colorScale = scaleOrdinal(schemeCategory10);
-
-const legendItems = years.map((year) => ({
-  label: year,
-  shapeColor: colorScale(year),
-  shapeType: 'square',
-}));
 
 class App extends React.Component {
   constructor(props) {
@@ -324,11 +319,11 @@ class App extends React.Component {
   }}
   categories={locations}
   subcategories={years}
-  legendItems={legendItems}
+  legendItems={years}
   legendAccessors={{
-    labelKey: "label",
-    shapeColorKey: "shapeColor",
-    shapeTypeKey: "shapeType",
+    labelKey: identity,
+    shapeColorKey: colorScale,
+    shapeTypeKey: () => 'square',
   }}
   onClick={this.onClick}
   onMouseLeave={this.onMouseLeave}
@@ -361,11 +356,11 @@ class App extends React.Component {
             }}
             categories={locations}
             subcategories={years}
-            legendItems={legendItems}
+            legendItems={years}
             legendAccessors={{
-              labelKey: "label",
-              shapeColorKey: "shapeColor",
-              shapeTypeKey: "shapeType",
+              labelKey: identity,
+              shapeColorKey: colorScale,
+              shapeTypeKey: () => 'square',
             }}
             onClick={this.onClick}
             onMouseLeave={this.onMouseLeave}
@@ -402,11 +397,11 @@ class App extends React.Component {
     domain: "Country",
     range: "Population",
   }}
-  legendItems={legendItems}
+  legendItems={years}
   legendAccessors={{
-    labelKey: "label",
-    shapeColorKey: "shapeColor",
-    shapeTypeKey: "shapeType",
+    labelKey: identity,
+    shapeColorKey: colorScale,
+    shapeTypeKey: () => 'square',
   }}
   onClick={this.onClick}
   onMouseLeave={this.onMouseLeave}
@@ -439,11 +434,11 @@ class App extends React.Component {
               domain: "Country",
               range: "Population",
             }}
-            legendItems={legendItems}
+            legendItems={years}
             legendAccessors={{
-              labelKey: "label",
-              shapeColorKey: "shapeColor",
-              shapeTypeKey: "shapeType",
+              labelKey: identity,
+              shapeColorKey: colorScale,
+              shapeTypeKey: () => 'square',
             }}
             onClick={this.onClick}
             onMouseLeave={this.onMouseLeave}
