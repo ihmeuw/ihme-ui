@@ -14,12 +14,13 @@
   ],
   "author": "Institue for Health Metrics and Evaluation",
   "contributors": [
-    "Gabe Medrash <gmedrash@gmail.com>",
-    "Brett Vitaz <vitazbt@uw.edu>",
-    "Aaron Keel <akeel@uw.edu>",
+    "Gabe Medrash <gmedrash@gmail.com> (https://github.com/GabeMedrash)",
+    "Brett Vitaz <vitazbt@uw.edu> (https://github.com/brettvitaz)",
+    "Aaron Keel <akeel@uw.edu> (https://github.com/aaronKeel)",
     "David Schneider <davschne@gmail.com> (https://github.com/davschne)",
-    "Katherine Beame <katherine.beame@gmail.com>",
-    "Jim Vermillion <jam.mcmillion@gmail.com>"
+    "Katherine Beame <katherine.beame@gmail.com> (https://github.com/kbeame)",
+    "Jim Vermillion <jam.mcmillion@gmail.com> (https://github.com/jimvermillion)",
+    "Bao Dinh <bdinh@uw.edu> (https://github.com/bdinh)"
   ],
   "repository": "https://github.com/ihmeuw/ihme-ui.git",
   "bugs": "https://github.com/ihmeuw/ihme-ui/issues",
