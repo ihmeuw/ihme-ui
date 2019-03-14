@@ -1,1 +1,1 @@
-export { default as default } from './src/choropleth-legend';
+export { default } from './src/choropleth-legend';

@@ -174,7 +174,6 @@ export const WIDTH_PROP_TYPES = {
   width: PropTypes.number.isRequired,
 };
 
-
 Axis.propTypes = {
 
   /**

@@ -40,6 +40,7 @@ export default class Scatter extends React.PureComponent {
 
   constructor(props) {
     super(props);
+
     this.combineStyles = memoizeByLastCall(combineStyles);
     this.state = stateFromPropUpdates(Scatter.propUpdates, {}, props, {});
     bindAll(this, [

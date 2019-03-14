@@ -1,5 +1,14 @@
 import { assign, flatMap, map, reduce, uniqueId } from 'lodash';
 
+import { propResolver } from './objects';
+
+export function computeDataMax(data, valueAccessor) {
+  return data.reduce(
+    (prevMax, datum) => Math.max(prevMax, propResolver(datum, valueAccessor)),
+    Number.NEGATIVE_INFINITY,
+  );
+}
+
 export const dataGenerator = (config = {}) => {
   const {
     primaryKeys = [

@@ -1,0 +1,11 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.title {
+    flex-basis: 100%;
+    text-align: center;
+}

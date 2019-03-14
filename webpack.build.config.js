@@ -32,9 +32,7 @@ const buildConfig = _.mergeWith({}, config, {
   },
   externals: {
     react: 'React',
-    'react-dom': 'ReactDOM',
   },
 }, customizer);
-
 
 module.exports = buildConfig;

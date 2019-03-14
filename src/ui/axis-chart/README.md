@@ -4,9 +4,8 @@
 
 Wraps and provides its child charting components with height, width, scales, and padding
 
-
 Property | Required | Type(s) | Defaults | Description
-:---    |:---      |:---     |:---      |:---       
+:---    |:---      |:---     |:---      |:---
 `className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to outermost svg element
 `clipPath` |  | bool |  | apply clipping path to charting area
 `height` | true | number |  | pixel height of line chart
@@ -18,4 +17,3 @@ Property | Required | Type(s) | Defaults | Description
 `xScaleType` |  | one of: SCALE_TYPES |  | type of x scale<br />[name of d3 scale scale function](https://github.com/d3/d3-scale)
 `yDomain` |  | array |  | [min, max] yScale (i.e., the range of the data)
 `yScaleType` |  | one of: SCALE_TYPES |  | type of y scale<br />[name of d3 scale scale function](https://github.com/d3/d3-scale)
-

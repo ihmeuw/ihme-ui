@@ -9,10 +9,9 @@ This is organizationally intended to mimic [d3-shape](https://github.com/d3/d3-s
 #### \<Area />
 `import { Area } from 'ihme-ui'`
 
-
 Property | Required | Type(s) | Defaults | Description
-:---    |:---      |:---     |:---      |:---       
-`animate` |  | [Area.propTypes.animate](https://github.com/ihmeuw/ihme-ui/blob/react-move/src/ui/shape/src/area.jsx#L137) |  | Details below in [The animate prop](#animate) section.   
+:---    |:---      |:---     |:---      |:---
+`animate` |  | [Area.propTypes.animate](https://github.com/ihmeuw/ihme-ui/blob/react-move/src/ui/shape/src/area.jsx#L137) |  | Details below in [The animate prop](#animate) section.
 `className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to path.
 `clipPathId` |  | string |  | if a clip path is applied to a container element (e.g., an `<AxisChart />`),<br />clip this path to that container by passing in the clip path URL id.
 `data` | true | array of object |  | Array of datum objects.
@@ -29,9 +28,8 @@ Property | Required | Type(s) | Defaults | Description
 #### \<Line />
 `import { Line } from 'ihme-ui'`
 
-
 Property | Required | Type(s) | Defaults | Description
-:---    |:---      |:---     |:---      |:---       
+:---    |:---      |:---     |:---      |:---
 `animate` |  | [Line.propTypes.animate](https://github.com/ihmeuw/ihme-ui/blob/react-move/src/ui/shape/src/line.jsx#L138) |  | Details below in [The animate prop](#animate) section.
 `className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to path.
 `clipPathId` |  | string |  | if a clip path is applied to a container element (e.g., an `<AxisChart />`),<br />clip this path to that container by passing in the clip path URL id.
@@ -54,9 +52,8 @@ on a single chart. It additionally supports rendering `<Area />`s when the prope
 are provided, which can be helpful, for example, for showing uncertainty around an estimate represented
 by a line.
 
-
 Property | Required | Type(s) | Defaults | Description
-:---    |:---      |:---     |:---      |:---     
+:---    |:---      |:---     |:---      |:---
 `animate` |  | [MultiLine.propTypes.animate](https://github.com/ihmeuw/ihme-ui/blob/react-move/src/ui/shape/src/multi-line.jsx#L122) |  | Details below in [The animate prop](#animate) section.
 `areaClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | classname applied to `<Area/>`s that are children of MultiLine, if applicable
 `areaStyle` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L16) |  | inline styles applied to `<Area />`s, if applicable
@@ -82,9 +79,8 @@ Property | Required | Type(s) | Defaults | Description
 #### \<Scatter />
 `import { Scatter } from 'ihme-ui'`
 
-
 Property | Required | Type(s) | Defaults | Description
-:---    |:---      |:---     |:---      |:---       
+:---    |:---      |:---     |:---      |:---
 `animate` |  | [Scatter.propTypes.animate](https://github.com/ihmeuw/ihme-ui/blob/react-move/src/ui/shape/src/scatter.jsx#L202) |  | Details below in [The animate prop](#animate) section.
 `className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to outermost wrapping `<g>`.
 `clipPathId` |  | string |  | If a clip path is applied to a container element (e.g., an `<AxisChart />`),<br />clip all children of `<Scatter />` to that container by passing in the clip path URL id.
@@ -115,9 +111,8 @@ Property | Required | Type(s) | Defaults | Description
 #### \<Shape />
 `import { Shape } from 'ihme-ui'`
 
-
 Property | Required | Type(s) | Defaults | Description
-:---    |:---      |:---     |:---      |:---      
+:---    |:---      |:---     |:---      |:---
 `className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | Class name applied to path.
 `clipPathId` |  | string |  | If a clip path is applied to a container element (e.g., an `<AxisChart />`),<br />clip this path to that container by passing in the clip path URL id.
 `datum` |  | object |  | Datum object corresponding to this shape ("bound" data, in the language in D3)
@@ -142,11 +137,11 @@ Property | Required | Type(s) | Defaults | Description
 
 ## <a id="animate">The `animate` prop</a>
 If a component is animatable, it uses the `animate` prop for its animation settings.
-The `animate` prop can be a `bool` or an `object`. It has no default setting, meaning it 
+The `animate` prop can be a `bool` or an `object`. It has no default setting, meaning it
 *does not animate* without being given an `animate` prop.
 
 Property | Required | Type(s) | Defaults | Description
-:---    |:---      |:---     |:---      |:---       
+:---    |:---      |:---     |:---      |:---
 `animate` |  | [bool](#animate-bool) or [object](#animate-object) |  | details below
 
 ---
@@ -158,29 +153,29 @@ When the `animate` prop evaluates to `true`, the [animatable attributes](#animat
 the component will animate with the default settings of the underlying animation library,
 [React Move](https://github.com/react-tools/react-move#timing).
 
-Here's a quick example of using a bool `animate` prop on an `<Line/>` component for default animation 
+Here's a quick example of using a bool `animate` prop on an `<Line/>` component for default animation
 options of its [animatable attributes](https://github.com/ihmeuw/ihme-ui/blob/react-move/src/ui/shape/src/line.jsx#L228):
 ```js
 <Line
   animate
   {...otherLineProps}
 />
-``` 
+```
 ---
 
 ### <a id="animate-object">Using type `object` for the `animate` prop</a>
 Animations can be finely tuned by passing an `object` in the `animate` prop.
 
 Property | Required | Type(s) | Defaults | Description
-:---    |:---      |:---     |:---      |:-------       
-`events` |  | [AnimateEvents](https://github.com/ihmeuw/ihme-ui/blob/react-move/src/utils/props.js#L43) |  | Object containing functions to execute on animation events `start`, `interrupt`, and `end`. If left undefined, no functions will be executed on any animation `events`. More information on animation events in [React Move library's "Events" section](https://react-move.js.org/#/documentation/node-group). 
+:---    |:---      |:---     |:---      |:-------
+`events` |  | [AnimateEvents](https://github.com/ihmeuw/ihme-ui/blob/react-move/src/utils/props.js#L43) |  | Object containing functions to execute on animation events `start`, `interrupt`, and `end`. If left undefined, no functions will be executed on any animation `events`. More information on animation events in [React Move library's "Events" section](https://react-move.js.org/#/documentation/node-group).
 `timing` |  | [AnimateTiming](https://github.com/ihmeuw/ihme-ui/blob/react-move/src/utils/props.js#L53) |  | Root `timing` options for [all animatable attributes of the component](#animatable-attributes). If left undefined, [React Move's default "Timing" ](https://github.com/react-tools/react-move#timing) is used.
 `[animatable_attribute]` |  | [AnimateProp](https://github.com/ihmeuw/ihme-ui/blob/react-move/src/utils/props.js#L86) |  | Object of instructions for a specific animatable property to override root/default animation settings. [More details in the next section](#animatable-attributes).
 
 ---
 
 ### <a id="animatable-attributes">Animatable attributes</a>
-Each component that takes the `animate` prop has attributes that are animatable. 
+Each component that takes the `animate` prop has attributes that are animatable.
 Click through to see the list for each component.
 
 Component | Animatable attributes list | Type
@@ -191,12 +186,12 @@ MultiLine | [MultiLine.animatable](https://github.com/ihmeuw/ihme-ui/blob/react-
 Scatter | [Scatter.animatable](https://github.com/ihmeuw/ihme-ui/blob/react-move/src/ui/shape/src/scatter.jsx#L191) | [AnimateProp](https://github.com/ihmeuw/ihme-ui/blob/react-move/src/utils/props.js#L86)
 MultiScatter  | [MultiScatter.animatable](https://github.com/ihmeuw/ihme-ui/blob/react-move/src/ui/shape/src/multi-scatter.jsx#L316) | [AnimateProp](https://github.com/ihmeuw/ihme-ui/blob/react-move/src/utils/props.js#L86)
 
-Any of the animatable attributes of a component can be a 
-[property](https://github.com/ihmeuw/ihme-ui/blob/react-move/src/utils/props.js#L86) in the `animate` prop. 
-The default/root `timing`, `events` properties can be overridden as well as the behavior during 
+Any of the animatable attributes of a component can be a
+[property](https://github.com/ihmeuw/ihme-ui/blob/react-move/src/utils/props.js#L86) in the `animate` prop.
+The default/root `timing`, `events` properties can be overridden as well as the behavior during
 each phase of the animation lifecycle (`start`, `enter`, `update`, `leave`).
 
-As an example, the `<Scatter/>` `animate` prop can apply custom animation settings to the `fill` 
+As an example, the `<Scatter/>` `animate` prop can apply custom animation settings to the `fill`
 attribute during the `update` phase of the animation lifecycle:
 ```js
 <Scatter
@@ -205,46 +200,46 @@ attribute during the `update` phase of the animation lifecycle:
       timing: { duration: 333 },    // `timing` for `fill` animations besides what `update` overrides. `duration` in miliseconds.
       update: () => ({
         timing: { duration: 3000 }, // `duration` in miliseconds
-        fill: ['purple'],           // String value to update to (animation values must be wrapped in an array).          
+        fill: ['purple'],           // String value to update to (animation values must be wrapped in an array).
       }),
     }
   }}
   {...otherScatterProps}
 />
-``` 
-Note: Animation values must be wrapped in an array. This is an artifact of using `React Move` in 
-the IHME-UI animation implementation. 
-More can be read in their ["Transitions" section](https://github.com/react-tools/react-move#transitions). 
-If it is desired for an animatable attribute *not* to animate, this can be achieved by simply *not* 
+```
+Note: Animation values must be wrapped in an array. This is an artifact of using `React Move` in
+the IHME-UI animation implementation.
+More can be read in their ["Transitions" section](https://github.com/react-tools/react-move#transitions).
+If it is desired for an animatable attribute *not* to animate, this can be achieved by simply *not*
 wrapping the value in an array.
 
 ---
 
 ### Arguments of the animation methods
-It is often necessary to know what data is to be represented during animation in order to affect it 
-accordingly. The signature has been detailed in the @callback type 
-[AnimateMethodCallback](https://github.com/ihmeuw/ihme-ui/blob/react-move/src/utils/props.js#L296). 
+It is often necessary to know what data is to be represented during animation in order to affect it
+accordingly. The signature has been detailed in the @callback type
+[AnimateMethodCallback](https://github.com/ihmeuw/ihme-ui/blob/react-move/src/utils/props.js#L296).
 
 Here's is an example of utilizing the arguments in an animation method:
 ```js
 function updateFill(computedFillValue, inputDatum, index) {
   // Use raw input data.
   const isSpecial = inputDatum.someSpecificProperty;
-  
+
   // Use index of datum in data array.
   const isOdd = index % 2 !== 0;
 
   // Use default computed value of component for custom animation logic.
   const newFillValue = isSpecial && isOdd ? 'red' : computedFillValue;
   const newDelay = isSpecial ? 3000 : 333;
-  
+
   // Custom animation event handling.
   const veryCustomEvents = {
     interrupt: () => {
       console.log('The <Scatter /> `fill` prop has been interrupted in the middle of its "update" phase animation!');
     }
   }
-  
+
   return {
     fill: [newFillValue],         // remember to wrap the value in an array if it is to animate.
     timing: { delay: newDelay },
@@ -255,7 +250,7 @@ function updateFill(computedFillValue, inputDatum, index) {
 // Where the <Scatter/> is rendered, utilize the custom animation function:
 renderScatter() {
   return (
-    <Scatter 
+    <Scatter
       animate={{
         fill: { update: updateFill },
       }}

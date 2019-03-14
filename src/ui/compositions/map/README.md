@@ -12,9 +12,8 @@ your topojson must conform to the following requirements:
 
 [See it in action!](http://vizhub.healthdata.org/mortality/age-estimation)
 
-
 Property | Required | Type(s) | Defaults | Description
-:---    |:---      |:---     |:---      |:---       
+:---    |:---      |:---     |:---      |:---
 `axisTickFormat` |  | func |  | [format of axis ticks](https://github.com/d3/d3-axis#axis_tickFormat)<br />implicitly defaults to [numberFormat](https://github.com/ihmeuw/ihme-ui/blob/docs/src/utils/numbers.js#L9)
 `className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to outermost wrapping div
 `colorAccessor` |  | string, func |  | if string, the color property of the datum object; if function, takes in datum object and returns a color string.
@@ -52,4 +51,3 @@ Property | Required | Type(s) | Defaults | Description
 `valueField` | true | string, func |  | key of datum that holds the value to display (e.g., 'mean')<br />if a function, signature: (data, feature) => value
 `zoomControlsClassName` |  | object, string |  | className applied to controls container div
 `zoomControlsStyle` |  | object |  | inline styles to apply to controls buttons
-

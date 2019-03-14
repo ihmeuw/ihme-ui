@@ -19,7 +19,6 @@ import styles from './legend.css';
 import LegendItem from './legend-item';
 import LegendTitle from './legend-title';
 
-
 /**
  * `import { Legend } from 'ihme-ui'`
  *

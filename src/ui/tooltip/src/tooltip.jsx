@@ -32,7 +32,6 @@ function mapShowPropToVisibilityRule(visible) {
   return 'hidden';
 }
 
-
 /**
  * `import { Tooltip } from 'ihme-ui'`
  *

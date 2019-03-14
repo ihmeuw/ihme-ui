@@ -74,7 +74,6 @@ export default class FeatureLayer extends React.PureComponent {
             // if geometryKey didn't resolve to anything, return null
             if (!geometryKey) return null;
 
-
             const datum = getValue(data, [geometryKey]);
 
             const focusedDatumKey = focus ? propResolver(focus, keyField) : null;

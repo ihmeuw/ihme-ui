@@ -50,7 +50,6 @@ export function isWithinRange(value, extent, tolerance = 0) {
   (value < extent[1] || Math.abs(Float.subtract(value, extent[1])) <= tolerance));
 }
 
-
 /**
  * Check that value is within the range of extent
  * and return value or nearest value from within extent.

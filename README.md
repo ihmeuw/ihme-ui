@@ -20,8 +20,8 @@ npm install -S ihme-ui
 In it's most simple form, this library can be included in a `<script />` tag and accessed off of `window` as `ihmeUI`.
 If you've installed the library from the [npm registry](https://www.npmjs.com/package/ihme-ui), you can pull the library out of your `node_modules` folder.
 If not, grab it off of the unoffical NPM CDN, [unpkg](https://unpkg.com/#/).
-```html
 
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,36 +54,43 @@ In most cases, however, you'll be importing ihme-ui into your project, and bundl
 In support of this, `ihme-ui` exposes both a CommonJS (i.e., `var ihmeUI = require('ihme-ui')`) and an ES module (i.e., `import ihmeUI from 'ihme-ui'`) target.
 ```javascript
 // index.js
-import { AxisChart, linspace } from 'ihme-ui';
-...
 
+import { AxisChart, linspace } from 'ihme-ui';
+//...
 ```
 
 ---
 
 ## API Reference
 * Components
-  * [\<Axis /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/axis/README.md)
-  * [\<AxisChart /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/axis-chart/README.md)
-  * [\<Button /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/button/README.md)
-  * [\<Choropleth /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/choropleth/README.md)
-  * [Compositions](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/compositions/README.md)
-    * [\<Map \/>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/compositions/map/README.md)
-    * [\<ChoroplethLegend /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/compositions/choropleth-legend/README.md)
-  * [\<ExpansionContainer /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/expansion-container/README.md)
-  * [\<Group /\> and \<Option /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/group/README.md)
-  * [\<HtmlLabel /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/html-label/README.md)
-  * [\<Legend /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/legend/README.md)
-  * [\<LoadingIndicator /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/loading-indicator/README.md)
+  * [\<Axis /\>](src/ui/axis/README.md)
+  * [\<AxisChart /\>](src/ui/axis-chart/README.md)
+  * [Bar](src/ui/bar/README.md)
+    * \<Bar /\>
+    * \<Bars /\>
+    * \<GroupedBars /\>
+    * \<StackedBars /\>
+  * [\<Button /\>](src/ui/button/README.md)
+  * [\<Choropleth /\>](src/ui/choropleth/README.md)
+  * [Compositions](src/ui/compositions/README.md)
+    * [\<BarChart /\>](src/ui/compositions/bar-chart/README.md)
+    * [\<ChoroplethLegend /\>](src/ui/compositions/choropleth-legend/README.md)
+    * [\<Map /\>](src/ui/compositions/map/README.md)
+  * [\<ExpansionContainer /\>](src/ui/expansion-container/README.md)
+  * [\<Group /\> and \<Option /\>](src/ui/group/README.md)
+  * [\<HtmlLabel /\>](src/ui/html-label/README.md)
+  * [\<Legend /\>](src/ui/legend/README.md)
+  * [\<LoadingIndicator /\>](src/ui/loading-indicator/README.md)
+  * [\<ResponsiveContainer /\>](src/ui/responsive-container/README.md)
   * \<Select /\> - docs coming soon!
-  * [\<ResponsiveContainer /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/responsive-container/README.md)
-  * [Shape](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/shape/README.md)
+  * [Shape](src/ui/shape/README.md)
     * \<Area /\>
     * \<Line /\>
     * \<MultiLine /\>
+    * \<MultiScatter /\>
     * \<Scatter /\>
     * \<Shape /\>
-  * [\<Slider /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/slider/README.md)
-  * [\<SvgText /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/svg-text/README.md)
-  * [\<Tooltip /\>](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/tooltip/README.md)
-* [Utilities](https://github.com/ihmeuw/ihme-ui/tree/master/src/utils) - docs coming soon!
+  * [\<Slider /\>](src/ui/slider/README.md)
+  * [\<SvgText /\>](src/ui/svg-text/README.md)
+  * [\<Tooltip /\>](src/ui/tooltip/README.md)
+* Utilities - docs coming soon!
