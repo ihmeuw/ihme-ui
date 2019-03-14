@@ -38,7 +38,7 @@
     "lint": "$(npm bin)/eslint src --ext .js,.jsx",
     "lint:fix": "$(npm bin)/eslint src --fix --ext .js,.jsx --quiet",
     "preversion": "npm run lint && npm run test && npm run build:all",
-    "postversion": "git push && git push --tags",
+    "postversion": "git push && git push --tags && npm publish",
     "test": "BABEL_ENV=test $(npm bin)/babel-node $(npm bin)/_mocha --require ./scripts/setup-jsdom.js `./scripts/get-test-directories.sh`",
     "test:travis": "npm run lint && npm run coverage:travis && npm run coverage:token",
     "update:dep": "./scripts/update-package.sh"
