@@ -38,8 +38,8 @@
     "docs:ui": "find -X ./src \\( -depth 3 -or -depth 4 \\) -type d -name 'src' | xargs $(npm bin)/react-docgen | node ./scripts/build-doc.js",
     "lint": "$(npm bin)/eslint src --ext .js,.jsx",
     "lint:fix": "$(npm bin)/eslint src --fix --ext .js,.jsx --quiet",
-    "preversion": "npm run lint && npm run test && npm run build:all",
-    "postversion": "git push && git push --tags && npm publish",
+    "preversion": "npm install && npm run lint && npm run test && npm run build:all",
+    "postversion": "git push --tags https://github.com/ihmeuw/ihme-ui.git master && npm publish",
     "test": "BABEL_ENV=test $(npm bin)/babel-node $(npm bin)/_mocha --require ./scripts/setup-jsdom.js `./scripts/get-test-directories.sh`",
     "test:travis": "npm run lint && npm run coverage:travis && npm run coverage:token",
     "update:dep": "./scripts/update-package.sh"
