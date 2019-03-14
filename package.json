@@ -10,17 +10,14 @@
   "files": [
     "dist",
     "lib",
-    "es",
-    "README.md",
-    "package.json",
-    "LICENSE"
+    "es"
   ],
   "author": "Institue for Health Metrics and Evaluation",
   "contributors": [
     "Gabe Medrash <gmedrash@gmail.com>",
     "Brett Vitaz <vitazbt@uw.edu>",
     "Aaron Keel <akeel@uw.edu>",
-    "David Schneider <davschne@uw.edu>",
+    "David Schneider <davschne@gmail.com> (https://github.com/davschne)",
     "Katherine Beame <katherine.beame@gmail.com>",
     "Jim Vermillion <jam.mcmillion@gmail.com>"
   ],
@@ -40,12 +37,11 @@
     "docs:ui": "find -X ./src \\( -depth 3 -or -depth 4 \\) -type d -name 'src' | xargs $(npm bin)/react-docgen | node ./scripts/build-doc.js",
     "lint": "$(npm bin)/eslint src --ext .js,.jsx",
     "lint:fix": "$(npm bin)/eslint src --fix --ext .js,.jsx --quiet",
-    "preversion": "npm run lint && npm run test",
-    "postversion": "git push && git push --tags",
+    "preversion": "npm run lint && npm run test && npm run build:all",
+    "postversion": "git push && git push --tags && npm publish",
     "test": "BABEL_ENV=test $(npm bin)/babel-node $(npm bin)/_mocha --require ./scripts/setup-jsdom.js `./scripts/get-test-directories.sh`",
     "test:travis": "npm run lint && npm run coverage:travis && npm run coverage:token",
-    "update:dep": "./scripts/update-package.sh",
-    "version": "npm run build:all && git add ."
+    "update:dep": "./scripts/update-package.sh"
   },
   "devDependencies": {
     "autoprefixer": "^7.2.5",
