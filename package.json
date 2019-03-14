@@ -10,10 +10,7 @@
   "files": [
     "dist",
     "lib",
-    "es",
-    "README.md",
-    "package.json",
-    "LICENSE"
+    "es"
   ],
   "author": "Institue for Health Metrics and Evaluation",
   "contributors": [
