@@ -10,7 +10,7 @@ import {
   zoomIdentity,
   zoomTransform,
 } from 'd3';
-import { presimplify } from 'topojson';
+import { presimplify } from 'topojson-simplify';
 import { bindAll, filter, has, isEqual, keyBy, memoize } from 'lodash';
 import {
   calcCenterPoint,
