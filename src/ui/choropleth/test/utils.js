@@ -1,4 +1,4 @@
-import * as topojson from 'topojson';
+import * as topojson from 'topojson-client';
 
 export const topology = {
   arcs: [
