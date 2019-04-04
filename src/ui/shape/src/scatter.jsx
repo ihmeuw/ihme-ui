@@ -186,12 +186,8 @@ export default class Scatter extends React.PureComponent {
     );
   }
 
-  shouldAnimate() {
-    return (!!this.props.animate && !this.state.windowResize);
-  }
-
   render() {
-    if (this.shouldAnimate()) {
+    if (this.state.shouldAnimate) {
       return this.renderAnimatedScatter(this.state.sortedData);
     }
 
@@ -478,12 +474,12 @@ Scatter.propUpdates = {
       sortedData,
     };
   },
-  windowResize: (state, _, prevProps, nextProps) => {
+  shouldAnimate: (state, _, prevProps, nextProps) => {
     const prevWindowResize = [prevProps.height, prevProps.width];
     const nextWindowResize = [nextProps.height, nextProps.width];
     return {
       ...state,
-      windowResize: !isEqual(prevWindowResize, nextWindowResize),
+      shouldAnimate: (nextProps.animate && isEqual(prevWindowResize, nextWindowResize)),
     };
   },
 };
