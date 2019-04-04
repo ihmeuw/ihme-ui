@@ -6,6 +6,7 @@ import { scaleLinear } from 'd3';
 import {
   bindAll,
   findIndex,
+  isEqual,
   isFinite,
   has,
   keyBy,
@@ -186,7 +187,7 @@ export default class Scatter extends React.PureComponent {
   }
 
   shouldAnimate() {
-    return !!this.props.animate;
+    return (!!this.props.animate && !this.state.windowResize);
   }
 
   render() {
@@ -475,6 +476,14 @@ Scatter.propUpdates = {
     return {
       ...state,
       sortedData,
+    };
+  },
+  windowResize: (state, _, prevProps, nextProps) => {
+    const prevWindowResize = [prevProps.height, prevProps.width];
+    const nextWindowResize = [nextProps.height, nextProps.width];
+    return {
+      ...state,
+      windowResize: !isEqual(prevWindowResize, nextWindowResize),
     };
   },
 };
