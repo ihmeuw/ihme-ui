@@ -475,11 +475,11 @@ Scatter.propUpdates = {
     };
   },
   shouldAnimate: (state, _, prevProps, nextProps) => {
-    const prevWindowResize = [prevProps.height, prevProps.width];
-    const nextWindowResize = [nextProps.height, nextProps.width];
+    const prevWindowSize = [prevProps.height, prevProps.width];
+    const nextWindowSize = [nextProps.height, nextProps.width];
     return {
       ...state,
-      shouldAnimate: (nextProps.animate && isEqual(prevWindowResize, nextWindowResize)),
+      shouldAnimate: nextProps.animate && isEqual(prevWindowSize, nextWindowSize),
     };
   },
 };
