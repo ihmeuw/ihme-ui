@@ -297,7 +297,7 @@ Axis.propTypes = {
 };
 
 Axis.defaultProps = {
-  height: 50,
+  height: 30,
   padding: {
     top: 40,
     bottom: 40,
