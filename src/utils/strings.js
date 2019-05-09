@@ -20,3 +20,16 @@ export const getRenderedStringWidth = (str = '', font = '12px Verdana', canvasCo
   const metrics = context.measureText(str);
   return Math.ceil(metrics.width);
 };
+
+export const sizeOfLongestRotatedString = (
+  values,
+  rotationAngle = -45,
+) => values.reduce((result, label) => {
+  const width = Math.floor(getRenderedStringWidth(label)) + 5;
+  const height = 10;
+  const size = Math.ceil(
+    (height * Math.abs(Math.cos(rotationAngle))) + (width * Math.abs(Math.sin(rotationAngle)))
+  );
+  return size > result ? size : result;
+}, 0);
+
