@@ -36,6 +36,13 @@ const DEFAULT_PADDING_WITH_AXIS_LABELS = {
   left: 60,
 };
 
+const DEFAULT_AXIS_PROPERTIES = {
+  height: 100,
+  tickFontFamily: 'Helvetica',
+  tickFontSize: 12,
+  tickFormat: null,
+  width: 230,
+};
 export default class BarChart extends React.PureComponent {
   constructor(props) {
     super(props);
