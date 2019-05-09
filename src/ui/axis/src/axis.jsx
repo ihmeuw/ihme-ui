@@ -70,6 +70,7 @@ export default class Axis extends React.PureComponent {
     const {
       className,
       orientation,
+      rotateTickLabels,
       scale,
       style,
       tickArguments,
@@ -106,6 +107,15 @@ export default class Axis extends React.PureComponent {
       .attr('transform', `translate(${translate.x}, ${translate.y})`)
       .attr('style', Axis.concatStyle(style))
       .call(axis);
+
+    if (rotateTickLabels) {
+      this._axisSelection
+        .selectAll('text')
+        .style('text-anchor', 'end')
+        .attr('dx', '-.8em')
+        .attr('dy', '.15em')
+        .attr('transform', 'rotate(-45)');
+    }
   }
 
   storeRef(axisG) {
@@ -287,7 +297,7 @@ Axis.propTypes = {
 };
 
 Axis.defaultProps = {
-  height: 30,
+  height: 50,
   padding: {
     top: 40,
     bottom: 40,
