@@ -89,7 +89,7 @@ export function calcLabelPosition(orientation, translate, padding, center) {
   }
 }
 
-export function filterTickValuesByWidth(ticks, {
+export function calcNumTicksThatFit(ticks, {
   tickFontSize,
   tickFontFamily,
   tickFormat,
@@ -113,7 +113,11 @@ export function filterTickValuesByWidth(ticks, {
     , 0);
   }
 
-  const numTicksThatFit = Math.floor(width / widestTickLabelLength);
+  return Math.floor(width / widestTickLabelLength);
+}
+
+export function filterTickValuesByWidth(ticks, axisProperties) {
+  const numTicksThatFit = calcNumTicksThatFit(ticks, axisProperties);
   return takeSkipping(ticks, numTicksThatFit);
 }
 
