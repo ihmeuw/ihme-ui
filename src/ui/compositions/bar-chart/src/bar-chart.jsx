@@ -28,7 +28,7 @@ const DEFAULT_PADDING_NO_AXIS_LABELS = {
   top: 10,
   right: 10,
   bottom: 20,
-  left: 40,
+  left: 30,
 };
 
 const DEFAULT_PADDING_WITH_AXIS_LABELS = {
@@ -41,23 +41,21 @@ const DEFAULT_PADDING_WITH_AXIS_LABELS = {
 const DEFAULT_AXIS_PROPERTIES = {
   height: 100,
   tickFontFamily: 'Helvetica',
-  tickFontSize: 12,
+  tickFontSize: 10,
   tickFormat: null,
   width: 230,
 };
 
 function calcAutoRotatedPadding(
-  autoRotateTickLabels,
   tickValues,
   height,
   width,
   vertical,
-  tickFormat
 ) {
-  if (autoRotateTickLabels && vertical) {
+  if (vertical) {
     const numTicksThatFit = calcNumTicksThatFit(
       tickValues,
-      { ...DEFAULT_AXIS_PROPERTIES, height, width, tickFormat }
+      { ...DEFAULT_AXIS_PROPERTIES, height, width }
     );
     if (numTicksThatFit < tickValues.length) {
       return {
@@ -229,14 +227,11 @@ export default class BarChart extends React.PureComponent {
   renderChart() {
     const {
       categories,
-      domainFormat,
       orientation,
       axisLabels,
       padding: customPadding,
       chartHeight,
       chartWidth,
-      autoRotateTickLabels,
-      rotateXTickLabels,
       rangeFormat,
     } = this.props;
 
@@ -245,12 +240,10 @@ export default class BarChart extends React.PureComponent {
     const vertical = util.isVertical(orientation);
 
     const autoPadding = calcAutoRotatedPadding(
-      autoRotateTickLabels,
       categories,
       chartHeight,
       chartWidth,
       vertical,
-      vertical ? domainFormat : rangeFormat,
     );
 
     const tickLabelsAutoRotated = !isEmpty(autoPadding);
@@ -273,13 +266,13 @@ export default class BarChart extends React.PureComponent {
         <XAxis
           autoFilterTickValues={!vertical}
           label={axisLabels && (vertical ? axisLabels.domain : axisLabels.range)}
-          rotateTickLabels={rotateXTickLabels || tickLabelsAutoRotated}
-          tickFormat={vertical ? domainFormat : rangeFormat}
+          rotateTickLabels={tickLabelsAutoRotated}
+          tickFormat={vertical ? null : rangeFormat}
         />
         <YAxis
           autoFilterTickValues={vertical}
           label={axisLabels && (vertical ? axisLabels.range : axisLabels.domain)}
-          tickFormat={vertical ? rangeFormat : domainFormat}
+          tickFormat={vertical ? rangeFormat : null}
         />
         {this.renderBars()}
       </AxisChart>
@@ -569,6 +562,11 @@ BarChart.propTypes = {
   }),
 
   /**
+   * callback applied to each tick values
+   */
+  rangeFormat: PropTypes.func,
+
+  /**
    * className applied to each `<Bar />`
    */
   rectClassName: CommonPropTypes.className,
@@ -577,8 +575,6 @@ BarChart.propTypes = {
    * inline styles passed to each `<Bar />`
    */
   rectStyle: CommonPropTypes.style,
-
-  autoRotateTickLabels: PropTypes.bool,
 
   /**
    * className applied to `<Bar />`s if selected
