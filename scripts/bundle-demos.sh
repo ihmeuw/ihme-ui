@@ -16,5 +16,6 @@ function run_webpack
 }
 
 for dir in $(find . -d -regex ".*/${1+$1/}demo"*); do
+    echo ${dir}
     run_webpack ${dir}
 done

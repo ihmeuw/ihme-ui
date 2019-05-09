@@ -95,7 +95,7 @@ class App extends React.Component {
     this.setData();
   }
 
- onToggleColorAccessor() {
+  onToggleColorAccessor() {
     this.setState({
       colorAccessor: this.state.colorAccessor === 'Color'
         ? null
@@ -125,13 +125,13 @@ class App extends React.Component {
 
   setData() {
     const range = randomRange();
-     const initialData = this.getData(this.getLocationIds(this.props.topology.objects), range);
-     const colorData = reduce(initialData, (result, value, key) => {
-       result.push(assign(value, {}, { Color: getRandomColor() }));
-       return result;
-     }, []);
+    const initialData = this.getData(this.getLocationIds(this.props.topology.objects), range);
+    const colorData = reduce(initialData, (result, value, key) => {
+      result.push(assign(value, {}, { Color: getRandomColor() }));
+      return result;
+    }, []);
 
-   this.setState({
+    this.setState({
       data: colorData,
       range,
     });
@@ -197,7 +197,7 @@ class App extends React.Component {
   }
 }
 
-json("world.topo.json", function(error, topology) {
+json("world.topo.json", function (error, topology) {
   if (error) throw error;
 
   render(<App topology={topology} />, document.getElementById('app'));

@@ -134,6 +134,8 @@ export default class Map extends React.Component {
       'meshFilter',
       'onSetScale',
       'onResetScale',
+      'onSliderMove',
+      'onScaleLock',
     ]);
 
     const state = {
@@ -142,6 +144,7 @@ export default class Map extends React.Component {
         .domain(linspace(rangeExtent, colorSteps.length))
         .range(colorSteps),
       render: !props.loading,
+      lock: true,
     };
 
     this.state = stateFromPropUpdates(Map.propUpdates, {}, props, state, this);
@@ -155,7 +158,20 @@ export default class Map extends React.Component {
     // only update if data is not being currently loaded,
     // and when props have changed,
     return !nextProps.loading
-            && shouldPureComponentUpdate(this.props, this.state, nextProps, nextState);
+      && shouldPureComponentUpdate(this.props, this.state, nextProps, nextState);
+  }
+
+  onSliderMove(selectedChoroplethDomain) {
+    console.log("moved x1");
+    if(this.state.lock) this.onSetScale();
+    this.props.onSliderMove(selectedChoroplethDomain)
+  }
+
+  onScaleLock(){
+    if(this.state.lock === true){
+      this.onSetScale();
+    }
+    this.setState({ lock: !this.state.lock})
   }
 
   onSetScale() {
@@ -331,7 +347,6 @@ export default class Map extends React.Component {
       onMouseLeave,
       onMouseMove,
       onMouseOver,
-      onSliderMove,
       selectedLocations,
       sliderHandleFormat,
       unit,
@@ -342,8 +357,10 @@ export default class Map extends React.Component {
       colorScale,
       locationIdsOnMap,
       setScaleExtentPct,
+      lock,
     } = this.state;
 
+    // const onSliderMove = this.onSliderMove;
     const linearGradientStops = setScaleExtentPct || [0, 1];
     const rangeExtent = getRangeExtent(extentPct, domain);
 
@@ -367,7 +384,7 @@ export default class Map extends React.Component {
               onMouseLeave={onMouseLeave}
               onMouseMove={onMouseMove}
               onMouseOver={onMouseOver}
-              onSliderMove={onSliderMove}
+              onSliderMove={this.onSliderMove}
               rangeExtent={rangeExtent}
               selectedLocations={selectedLocations}
               sliderHandleFormat={sliderHandleFormat}
@@ -379,15 +396,15 @@ export default class Map extends React.Component {
           </ResponsiveContainer>
         </div>
         <div className={styles['button-wrapper']}>
+          <div className='lockScale'>
+            <input type="checkbox" id="lockScale" name="scales" onClick={this.onScaleLock}/>
+            <label for="scales">Lock Scale</label>
+          </div>
           <Button
+            disabled={lock}
             className={styles.button}
             onClick={this.onSetScale}
             text="Set scale"
-          />
-          <Button
-            className={styles.button}
-            onClick={this.onResetScale}
-            text="Reset"
           />
         </div>
       </div>
