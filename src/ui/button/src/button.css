@@ -12,7 +12,7 @@
   align-items: center;
 }
 
-.common:hover:not(.green) {
+.common:hover:not(.green, .disabled) {
   background-color: #e5e5e5;
 }
 
@@ -23,7 +23,7 @@
 
 .common:disabled,
 .disabled {
-  background-color: white;
+  background-color: #f7f7f7;
   color: rgba(204, 204, 204, 1);
 }
 

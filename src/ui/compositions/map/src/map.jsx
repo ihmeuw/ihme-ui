@@ -163,15 +163,15 @@ export default class Map extends React.Component {
 
   onSliderMove(selectedChoroplethDomain) {
     console.log("moved x1");
-    if(this.state.lock) this.onSetScale();
+    if (this.state.lock) this.onSetScale();
     this.props.onSliderMove(selectedChoroplethDomain)
   }
 
-  onScaleLock(){
-    if(this.state.lock === true){
+  onScaleLock() {
+    if (this.state.lock === true) {
       this.onSetScale();
     }
-    this.setState({ lock: !this.state.lock})
+    this.setState({ lock: !this.state.lock })
   }
 
   onSetScale() {
@@ -396,13 +396,13 @@ export default class Map extends React.Component {
           </ResponsiveContainer>
         </div>
         <div className={styles['button-wrapper']}>
-          <div className='lockScale'>
-            <input type="checkbox" id="lockScale" name="scales" onClick={this.onScaleLock}/>
-            <label for="scales">Lock Scale</label>
+          <div className="lockScale">
+            <input type="checkbox" id="lockScale" name="scales" onClick={this.onScaleLock} />
+            <label htmlFor="scales">Lock Scale</label>
           </div>
           <Button
             disabled={lock}
-            className={styles.button}
+            className={'lockScale'}
             onClick={this.onSetScale}
             text="Set scale"
           />
