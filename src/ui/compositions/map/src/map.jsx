@@ -162,16 +162,15 @@ export default class Map extends React.Component {
   }
 
   onSliderMove(selectedChoroplethDomain) {
-    console.log("moved x1");
     if (this.state.lock) this.onSetScale();
-    this.props.onSliderMove(selectedChoroplethDomain)
+    this.props.onSliderMove(selectedChoroplethDomain);
   }
 
   onScaleLock() {
-    if (this.state.lock === true) {
+    if (this.state.lock === false) {
       this.onSetScale();
     }
-    this.setState({ lock: !this.state.lock })
+    this.setState({ lock: !this.state.lock });
   }
 
   onSetScale() {
