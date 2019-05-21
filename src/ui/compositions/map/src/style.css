@@ -1,3 +1,7 @@
+.lockScale {
+    padding: 5px !important;
+}
+
 .button {
     height: initial;
     min-height: 27px;

@@ -395,14 +395,15 @@ export default class Map extends React.Component {
             />
           </ResponsiveContainer>
         </div>
-        <div className={styles['button-wrapper']}>
-          <div className="lockScale">
+
+        <div className={styles['button-wrapper']} style={{ padding: '0 0 0 10px' }}>
+          <div className={classNames('lock', 'lockScale')} style={{ padding: '5px 5px 5px 0' }}>
             <input type="checkbox" id="lockScale" name="scales" onClick={this.onScaleLock} />
             <label htmlFor="scales">Lock Scale</label>
           </div>
           <Button
             disabled={lock}
-            className={'lockScale'}
+            className={classNames('lock', 'lockScaleReset')}
             onClick={this.onSetScale}
             text="Set scale"
           />
