@@ -397,8 +397,8 @@ export default class Map extends React.Component {
 
         <div className={styles['button-wrapper']} style={{ padding: '0 0 0 10px' }}>
           <div className={classNames('lock', 'lockScale')} style={{ padding: '5px 5px 5px 0' }}>
-            <input type="checkbox" id="lockScale" name="scales" onClick={this.onScaleLock} />
-            <label htmlFor="scales">Set Scale</label>
+            <input type="checkbox" id="lockScale" name="scales" onClick={this.onScaleLock} style={{ cursor: 'pointer' }} />
+            <label htmlFor="lockScale" style={{ cursor: 'pointer' }} > Set Scale</label>
           </div>
           {/* <Button
             disabled={lock}
