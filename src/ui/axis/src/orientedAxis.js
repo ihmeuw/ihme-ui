@@ -29,7 +29,7 @@ const AXIS_TYPE_TO_SCALE_PATH = {
   [Orientation.VERTICAL]: 'scales.y',
 };
 
-const AXIS_TYPE_TO_TICK_VALUE_FITLER = {
+const AXIS_TYPE_TO_TICK_VALUE_FILTER = {
   [Orientation.HORIZONTAL]: filterTickValuesByWidth,
   [Orientation.VERTICAL]: filterTickValuesByHeight,
 };
@@ -124,7 +124,7 @@ export default function orientAxis(AxisComponent, orientation) {
 
       const scale = scaleProp || getValue(nextProps, AXIS_TYPE_TO_SCALE_PATH[orientation]);
       const ticks = tickValues || invoke(scale, 'ticks') || scale.domain();
-      const filterFn = AXIS_TYPE_TO_TICK_VALUE_FITLER[orientation] || identity;
+      const filterFn = AXIS_TYPE_TO_TICK_VALUE_FILTER[orientation] || identity;
 
       return assign({}, accum, {
         tickValues: filterFn(ticks, {

@@ -11,7 +11,7 @@ const getCanvasContext = memoize(() => {
 });
 
 /**
- * Measure rendered string dimentions
+ * Measure rendered string dimensions
  * @param {String} str -> the string to measure
  * @param {String} font -> https://developer.mozilla.org/en-US/docs/Web/CSS/font
  * @param {CanvasRenderingContext2D} [canvasContext]
