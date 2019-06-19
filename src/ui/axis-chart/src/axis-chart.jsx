@@ -55,14 +55,14 @@ export default class AxisChart extends React.Component {
     if (xChanged || yChanged) {
       const chartDimensions = state.chartDimensions || this.state.chartDimensions;
       state.scales = {
-        x: xChanged ?
-          getScale(nextProps.xScaleType)().domain(nextProps.xDomain)
-            .range([0, chartDimensions.width]) :
-          this.state.scales.x,
-        y: yChanged ?
-          getScale(nextProps.yScaleType)().domain(nextProps.yDomain)
-            .range([chartDimensions.height, 0]) :
-          this.state.scales.y,
+        x: xChanged
+          ? getScale(nextProps.xScaleType)().domain(nextProps.xDomain)
+            .range([0, chartDimensions.width])
+          : this.state.scales.x,
+        y: yChanged
+          ? getScale(nextProps.yScaleType)().domain(nextProps.yDomain)
+            .range([chartDimensions.height, 0])
+          : this.state.scales.y,
       };
     }
 

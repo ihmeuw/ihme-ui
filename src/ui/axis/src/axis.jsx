@@ -147,18 +147,20 @@ export default class Axis extends React.PureComponent {
     return (
       <g>
         <g ref={this.storeRef}></g>
-        {label && <text
-          className={labelClassName}
-          style={labelStyle}
-          x={labelPosition.x}
-          y={labelPosition.y}
-          dx={labelPosition.dX}
-          dy={labelPosition.dY}
-          transform={`rotate(${labelPosition.rotate || 0})`}
-          textAnchor="middle"
-        >
-          {label}
-        </text>}
+        {label &&
+          <text
+            className={labelClassName}
+            style={labelStyle}
+            x={labelPosition.x}
+            y={labelPosition.y}
+            dx={labelPosition.dX}
+            dy={labelPosition.dY}
+            transform={`rotate(${labelPosition.rotate || 0})`}
+            textAnchor="middle"
+          >
+            {label}
+          </text>
+        }
       </g>
     );
   }
