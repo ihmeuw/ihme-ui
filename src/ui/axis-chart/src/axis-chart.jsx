@@ -108,6 +108,11 @@ export default class AxisChart extends React.Component {
 
 AxisChart.propTypes = {
   /**
+   *  auto-calculate chart padding needed for tick/axes labels and whether tick labels need rotation
+   */
+  autoFormatAxes: PropTypes.bool,
+
+  /**
    * className applied to outermost svg element
    */
   className: CommonPropTypes.className,
