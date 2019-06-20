@@ -74,7 +74,11 @@ export default class AxisChart extends React.Component {
       style,
       padding,
     } = nextProps;
-    if (propsChanged(this.props, nextProps, ['autoFormatAxes', 'xDomain', 'height', 'width', 'padding'])) {
+    if (propsChanged(
+      this.props,
+      nextProps,
+      ['autoFormatAxes', 'xDomain', 'height', 'width', 'padding']
+    )) {
       [state.padding, state.autoRotateTickLabels] = autoFormatAxes
         ? calcPadding({
         // eslint-disable-next-line react/prop-types
