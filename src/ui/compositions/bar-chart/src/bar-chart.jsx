@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import bindAll from 'lodash/bindAll';
 import pick from 'lodash/pick';
 import xor from 'lodash/xor';
-import isEmpty from 'lodash/isEmpty';
 
 import * as util from '../../../../utils';
 
@@ -17,7 +16,6 @@ import {
   StackedBars,
 } from '../../../bar';
 import Legend from '../../../legend';
-import { calcNumTicksThatFit } from '../../../axis/src/utils';
 
 const FOCUSED_STYLE = {
   stroke: '#000',
@@ -38,33 +36,7 @@ const DEFAULT_PADDING_WITH_AXIS_LABELS = {
   left: 60,
 };
 
-const DEFAULT_AXIS_PROPERTIES = {
-  height: 100,
-  tickFontFamily: 'Helvetica',
-  tickFontSize: 10,
-  tickFormat: null,
-  width: 230,
-};
 
-function calcAutoRotatedPadding(
-  tickValues,
-  height,
-  width,
-  vertical,
-) {
-  if (vertical) {
-    const numTicksThatFit = calcNumTicksThatFit(
-      tickValues,
-      { ...DEFAULT_AXIS_PROPERTIES, height, width }
-    );
-    if (numTicksThatFit < tickValues.length) {
-      return {
-        bottom: util.sizeOfLongestRotatedString(tickValues),
-      };
-    }
-  }
-  return {};
-}
 export default class BarChart extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -239,20 +211,11 @@ export default class BarChart extends React.PureComponent {
 
     const vertical = util.isVertical(orientation);
 
-    const autoPadding = calcAutoRotatedPadding(
-      categories,
-      chartHeight,
-      chartWidth,
-      vertical,
-    );
-
-    const tickLabelsAutoRotated = !isEmpty(autoPadding);
-
     const defaultPadding = axisLabels
       ? DEFAULT_PADDING_WITH_AXIS_LABELS
       : DEFAULT_PADDING_NO_AXIS_LABELS;
 
-    const padding = { ...defaultPadding, ...customPadding, ...autoPadding };
+    const padding = { ...defaultPadding, ...customPadding };
     return (
       <AxisChart
         height={chartHeight}
@@ -266,7 +229,6 @@ export default class BarChart extends React.PureComponent {
         <XAxis
           autoFilterTickValues={!vertical}
           label={axisLabels && (vertical ? axisLabels.domain : axisLabels.range)}
-          rotateTickLabels={tickLabelsAutoRotated}
           tickFormat={vertical ? null : rangeFormat}
         />
         <YAxis
