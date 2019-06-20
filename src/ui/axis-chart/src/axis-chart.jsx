@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { uniqueId } from 'lodash';
 import classNames from 'classnames';
 import {
+  calcPadding,
   calcChartDimensions,
   CommonPropTypes,
   getScale,
@@ -21,24 +22,75 @@ const SCALE_TYPES = getScaleTypes();
 export default class AxisChart extends React.Component {
   constructor(props) {
     super(props);
-    const chartDimensions = calcChartDimensions(props.width, props.height, props.padding);
+    const {
+      autoFormatAxes,
+      children,
+      height,
+      padding,
+      style,
+      width,
+      xDomain,
+      xScaleType,
+      yScaleType,
+      yDomain
+    } = props;
+    const [autoPadding, autoRotateTickLabels] = autoFormatAxes
+      ? calcPadding({
+        // eslint-disable-next-line react/prop-types
+        children: React.Children.toArray(children),
+        xDomain,
+        yDomain,
+        height,
+        width,
+        style,
+        initialPadding: padding
+      })
+      : [padding, false];
+    const chartDimensions = calcChartDimensions(
+      width,
+      height,
+      autoPadding
+    );
     this.state = {
+      autoRotateTickLabels,
       chartDimensions,
+      padding: autoPadding,
       scales: {
-        x: getScale(props.xScaleType)().domain(props.xDomain).range([0, chartDimensions.width]),
-        y: getScale(props.yScaleType)().domain(props.yDomain).range([chartDimensions.height, 0]),
+        x: getScale(xScaleType)().domain(xDomain).range([0, chartDimensions.width]),
+        y: getScale(yScaleType)().domain(yDomain).range([chartDimensions.height, 0]),
       },
     };
   }
 
   componentWillReceiveProps(nextProps) {
     const state = {};
-
-    if (propsChanged(this.props, nextProps, ['width', 'height', 'padding'])) {
+    const {
+      autoFormatAxes,
+      children,
+      xDomain,
+      yDomain,
+      width,
+      height,
+      style,
+      padding,
+    } = nextProps;
+    if (propsChanged(this.props, nextProps, ['autoFormatAxes', 'xDomain', 'height', 'width', 'padding'])) {
+      [state.padding, state.autoRotateTickLabels] = autoFormatAxes
+        ? calcPadding({
+        // eslint-disable-next-line react/prop-types
+          children: React.Children.toArray(children),
+          xDomain,
+          yDomain,
+          width,
+          height,
+          style,
+          initialPadding: padding
+        })
+        : [padding, false];
       state.chartDimensions = calcChartDimensions(
-        nextProps.width,
-        nextProps.height,
-        nextProps.padding
+        width,
+        height,
+        state.padding
       );
     }
 
@@ -50,11 +102,11 @@ export default class AxisChart extends React.Component {
       const chartDimensions = state.chartDimensions || this.state.chartDimensions;
       state.scales = {
         x: xChanged
-          ? getScale(nextProps.xScaleType)().domain(nextProps.xDomain)
+          ? getScale(nextProps.xScaleType)().domain(xDomain)
             .range([0, chartDimensions.width])
           : this.state.scales.x,
         y: yChanged
-          ? getScale(nextProps.yScaleType)().domain(nextProps.yDomain)
+          ? getScale(nextProps.yScaleType)().domain(yDomain)
             .range([chartDimensions.height, 0])
           : this.state.scales.y,
       };
@@ -70,13 +122,13 @@ export default class AxisChart extends React.Component {
 
   render() {
     const { props } = this;
-    const { chartDimensions, scales } = this.state;
+    const { chartDimensions, padding, scales, autoRotateTickLabels } = this.state;
     const clipPathId = uniqueId('chartClip_');
 
     return (
       <svg
-        width={`${chartDimensions.width + props.padding.left + props.padding.right}px`}
-        height={`${chartDimensions.height + props.padding.bottom + props.padding.top}px`}
+        width={`${chartDimensions.width + padding.left + padding.right}px`}
+        height={`${chartDimensions.height + padding.bottom + padding.top}px`}
         className={classNames(props.className)}
         style={props.style}
       >
@@ -91,13 +143,15 @@ export default class AxisChart extends React.Component {
         </defs>)
           : null
         }
-        <g transform={`translate(${props.padding.left}, ${props.padding.top})`}>
+        <g transform={`translate(${padding.left}, ${padding.top})`}>
           {
             React.Children.map(props.children, (child) => child && React.cloneElement(child, {
               scales,
-              padding: props.padding,
+              padding,
+              rotateTickLabels: autoRotateTickLabels,
               clipPathId: props.clipPath ? clipPathId : (void 0),
-              ...chartDimensions,
+              height: chartDimensions.height,
+              width: chartDimensions.width
             }))
           }
         </g>
