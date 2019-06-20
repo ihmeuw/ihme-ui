@@ -9,7 +9,7 @@ import Axis from '../';
 import {
   filterTickValuesByWidth,
   filterTickValuesByHeight,
-} from '../src/utils';
+} from '../../../utils';
 
 chai.use(chaiEnzyme());
 
