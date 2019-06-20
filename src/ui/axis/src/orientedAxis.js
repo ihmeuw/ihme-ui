@@ -9,13 +9,11 @@ import {
 } from 'lodash';
 
 import {
+  filterTickValuesByWidth,
+  filterTickValuesByHeight,
   propsChanged,
   stateFromPropUpdates,
 } from '../../../utils';
-import {
-  filterTickValuesByWidth,
-  filterTickValuesByHeight
-} from './utils';
 
 import Axis from './axis';
 

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { uniqueId } from 'lodash';
 import classNames from 'classnames';
 import {
+  calcChartDimensions,
   CommonPropTypes,
   getScale,
   getScaleTypes,
@@ -11,13 +12,6 @@ import {
 } from '../../../utils';
 
 const SCALE_TYPES = getScaleTypes();
-
-export function calcChartDimensions(width, height, padding) {
-  return {
-    width: width - (padding.left + padding.right),
-    height: height - (padding.top + padding.bottom),
-  };
-}
 
 /**
  * `import { AxisChart } from 'ihme-ui'`

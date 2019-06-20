@@ -1,5 +1,6 @@
 export * from './animate';
 export * from './array';
+export * from './axis';
 export * from './bar';
 export * from './colors';
 export * from './data';

@@ -17,15 +17,13 @@ import {
 } from 'lodash';
 
 import {
+  calcLabelPosition,
+  calcAxisTranslate,
   CommonPropTypes,
   propsChanged,
   stateFromPropUpdates,
 } from '../../../utils';
 
-import {
-  calcLabelPosition,
-  calcTranslate,
-} from './utils';
 import styles from './axis.css';
 
 export const AXIS_TYPES = {
@@ -318,7 +316,7 @@ Axis.propUpdates = {
 
     return assign({}, accum, {
       translate: nextProps.translate
-      || calcTranslate(nextProps.orientation, nextProps.width, nextProps.height)
+      || calcAxisTranslate(nextProps.orientation, nextProps.width, nextProps.height)
     });
   },
 };
