@@ -106,13 +106,36 @@ export default class Axis extends React.PureComponent {
       .attr('style', Axis.concatStyle(style))
       .call(axis);
 
-    if (rotateTickLabels) {
-      this._axisSelection
-        .selectAll('text')
-        .style('text-anchor', 'end')
-        .attr('dx', '-.8em')
-        .attr('dy', '.15em')
-        .attr('transform', 'rotate(-45)');
+    if (orientation === 'bottom') {
+      // eslint-disable-next-line no-unused-expressions
+      rotateTickLabels
+        ? this._axisSelection
+          .selectAll('text')
+          .style('text-anchor', 'end')
+          .attr('dx', '-.8em')
+          .attr('dy', '.15em')
+          .attr('transform', 'rotate(-45)')
+        : this._axisSelection
+          .selectAll('text')
+          .style('text-anchor', 'middle')
+          .attr('dx', '0')
+          .attr('dy', '0.71em')
+          .attr('transform', 'rotate(0)');
+    } else if (orientation === 'top') {
+      // eslint-disable-next-line no-unused-expressions
+      rotateTickLabels
+        ? this._axisSelection
+          .selectAll('text')
+          .style('text-anchor', 'end')
+          .attr('dx', '-.8em')
+          .attr('dy', '0.29em')
+          .attr('transform', 'rotate(45)')
+        : this._axisSelection
+          .selectAll('text')
+          .style('text-anchor', 'middle')
+          .attr('dx', '0')
+          .attr('dy', '0')
+          .attr('transform', 'rotate(0)');
     }
   }
 
@@ -228,6 +251,11 @@ Axis.propTypes = {
     left: PropTypes.number,
     right: PropTypes.number,
   }),
+
+  /**
+   *  whether to rotate top/bottom axis tick labels 45 deg
+   */
+  rotateTickLabels: PropTypes.bool,
 
   /**
    *  appropriate scale for axis
