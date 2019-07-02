@@ -52,13 +52,12 @@ export function computeStackDatumKey(stack, layer) {
 /**
  * Computes the spatial offsets (start, end) for each bar in a stacked bar chart
  *
- * @param {datum[]} data - Array of datum objects, each of which must contain fields denoting the
- *   stack, layer, and value.
+ * @param {any[]} data - array of datum objects
  * @param {string[]|number[]} stacks - names of the categories represented by each stack
  * @param {string[]|number[]} layers - names of the categories represented by each layer
- * @param {string|number} stackField - property name of each datum object denoting the stack
- * @param {string|number} layerField - property name on each datum object denoting the layer
- * @param {number} valueField - property name on each datum object denoting the value
+ * @param {string|function} stackAccessor - data accessor for getting the stack name from the datum
+ * @param {string|function} layerAccessor - data accessor for getting the layer name from the datum
+ * @param {string|function} valueAccessor - data accessor for getting the value from the datum
  *
  * @returns {object} - a mapping of keys in the form `${stack}:${layer}` to each bar's spatial offset
  */
@@ -66,15 +65,18 @@ export function computeStackOffsets(
   data,
   stacks,
   layers,
-  stackField,
-  layerField,
-  valueField,
+  stackAccessor,
+  layerAccessor,
+  valueAccessor,
 ) {
   // We create an object mapping keys `${stack}:${layer}` to each datum object.
   // That allows us quick lookups to retrieve the value of each bar.
   const dataByStackAndLayer = keyBy(
     data,
-    datum => computeStackDatumKey(datum[stackField], datum[layerField]),
+    datum => computeStackDatumKey(
+      propResolver(datum, stackAccessor),
+      propResolver(datum, layerAccessor),
+    ),
   );
 
   // Now we create an object mapping keys `${stack}:${layer}`, the same as in `dataByStackAndLayer`,
@@ -92,7 +94,7 @@ export function computeStackOffsets(
     for (const layer of layers) {
       const key = computeStackDatumKey(stack, layer);
       const datum = dataByStackAndLayer[key];
-      const value = datum[valueField];
+      const value = propResolver(datum, valueAccessor);
       const start = prevEnd;
 
       // store the starting offset for the current bar
