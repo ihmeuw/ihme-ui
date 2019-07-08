@@ -144,7 +144,7 @@ export default class Map extends React.Component {
         .domain(linspace(rangeExtent, colorSteps.length))
         .range(colorSteps),
       render: !props.loading,
-      lock: true,
+      scaleLock: true,
     };
 
     this.state = stateFromPropUpdates(Map.propUpdates, {}, props, state, this);
@@ -162,15 +162,15 @@ export default class Map extends React.Component {
   }
 
   onSliderMove(selectedChoroplethDomain) {
-    if (this.state.lock) this.onSetScale();
+    if (this.state.scaleLock) this.onSetScale();
     this.props.onSliderMove(selectedChoroplethDomain);
   }
 
   onScaleLock() {
-    if (this.state.lock === false) {
+    if (this.state.scaleLock === false) {
       this.onSetScale();
     }
-    this.setState({ lock: !this.state.lock });
+    this.setState({ scaleLock: !this.state.scaleLock });
   }
 
   onSetScale() {
@@ -356,7 +356,7 @@ export default class Map extends React.Component {
       colorScale,
       locationIdsOnMap,
       setScaleExtentPct,
-      lock,
+      scaleLock,
     } = this.state;
 
     // const onSliderMove = this.onSliderMove;
@@ -400,12 +400,6 @@ export default class Map extends React.Component {
             <input type="checkbox" id="lockScale" name="scales" onClick={this.onScaleLock} style={{ cursor: 'pointer' }} />
             <label htmlFor="lockScale" style={{ cursor: 'pointer' }} > Set Scale</label>
           </div>
-          {/* <Button
-            disabled={lock}
-            className={classNames('lock', 'lockScaleReset')}
-            onClick={this.onSetScale}
-            text="Set scale"
-          /> */}
         </div>
       </div>
     );
