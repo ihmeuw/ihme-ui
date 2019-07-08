@@ -356,7 +356,6 @@ export default class Map extends React.Component {
       colorScale,
       locationIdsOnMap,
       setScaleExtentPct,
-      scaleLock,
     } = this.state;
 
     // const onSliderMove = this.onSliderMove;
