@@ -43,6 +43,8 @@
     "test": "BABEL_ENV=test $(npm bin)/babel-node $(npm bin)/_mocha --require ./scripts/setup-jsdom.js `./scripts/get-test-directories.sh`",
     "test:travis": "npm run lint && npm run coverage:travis && npm run coverage:token",
     "update:dep": "./scripts/update-package.sh",
+    "composition": "$(npm bin)/webpack --env ./src/ui/compositions/map/demo  --config './webpack.demo.config.js' --display-error-details",
+    "select": "$(npm bin)/webpack --env ./src/ui/select/demo  --config './webpack.demo.config.js' --display-error-details"
   },
   "devDependencies": {
     "autoprefixer": "^7.2.5",

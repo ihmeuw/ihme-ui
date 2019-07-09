@@ -18,6 +18,8 @@ import Button from '../../../button';
 import Choropleth from '../../../choropleth';
 import ChoroplethLegend from '../../choropleth-legend';
 import ResponsiveContainer from '../../../responsive-container';
+import HtmlLabel from '../../../html-label';
+
 import {
   clampedScale,
   CommonPropTypes,
@@ -394,10 +396,16 @@ export default class Map extends React.Component {
           </ResponsiveContainer>
         </div>
 
+
         <div className={styles['button-wrapper']} style={{ padding: '0 0 0 10px' }}>
           <div className={classNames('lock', 'lockScale')} style={{ padding: '5px 5px 5px 0' }}>
             <input type="checkbox" id="lockScale" name="scales" onClick={this.onScaleLock} style={{ cursor: 'pointer' }} />
-            <label htmlFor="lockScale" style={{ cursor: 'pointer' }} > Set Scale</label>
+            <HtmlLabel
+              className={['lockScale', 'normal-weight']}
+              htmlFor={"lockScale"}
+              style={{ cursor: 'pointer' }}
+              text={'Set Scale'}
+            />
           </div>
         </div>
       </div>
