@@ -51,7 +51,13 @@
 
 .lockScale {
     font-weight: normal;
-    padding-right: 5px;
     cursor: pointer;
-    display: none;
 }
+
+.lockLabel {
+    padding-left: 5px;
+}
+.lockCheckbox, .locklabel {
+    cursor: pointer;
+}
+

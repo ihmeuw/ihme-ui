@@ -11,7 +11,3 @@
   composes: common;
   color: black;
 }
-
-.normal-weight {
-  font-weight: normal;
-}
