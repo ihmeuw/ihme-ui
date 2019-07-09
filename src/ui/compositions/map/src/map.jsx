@@ -396,8 +396,8 @@ export default class Map extends React.Component {
           </ResponsiveContainer>
         </div>
 
-        <div className={styles['button-wrapper']} style={{ padding: '0 0 0 10px' }}>
-          <div className={classNames(styles.lockScale)} style={{ padding: '5px 5px 5px 0' }}>
+        <div className={styles['lock-wrapper']}>
+          <div className={classNames(styles.lockScale)} >
             <input
               type="checkbox"
               id="lockScale"
