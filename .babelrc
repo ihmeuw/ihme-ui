@@ -1,55 +1,90 @@
 {
-  "presets": ["react"],
-  "plugins": ["lodash", "transform-object-rest-spread"],
+  "presets": [
+    "react"
+  ],
+  "plugins": [
+    "lodash",
+    "transform-object-rest-spread"
+  ],
   "env": {
     "demo": {
       "presets": [
-        ["es2015", { "modules": false }]
+        [
+          "es2015",
+          {
+            "modules": false
+          }
+        ]
       ],
     },
     "commonjs": {
-      "presets": ["es2015"],
+      "presets": [
+        "es2015"
+      ],
       "plugins": [
-        ["css-modules-transform", {
-          "processCss": "./scripts/post-css-processer.js",
-          "extractCss": {
-            "dir": "./lib/style/",
-            "relativeRoot": "./src/",
-            "filename": "[name].css"
+        [
+          "css-modules-transform",
+          {
+            "processCss": "./scripts/post-css-processer.js",
+            "extractCss": {
+              "dir": "./lib/style/",
+              "relativeRoot": "./src/",
+              "filename": "[name].css"
+            }
           }
-        }]
+        ]
       ]
     },
     "es": {
       "presets": [
-        ["es2015", { "modules": false }]
+        [
+          "es2015",
+          {
+            "modules": false
+          }
+        ]
       ],
       "plugins": [
         "transform-runtime",
-        ["css-modules-transform", {
-          "processCss": "./scripts/post-css-processer.js",
-          "extractCss": {
-            "dir": "./es/style/",
-            "relativeRoot": "./src/",
-            "filename": "[name].css"
+        [
+          "css-modules-transform",
+          {
+            "processCss": "./scripts/post-css-processer.js",
+            "extractCss": {
+              "dir": "./es/style/",
+              "relativeRoot": "./src/",
+              "filename": "[name].css"
+            }
           }
-        }]
+        ]
       ]
     },
     "test": {
-      "presets": ["es2015"],
-      "plugins": ["css-modules-transform"]
+      "presets": [
+        "es2015"
+      ],
+      "plugins": [
+        "css-modules-transform"
+      ]
     },
     "webpack": {
       "presets": [
-        ["es2015", { "modules": false }]
+        [
+          "es2015",
+          {
+            "modules": false
+          }
+        ]
       ],
       "plugins": [
         "transform-runtime",
-        ["css-modules-transform", {
-          "processCss": "./scripts/post-css-processer.js",
-          "extractCss": "./dist/ihme-ui.css"
-        }]
+        [
+          "css-modules-transform",
+          {
+            "processCss": "./scripts/post-css-processer.js",
+            "extractCss": "./dist/ihme-ui.css"
+          }
+        ]
       ]
     }
   },
