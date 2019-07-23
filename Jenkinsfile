@@ -9,7 +9,7 @@ Required credentials: (username/password -> access_key/secret_key)
 pipeline {
     agent any
     environment {
-        PROJECT = 'country-profile'
+        PROJECT = 'ihme-ui'
         IMAGE_TAG_NAME = "registry-app-p01.ihme.washington.edu/viz/${PROJECT}:${BUILD_NUMBER}"
         USER      = 'svcvizteam'
         REGISTRY  = 'https://registry-app-p01.ihme.washington.edu'
@@ -17,7 +17,7 @@ pipeline {
     parameters {
         string(
             name: 'CUSTOM_STACK_NAME',
-            description: 'OPTIONAL: override the Rancher stack name (defaults to "country-profile-${AUDIENCE}")',
+            description: 'OPTIONAL: override the Rancher stack name (defaults to "ihme-ui-${AUDIENCE}")',
         )
         choice(
             name: 'RANCHER_ENV',
@@ -61,7 +61,7 @@ pipeline {
         stage('setup deploy environment') {
             steps {
                 script {
-                    RANCHER_PROJECT_NAME = params.CUSTOM_STACK_NAME ?: "country-profile-${params.AUDIENCE}"
+                    RANCHER_PROJECT_NAME = params.CUSTOM_STACK_NAME ?: "ihme-ui-${params.AUDIENCE}"
                 }
             }
         }

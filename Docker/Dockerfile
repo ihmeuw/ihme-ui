@@ -19,4 +19,4 @@ RUN npm install
 RUN npm run demo compositions/map
 
 EXPOSE 8181
-CMD ["node", "server.js"]
+CMD ["node", "/server/server.js"]
