@@ -12,7 +12,7 @@ pipeline {
         PROJECT = 'ihme-ui'
         IMAGE_TAG_NAME = "registry-app-p01.ihme.washington.edu/viz/${PROJECT}:${BUILD_NUMBER}"
         USER      = 'svcvizteam'
-        REGISTRY  = 'https://registry-app-p01.ihme.washington.edu'
+        REGISTRY  = 'registry-app-p01.ihme.washington.edu'
     }
     parameters {
         string(
@@ -34,25 +34,15 @@ pipeline {
             choices: ['prod', 'dev'],
             description: "type of npm build for the deployment, affecting bundle size, minification, and source mapping",
         )
-        string(
-            name: 'SCALE',
-            defaultValue: '1',
-            description: 'number of containers for the `web` service',
-        )
-        string(
-            name: 'AUTH_BRANCH',
-            defaultValue: 'master',
-            description: 'branch of `apache-auth` repo',
-        )
     }
     stages {
         stage('Build and push image') {
             steps {
                 script {
-                    docker.withRegistry(env.REGISTRY, env.USER ) {
+                    docker.withRegistry("https://${env.REGISTRY}", env.USER ) {
                         docker.build(
                                 "${IMAGE_TAG_NAME}",
-                                "-f Docker/Dockerfile ."
+                                "--build-arg BUILD_TYPE=${params.BUILD_TYPE} -f Docker/Dockerfile ."
                         ).push()
                     }
                 }
