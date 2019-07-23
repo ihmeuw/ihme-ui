@@ -52,7 +52,6 @@ pipeline {
             steps {
                 script {
                     RANCHER_PROJECT_NAME: 'ihme-ui-dev'
-                    // RANCHER_PROJECT_NAME = params.CUSTOM_STACK_NAME ?: "ihme-ui-${params.AUDIENCE}"
                 }
             }
         }
