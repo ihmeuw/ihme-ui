@@ -67,7 +67,7 @@ pipeline {
         }
         stage('Deploy') {
             environment {
-                AUDIENCE = "${params.AUDIENCE}"
+                AUDIENCE = "internal"
                 RANCHER_URL = "${env["RANCHER_URL_${params.RANCHER_ENV}"]}"
                 RANCHER_PROJECT_NAME = "${PROJECT}-${params.AUDIENCE}"
                 RANCHER_CREDS = credentials("RANCHER_${params.RANCHER_ENV}")
