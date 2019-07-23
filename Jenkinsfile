@@ -52,7 +52,7 @@ pipeline {
                     docker.withRegistry(env.REGISTRY, env.USER ) {
                         docker.build(
                                 "${IMAGE_TAG_NAME}",
-                                "--build-arg BUILD_TYPE=${params.BUILD_TYPE} -f Docker/Dockerfile ."
+                                "-f Docker/Dockerfile ."
                         ).push()
                     }
                 }
