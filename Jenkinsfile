@@ -31,7 +31,7 @@ pipeline {
         )
         choice(
             name: 'BUILD_TYPE',
-            choices: ['prod', 'dev'],
+            choices: ['prod', 'dev', 'demo'],
             description: "type of npm build for the deployment, affecting bundle size, minification, and source mapping",
         )
     }
