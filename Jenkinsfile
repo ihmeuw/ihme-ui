@@ -12,7 +12,7 @@ pipeline {
         PROJECT = 'ihme-ui'
         IMAGE_TAG_NAME = "registry-app-p01.ihme.washington.edu/viz/${PROJECT}:${BUILD_NUMBER}"
         USER      = 'svcvizteam'
-        REGISTRY  = 'https://registry-app-p01.ihme.washington.edu'
+        REGISTRY  = 'registry-app-p01.ihme.washington.edu'
     }
     parameters {
         string(
@@ -41,8 +41,8 @@ pipeline {
                 script {
                     docker.withRegistry(${env.REGISTRY}, env.USER ) {
                         docker.build(
-                                "${IMAGE_TAG_NAME}",
-                                "--build-arg BUILD_TYPE=dev -f Docker/Dockerfile ."
+                                "https://${IMAGE_TAG_NAME}",
+                                "--build-arg BUILD_TYPE=demo -f Docker/Dockerfile ."
                         ).push()
                     }
                 }
