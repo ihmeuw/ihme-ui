@@ -39,9 +39,9 @@ pipeline {
         stage('Build and push image') {
             steps {
                 script {
-                    docker.withRegistry(${env.REGISTRY}, env.USER ) {
+                    docker.withRegistry("https://${env.REGISTRY}", env.USER ) {
                         docker.build(
-                                "https://${IMAGE_TAG_NAME}",
+                                "${IMAGE_TAG_NAME}",
                                 "--build-arg BUILD_TYPE=demo -f Docker/Dockerfile ."
                         ).push()
                     }
