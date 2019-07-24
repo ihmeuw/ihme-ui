@@ -48,6 +48,7 @@ pipeline {
                 }
             }
         }
+<<<<<<< HEAD
         stage('setup deploy environment') {
             steps {
                 script {
@@ -55,6 +56,15 @@ pipeline {
                 }
             }
         }
+=======
+        // stage('setup deploy environment') {
+        //     steps {
+        //         script {
+        //             RANCHER_PROJECT_NAME = params.CUSTOM_STACK_NAME ?: "ihme-ui-${params.AUDIENCE}"
+        //         }
+        //     }
+        // }
+>>>>>>> 2d8cff846aba24399ade84b316aaeb9dde0989c0
         stage('Deploy') {
             environment {
                 AUDIENCE = "internal"
