@@ -91,8 +91,7 @@ class App extends React.Component {
   }
 
   onCheck() {
-    const autoFormatChecked = !this.state.autoFormatChecked;
-    this.setState({ autoFormatChecked })
+    this.setState(({ autoFormatChecked }) => ({ autoFormatChecked: !autoFormatChecked }));
   }
 
   render() {
@@ -160,8 +159,8 @@ class App extends React.Component {
               dataAccessors={dataAccessors}
               onClick={()=>{console.log('click')}}
             />
-            <XAxis style={axisStyle} label="Year" tickFormat={format('')} />
-            <XAxis style={axisStyle} label="Year" orientation="top" tickFormat={format('')} />
+            <XAxis style={axisStyle} label="Year" tickFormat={format(".3n")	} />
+            <XAxis style={axisStyle} label="Year" orientation="top" tickFormat={format(".3n")	} />
             <YAxis style={axisStyle} label="Probability" />
           </AxisChart>
         </div>
