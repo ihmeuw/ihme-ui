@@ -77,7 +77,7 @@ export default class AxisChart extends React.Component {
     if (propsChanged(
       this.props,
       nextProps,
-      ['autoFormatAxes', 'xDomain', 'height', 'width', 'padding']
+      ['autoFormatAxes', 'xDomain', 'yDomain', 'height', 'width', 'padding']
     )) {
       [state.padding, state.autoRotateTickLabels] = autoFormatAxes
         ? calcPadding({
