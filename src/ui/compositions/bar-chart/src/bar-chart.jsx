@@ -175,7 +175,7 @@ export default class BarChart extends React.PureComponent {
       rangeMax,
       selection,
       style,
-      width
+      width,
     };
 
     switch (type) {
@@ -218,6 +218,7 @@ export default class BarChart extends React.PureComponent {
     const padding = { ...defaultPadding, ...customPadding };
     return (
       <AxisChart
+        autoFormatAxes
         height={chartHeight}
         width={chartWidth}
         padding={padding}
