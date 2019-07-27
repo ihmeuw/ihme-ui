@@ -106,6 +106,7 @@ export default function orientAxis(AxisComponent, orientation) {
       const {
         autoFilterTickValues,
         height,
+        rotateTickValues,
         scale: scaleProp,
         tickFontFamily,
         tickFontSize,
@@ -114,25 +115,28 @@ export default function orientAxis(AxisComponent, orientation) {
         width,
       } = nextProps;
 
-      if (!autoFilterTickValues ||
-        !propsChanged(prevProps, nextProps, ['scale', 'scales', 'width', 'height'])
+      // Only filter tick values if they are not already being rotated.
+      if (autoFilterTickValues
+        && !rotateTickValues
+        && propsChanged(prevProps, nextProps, ['scale', 'scales', 'width', 'height'])
       ) {
+        const scale = scaleProp || getValue(nextProps, AXIS_TYPE_TO_SCALE_PATH[orientation]);
+        const ticks = tickValues || invoke(scale, 'ticks') || scale.domain();
+        const filterFn = AXIS_TYPE_TO_TICK_VALUE_FILTER[orientation] || identity;
+        const result = assign({}, accum, {
+          tickValues: filterFn(ticks, {
+            height,
+            tickFontFamily,
+            tickFontSize,
+            tickFormat: tickFormat || identity,
+            width,
+          }),
+        });
+        return result;
+      // eslint-disable-next-line no-else-return
+      } else {
         return accum;
       }
-
-      const scale = scaleProp || getValue(nextProps, AXIS_TYPE_TO_SCALE_PATH[orientation]);
-      const ticks = tickValues || invoke(scale, 'ticks') || scale.domain();
-      const filterFn = AXIS_TYPE_TO_TICK_VALUE_FILTER[orientation] || identity;
-
-      return assign({}, accum, {
-        tickValues: filterFn(ticks, {
-          height,
-          tickFontFamily,
-          tickFontSize,
-          tickFormat: tickFormat || identity,
-          width,
-        }),
-      });
     }
   };
 
