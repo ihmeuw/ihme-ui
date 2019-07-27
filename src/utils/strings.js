@@ -26,12 +26,11 @@ export const getRenderedStringDimensions = (
     return 0;
   }
 
-  const context = canvasContext;
-
-  context.font = font;
+  // eslint-disable-next-line no-param-reassign
+  canvasContext.font = font;
 
   // see https://developer.mozilla.org/en-US/docs/Web/API/TextMetrics
-  return context.measureText(str);
+  return canvasContext.measureText(str);
 };
 
 /**
