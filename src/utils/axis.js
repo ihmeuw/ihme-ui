@@ -5,14 +5,16 @@
  * @module
  */
 import {
+  every,
   find,
   get,
+  invoke,
   isEmpty,
   map,
   mapValues,
   mergeWith,
   reduce,
-  set
+  set as setValue
 } from 'lodash';
 
 import {
@@ -36,7 +38,7 @@ export const DEFAULT_AXIS_PROPERTIES = {
 
 export const AXIS_ORIENTATION_OPTIONS = ['top', 'right', 'bottom', 'left'];
 
-const ADDITIONAL_LABEL_PADDING = '10px';
+const ADDITIONAL_LABEL_PADDING = '20px';
 
 /**
  * Calculate translate based on axis orientation.
@@ -104,62 +106,52 @@ export function calcLabelPosition(orientation, translate, padding, center) {
         rotate: 90,
       };
     default:
-      return {
-        x: translate.x,
-        y: translate.y,
-        dX: 0,
-        dY: 0,
-      };
+      throw new Error('Invalid axis orientation.');
   }
 }
 
 /**
- * Calculate the number of ticks that fit into a specified width based on text styles.
+ * Calculate the widest string length from supplied array of strings.
  * @param {Array} ticks - Array of tick values.
  * @param {Object} styles - Object consisting of axis container width and font styles.
  * @param {Number} styles.tickFontSize - Supplied tick font size.
  * @param {String} styles.tickFontFamily - Supplied tick font family.
  * @param {Function} styles.tickFormat - Supplied callback for tick string formatting.
- * @param {Number} styles.width - Supplied width of axis container.
  * @returns {Number} Number of ticks that fit (without overlap) into available width.
  */
-function calcNumTicksThatFit(ticks, {
+function lengthOfLongestTickLabel(ticks, {
   tickLabelFontSize,
   tickLabelFontFamily,
   tickLabelFormat,
-  width
 }) {
-  let widestTickLabelLength;
+  /* eslint-disable max-len */
+  return reduce(map(ticks, tickLabelFormat), (widest, tick) =>
+    Math.max(
+      widest,
+      getRenderedStringWidth(String(tick), `${tickLabelFontSize}px ${tickLabelFontFamily}`),
+    )
+  , 0);
+}
 
-  try {
-    /* eslint-disable max-len */
-    const canvasContext = window && window.document.createElement('canvas').getContext('2d');
-    widestTickLabelLength = reduce(map(ticks, tickLabelFormat), (widest, tick) =>
-      Math.max(
-        widest,
-        getRenderedStringWidth(String(tick), `${tickLabelFontSize}px ${tickLabelFontFamily}`, canvasContext),
-      )
-    , 0);
-    /* eslint-enable max-len */
-  } catch (err) {
-    widestTickLabelLength = reduce(map(ticks, tickLabelFormat), (widest, tick) =>
-      Math.max(widest, String(tick).length * tickLabelFontSize)
-    , 0);
-  }
-
-  return Math.floor(width / widestTickLabelLength);
+/**
+ * Calculate the number of ticks that fit into a specified width based on text styles.
+ * @param {Number} widestTickLabelLength - Length of longest tick value.
+ * @param {Number} availableWidth - Supplied width of axis container.
+ * @returns {Number} Number of ticks that fit (without overlap) into available width.
+ */
+function calcNumTicksThatFit(widestTickLabelLength, availableWidth) {
+  return Math.floor(availableWidth / widestTickLabelLength);
 }
 
 /**
  * Evenly filter tick values based on available width (for horizontal axis/axes).
  * @param {Array} ticks - Array of tick values.
- * @param {Object} styles - Object consisting of axis container width and font styles.
- * @param {Number} styles.width - Supplied width of axis container.
- * @param {Number} styles.tickFontSize - Supplied tick font size.
+ * @param {Object} axisProperties - Object consisting of axis container width and font styles.
  * @returns {Array} Tick values evenly filtered based on available width.
  */
 export function filterTickValuesByWidth(ticks, axisProperties) {
-  const numTicksThatFit = calcNumTicksThatFit(ticks, axisProperties);
+  const widestTickLabelLength = lengthOfLongestTickLabel(ticks, axisProperties);
+  const numTicksThatFit = calcNumTicksThatFit(widestTickLabelLength, axisProperties);
   return takeSkipping(ticks, numTicksThatFit);
 }
 
@@ -190,17 +182,43 @@ function findAxisComponentsByCondition(children, conditions) {
         orientationExists: (child) => child.props.orientation === axisOrientation,
         labelExists: (child) => !isEmpty(child.props.label)
       };
-      return set(
+      return setValue(
         result,
         axisOrientation,
         find(children,
-          (child) => reduce(
+          (child) => every(
             conditions,
-            (acc, condition) => validConditions[condition](child)
-          ) || false
+            (condition) => validConditions[condition](child),
+          )
         )
       );
     }, {});
+}
+
+// NOTE TO DAVID: Here I'm trying to mimic the way the props are processed in ui/axis/src/orientedAxis.js in the propUpdates (~line 104).
+// Then I'd be able to map over the tick values and apply formatting so I could get the true, formatted tick labels.
+// However, I'm in this catch 22 where the scale is determined by the chart height/width, but I need the scale to determine
+// the padding (which is what determines the chart height/width).
+// This is where I'm blocked and could really use some help.
+function getFormattedTickValues(axes) {
+  return mapValues(
+    axes,
+    (axis) => {
+      if (axis) {
+        const orientation = get(axis, ['props', 'orientation']);
+        const scale = get(axis, ['props', 'scale']) ||
+          (orientation === 'top' || orientation === 'bottom') ? get(axis, ['props', 'scales', 'x']) : get(axis, ['props', 'scales', 'y']);
+        const tickValues = get(axis, ['props', 'tickValues']);
+        const ticks = tickValues || invoke(scale, 'ticks') || scale.domain();
+        const tickFormat = get(axis, ['props', 'tickFormat']);
+        const formattedTicks = (tickFormat && ticks.map(tick => tickFormat(tick))) || ticks;
+        return formattedTicks;
+      // eslint-disable-next-line no-else-return
+      } else {
+        return null;
+      }
+    }
+  );
 }
 
 /**
@@ -216,42 +234,58 @@ export function calcPaddingFromTicks(
   style,
   children
 ) {
-  let autoRotate;
-  let padding;
   const {
     top: topAxis,
     right: rightAxis,
     bottom: bottomAxis,
     left: leftAxis } = findAxisComponentsByCondition(children, ['orientationExists']);
-  const numTicksThatFit = calcNumTicksThatFit(
-    xTickValues,
-    { ...DEFAULT_AXIS_PROPERTIES, width, height }
-  );
-  const tickLabelHeight = xTickValues.length
+
+  const axes = findAxisComponentsByCondition(children, ['orientationExists']);
+
+  // See comment above getFormattedTickValues definition.
+  const formattedTickValues = getFormattedTickValues(axes); // Currently unused
+  // Ideally, the formattedTickValues would replace the references to xTickValues & yTickValues below
+  // as these are simply taken from the domain of each axis.
+
+  const tickFormat = get(bottomAxis, ['props', 'tickFormat']);
+  const formattedTicks = tickFormat && xTickValues.map(tick => tickFormat(tick));
+
+  const tickLabelFontSize = xTickValues.length
     ? style && style.fontSize || DEFAULT_AXIS_PROPERTIES.tickLabelFontSize
     : 0;
+  const tickFontFamily = xTickValues.length
+    ? style && style.fontFamily || DEFAULT_AXIS_PROPERTIES.tickFontFamily
+    : 0;
+  const axisProperties = { ...DEFAULT_AXIS_PROPERTIES, tickLabelFontSize, tickFontFamily };
+  const widestXTickLabelLength = lengthOfLongestTickLabel(
+    xTickValues,
+    DEFAULT_AXIS_PROPERTIES
+  );
+  const numTicksThatFit = calcNumTicksThatFit(widestXTickLabelLength, width);
 
   // TOP/BOTTOM: If ticks overlap, calculate the rotated length (i.e., at -45 deg.), but also subtract tick height.
   // RIGHT/LEFT: Ticks cannot overlap. Simply calculate the length of the string (i.e., at 90 deg.)
   // TODO: Need to figure out how to get the actual formatted tick labels (d3 & React are making this difficult)
+  let autoRotate;
+  let padding;
   if (numTicksThatFit < xTickValues.length) {
     autoRotate = true;
     padding = {
-      top: topAxis ? sizeOfLongestRotatedString(xTickValues, -45) - tickLabelHeight : 0,
-      right: rightAxis ? sizeOfLongestRotatedString(yTickValues, 90) : 0,
-      bottom: bottomAxis ? sizeOfLongestRotatedString(xTickValues, -45) - tickLabelHeight : 0,
-      left: leftAxis ? sizeOfLongestRotatedString(yTickValues, 90) : 0
+      top: topAxis ? sizeOfLongestRotatedString(xTickValues, tickLabelFontSize, -45) - tickLabelFontSize : 0,
+      right: rightAxis ? lengthOfLongestTickLabel(yTickValues, axisProperties) : 0,
+      bottom: bottomAxis ? sizeOfLongestRotatedString(formattedTicks, tickLabelFontSize, -45) - tickLabelFontSize : 0,
+      left: leftAxis ? lengthOfLongestTickLabel(yTickValues, axisProperties) : 0
     };
   } else {
     autoRotate = false;
     padding = {
-      top: topAxis ? tickLabelHeight : 0,
-      right: rightAxis ? sizeOfLongestRotatedString(yTickValues, 90) : 0,
-      bottom: bottomAxis ? tickLabelHeight : 0,
-      left: leftAxis ? sizeOfLongestRotatedString(yTickValues, 90) : 0
+      top: topAxis ? tickLabelFontSize : 0,
+      right: rightAxis ? lengthOfLongestTickLabel(yTickValues, axisProperties) : 0,
+      bottom: bottomAxis ? tickLabelFontSize : 0,
+      left: leftAxis ? lengthOfLongestTickLabel(yTickValues, axisProperties) : 0,
     };
   }
-  return [mapValues(padding, (val) => val + DEFAULT_AXIS_PROPERTIES.tickHeight), autoRotate];
+  return [padding, autoRotate];
 }
 
 /**
