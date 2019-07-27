@@ -67,10 +67,10 @@ export const getRenderedStringHeight = (
 
 export const sizeOfLongestRotatedString = (
   values,
+  height, // tickLabelHeight
   rotationAngle = -45,
 ) => values.reduce((result, label) => {
-  const width = Math.floor(getRenderedStringWidth(label)) + 5;
-  const height = 10;
+  const width = Math.floor(getRenderedStringWidth(label));
   const size = Math.ceil(
     (height * Math.abs(Math.cos(rotationAngle))) + (width * Math.abs(Math.sin(rotationAngle)))
   );
