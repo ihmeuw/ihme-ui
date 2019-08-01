@@ -101,7 +101,7 @@ class App extends React.Component {
               <AxisChart
                 width={800}
                 height={600}
-                padding={{ // I dunno, I'm just guessing :( I wish there was an auto-format prop!
+                padding={{
                   top: 20,
                   bottom: 40,
                   left: 35,
