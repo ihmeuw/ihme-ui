@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import {
   calcPadding,
   calcChartDimensions,
+  canAutoFormatAxes,
   CommonPropTypes,
   getScale,
   getScaleTypes,
@@ -34,18 +35,21 @@ export default class AxisChart extends React.Component {
       yScaleType,
       yDomain
     } = props;
-    const [autoPadding, autoRotateTickLabels] = autoFormatAxes
-      ? calcPadding({
-        // eslint-disable-next-line react/prop-types
-        children: React.Children.toArray(children),
-        xDomain,
-        yDomain,
-        height,
-        width,
-        style,
-        initialPadding: padding
-      })
-      : [padding, false];
+    const [autoPadding, autoRotateTickLabels] =
+      (autoFormatAxes && canAutoFormatAxes(xScaleType, yScaleType))
+        ? calcPadding({
+          // eslint-disable-next-line react/prop-types
+          children: React.Children.toArray(children),
+          xDomain,
+          xScaleType,
+          yDomain,
+          yScaleType,
+          height,
+          width,
+          style,
+          initialPadding: padding
+        })
+        : [padding, false];
     const chartDimensions = calcChartDimensions(
       width,
       height,
@@ -68,7 +72,9 @@ export default class AxisChart extends React.Component {
       autoFormatAxes,
       children,
       xDomain,
+      xScaleType,
       yDomain,
+      yScaleType,
       width,
       height,
       style,
@@ -77,14 +83,18 @@ export default class AxisChart extends React.Component {
     if (propsChanged(
       this.props,
       nextProps,
-      ['autoFormatAxes', 'xDomain', 'yDomain', 'height', 'width', 'padding']
+      // eslint-disable-next-line max-len
+      ['autoFormatAxes', 'xDomain', 'xScaleType', 'yDomain', 'yScaleType', 'height', 'width', 'padding']
     )) {
-      [state.padding, state.autoRotateTickLabels] = autoFormatAxes
+      [state.padding, state.autoRotateTickLabels] =
+      (autoFormatAxes && canAutoFormatAxes(xScaleType, yScaleType))
         ? calcPadding({
         // eslint-disable-next-line react/prop-types
           children: React.Children.toArray(children),
           xDomain,
+          xScaleType,
           yDomain,
+          yScaleType,
           width,
           height,
           style,

@@ -37,11 +37,21 @@ export const DEFAULT_AXIS_PROPERTIES = {
 };
 
 export const AXIS_ORIENTATION_OPTIONS = ['top', 'right', 'bottom', 'left'];
+export const ALLOWED_SCALE_TYPES_FOR_AUTOFORMAT = ['point', 'ordinal', 'band'];
 
 const ADDITIONAL_LABEL_PADDING = '20px';
 
 /**
  * Calculate translate based on axis orientation.
+ * Determine if auto-formatting can be applied based on d3 scale type(s).
+ * Returns true if at least one scale passed in can be auto-formatted.
+ * @param {...string} scaleTypes - d3 scale type(s)
+ * @returns {Boolean}
+ */
+export function canAutoFormatAxes(...scaleTypes) {
+  return scaleTypes.some(scaleType => ALLOWED_SCALE_TYPES_FOR_AUTOFORMAT.includes(scaleType));
+}
+
  * @param {string} orientation - Orientation of the axis. One of ['top', 'bottom', 'left', 'right']
  * @param {number} width - Width of axis container.
  * @param {number} height - Height of axis container.
@@ -195,23 +205,26 @@ function findAxisComponentsByCondition(children, conditions) {
     }, {});
 }
 
-// NOTE TO DAVID: Here I'm trying to mimic the way the props are processed in ui/axis/src/orientedAxis.js in the propUpdates (~line 104).
-// Then I'd be able to map over the tick values and apply formatting so I could get the true, formatted tick labels.
-// However, I'm in this catch 22 where the scale is determined by the chart height/width, but I need the scale to determine
-// the padding (which is what determines the chart height/width).
-// This is where I'm blocked and could really use some help.
-function getFormattedTickValues(axes) {
+/**
+ * Apply formatting, if any, to tick values for each axis.
+ * @param {Object} axes - React axis components keyed by their respective orientation (i.e., top, right, etc.)
+ * @param {Array} xDomain - domain of the x-axis data
+ * @param {Array} yDomain - domain of the y-axis data
+ * @returns {Object|null} Formatted tick values for each axis orientation, or null if axis doesn't exist.
+ */
+function getFormattedTickValues(axes, xDomain, yDomain) {
   return mapValues(
     axes,
     (axis) => {
       if (axis) {
         const orientation = get(axis, ['props', 'orientation']);
-        const scale = get(axis, ['props', 'scale']) ||
-          (orientation === 'top' || orientation === 'bottom') ? get(axis, ['props', 'scales', 'x']) : get(axis, ['props', 'scales', 'y']);
-        const tickValues = get(axis, ['props', 'tickValues']);
-        const ticks = tickValues || invoke(scale, 'ticks') || scale.domain();
+        const userSpecifiedTickValues = get(axis, ['props', 'tickValues']);
+        const tickValues = userSpecifiedTickValues ||
+          (orientation === 'top' || orientation === 'bottom'
+            ? xDomain
+            : yDomain);
         const tickFormat = get(axis, ['props', 'tickFormat']);
-        const formattedTicks = (tickFormat && ticks.map(tick => tickFormat(tick))) || ticks;
+        const formattedTicks = (tickFormat && tickValues.map(tick => tickFormat(tick))) || tickValues;
         return formattedTicks;
       // eslint-disable-next-line no-else-return
       } else {
@@ -226,63 +239,91 @@ function getFormattedTickValues(axes) {
  * @param {Object} - Variables on which padding is dependent.
  * @returns {[Object, Boolean]} Resultant padding and boolean indicating whether tick rotation is necessary.
  */
-export function calcPaddingFromTicks(
-  xTickValues,
-  yTickValues,
+function calcPaddingFromTicks({
+  xDomain,
+  xScaleType,
+  yDomain,
+  yScaleType,
   width,
-  height,
   style,
   children
-) {
+}) {
+  // Find each oriented axis component, if any, from React children.
+  const axes = findAxisComponentsByCondition(children, ['orientationExists']);
   const {
     top: topAxis,
     right: rightAxis,
     bottom: bottomAxis,
-    left: leftAxis } = findAxisComponentsByCondition(children, ['orientationExists']);
+    left: leftAxis } = axes;
 
-  const axes = findAxisComponentsByCondition(children, ['orientationExists']);
+  // Get the formatted tick values for each axis (using the domain as the tick values).
+  const {
+    top: topAxisTickValues,
+    right: rightAxisTickValues,
+    bottom: bottomAxisTickValues,
+    left: leftAxisTickValues } = getFormattedTickValues(axes, xDomain, yDomain);
 
-  // See comment above getFormattedTickValues definition.
-  const formattedTickValues = getFormattedTickValues(axes); // Currently unused
-  // Ideally, the formattedTickValues would replace the references to xTickValues & yTickValues below
-  // as these are simply taken from the domain of each axis.
+  // Determine if auto-formatting is possible based on the d3 scale type.
+  const canAutoFormatXAxis = canAutoFormatAxes(xScaleType);
+  const canAutoFormatYAxis = canAutoFormatAxes(yScaleType);
 
-  const tickFormat = get(bottomAxis, ['props', 'tickFormat']);
-  const formattedTicks = tickFormat && xTickValues.map(tick => tickFormat(tick));
-
-  const tickLabelFontSize = xTickValues.length
-    ? style && style.fontSize || DEFAULT_AXIS_PROPERTIES.tickLabelFontSize
-    : 0;
-  const tickFontFamily = xTickValues.length
-    ? style && style.fontFamily || DEFAULT_AXIS_PROPERTIES.tickFontFamily
-    : 0;
+  // Determine axis style properties.
+  const tickLabelFontSize = get(style, 'fontSize', DEFAULT_AXIS_PROPERTIES.tickLabelFontSize);
+  const tickFontFamily = get(style, 'fontFamily', DEFAULT_AXIS_PROPERTIES.tickLabelFontFamily);
   const axisProperties = { ...DEFAULT_AXIS_PROPERTIES, tickLabelFontSize, tickFontFamily };
-  const widestXTickLabelLength = lengthOfLongestTickLabel(
-    xTickValues,
-    DEFAULT_AXIS_PROPERTIES
-  );
-  const numTicksThatFit = calcNumTicksThatFit(widestXTickLabelLength, width);
+
+  // Determine if x-axis tick labels require rotation (not needed for y-axis since overlap is not a concern)
+  // If both top & bottom axes exist and one requires rotation, then rotate both.
+  const widestTopAxisTickLabelLength = topAxis
+    ? calcLengthOfLongestTickLabel(
+      topAxisTickValues,
+      DEFAULT_AXIS_PROPERTIES
+    )
+    : 0;
+  const widestBottomAxisTickLabelLength = bottomAxis
+    ? calcLengthOfLongestTickLabel(
+      bottomAxisTickValues,
+      DEFAULT_AXIS_PROPERTIES
+    )
+    : 0;
+  const numTicksThatFitOnTopAxis = calcNumTicksThatFit(widestTopAxisTickLabelLength, width);
+  const numTicksThatFitOnBottomAxis = calcNumTicksThatFit(widestBottomAxisTickLabelLength, width);
 
   // TOP/BOTTOM: If ticks overlap, calculate the rotated length (i.e., at -45 deg.), but also subtract tick height.
   // RIGHT/LEFT: Ticks cannot overlap. Simply calculate the length of the string (i.e., at 90 deg.)
-  // TODO: Need to figure out how to get the actual formatted tick labels (d3 & React are making this difficult)
   let autoRotate;
   let padding;
-  if (numTicksThatFit < xTickValues.length) {
+  if (numTicksThatFitOnTopAxis < topAxisTickValues.length || numTicksThatFitOnBottomAxis < bottomAxisTickValues.length) {
     autoRotate = true;
     padding = {
-      top: topAxis ? sizeOfLongestRotatedString(xTickValues, tickLabelFontSize, -45) - tickLabelFontSize : 0,
-      right: rightAxis ? lengthOfLongestTickLabel(yTickValues, axisProperties) : 0,
-      bottom: bottomAxis ? sizeOfLongestRotatedString(formattedTicks, tickLabelFontSize, -45) - tickLabelFontSize : 0,
-      left: leftAxis ? lengthOfLongestTickLabel(yTickValues, axisProperties) : 0
+      top: (topAxis && canAutoFormatXAxis)
+        ? sizeOfLongestRotatedString(topAxisTickValues, tickLabelFontSize, TICK_LABEL_ROTATION_ANGLE) - tickLabelFontSize
+        : 0,
+      right: (rightAxis && canAutoFormatYAxis)
+        ? calcLengthOfLongestTickLabel(rightAxisTickValues, axisProperties)
+        : 0,
+      bottom: (bottomAxis && canAutoFormatXAxis)
+        ? sizeOfLongestRotatedString(bottomAxisTickValues, tickLabelFontSize, TICK_LABEL_ROTATION_ANGLE) - tickLabelFontSize
+        : 0,
+      left: (leftAxis && canAutoFormatYAxis)
+        ? calcLengthOfLongestTickLabel(leftAxisTickValues, axisProperties)
+        : 0,
     };
   } else {
     autoRotate = false;
     padding = {
-      top: topAxis ? tickLabelFontSize : 0,
-      right: rightAxis ? lengthOfLongestTickLabel(yTickValues, axisProperties) : 0,
-      bottom: bottomAxis ? tickLabelFontSize : 0,
-      left: leftAxis ? lengthOfLongestTickLabel(yTickValues, axisProperties) : 0,
+      top: (topAxis && canAutoFormatXAxis)
+        ? tickLabelFontSize
+        : 0,
+      right: (rightAxis && canAutoFormatYAxis)
+        ? calcLengthOfLongestTickLabel(rightAxisTickValues, axisProperties)
+        : 0,
+      bottom: (bottomAxis && canAutoFormatXAxis)
+        ? tickLabelFontSize
+        : 0,
+      left: (leftAxis && canAutoFormatYAxis)
+        ? calcLengthOfLongestTickLabel(leftAxisTickValues, axisProperties)
+        : 0,
     };
   }
   return [padding, autoRotate];
@@ -344,16 +385,17 @@ export function mergePaddingsBy(paddings, customizer) {
  * @param {Object} - Variables on which padding is dependent.
  * @returns {[Object, Boolean]} Resultant padding and boolean indicating whether tick rotation is necessary.
  */
-export function calcPadding({ children, xDomain, yDomain, width, height, style, initialPadding }) {
+export function calcPadding({ children, xDomain, xScaleType, yDomain, yScaleType, width, style, initialPadding }) {
   const paddingFromLabel = calcPaddingFromLabel(children);
-  const [paddingFromTicks, autoRotateTickLabels] = calcPaddingFromTicks(
+  const [paddingFromTicks, autoRotateTickLabels] = calcPaddingFromTicks({
     xDomain,
+    xScaleType,
     yDomain,
+    yScaleType,
     width,
-    height,
     style,
-    children
-  );
+    children,
+  });
   // Add padding needed for labels to padding needed for ticks.
   const summedPaddings = mergePaddingsBy(
     [paddingFromLabel, paddingFromTicks],
