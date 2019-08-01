@@ -198,6 +198,7 @@ export default class BarChart extends React.PureComponent {
 
   renderChart() {
     const {
+      autoFormatAxes,
       categories,
       orientation,
       axisLabels,
@@ -218,7 +219,7 @@ export default class BarChart extends React.PureComponent {
     const padding = { ...defaultPadding, ...customPadding };
     return (
       <AxisChart
-        autoFormatAxes
+        autoFormatAxes={autoFormatAxes}
         height={chartHeight}
         width={chartWidth}
         padding={padding}
@@ -297,6 +298,13 @@ BarChart.propTypes = {
    * See: https://github.com/d3/d3-scale/blob/master/README.md#band_align
    */
   align: PropTypes.number,
+
+  /**
+   * When true, auto-calculates chart padding needed for tick/axes labels and whether tick labels need rotation.
+   * (Currently only compatible w/ the following d-3 scale types: point, ordinal, and band. Auto-formatting will not
+   * be applied for other scale types)
+   */
+  autoFormatAxes: PropTypes.bool,
 
   /**
    * A convenience for setting the `bandInnerPadding` and `bandOuterPadding` to the same value.
@@ -588,6 +596,7 @@ BarChart.propTypes = {
 };
 
 BarChart.defaultProps = {
+  autoFormatAxes: true,
   orientation: 'vertical',
   displayLegend: false,
   type: 'normal',
