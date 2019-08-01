@@ -176,7 +176,8 @@ export default class AxisChart extends React.Component {
 
 AxisChart.propTypes = {
   /**
-   *  auto-calculate chart padding needed for tick/axes labels and whether tick labels need rotation
+   * auto-calculate chart padding needed for tick/axes labels and whether tick labels need rotation.
+   * (will only be applied to axes whose scale type is categorical in nature (i.e., 'point', 'ordinal', 'band'))
    */
   autoFormatAxes: PropTypes.bool,
 
