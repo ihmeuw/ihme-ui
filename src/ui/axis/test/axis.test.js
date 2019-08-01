@@ -24,14 +24,18 @@ describe('<Axis />', () => {
       const tickLabelFontFamily = 'Verdana';
 
       it('returns all ticks given enough width', () => {
-        expect(filterTickValuesByWidth(tickValues, { width: 4000, tickLabelFontSize, tickLabelFontFamily }))
+        expect(filterTickValuesByWidth(tickValues,
+          { width: 4000, tickLabelFontSize, tickLabelFontFamily }
+        ))
           .to.be.an('array')
           .of.length(tickValues.length)
           .and.to.deep.equal(tickValues);
       });
 
       it('returns a filtered list of ticks given not enough width', () => {
-        expect(filterTickValuesByWidth(tickValues, { width: 10, tickLabelFontSize, tickLabelFontFamily }))
+        expect(filterTickValuesByWidth(tickValues,
+          { width: 10, tickLabelFontSize, tickLabelFontFamily }
+        ))
           .to.be.an('array')
           .of.length.lessThan(tickValues.length);
       });
