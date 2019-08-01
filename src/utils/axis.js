@@ -119,7 +119,12 @@ export function calcLabelPosition(orientation, translate, padding, center) {
         rotate: 90,
       };
     default:
-      throw new Error('Invalid axis orientation.');
+      return {
+        x: translate.x,
+        y: translate.y,
+        dX: 0,
+        dY: 0,
+      };
   }
 }
 
@@ -164,7 +169,7 @@ function calcNumTicksThatFit(widestTickLabelLength, availableWidth) {
  */
 export function filterTickValuesByWidth(ticks, axisProperties) {
   const widestTickLabelLength = calcLengthOfLongestTickLabel(ticks, axisProperties);
-  const numTicksThatFit = calcNumTicksThatFit(widestTickLabelLength, axisProperties);
+  const numTicksThatFit = calcNumTicksThatFit(widestTickLabelLength, get(axisProperties, 'width'));
   return takeSkipping(ticks, numTicksThatFit);
 }
 
@@ -176,8 +181,8 @@ export function filterTickValuesByWidth(ticks, axisProperties) {
  * @param {Number} styles.tickFontSize - Supplied tick font size.
  * @returns {Array} Tick values evenly filtered based on available height.
  */
-export function filterTickValuesByHeight(ticks, { height, tickFontSize }) {
-  const numTicksThatFit = Math.floor(height / tickFontSize);
+export function filterTickValuesByHeight(ticks, { height, tickLabelFontSize }) {
+  const numTicksThatFit = Math.floor(height / tickLabelFontSize);
   return takeSkipping(ticks, numTicksThatFit);
 }
 
