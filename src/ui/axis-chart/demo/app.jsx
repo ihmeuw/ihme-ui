@@ -99,29 +99,28 @@ class App extends React.Component {
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         {/* <pre><code>
               <AxisChart
-                width={800}
-                height={600}
-                padding={{
-                  top: 20,
-                  bottom: 40,
-                  left: 35,
-                  right: 20
-                }}
+                width={this.state.width || dims.width}
+                height={this.state.height || dims.height}
                 xDomain={xDomain}
-                xScaleType="point"
+                xScaleType={'point'}
                 yDomain={yDomain}
                 yScaleType="linear"
+                className={chartClassName}
               >
-                <XAxis label="Year" />
+                <XAxis style={axisStyle} label="Year" />
                 <XAxis style={axisStyle} label="Year" orientation="top"} />
-                <YAxis label="Probability" />
+                <YAxis style={axisStyle} label="Probability" />
                 <MultiLine
+                  areaStyle={{ strokeWidth: '1px', fillOpacity: '0.5' }}
                   data={lineData}
-                  keyField={'location'}
-                  dataField={'values'}
+                  fieldAccessors={{
+                    data: 'values',
+                    key: 'location',
+                  }}
                   colorScale={colorScale}
                   showUncertainty
                   dataAccessors={dataAccessors}
+                  onClick={()=>{console.log('click')}}
                 />
               </AxisChart>
 
@@ -159,8 +158,8 @@ class App extends React.Component {
               dataAccessors={dataAccessors}
               onClick={()=>{console.log('click')}}
             />
-            <XAxis style={axisStyle} label="Year" tickFormat={format("")	} />
-            <XAxis style={axisStyle} label="Year" orientation="top" tickFormat={format("")	} />
+            <XAxis style={axisStyle} label="Year" tickFormat={format("")} />
+            <XAxis style={axisStyle} label="Year" orientation="top" tickFormat={format("")} />
             <YAxis style={axisStyle} label="Probability" />
           </AxisChart>
         </div>
