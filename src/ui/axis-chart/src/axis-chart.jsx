@@ -10,7 +10,7 @@ import {
   getScale,
   getScaleTypes,
   propsChanged,
-  shouldPureComponentUpdate
+  shouldPureComponentUpdate,
 } from '../../../utils';
 
 const SCALE_TYPES = getScaleTypes();

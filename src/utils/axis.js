@@ -8,7 +8,6 @@ import {
   every,
   find,
   get,
-  invoke,
   isEmpty,
   map,
   mapValues,
@@ -36,13 +35,15 @@ export const DEFAULT_AXIS_PROPERTIES = {
   width: 230,
 };
 
-export const AXIS_ORIENTATION_OPTIONS = ['top', 'right', 'bottom', 'left'];
 export const ALLOWED_SCALE_TYPES_FOR_AUTOFORMAT = ['point', 'ordinal', 'band'];
+
+const AXIS_ORIENTATION_OPTIONS = ['top', 'right', 'bottom', 'left'];
 
 const ADDITIONAL_LABEL_PADDING = '20px';
 
+const TICK_LABEL_ROTATION_ANGLE = -45;
+
 /**
- * Calculate translate based on axis orientation.
  * Determine if auto-formatting can be applied based on d3 scale type(s).
  * Returns true if at least one scale passed in can be auto-formatted.
  * @param {...string} scaleTypes - d3 scale type(s)
@@ -52,6 +53,8 @@ export function canAutoFormatAxes(...scaleTypes) {
   return scaleTypes.some(scaleType => ALLOWED_SCALE_TYPES_FOR_AUTOFORMAT.includes(scaleType));
 }
 
+/**
+ * Calculate translation based on axis orientation.
  * @param {string} orientation - Orientation of the axis. One of ['top', 'bottom', 'left', 'right']
  * @param {number} width - Width of axis container.
  * @param {number} height - Height of axis container.
@@ -129,7 +132,7 @@ export function calcLabelPosition(orientation, translate, padding, center) {
  * @param {Function} styles.tickFormat - Supplied callback for tick string formatting.
  * @returns {Number} Number of ticks that fit (without overlap) into available width.
  */
-function lengthOfLongestTickLabel(ticks, {
+function calcLengthOfLongestTickLabel(ticks, {
   tickLabelFontSize,
   tickLabelFontFamily,
   tickLabelFormat,
@@ -160,7 +163,7 @@ function calcNumTicksThatFit(widestTickLabelLength, availableWidth) {
  * @returns {Array} Tick values evenly filtered based on available width.
  */
 export function filterTickValuesByWidth(ticks, axisProperties) {
-  const widestTickLabelLength = lengthOfLongestTickLabel(ticks, axisProperties);
+  const widestTickLabelLength = calcLengthOfLongestTickLabel(ticks, axisProperties);
   const numTicksThatFit = calcNumTicksThatFit(widestTickLabelLength, axisProperties);
   return takeSkipping(ticks, numTicksThatFit);
 }
@@ -179,10 +182,10 @@ export function filterTickValuesByHeight(ticks, { height, tickFontSize }) {
 }
 
 /**
- * Given an array of React children components, find the axis components that contain labels for the specified axis orientation.
+ * Given an array of React children components, find the axis components that meet the specified conditions.
  * @param {Array} children - Opaque data structure as a flat array with keys assigned to each child.
- * @param {String} axisOrientation - Position of axis line (one of: "top", bottom").
- * @returns {Object|Boolean} React node as object. False if not found.
+ * @param {String} conditions - String that maps to valid condition for which to verify.
+ * @returns {Object} React axis components keyed by their respective orientation (i.e., top, right, etc.)
  */
 function findAxisComponentsByCondition(children, conditions) {
   return reduce(
@@ -235,7 +238,7 @@ function getFormattedTickValues(axes, xDomain, yDomain) {
 }
 
 /**
- * Calculate the amount of total padding needed if tick values require rotation to fit into the available width.
+ * Calculate the amount of total padding needed and if tick values require rotation to fit into the available width.
  * @param {Object} - Variables on which padding is dependent.
  * @returns {[Object, Boolean]} Resultant padding and boolean indicating whether tick rotation is necessary.
  */
@@ -334,7 +337,7 @@ function calcPaddingFromTicks({
  * @param {Array} orientedAxisWithLabel - Opaque data structure as a flat array with keys assigned to each child.
  * @returns {{top: Number, right: Number, bottom: Number, left: Number}} Padding offset from label.
  */
-function labelPaddingByOrientation(orientedAxisWithLabel) {
+function getLabelPadding(orientedAxisWithLabel) {
   return parseFloat((get(
     orientedAxisWithLabel,
     ['props', 'style', 'fontSize'],
@@ -348,7 +351,7 @@ function labelPaddingByOrientation(orientedAxisWithLabel) {
  * @param {Array} children - Opaque data structure as a flat array with keys assigned to each child.
  * @returns {{top: Number, right: Number, bottom: Number, left: Number}} Padding offsets for each label.
  */
-export function calcPaddingFromLabel(children) {
+function calcPaddingFromLabel(children) {
   const {
     top: topAxis,
     right: rightAxis,
@@ -357,10 +360,10 @@ export function calcPaddingFromLabel(children) {
   } = findAxisComponentsByCondition(children, ['orientationExists', 'labelExists']);
 
   return {
-    top: (topAxis ? labelPaddingByOrientation(topAxis) : 0),
-    right: (rightAxis ? labelPaddingByOrientation(rightAxis) : 0),
-    bottom: (bottomAxis ? labelPaddingByOrientation(bottomAxis) : 0),
-    left: (leftAxis ? labelPaddingByOrientation(leftAxis) : 0),
+    top: (topAxis ? getLabelPadding(topAxis) : 0),
+    right: (rightAxis ? getLabelPadding(rightAxis) : 0),
+    bottom: (bottomAxis ? getLabelPadding(bottomAxis) : 0),
+    left: (leftAxis ? getLabelPadding(leftAxis) : 0),
   };
 }
 
@@ -370,7 +373,7 @@ export function calcPaddingFromLabel(children) {
  * @param {Function} customizer - Function by which to customize assigned values.
  * @returns {{top: Number, right: Number, bottom: Number, left: Number}} Resultant padding.
  */
-export function mergePaddingsBy(paddings, customizer) {
+function mergePaddingsBy(paddings, customizer) {
   return reduce(
     paddings,
     (resultantPadding, currentPadding) => mergeWith(
