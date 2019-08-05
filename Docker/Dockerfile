@@ -1,8 +1,5 @@
 # BUILDER STAGE
-FROM node:10 as builder
-
-# ARG AUDIENCE=public
-# ARG BUILD_TYPE=prod
+FROM node:10
 
 COPY src /src
 COPY package.json  ./

@@ -10,7 +10,7 @@ pipeline {
     agent any
     environment {
         PROJECT = 'ihme-ui'
-        IMAGE_TAG_NAME = "registry-app-p01.ihme.washington.edu/viz/${PROJECT}:${BUILD_NUMBER}"
+        IMAGE_TAG_NAME = "registry-app-p01.ihme.washington.edu/viz/${env.PROJECT}:${env.BUILD_NUMBER}"
         USER      = 'svcvizteam'
         REGISTRY  = 'registry-app-p01.ihme.washington.edu'
     }
@@ -39,10 +39,11 @@ pipeline {
         stage('Build and push image') {
             steps {
                 script {
+                    sh "env"
                     docker.withRegistry("https://${env.REGISTRY}", env.USER ) {
                         docker.build(
-                                "${IMAGE_TAG_NAME}",
-                                "--build-arg BUILD_TYPE=demo -f Docker/Dockerfile ."
+                                "${env.IMAGE_TAG_NAME}",
+                                "-f Docker/Dockerfile ."
                         ).push()
                     }
                 }
@@ -59,18 +60,18 @@ pipeline {
             environment {
                 AUDIENCE = "internal"
                 RANCHER_URL = "${env["RANCHER_URL_${params.RANCHER_ENV}"]}"
-                RANCHER_PROJECT_NAME = "${PROJECT}-${params.AUDIENCE}"
+                RANCHER_PROJECT_NAME = "${env.PROJECT}-${params.AUDIENCE}"
                 RANCHER_CREDS = credentials("RANCHER_${params.RANCHER_ENV}")
             }
             steps {
                 sh """rancher \
-                      --url ${RANCHER_URL} \
-                      --access-key ${RANCHER_CREDS_USR} \
-                      --secret-key ${RANCHER_CREDS_PSW} \
+                      --url ${env.RANCHER_URL} \
+                      --access-key ${env.RANCHER_CREDS_USR} \
+                      --secret-key ${env.RANCHER_CREDS_PSW} \
                       up \
-                      --stack ${RANCHER_PROJECT_NAME} \
-                      --file ${WORKSPACE}/Docker/docker-compose.yml \
-                      --rancher-file ${WORKSPACE}/Docker/rancher-compose.yml \
+                      --stack ${env.RANCHER_PROJECT_NAME} \
+                      --file ${env.WORKSPACE}/Docker/docker-compose.yml \
+                      --rancher-file ${env.WORKSPACE}/Docker/rancher-compose.yml \
                       -d -u -c -p
                 """
             }
