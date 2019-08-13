@@ -218,7 +218,8 @@ function findAxisComponentsByCondition(children, conditions) {
  * @param {Object} axes - React axis components keyed by their respective orientation (i.e., top, right, etc.)
  * @param {Array} xDomain - domain of the x-axis data
  * @param {Array} yDomain - domain of the y-axis data
- * @returns {Object|null} Formatted tick values for each axis orientation, or null if axis doesn't exist.
+ * @returns {Object} Formatted tick values for each axis orientation,
+ * or null for respective orientation if axis does not exist.
  */
 function getFormattedTickValues(axes, xDomain, yDomain) {
   return mapValues(
@@ -301,7 +302,9 @@ function calcPaddingFromTicks({
   // RIGHT/LEFT: Ticks cannot overlap. Simply calculate the length of the string (i.e., at 90 deg.)
   let autoRotate;
   let padding;
-  if (numTicksThatFitOnTopAxis < topAxisTickValues.length || numTicksThatFitOnBottomAxis < bottomAxisTickValues.length) {
+  if (numTicksThatFitOnTopAxis < topAxisTickValues.length
+    || numTicksThatFitOnBottomAxis < bottomAxisTickValues.length
+  ) {
     autoRotate = true;
     padding = {
       top: (topAxis && canAutoFormatXAxis)
@@ -393,9 +396,9 @@ function mergePaddingsBy(paddings, customizer) {
  * @param {Object} - Variables on which padding is dependent.
  * @returns {[Object, Boolean]} Resultant padding and boolean indicating whether tick rotation is necessary.
  */
-export function calcPadding({ children, xDomain, xScaleType, yDomain, yScaleType, width, style, initialPadding }) {
-  const paddingFromLabel = calcPaddingFromLabel(children);
-  const [paddingFromTicks, autoRotateTickLabels] = calcPaddingFromTicks({
+export function calcPadding({ children, xDomain, xScaleType, yDomain, yScaleType, width, style, initialPadding: initial }) {
+  const labelPadding = calcPaddingFromLabel(children);
+  const [tickPadding, autoRotateTickLabels] = calcPaddingFromTicks({
     xDomain,
     xScaleType,
     yDomain,
@@ -405,14 +408,14 @@ export function calcPadding({ children, xDomain, xScaleType, yDomain, yScaleType
     children,
   });
   // Add padding needed for labels to padding needed for ticks.
-  const summedPaddings = mergePaddingsBy(
-    [paddingFromLabel, paddingFromTicks],
+  const summed = mergePaddingsBy(
+    [labelPadding, tickPadding],
     (originalProperty = 0, revisedProperty = 0) => originalProperty + revisedProperty
   );
   // Take largest padding property value from summed paddings (above) and user-specified padding
   // (i.e., still allow the ability to pad the chart more than what is auto-calculated).
   const mergedPaddings = mergePaddingsBy(
-    [initialPadding, summedPaddings],
+    [initial, summed],
     (originalProperty = 0, revisedProperty = 0) => Math.max(originalProperty, revisedProperty)
   );
 
