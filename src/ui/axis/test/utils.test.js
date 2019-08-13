@@ -29,10 +29,10 @@ describe('<Axis /> utils', () => {
       });
     });
 
-    it('returns the current translate for unsupported orientation', () => {
+    it('throws error for unsupported orientation', () => {
       const orientation = undefined;
-      expect(calcLabelPosition(orientation, props.translate, props.padding, center))
-        .to.deep.equal(expectedResults[orientation]);
+      expect(() => calcLabelPosition(orientation, props.translate, props.padding, center))
+        .to.throw('Invalid axis orientation. Must be one of "top", "right", "bottom", or "left"');
     });
   });
 

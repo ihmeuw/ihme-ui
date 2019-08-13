@@ -119,12 +119,8 @@ export function calcLabelPosition(orientation, translate, padding, center) {
         rotate: 90,
       };
     default:
-      return {
-        x: translate.x,
-        y: translate.y,
-        dX: 0,
-        dY: 0,
-      };
+      // eslint-disable-next-line max-len
+      throw new Error('Invalid axis orientation. Must be one of "top", "right", "bottom", or "left"');
   }
 }
 
