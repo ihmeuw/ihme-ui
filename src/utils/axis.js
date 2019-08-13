@@ -255,7 +255,7 @@ function calcPaddingFromTicks({
   yScaleType,
   width,
   style,
-  children
+  children,
 }) {
   // Find each oriented axis component, if any, from React children.
   const axes = findAxisComponentsByCondition(children, ['orientationExists']);

@@ -67,7 +67,6 @@ export default class AxisChart extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const state = {};
     const {
       autoFormatAxes,
       children,
@@ -80,13 +79,19 @@ export default class AxisChart extends React.Component {
       style,
       padding,
     } = nextProps;
+
+    let newAutoRotateTickLabels;
+    let newChartDimensions;
+    let newPadding;
+    let newScales;
+
     if (propsChanged(
       this.props,
       nextProps,
       // eslint-disable-next-line max-len
       ['autoFormatAxes', 'xDomain', 'xScaleType', 'yDomain', 'yScaleType', 'height', 'width', 'padding']
     )) {
-      [state.padding, state.autoRotateTickLabels] =
+      [newPadding, newAutoRotateTickLabels] =
       (autoFormatAxes && canAutoFormatAxes(xScaleType, yScaleType))
         ? calcPadding({
         // eslint-disable-next-line react/prop-types
@@ -101,20 +106,20 @@ export default class AxisChart extends React.Component {
           initialPadding: padding
         })
         : [padding, false];
-      state.chartDimensions = calcChartDimensions(
+      newChartDimensions = calcChartDimensions(
         width,
         height,
-        state.padding
+        newPadding
       );
     }
 
-    const xChanged = state.chartDimensions ||
+    const xChanged = newChartDimensions ||
                      propsChanged(this.props, nextProps, ['xScaleType', 'xDomain']);
-    const yChanged = state.chartDimensions ||
+    const yChanged = newChartDimensions ||
                      propsChanged(this.props, nextProps, ['yScaleType', 'yDomain']);
     if (xChanged || yChanged) {
-      const chartDimensions = state.chartDimensions || this.state.chartDimensions;
-      state.scales = {
+      const chartDimensions = newChartDimensions || this.state.chartDimensions;
+      newScales = {
         x: xChanged
           ? getScale(nextProps.xScaleType)().domain(xDomain)
             .range([0, chartDimensions.width])
@@ -126,7 +131,12 @@ export default class AxisChart extends React.Component {
       };
     }
 
-    this.setState(state);
+    this.setState({
+      autoRotateTickLabels: newAutoRotateTickLabels,
+      chartDimensions: newChartDimensions,
+      padding: newPadding,
+      scales: newScales,
+    });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
