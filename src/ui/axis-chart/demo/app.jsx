@@ -78,11 +78,11 @@ class App extends React.Component {
       resizeChecked: false,
       autoFormatChecked: false,
     };
-    this.onButtonClick = this.onButtonClick.bind(this);
-    this.onCheck = this.onCheck.bind(this);
+    this.onResizeButtonClick = this.onResizeButtonClick.bind(this);
+    this.onAutoFormatToggle = this.onAutoFormatToggle.bind(this);
   }
 
-  onButtonClick() {
+  onResizeButtonClick() {
     this.setState( ({ resizeChecked }) => ({
       height: resizeChecked ? dims.height : 300,
       width: resizeChecked ? dims.width : 400,
@@ -90,7 +90,7 @@ class App extends React.Component {
     }));
   }
 
-  onCheck() {
+  onAutoFormatToggle() {
     this.setState(({ autoFormatChecked }) => ({ autoFormatChecked: !autoFormatChecked }));
   }
 
@@ -99,6 +99,7 @@ class App extends React.Component {
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         {/* <pre><code>
               <AxisChart
+                autoFormatAxes={this.state.autoFormatChecked}
                 width={this.state.width || dims.width}
                 height={this.state.height || dims.height}
                 xDomain={xDomain}
@@ -107,9 +108,6 @@ class App extends React.Component {
                 yScaleType="linear"
                 className={chartClassName}
               >
-                <XAxis style={axisStyle} label="Year" />
-                <XAxis style={axisStyle} label="Year" orientation="top"} />
-                <YAxis style={axisStyle} label="Probability" />
                 <MultiLine
                   areaStyle={{ strokeWidth: '1px', fillOpacity: '0.5' }}
                   data={lineData}
@@ -122,17 +120,19 @@ class App extends React.Component {
                   dataAccessors={dataAccessors}
                   onClick={()=>{console.log('click')}}
                 />
+                <XAxis style={axisStyle} label="Year" tickFormat={format("")} />
+                <XAxis style={axisStyle} label="Year" orientation="top" tickFormat={format("")} />
+                <YAxis style={axisStyle} label="Probability" />
               </AxisChart>
-
             </code></pre> */}
         <div style={{ textAlign: 'center', marginBottom: '20px' }}>
           <Button
             text="Resize chart"
-            onClick={this.onButtonClick}
+            onClick={this.onResizeButtonClick}
           />
           <div>
             <label htmlFor="checkbox">Auto-format axes? </label>
-            <input id= "checkbox" type="checkbox" onClick={this.onCheck} />
+            <input id= "checkbox" type="checkbox" onClick={this.onAutoFormatToggle} />
           </div>
         </div>
         <div style={{ height: '900px', width: '900px', textAlign: 'center', marginBottom: '20px' }}>
