@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { uniqueId } from 'lodash';
+import { uniqueId, isEqual } from 'lodash';
 import classNames from 'classnames';
 import {
   calcPadding,
@@ -80,62 +80,60 @@ export default class AxisChart extends React.Component {
       padding,
     } = nextProps;
 
-    let newAutoRotateTickLabels;
-    let newChartDimensions;
-    let newPadding;
-    let newScales;
-
-    if (propsChanged(
+    if (!propsChanged(
       this.props,
       nextProps,
       // eslint-disable-next-line max-len
       ['autoFormatAxes', 'xDomain', 'xScaleType', 'yDomain', 'yScaleType', 'height', 'width', 'padding']
     )) {
-      [newPadding, newAutoRotateTickLabels] =
-      (autoFormatAxes && canAutoFormatAxes(xScaleType, yScaleType))
-        ? calcPadding({
+      return;
+    }
+
+    const [newPadding, autoRotateTickLabels] = (
+      autoFormatAxes
+      && canAutoFormatAxes(xScaleType, yScaleType)
+    )
+      ? calcPadding({
         // eslint-disable-next-line react/prop-types
-          children: React.Children.toArray(children),
-          xDomain,
-          xScaleType,
-          yDomain,
-          yScaleType,
-          width,
-          height,
-          style,
-          initialPadding: padding
-        })
-        : [padding, false];
-      newChartDimensions = calcChartDimensions(
+        children: React.Children.toArray(children),
+        xDomain,
+        xScaleType,
+        yDomain,
+        yScaleType,
         width,
         height,
-        newPadding
-      );
-    }
+        style,
+        initialPadding: padding
+      })
+      : [padding, false];
 
-    const xChanged = newChartDimensions ||
-                     propsChanged(this.props, nextProps, ['xScaleType', 'xDomain']);
-    const yChanged = newChartDimensions ||
-                     propsChanged(this.props, nextProps, ['yScaleType', 'yDomain']);
-    if (xChanged || yChanged) {
-      const chartDimensions = newChartDimensions || this.state.chartDimensions;
-      newScales = {
-        x: xChanged
-          ? getScale(nextProps.xScaleType)().domain(xDomain)
-            .range([0, chartDimensions.width])
-          : this.state.scales.x,
-        y: yChanged
-          ? getScale(nextProps.yScaleType)().domain(yDomain)
-            .range([chartDimensions.height, 0])
-          : this.state.scales.y,
-      };
-    }
+    const chartDimensions = calcChartDimensions(width, height, newPadding);
+    const chartDimensionsChanged = !isEqual(chartDimensions, { width, height });
+    const xScaleChanged = chartDimensionsChanged
+      || propsChanged(this.props, nextProps, ['xScaleType', 'xDomain']);
+    const yScaleChanged = chartDimensionsChanged
+      || propsChanged(this.props, nextProps, ['yScaleType', 'yDomain']);
 
     this.setState({
-      autoRotateTickLabels: newAutoRotateTickLabels,
-      chartDimensions: newChartDimensions,
+      autoRotateTickLabels,
+      chartDimensions,
       padding: newPadding,
-      scales: newScales,
+      scales: {
+        x: (
+          xScaleChanged
+            ? getScale(nextProps.xScaleType)()
+              .domain(xDomain)
+              .range([0, chartDimensions.width])
+            : this.state.scales.x
+        ),
+        y: (
+          yScaleChanged
+            ? getScale(nextProps.yScaleType)()
+              .domain(yDomain)
+              .range([chartDimensions.height, 0])
+            : this.state.scales.y
+        ),
+      },
     });
   }
 
