@@ -94,6 +94,7 @@ export function calcLabelPosition(orientation, translate, padding, center) {
         y: translate.y - padding.top,
         dX: center,
         dY: '1em',
+        rotate: 0,
       };
     case 'bottom':
       return {
@@ -101,6 +102,7 @@ export function calcLabelPosition(orientation, translate, padding, center) {
         y: translate.y + padding.bottom,
         dX: center,
         dY: '-0.2em',
+        rotate: 0,
       };
     case 'left':
       return {
