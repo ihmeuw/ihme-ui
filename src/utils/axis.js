@@ -392,9 +392,9 @@ function mergePaddingsBy(paddings, customizer) {
  * @param {Object} - Variables on which padding is dependent.
  * @returns {[Object, Boolean]} Resultant padding and boolean indicating whether tick rotation is necessary.
  */
-export function calcPadding({ children, xDomain, xScaleType, yDomain, yScaleType, width, style, initialPadding: initial }) {
-  const labelPadding = calcPaddingFromLabel(children);
-  const [tickPadding, autoRotateTickLabels] = calcPaddingFromTicks({
+export function calcPadding({ children, xDomain, xScaleType, yDomain, yScaleType, width, style, initialPadding }) {
+  const paddingFromLabel = calcPaddingFromLabel(children);
+  const [paddingFromTicks, autoRotateTickLabels] = calcPaddingFromTicks({
     xDomain,
     xScaleType,
     yDomain,
@@ -404,15 +404,15 @@ export function calcPadding({ children, xDomain, xScaleType, yDomain, yScaleType
     children,
   });
   // Add padding needed for labels to padding needed for ticks.
-  const summed = mergePaddingsBy(
-    [labelPadding, tickPadding],
-    (originalProperty = 0, revisedProperty = 0) => originalProperty + revisedProperty
+  const summedPadding = mergePaddingsBy(
+    [paddingFromLabel, paddingFromTicks],
+    (labelPadding = 0, tickPadding = 0) => labelPadding + tickPadding,
   );
   // Take largest padding property value from summed paddings (above) and user-specified padding
   // (i.e., still allow the ability to pad the chart more than what is auto-calculated).
   const mergedPaddings = mergePaddingsBy(
-    [initial, summed],
-    (originalProperty = 0, revisedProperty = 0) => Math.max(originalProperty, revisedProperty)
+    [initialPadding, summedPadding],
+    (initial = 0, summed = 0) => Math.max(initial, summed),
   );
 
   return [mergedPaddings, autoRotateTickLabels];
