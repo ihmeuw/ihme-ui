@@ -141,7 +141,8 @@ function calcLengthOfLongestTickLabel(ticks, {
   tickLabelFormat,
 }) {
   /* eslint-disable max-len */
-  return reduce(map(ticks, tickLabelFormat), (widest, tick) =>
+  const formattedTicks = map(ticks, tickLabelFormat);
+  return reduce(formattedTicks, (widest, tick) =>
     Math.max(
       widest,
       getRenderedStringWidth(String(tick), `${tickLabelFontSize}px ${tickLabelFontFamily}`),
