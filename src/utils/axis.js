@@ -285,13 +285,13 @@ function calcPaddingFromTicks({
   const widestTopAxisTickLabelLength = topAxis
     ? calcLengthOfLongestTickLabel(
       topAxisTickValues,
-      DEFAULT_AXIS_PROPERTIES
+      axisProperties
     )
     : 0;
   const widestBottomAxisTickLabelLength = bottomAxis
     ? calcLengthOfLongestTickLabel(
       bottomAxisTickValues,
-      DEFAULT_AXIS_PROPERTIES
+      axisProperties
     )
     : 0;
   const numTicksThatFitOnTopAxis = calcNumTicksThatFit(widestTopAxisTickLabelLength, width);
