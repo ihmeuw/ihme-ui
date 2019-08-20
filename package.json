@@ -95,7 +95,7 @@
     "collections": "~5.1.5",
     "d3": "^4.13.0",
     "interact.js": "~1.2",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.15",
     "prop-types": "~15.6",
     "react-move": "^2.7.0",
     "react-virtualized": "^9.18.5",
