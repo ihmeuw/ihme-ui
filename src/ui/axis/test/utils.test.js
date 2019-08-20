@@ -19,10 +19,9 @@ describe('<Axis /> utils', () => {
       bottom: { x: 50, y: 100, dX: 25, dY: '-0.2em', rotate: 0 },
       left: { x: 50, y: 0, dX: -25, dY: '1em', rotate: 270 },
       right: { x: 50, y: -100, dX: 25, dY: '1em', rotate: 90 },
-      undefined: { x: 50, y: 50, dX: 0, dY: 0 },
     };
 
-    forEach(['top', 'bottom', 'left', 'right'], (orientation) => {
+    forEach(Object.keys(expectedResults), (orientation) => {
       it(`calculates label position for \`${orientation}\` orientation`, () => {
         expect(calcLabelPosition(orientation, props.translate, props.padding, center))
           .to.deep.equal(expectedResults[orientation]);
