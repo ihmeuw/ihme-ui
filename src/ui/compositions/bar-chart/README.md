@@ -6,6 +6,7 @@
 
 Property | Required | Type(s) | Default | Description
 :---    |:---      |:---     |:---      |:---
+`autoFormatAxes`|  | bool | true | auto-calculate chart padding needed for tick/axes labels and whether tick labels need rotation (will only be applied to axes whose scale type is categorical in nature (i.e., 'point', 'ordinal', 'band')).
 `axisLabels`| | { domain: string, range: string } | | label text for axes
 `align` |  | number | | Alignment of each bar within its band. If there is any padding between bars, this property specifies how that space will be allocated. The value must be in the range [0, 1], where: <br/> - 0 represents left alignment <br/> - 0.5 represents center alignment <br/> - 1 represents right alignment <br/> See: https://github.com/d3/d3-scale/blob/master/README.md#band_align
 `bandPadding` |  | number | | A convenience for setting the `bandInnerPadding` and `bandOuterPadding` to the same value. See: https://github.com/d3/d3-scale/blob/master/README.md#band_padding

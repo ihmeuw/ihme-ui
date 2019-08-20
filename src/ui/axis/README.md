@@ -11,6 +11,7 @@ Property | Required | Type(s) | Defaults | Description
 `labelStyle` |  | object |  | inline styles applied to text element surrounding axis label
 `orientation` | true | one of: Object.keys(AXIS_TYPES) |  | where to position axis line; will position ticks accordingly<br />one of: "top", "right", "bottom", "left"
 `padding` |  | object | {<br />  top: 40,<br />  bottom: 40,<br />  left: 50,<br />  right: 50,<br />} | used to position label<br />keys: 'top', 'bottom', 'left', 'right'
+`rotateTickLabels`|  | bool | false | whether to rotate top/bottom axis tick labels 45 deg
 `scale` |  | func | scaleLinear() | appropriate scale for axis
 `style` |  | object |  | inline styles to apply to outermost group element
 `ticks` |  | number |  | [number of axis ticks use](https://github.com/d3/d3-axis#axis_ticks)

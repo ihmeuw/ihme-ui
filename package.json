@@ -1,7 +1,7 @@
 {
   "name": "ihme-ui",
   "description": "Visualization tools from the Institute for Health Metrics and Evaluation",
-  "version": "1.0.3",
+  "version": "1.1.0-pre.1",
   "license": "MIT",
   "browser": "dist/ihme-ui.min.js",
   "main": "lib/index.js",
@@ -12,7 +12,7 @@
     "lib",
     "es"
   ],
-  "author": "Institue for Health Metrics and Evaluation",
+  "author": "Institute for Health Metrics and Evaluation",
   "contributors": [
     "Gabe Medrash <gmedrash@gmail.com> (https://github.com/GabeMedrash)",
     "Brett Vitaz <vitazbt@uw.edu> (https://github.com/brettvitaz)",
@@ -20,7 +20,8 @@
     "David Schneider <davschne@gmail.com> (https://github.com/davschne)",
     "Katherine Beame <katherine.beame@gmail.com> (https://github.com/kbeame)",
     "Jim Vermillion <jam.mcmillion@gmail.com> (https://github.com/jimvermillion)",
-    "Bao Dinh <bdinh@uw.edu> (https://github.com/bdinh)"
+    "Bao Dinh <bdinh@uw.edu> (https://github.com/bdinh)",
+    "Ben Hurst <bhurst8@gmail.com> (https://github.com/benbenbuhben)"
   ],
   "repository": "https://github.com/ihmeuw/ihme-ui.git",
   "bugs": "https://github.com/ihmeuw/ihme-ui/issues",
@@ -88,6 +89,7 @@
     "webpack": "^3.10.0"
   },
   "dependencies": {
+    "babel-plugin-transform-imports": "^1.5.1",
     "babel-runtime": "~6.6",
     "classnames": "~2.2",
     "collections": "~5.1.5",

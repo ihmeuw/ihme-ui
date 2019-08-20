@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { maxBy, minBy, map, uniqBy } from 'lodash';
-import { scaleOrdinal } from 'd3';
+import { scaleOrdinal, format } from 'd3';
 
 import { dataGenerator } from '../../../utils';
 import AxisChart from '../';
@@ -15,7 +15,7 @@ const valueField = 'value';
 const data = dataGenerator({
   primaryKeys: [{ name: 'location', values: ['A', 'B', 'C', 'D', 'E', 'F'] }],
   valueKeys: [{ name: valueField, range: [200, 500], uncertainty: true }],
-  length: 10,
+  length: 20,
 });
 
 const dataA = data.filter((d) => {
@@ -61,7 +61,7 @@ const dims = {
   height: 600,
 };
 
-const padding = { top: 20, bottom: 40, left: 55, right: 20 };
+const padding = { top: 20, bottom: 40, left: 35, right: 20 };
 
 const axisStyle = {
   fontFamily: 'sans-serif',
@@ -74,76 +74,95 @@ const chartClassName = ['foo', 'bar'];
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { render: 0 };
-    this.onClick = this.onClick.bind(this);
+    this.state = {
+      resizeChecked: false,
+      autoFormatChecked: false,
+    };
+    this.onResizeButtonClick = this.onResizeButtonClick.bind(this);
+    this.onAutoFormatToggle = this.onAutoFormatToggle.bind(this);
   }
 
-  onClick() {
-    this.setState({
-      render: this.state.render + 1,
-      xScaleType: 'linear',
-      xDomain: [Math.min(...xDomain), Math.max(...xDomain)],
-      width: 600,
-    });
+  onResizeButtonClick() {
+    this.setState( ({ resizeChecked }) => ({
+      height: resizeChecked ? dims.height : 300,
+      width: resizeChecked ? dims.width : 400,
+      resizeChecked: !resizeChecked
+    }));
+  }
+
+  onAutoFormatToggle() {
+    this.setState(({ autoFormatChecked }) => ({ autoFormatChecked: !autoFormatChecked }));
   }
 
   render() {
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <div>
+        {/* <pre><code>
+              <AxisChart
+                autoFormatAxes={this.state.autoFormatChecked}
+                width={this.state.width || dims.width}
+                height={this.state.height || dims.height}
+                xDomain={xDomain}
+                xScaleType={'point'}
+                yDomain={yDomain}
+                yScaleType="linear"
+                className={chartClassName}
+              >
+                <MultiLine
+                  areaStyle={{ strokeWidth: '1px', fillOpacity: '0.5' }}
+                  data={lineData}
+                  fieldAccessors={{
+                    data: 'values',
+                    key: 'location',
+                  }}
+                  colorScale={colorScale}
+                  showUncertainty
+                  dataAccessors={dataAccessors}
+                  onClick={()=>{console.log('click')}}
+                />
+                <XAxis style={axisStyle} label="Year" tickFormat={format("")} />
+                <XAxis style={axisStyle} label="Year" orientation="top" tickFormat={format("")} />
+                <YAxis style={axisStyle} label="Probability" />
+              </AxisChart>
+            </code></pre> */}
+        <div style={{ textAlign: 'center', marginBottom: '20px' }}>
           <Button
-            text="Resize and change scale"
-            onClick={this.onClick}
+            text="Resize chart"
+            onClick={this.onResizeButtonClick}
           />
+          <div>
+            <label htmlFor="checkbox">Auto-format axes? </label>
+            <input id= "checkbox" type="checkbox" onClick={this.onAutoFormatToggle} />
+          </div>
         </div>
-{/* <pre><code>
-   <AxisChart
-     width={800}
-     height={600}
-     padding={{ top: 20, bottom: 40, left: 55, right: 20 }}
-     xDomain={xDomain}
-     xScaleType="point"
-     yDomain={yDomain}
-     yScaleType="linear"
-   >
-     <XAxis label="Year" />
-     <YAxis label="Probability" />
-     <MultiLine
-       data={lineData}
-       keyField={'location'}
-       dataField={'values'}
-       colorScale={colorScale}
-       showUncertainty
-       dataAccessors={dataAccessors}
-     />
-   </AxisChart>
-
-</code></pre> */}
-        <AxisChart
-          width={this.state.width || dims.width}
-          height={dims.height}
-          padding={padding}
-          xDomain={this.state.xDomain || xDomain}
-          xScaleType={this.state.xScaleType || 'point'}
-          yDomain={yDomain}
-          yScaleType="linear"
-          className={chartClassName}
-        >
-          <MultiLine
-            areaStyle={{ strokeWidth: '1px', fillOpacity: '0.5' }}
-            data={lineData}
-            fieldAccessors={{
-              data: 'values',
-              key: 'location',
-            }}
-            colorScale={colorScale}
-            showUncertainty
-            dataAccessors={dataAccessors}
-            onClick={()=>{console.log('click')}}
-          />
-          <XAxis style={axisStyle} label="Year" />
-          <YAxis style={axisStyle} label="Probability" />
-        </AxisChart>
+        <div style={{ height: '900px', width: '900px', textAlign: 'center', marginBottom: '20px' }}>
+          <AxisChart
+            autoFormatAxes={this.state.autoFormatChecked}
+            width={this.state.width || dims.width}
+            height={this.state.height || dims.height}
+            xDomain={xDomain}
+            xScaleType={'point'}
+            yDomain={yDomain}
+            yScaleType="linear"
+            className={chartClassName}
+          >
+            <MultiLine
+              areaStyle={{ strokeWidth: '1px', fillOpacity: '0.5' }}
+              data={lineData}
+              fieldAccessors={{
+                data: 'values',
+                key: 'location',
+              }}
+              colorScale={colorScale}
+              showUncertainty
+              dataAccessors={dataAccessors}
+              onClick={()=>{console.log('click')}}
+            />
+            <XAxis style={axisStyle} label="Year" tickFormat={format("")} />
+            <XAxis style={axisStyle} label="Year" orientation="top" tickFormat={format("")} />
+            <YAxis style={axisStyle} label="Probability" />
+          </AxisChart>
+        </div>
       </div>
     );
   }

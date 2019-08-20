@@ -17,15 +17,13 @@ import {
 } from 'lodash';
 
 import {
+  calcLabelPosition,
+  calcAxisTranslate,
   CommonPropTypes,
   propsChanged,
   stateFromPropUpdates,
 } from '../../../utils';
 
-import {
-  calcLabelPosition,
-  calcTranslate,
-} from './utils';
 import styles from './axis.css';
 
 export const AXIS_TYPES = {
@@ -70,6 +68,7 @@ export default class Axis extends React.PureComponent {
     const {
       className,
       orientation,
+      rotateTickLabels,
       scale,
       style,
       tickArguments,
@@ -106,6 +105,38 @@ export default class Axis extends React.PureComponent {
       .attr('transform', `translate(${translate.x}, ${translate.y})`)
       .attr('style', Axis.concatStyle(style))
       .call(axis);
+
+    if (orientation === 'bottom') {
+      // eslint-disable-next-line no-unused-expressions
+      rotateTickLabels
+        ? this._axisSelection
+          .selectAll('text')
+          .style('text-anchor', 'end')
+          .attr('dx', '-.8em')
+          .attr('dy', '.15em')
+          .attr('transform', 'rotate(-45)')
+        : this._axisSelection
+          .selectAll('text')
+          .style('text-anchor', 'middle')
+          .attr('dx', '0')
+          .attr('dy', '0.71em')
+          .attr('transform', 'rotate(0)');
+    } else if (orientation === 'top') {
+      // eslint-disable-next-line no-unused-expressions
+      rotateTickLabels
+        ? this._axisSelection
+          .selectAll('text')
+          .style('text-anchor', 'end')
+          .attr('dx', '-.8em')
+          .attr('dy', '0.29em')
+          .attr('transform', 'rotate(45)')
+        : this._axisSelection
+          .selectAll('text')
+          .style('text-anchor', 'middle')
+          .attr('dx', '0')
+          .attr('dy', '0')
+          .attr('transform', 'rotate(0)');
+    }
   }
 
   storeRef(axisG) {
@@ -137,18 +168,20 @@ export default class Axis extends React.PureComponent {
     return (
       <g>
         <g ref={this.storeRef}></g>
-        {label && <text
-          className={labelClassName}
-          style={labelStyle}
-          x={labelPosition.x}
-          y={labelPosition.y}
-          dx={labelPosition.dX}
-          dy={labelPosition.dY}
-          transform={`rotate(${labelPosition.rotate || 0})`}
-          textAnchor="middle"
-        >
-          {label}
-        </text>}
+        {label &&
+          <text
+            className={labelClassName}
+            style={labelStyle}
+            x={labelPosition.x}
+            y={labelPosition.y}
+            dx={labelPosition.dX}
+            dy={labelPosition.dY}
+            transform={`rotate(${labelPosition.rotate || 0})`}
+            textAnchor="middle"
+          >
+            {label}
+          </text>
+        }
       </g>
     );
   }
@@ -218,6 +251,11 @@ Axis.propTypes = {
     left: PropTypes.number,
     right: PropTypes.number,
   }),
+
+  /**
+   *  whether to rotate top/bottom axis tick labels 45 deg
+   */
+  rotateTickLabels: PropTypes.bool,
 
   /**
    *  appropriate scale for axis
@@ -294,6 +332,7 @@ Axis.defaultProps = {
     left: 50,
     right: 50,
   },
+  rotateTickLabels: false,
   scale: scaleLinear(),
   width: 900,
 };
@@ -306,7 +345,7 @@ Axis.propUpdates = {
 
     return assign({}, accum, {
       translate: nextProps.translate
-      || calcTranslate(nextProps.orientation, nextProps.width, nextProps.height)
+      || calcAxisTranslate(nextProps.orientation, nextProps.width, nextProps.height)
     });
   },
 };

@@ -36,6 +36,7 @@ const DEFAULT_PADDING_WITH_AXIS_LABELS = {
   left: 60,
 };
 
+
 export default class BarChart extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -129,6 +130,8 @@ export default class BarChart extends React.PureComponent {
       bandInnerGroupPadding: innerGroupPadding,
       bandInnerPadding: innerPadding,
       bandOuterPadding: outerPadding,
+      chartHeight: height,
+      chartWidth: width,
       chartClassName: className,
       chartStyle: style,
       onClick = this.onClick,
@@ -164,6 +167,7 @@ export default class BarChart extends React.PureComponent {
 
     const commonProps = {
       className,
+      height,
       innerPadding,
       outerPadding,
       focusedStyle: FOCUSED_STYLE,
@@ -171,6 +175,7 @@ export default class BarChart extends React.PureComponent {
       rangeMax,
       selection,
       style,
+      width,
     };
 
     switch (type) {
@@ -193,26 +198,31 @@ export default class BarChart extends React.PureComponent {
 
   renderChart() {
     const {
+      autoFormatAxes,
       categories,
       orientation,
       axisLabels,
-      padding,
+      padding: customPadding,
       chartHeight,
       chartWidth,
+      rangeTickLabelFormat,
     } = this.props;
 
     const chartRange = [0, this.computeRangeMax()];
 
     const vertical = util.isVertical(orientation);
 
+    const defaultPadding = axisLabels
+      ? DEFAULT_PADDING_WITH_AXIS_LABELS
+      : DEFAULT_PADDING_NO_AXIS_LABELS;
+
+    const padding = { ...defaultPadding, ...customPadding };
     return (
       <AxisChart
+        autoFormatAxes={autoFormatAxes}
         height={chartHeight}
         width={chartWidth}
-        padding={
-          padding
-          || (axisLabels ? DEFAULT_PADDING_WITH_AXIS_LABELS : DEFAULT_PADDING_NO_AXIS_LABELS)
-        }
+        padding={padding}
         xDomain={vertical ? categories : chartRange}
         yDomain={vertical ? chartRange : categories}
         xScaleType={vertical ? 'band' : 'linear'}
@@ -221,10 +231,12 @@ export default class BarChart extends React.PureComponent {
         <XAxis
           autoFilterTickValues={!vertical}
           label={axisLabels && (vertical ? axisLabels.domain : axisLabels.range)}
+          tickFormat={vertical ? null : rangeTickLabelFormat}
         />
         <YAxis
           autoFilterTickValues={vertical}
           label={axisLabels && (vertical ? axisLabels.range : axisLabels.domain)}
+          tickFormat={vertical ? rangeTickLabelFormat : null}
         />
         {this.renderBars()}
       </AxisChart>
@@ -286,6 +298,13 @@ BarChart.propTypes = {
    * See: https://github.com/d3/d3-scale/blob/master/README.md#band_align
    */
   align: PropTypes.number,
+
+  /**
+   * When true, auto-calculates chart padding needed for tick/axes labels and whether tick labels need rotation.
+   * (Currently only compatible w/ the following d3 scale types: point, ordinal, and band. Auto-formatting will not
+   * be applied for other scale types)
+   */
+  autoFormatAxes: PropTypes.bool,
 
   /**
    * A convenience for setting the `bandInnerPadding` and `bandOuterPadding` to the same value.
@@ -514,6 +533,11 @@ BarChart.propTypes = {
   }),
 
   /**
+   * callback applied to each tick value
+   */
+  rangeTickLabelFormat: PropTypes.func,
+
+  /**
    * className applied to each `<Bar />`
    */
   rectClassName: CommonPropTypes.className,
@@ -572,6 +596,7 @@ BarChart.propTypes = {
 };
 
 BarChart.defaultProps = {
+  autoFormatAxes: true,
   orientation: 'vertical',
   displayLegend: false,
   type: 'normal',

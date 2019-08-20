@@ -1,23 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { uniqueId } from 'lodash';
+import { uniqueId, isEqual } from 'lodash';
 import classNames from 'classnames';
 import {
+  calcPadding,
+  calcChartDimensions,
+  canAutoFormatAxes,
   CommonPropTypes,
   getScale,
   getScaleTypes,
   propsChanged,
-  shouldPureComponentUpdate
+  shouldPureComponentUpdate,
 } from '../../../utils';
 
 const SCALE_TYPES = getScaleTypes();
-
-export function calcChartDimensions(width, height, padding) {
-  return {
-    width: width - (padding.left + padding.right),
-    height: height - (padding.top + padding.bottom),
-  };
-}
 
 /**
  * `import { AxisChart } from 'ihme-ui'`
@@ -27,46 +23,118 @@ export function calcChartDimensions(width, height, padding) {
 export default class AxisChart extends React.Component {
   constructor(props) {
     super(props);
-    const chartDimensions = calcChartDimensions(props.width, props.height, props.padding);
+    const {
+      autoFormatAxes,
+      children,
+      height,
+      padding,
+      style,
+      width,
+      xDomain,
+      xScaleType,
+      yScaleType,
+      yDomain
+    } = props;
+    const [autoPadding, autoRotateTickLabels] =
+      (autoFormatAxes && canAutoFormatAxes(xScaleType, yScaleType))
+        ? calcPadding({
+          // eslint-disable-next-line react/prop-types
+          children: React.Children.toArray(children),
+          xDomain,
+          xScaleType,
+          yDomain,
+          yScaleType,
+          height,
+          width,
+          style,
+          initialPadding: padding
+        })
+        : [padding, false];
+    const chartDimensions = calcChartDimensions(
+      width,
+      height,
+      autoPadding
+    );
     this.state = {
+      autoRotateTickLabels,
       chartDimensions,
+      padding: autoPadding,
       scales: {
-        x: getScale(props.xScaleType)().domain(props.xDomain).range([0, chartDimensions.width]),
-        y: getScale(props.yScaleType)().domain(props.yDomain).range([chartDimensions.height, 0]),
+        x: getScale(xScaleType)().domain(xDomain).range([0, chartDimensions.width]),
+        y: getScale(yScaleType)().domain(yDomain).range([chartDimensions.height, 0]),
       },
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    const state = {};
+    const {
+      autoFormatAxes,
+      children,
+      xDomain,
+      xScaleType,
+      yDomain,
+      yScaleType,
+      width,
+      height,
+      style,
+      padding,
+    } = nextProps;
 
-    if (propsChanged(this.props, nextProps, ['width', 'height', 'padding'])) {
-      state.chartDimensions = calcChartDimensions(
-        nextProps.width,
-        nextProps.height,
-        nextProps.padding
-      );
+    if (!propsChanged(
+      this.props,
+      nextProps,
+      // eslint-disable-next-line max-len
+      ['autoFormatAxes', 'xDomain', 'xScaleType', 'yDomain', 'yScaleType', 'height', 'width', 'padding']
+    )) {
+      return;
     }
 
-    const xChanged = state.chartDimensions ||
-                     propsChanged(this.props, nextProps, ['xScaleType', 'xDomain']);
-    const yChanged = state.chartDimensions ||
-                     propsChanged(this.props, nextProps, ['yScaleType', 'yDomain']);
-    if (xChanged || yChanged) {
-      const chartDimensions = state.chartDimensions || this.state.chartDimensions;
-      state.scales = {
-        x: xChanged ?
-          getScale(nextProps.xScaleType)().domain(nextProps.xDomain)
-            .range([0, chartDimensions.width]) :
-          this.state.scales.x,
-        y: yChanged ?
-          getScale(nextProps.yScaleType)().domain(nextProps.yDomain)
-            .range([chartDimensions.height, 0]) :
-          this.state.scales.y,
-      };
-    }
+    const [newPadding, autoRotateTickLabels] = (
+      autoFormatAxes
+      && canAutoFormatAxes(xScaleType, yScaleType)
+    )
+      ? calcPadding({
+        // eslint-disable-next-line react/prop-types
+        children: React.Children.toArray(children),
+        xDomain,
+        xScaleType,
+        yDomain,
+        yScaleType,
+        width,
+        height,
+        style,
+        initialPadding: padding
+      })
+      : [padding, false];
 
-    this.setState(state);
+    const chartDimensions = calcChartDimensions(width, height, newPadding);
+    const chartDimensionsChanged = !isEqual(chartDimensions, { width, height });
+    const xScaleChanged = chartDimensionsChanged
+      || propsChanged(this.props, nextProps, ['xScaleType', 'xDomain']);
+    const yScaleChanged = chartDimensionsChanged
+      || propsChanged(this.props, nextProps, ['yScaleType', 'yDomain']);
+
+    this.setState({
+      autoRotateTickLabels,
+      chartDimensions,
+      padding: newPadding,
+      scales: {
+        x: (
+          xScaleChanged
+            ? getScale(nextProps.xScaleType)()
+              .domain(xDomain)
+              .range([0, chartDimensions.width])
+            : this.state.scales.x
+        ),
+        y: (
+          yScaleChanged
+            ? getScale(nextProps.yScaleType)()
+              .domain(yDomain)
+              .range([chartDimensions.height, 0])
+            : this.state.scales.y
+        ),
+      },
+    });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -76,13 +144,13 @@ export default class AxisChart extends React.Component {
 
   render() {
     const { props } = this;
-    const { chartDimensions, scales } = this.state;
+    const { chartDimensions, padding, scales, autoRotateTickLabels } = this.state;
     const clipPathId = uniqueId('chartClip_');
 
     return (
       <svg
-        width={`${chartDimensions.width + props.padding.left + props.padding.right}px`}
-        height={`${chartDimensions.height + props.padding.bottom + props.padding.top}px`}
+        width={`${chartDimensions.width + padding.left + padding.right}px`}
+        height={`${chartDimensions.height + padding.bottom + padding.top}px`}
         className={classNames(props.className)}
         style={props.style}
       >
@@ -97,13 +165,15 @@ export default class AxisChart extends React.Component {
         </defs>)
           : null
         }
-        <g transform={`translate(${props.padding.left}, ${props.padding.top})`}>
+        <g transform={`translate(${padding.left}, ${padding.top})`}>
           {
             React.Children.map(props.children, (child) => child && React.cloneElement(child, {
               scales,
-              padding: props.padding,
+              padding,
+              rotateTickLabels: autoRotateTickLabels,
               clipPathId: props.clipPath ? clipPathId : (void 0),
-              ...chartDimensions,
+              height: chartDimensions.height,
+              width: chartDimensions.width
             }))
           }
         </g>
@@ -113,6 +183,12 @@ export default class AxisChart extends React.Component {
 }
 
 AxisChart.propTypes = {
+  /**
+   * auto-calculate chart padding needed for tick/axes labels and whether tick labels need rotation.
+   * (will only be applied to axes whose scale type is categorical in nature (i.e., 'point', 'ordinal', 'band'))
+   */
+  autoFormatAxes: PropTypes.bool,
+
   /**
    * className applied to outermost svg element
    */
@@ -177,6 +253,7 @@ AxisChart.propTypes = {
 };
 
 AxisChart.defaultProps = {
+  autoFormatAxes: false,
   padding: {
     top: 20,
     right: 20,
