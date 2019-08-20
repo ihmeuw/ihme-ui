@@ -332,6 +332,7 @@ Axis.defaultProps = {
     left: 50,
     right: 50,
   },
+  rotateTickLabels: false,
   scale: scaleLinear(),
   width: 900,
 };

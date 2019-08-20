@@ -253,6 +253,7 @@ AxisChart.propTypes = {
 };
 
 AxisChart.defaultProps = {
+  autoFormatAxes: false,
   padding: {
     top: 20,
     right: 20,
