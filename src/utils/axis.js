@@ -138,9 +138,9 @@ export function calcLabelPosition(orientation, translate, padding, center) {
  * @returns {Number} Number of ticks that fit (without overlap) into available width.
  */
 function calcLengthOfLongestTickLabel(ticks, {
-  tickLabelFontSize,
-  tickLabelFontFamily,
-  tickLabelFormat,
+  tickFontSize: tickLabelFontSize,
+  tickFontFamily: tickLabelFontFamily,
+  tickFormat: tickLabelFormat,
 }) {
   /* eslint-disable max-len */
   const formattedTicks = map(ticks, tickLabelFormat);
@@ -182,7 +182,7 @@ export function filterTickValuesByWidth(ticks, axisProperties) {
  * @param {Number} styles.tickFontSize - Supplied tick font size.
  * @returns {Array} Tick values evenly filtered based on available height.
  */
-export function filterTickValuesByHeight(ticks, { height, tickLabelFontSize }) {
+export function filterTickValuesByHeight(ticks, { height, tickFontSize: tickLabelFontSize }) {
   const numTicksThatFit = Math.floor(height / tickLabelFontSize);
   return takeSkipping(ticks, numTicksThatFit);
 }
@@ -270,8 +270,8 @@ function calcPaddingFromTicks({
 
   // Determine axis style properties.
   const tickLabelFontSize = get(style, 'fontSize', DEFAULT_AXIS_PROPERTIES.tickLabelFontSize);
-  const tickFontFamily = get(style, 'fontFamily', DEFAULT_AXIS_PROPERTIES.tickLabelFontFamily);
-  const axisProperties = { ...DEFAULT_AXIS_PROPERTIES, tickLabelFontSize, tickFontFamily };
+  const tickLabelFontFamily = get(style, 'fontFamily', DEFAULT_AXIS_PROPERTIES.tickLabelFontFamily);
+  const axisProperties = { ...DEFAULT_AXIS_PROPERTIES, tickLabelFontSize, tickLabelFontFamily };
 
   // Determine if x-axis tick labels require rotation (not needed for y-axis since overlap is not a concern)
   // If both top & bottom axes exist and one requires rotation, then rotate both.
