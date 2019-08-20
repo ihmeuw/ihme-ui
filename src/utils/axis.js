@@ -294,8 +294,8 @@ function calcPaddingFromTicks({
   // RIGHT/LEFT: Ticks cannot overlap. Simply calculate the length of the string (i.e., at 90 deg.)
   let autoRotate;
   let padding;
-  if (numTicksThatFitOnTopAxis < topAxisTickValues.length
-    || numTicksThatFitOnBottomAxis < bottomAxisTickValues.length
+  if (numTicksThatFitOnTopAxis < get(topAxisTickValues, 'length', 0)
+    || numTicksThatFitOnBottomAxis < get(bottomAxisTickValues, 'length', 0)
   ) {
     autoRotate = true;
     padding = {
