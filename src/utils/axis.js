@@ -5,7 +5,7 @@
  * @module
  */
 import {
-  every,
+  filter,
   find,
   get,
   isEmpty,
@@ -186,30 +186,21 @@ export function filterTickValuesByHeight(ticks, { height, tickLabelFontSize }) {
 }
 
 /**
- * Given an array of React children components, find the axis components that meet the specified conditions.
+ * Given an array of React children components, create mapping of axis components with their respective
+ * orientation.
  * @param {Array} children - Opaque data structure as a flat array with keys assigned to each child.
- * @param {String} conditions - String that maps to valid condition for which to verify.
  * @returns {Object} React axis components keyed by their respective orientation (i.e., top, right, etc.)
  */
-function findAxisComponentsByCondition(children, conditions) {
+function getAxesByOrientation(children) {
   return reduce(
     AXIS_ORIENTATION_OPTIONS,
-    (result, axisOrientation) => {
-      const validConditions = {
-        orientationExists: (child) => child.props.orientation === axisOrientation,
-        labelExists: (child) => !isEmpty(child.props.label)
-      };
-      return setValue(
-        result,
-        axisOrientation,
-        find(children,
-          (child) => every(
-            conditions,
-            (condition) => validConditions[condition](child),
-          )
-        )
-      );
-    }, {});
+    (result, axisOrientation) => setValue(
+      result,
+      axisOrientation,
+      find(children, (child) => child.props.orientation === axisOrientation),
+    ),
+    {},
+  );
 }
 
 /**
@@ -257,14 +248,12 @@ function calcPaddingFromTicks({
   children,
 }) {
   // Find each oriented axis component, if any, from React children.
-  const axes = findAxisComponentsByCondition(children, ['orientationExists']);
+  const axes = getAxesByOrientation(children);
   const {
     top: topAxis,
     right: rightAxis,
     bottom: bottomAxis,
     left: leftAxis } = axes;
-
-  console.log(axes);
 
   // Get the formatted tick values for each axis (using the domain as the tick values).
   const {
@@ -361,12 +350,13 @@ function getLabelPadding(orientedAxisWithLabel) {
  * @returns {{top: Number, right: Number, bottom: Number, left: Number}} Padding offsets for each label.
  */
 function calcPaddingFromLabel(children) {
+  const labeledAxesComponents = filter(children, (child) => !isEmpty(child.props.label));
   const {
     top: topAxis,
     right: rightAxis,
     bottom: bottomAxis,
     left: leftAxis
-  } = findAxisComponentsByCondition(children, ['orientationExists', 'labelExists']);
+  } = getAxesByOrientation(labeledAxesComponents);
 
   return {
     top: (topAxis ? getLabelPadding(topAxis) : 0),
