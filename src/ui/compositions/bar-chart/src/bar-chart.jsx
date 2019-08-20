@@ -403,9 +403,9 @@ BarChart.propTypes = {
    * If a function, it is passed the datum as its first and only argument.
    */
   dataAccessors: PropTypes.shape({
-    category: PropTypes.string.isRequired,
-    subcategory: PropTypes.string,
-    value: PropTypes.string.isRequired,
+    category: CommonPropTypes.dataAccessor.isRequired,
+    subcategory: CommonPropTypes.dataAccessor,
+    value: CommonPropTypes.dataAccessor.isRequired,
   }).isRequired,
 
   /**
