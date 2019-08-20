@@ -264,6 +264,8 @@ function calcPaddingFromTicks({
     bottom: bottomAxis,
     left: leftAxis } = axes;
 
+  console.log(axes);
+
   // Get the formatted tick values for each axis (using the domain as the tick values).
   const {
     top: topAxisTickValues,
@@ -395,7 +397,16 @@ function mergePaddingsBy(paddings, customizer) {
  * @param {Object} - Variables on which padding is dependent.
  * @returns {[Object, Boolean]} Resultant padding and boolean indicating whether tick rotation is necessary.
  */
-export function calcPadding({ children, xDomain, xScaleType, yDomain, yScaleType, width, style, initialPadding }) {
+export function calcPadding({
+  children,
+  xDomain,
+  xScaleType,
+  yDomain,
+  yScaleType,
+  width,
+  style,
+  initialPadding,
+}) {
   const paddingFromLabel = calcPaddingFromLabel(children);
   const [paddingFromTicks, autoRotateTickLabels] = calcPaddingFromTicks({
     xDomain,
