@@ -39,7 +39,9 @@ export const ALLOWED_SCALE_TYPES_FOR_AUTOFORMAT = ['point', 'ordinal', 'band'];
 
 const AXIS_ORIENTATION_OPTIONS = ['top', 'right', 'bottom', 'left'];
 
-const ADDITIONAL_LABEL_PADDING = '20px';
+const ADDITIONAL_LABEL_PADDING = '15px';
+
+const ADDITIONAL_ROTATED_TICK_PADDING = '5px';
 
 const TICK_LABEL_ROTATION_ANGLE = -45;
 
@@ -298,13 +300,15 @@ function calcPaddingFromTicks({
     autoRotate = true;
     padding = {
       top: (topAxis && canAutoFormatXAxis)
-        ? sizeOfLongestRotatedString(topAxisTickValues, tickLabelFontSize, TICK_LABEL_ROTATION_ANGLE) - tickLabelFontSize
+        ? sizeOfLongestRotatedString(topAxisTickValues, tickLabelFontSize, TICK_LABEL_ROTATION_ANGLE)
+        + parseFloat(ADDITIONAL_ROTATED_TICK_PADDING)
         : 0,
       right: (rightAxis && canAutoFormatYAxis)
         ? calcLengthOfLongestTickLabel(rightAxisTickValues, axisProperties)
         : 0,
       bottom: (bottomAxis && canAutoFormatXAxis)
-        ? sizeOfLongestRotatedString(bottomAxisTickValues, tickLabelFontSize, TICK_LABEL_ROTATION_ANGLE) - tickLabelFontSize
+        ? sizeOfLongestRotatedString(bottomAxisTickValues, tickLabelFontSize, TICK_LABEL_ROTATION_ANGLE)
+        + parseFloat(ADDITIONAL_ROTATED_TICK_PADDING)
         : 0,
       left: (leftAxis && canAutoFormatYAxis)
         ? calcLengthOfLongestTickLabel(leftAxisTickValues, axisProperties)
