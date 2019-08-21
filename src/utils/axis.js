@@ -27,11 +27,11 @@ import {
 } from './strings';
 
 export const DEFAULT_AXIS_PROPERTIES = {
-  axisLabelFontSize: 11,
+  axisLabelFontSize: 16,
   height: 100,
   tickHeight: 10,
   tickLabelFontFamily: 'Helvetica',
-  tickLabelFontSize: 10,
+  tickLabelFontSize: 11,
   tickLabelFormat: null,
   width: 230,
 };
@@ -365,11 +365,12 @@ function calcPaddingFromTicks({
  * @returns {{top: Number, right: Number, bottom: Number, left: Number}} Padding offset from label.
  */
 function getLabelPadding(orientedAxisWithLabel) {
-  return parseFloat((get(
+  const labelFontSize = parseFloat((get(
     orientedAxisWithLabel,
-    ['props', 'style', 'fontSize'],
+    ['props', 'labelStyle', 'fontSize'],
     `${DEFAULT_AXIS_PROPERTIES.axisLabelFontSize}px`
-  )))
+  )));
+  return (labelFontSize * FONT_HEIGHT_SCALING_FACTOR)
   + parseFloat(ADDITIONAL_LABEL_PADDING);
 }
 
