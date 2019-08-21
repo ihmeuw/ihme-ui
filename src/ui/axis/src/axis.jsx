@@ -117,8 +117,8 @@ export default class Axis extends React.PureComponent {
         ? this._axisSelection
           .selectAll('text')
           .style('text-anchor', 'end')
-          .attr('dx', '-.8em')
-          .attr('dy', '.15em')
+          .attr('dx', '-0.8em')
+          .attr('dy', '0.15em')
           .attr('transform', 'rotate(-45)')
         : this._axisSelection
           .selectAll('text')
@@ -132,8 +132,8 @@ export default class Axis extends React.PureComponent {
         ? this._axisSelection
           .selectAll('text')
           .style('text-anchor', 'end')
-          .attr('dx', '-.8em')
-          .attr('dy', '0.29em')
+          .attr('dx', '-0.65em')
+          .attr('dy', '0.45em')
           .attr('transform', 'rotate(45)')
         : this._axisSelection
           .selectAll('text')
