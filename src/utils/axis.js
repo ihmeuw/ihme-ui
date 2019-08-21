@@ -23,6 +23,7 @@ import {
 import {
   getRenderedStringWidth,
   sizeOfLongestRotatedString,
+  FONT_HEIGHT_SCALING_FACTOR,
 } from './strings';
 
 export const DEFAULT_AXIS_PROPERTIES = {
@@ -39,11 +40,14 @@ export const ALLOWED_SCALE_TYPES_FOR_AUTOFORMAT = ['point', 'ordinal', 'band'];
 
 const AXIS_ORIENTATION_OPTIONS = ['top', 'right', 'bottom', 'left'];
 
-const ADDITIONAL_LABEL_PADDING = '15px';
+const ADDITIONAL_LABEL_PADDING = '7px';
 
-const ADDITIONAL_ROTATED_TICK_PADDING = '5px';
+const DEFAULT_D3_TICK_SIZE = 6;
+
+const DEFAULT_D3_TICK_PADDING = 3;
 
 const TICK_LABEL_ROTATION_ANGLE = -45;
+
 
 /**
  * Determine if auto-formatting can be applied based on d3 scale type(s).
@@ -95,7 +99,7 @@ export function calcLabelPosition(orientation, translate, padding, center) {
         x: translate.x,
         y: translate.y - padding.top,
         dX: center,
-        dY: '1em',
+        dY: '1em', // Shift text baseline down 1em
         rotate: 0,
       };
     case 'bottom':
@@ -103,7 +107,7 @@ export function calcLabelPosition(orientation, translate, padding, center) {
         x: translate.x,
         y: translate.y + padding.bottom,
         dX: center,
-        dY: '-0.2em',
+        dY: '-0.25em', // Shift text baseline up .25em to account for characters w/ descenders
         rotate: 0,
       };
     case 'left':
@@ -234,6 +238,26 @@ function getFormattedTickValues(axes, xDomain, yDomain) {
     }
   );
 }
+/**
+ * Calculate padding required for tick marks and tick mark padding for each axis.
+ * @param {Object} axes - React axis components keyed by their respective orientation (i.e., top, right, etc.)
+ * @returns {Object} Padding value for each axis orientation
+ */
+function calcPaddingFromTickMarks(axes) {
+  return mapValues(
+    axes,
+    (axis) => {
+      if (axis) {
+        const tickSize = get(axis, ['props', 'tickSize'], DEFAULT_D3_TICK_SIZE);
+        const tickPadding = get(axis, ['props', 'tickPadding'], DEFAULT_D3_TICK_PADDING);
+        return tickSize + tickPadding;
+      // eslint-disable-next-line no-else-return
+      } else {
+        return 0;
+      }
+    }
+  );
+}
 
 /**
  * Calculate the amount of total padding needed and if tick values require rotation to fit into the available width.
@@ -263,6 +287,12 @@ function calcPaddingFromTicks({
     right: rightAxisTickValues,
     bottom: bottomAxisTickValues,
     left: leftAxisTickValues } = getFormattedTickValues(axes, xDomain, yDomain);
+
+  const {
+    top: topAxisTickMarkPadding,
+    right: rightAxisTickMarkPadding,
+    bottom: bottomAxisTickMarkPadding,
+    left: leftAxisTickMarkPadding } = calcPaddingFromTickMarks(axes);
 
   // Determine if auto-formatting is possible based on the d3 scale type.
   const canAutoFormatXAxis = canAutoFormatAxes(xScaleType);
@@ -300,34 +330,32 @@ function calcPaddingFromTicks({
     autoRotate = true;
     padding = {
       top: (topAxis && canAutoFormatXAxis)
-        ? sizeOfLongestRotatedString(topAxisTickValues, tickLabelFontSize, TICK_LABEL_ROTATION_ANGLE)
-        + parseFloat(ADDITIONAL_ROTATED_TICK_PADDING)
+        ? sizeOfLongestRotatedString(topAxisTickValues, tickLabelFontSize, TICK_LABEL_ROTATION_ANGLE) + topAxisTickMarkPadding
         : 0,
       right: (rightAxis && canAutoFormatYAxis)
-        ? calcLengthOfLongestTickLabel(rightAxisTickValues, axisProperties)
+        ? calcLengthOfLongestTickLabel(rightAxisTickValues, axisProperties) + rightAxisTickMarkPadding
         : 0,
       bottom: (bottomAxis && canAutoFormatXAxis)
-        ? sizeOfLongestRotatedString(bottomAxisTickValues, tickLabelFontSize, TICK_LABEL_ROTATION_ANGLE)
-        + parseFloat(ADDITIONAL_ROTATED_TICK_PADDING)
+        ? sizeOfLongestRotatedString(bottomAxisTickValues, tickLabelFontSize, TICK_LABEL_ROTATION_ANGLE) + bottomAxisTickMarkPadding
         : 0,
       left: (leftAxis && canAutoFormatYAxis)
-        ? calcLengthOfLongestTickLabel(leftAxisTickValues, axisProperties)
+        ? calcLengthOfLongestTickLabel(leftAxisTickValues, axisProperties) + leftAxisTickMarkPadding
         : 0,
     };
   } else {
     autoRotate = false;
     padding = {
       top: (topAxis && canAutoFormatXAxis)
-        ? tickLabelFontSize
+        ? (tickLabelFontSize * FONT_HEIGHT_SCALING_FACTOR) + topAxisTickMarkPadding
         : 0,
       right: (rightAxis && canAutoFormatYAxis)
-        ? calcLengthOfLongestTickLabel(rightAxisTickValues, axisProperties)
+        ? calcLengthOfLongestTickLabel(rightAxisTickValues, axisProperties) + rightAxisTickMarkPadding
         : 0,
       bottom: (bottomAxis && canAutoFormatXAxis)
-        ? tickLabelFontSize
+        ? (tickLabelFontSize * FONT_HEIGHT_SCALING_FACTOR) + bottomAxisTickMarkPadding
         : 0,
       left: (leftAxis && canAutoFormatYAxis)
-        ? calcLengthOfLongestTickLabel(leftAxisTickValues, axisProperties)
+        ? calcLengthOfLongestTickLabel(leftAxisTickValues, axisProperties) + leftAxisTickMarkPadding
         : 0,
     };
   }
