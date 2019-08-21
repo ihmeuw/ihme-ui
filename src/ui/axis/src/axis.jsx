@@ -22,6 +22,7 @@ import {
   CommonPropTypes,
   propsChanged,
   stateFromPropUpdates,
+  camelToKebabCase,
 } from '../../../utils';
 
 import styles from './axis.css';
@@ -40,8 +41,7 @@ export default class Axis extends React.PureComponent {
   static concatStyle(style) {
     return trim(reduce(
       style,
-      (accum, value, attr) =>
-        `${accum} ${attr.replace(/([A-Z])/g, '-$1').toLowerCase()}: ${value};`,
+      (accum, value, attr) => `${accum} ${camelToKebabCase(attr)}: ${value};`,
       ''
     ));
   }

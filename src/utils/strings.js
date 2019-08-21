@@ -69,3 +69,7 @@ export const sizeOfLongestRotatedString = (
   );
   return size > result ? size : result;
 }, 0);
+
+export function camelToKebabCase(str) {
+  return str.replace(/([A-Z])/g, '-$1').toLowerCase();
+}
