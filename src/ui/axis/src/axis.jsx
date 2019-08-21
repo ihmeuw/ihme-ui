@@ -96,13 +96,13 @@ export default class Axis extends React.PureComponent {
 
     const axis = AXIS_TYPES[orientation](scale);
 
+    axis.tickSize(tickSize); // default is 6px
+    axis.tickPadding(tickPadding); // default is 3px
     if (ticks) axis.ticks(ticks);
     if (tickArguments) axis.tickArguments(tickArguments);
     if (tickFormat) axis.tickFormat(tickFormat);
-    if (tickSize) axis.tickSize(tickSize);
     if (tickSizeInner) axis.tickSizeInner(tickSizeInner);
     if (tickSizeOuter) axis.tickSizeOuter(tickSizeOuter);
-    if (tickPadding) axis.tickPadding(tickPadding);
     if (tickValues) axis.tickValues(tickValues);
 
     this._axisSelection

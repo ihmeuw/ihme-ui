@@ -42,9 +42,6 @@ const AXIS_ORIENTATION_OPTIONS = ['top', 'right', 'bottom', 'left'];
 
 const ADDITIONAL_LABEL_PADDING = '7px';
 
-const DEFAULT_D3_TICK_SIZE = 6;
-
-const DEFAULT_D3_TICK_PADDING = 3;
 
 const TICK_LABEL_ROTATION_ANGLE = -45;
 
