@@ -38,7 +38,12 @@ export const AXIS_TYPES = {
  */
 export default class Axis extends React.PureComponent {
   static concatStyle(style) {
-    return trim(reduce(style, (accum, value, attr) => `${accum} ${attr}: ${value};`, ''));
+    return trim(reduce(
+      style,
+      (accum, value, attr) =>
+        `${accum} ${attr.replace(/([A-Z])/g, '-$1').toLowerCase()}: ${value};`,
+      ''
+    ));
   }
 
   constructor(props) {
