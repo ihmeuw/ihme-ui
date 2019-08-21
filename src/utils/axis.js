@@ -40,8 +40,7 @@ export const ALLOWED_SCALE_TYPES_FOR_AUTOFORMAT = ['point', 'ordinal', 'band'];
 
 const AXIS_ORIENTATION_OPTIONS = ['top', 'right', 'bottom', 'left'];
 
-const ADDITIONAL_LABEL_PADDING = '7px';
-
+const ADDITIONAL_LABEL_PADDING = '3px';
 
 const TICK_LABEL_ROTATION_ANGLE = -45;
 
@@ -139,16 +138,16 @@ export function calcLabelPosition(orientation, translate, padding, center) {
  * @returns {Number} Number of ticks that fit (without overlap) into available width.
  */
 function calcLengthOfLongestTickLabel(ticks, {
-  tickFontSize: tickLabelFontSize,
-  tickFontFamily: tickLabelFontFamily,
-  tickFormat: tickLabelFormat,
+  tickFontSize,
+  tickFontFamily,
+  tickFormat,
 }) {
   /* eslint-disable max-len */
-  const formattedTicks = map(ticks, tickLabelFormat);
+  const formattedTicks = map(ticks, tickFormat);
   return reduce(formattedTicks, (widest, tick) =>
     Math.max(
       widest,
-      getRenderedStringWidth(String(tick), `${tickLabelFontSize}px ${tickLabelFontFamily}`),
+      getRenderedStringWidth(String(tick), `${tickFontSize}px ${tickFontFamily}`),
     )
   , 0);
 }
@@ -183,8 +182,8 @@ export function filterTickValuesByWidth(ticks, axisProperties) {
  * @param {Number} styles.tickFontSize - Supplied tick font size.
  * @returns {Array} Tick values evenly filtered based on available height.
  */
-export function filterTickValuesByHeight(ticks, { height, tickFontSize: tickLabelFontSize }) {
-  const numTicksThatFit = Math.floor(height / tickLabelFontSize);
+export function filterTickValuesByHeight(ticks, { height, tickFontSize }) {
+  const numTicksThatFit = Math.floor(height / tickFontSize);
   return takeSkipping(ticks, numTicksThatFit);
 }
 
@@ -245,8 +244,8 @@ function calcPaddingFromTickMarks(axes) {
     axes,
     (axis) => {
       if (axis) {
-        const tickSize = get(axis, ['props', 'tickSize'], DEFAULT_D3_TICK_SIZE);
-        const tickPadding = get(axis, ['props', 'tickPadding'], DEFAULT_D3_TICK_PADDING);
+        const tickSize = axis.props.tickSize;
+        const tickPadding = axis.props.tickPadding;
         return tickSize + tickPadding;
       // eslint-disable-next-line no-else-return
       } else {
