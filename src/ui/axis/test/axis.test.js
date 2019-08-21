@@ -20,12 +20,12 @@ describe('<Axis />', () => {
     const tickValues = range(0, 20);
 
     describe('filterTickValuesByWidth', () => {
-      const tickLabelFontSize = 12;
-      const tickLabelFontFamily = 'Verdana';
+      const tickFontSize = 12;
+      const tickFontFamily = 'Verdana';
 
       it('returns all ticks given enough width', () => {
         expect(filterTickValuesByWidth(tickValues,
-          { width: 4000, tickLabelFontSize, tickLabelFontFamily }
+          { width: 4000, tickFontSize, tickFontFamily }
         ))
           .to.be.an('array')
           .of.length(tickValues.length)
@@ -34,7 +34,7 @@ describe('<Axis />', () => {
 
       it('returns a filtered list of ticks given not enough width', () => {
         expect(filterTickValuesByWidth(tickValues,
-          { width: 10, tickLabelFontSize, tickLabelFontFamily }
+          { width: 10, tickFontSize, tickFontFamily }
         ))
           .to.be.an('array')
           .of.length.lessThan(tickValues.length);
@@ -43,14 +43,14 @@ describe('<Axis />', () => {
 
     describe('filterTickValuesByHeight', () => {
       it('returns all ticks given enough height', () => {
-        expect(filterTickValuesByHeight(tickValues, { height: 4000, tickLabelFontSize: 12 }))
+        expect(filterTickValuesByHeight(tickValues, { height: 4000, tickFontSize: 12 }))
           .to.be.an('array')
           .of.length(tickValues.length)
           .and.to.deep.equal(tickValues);
       });
 
       it('returns a filtered list of ticks given not enough height', () => {
-        expect(filterTickValuesByHeight(tickValues, { height: 10, tickLabelFontSize: 12 }))
+        expect(filterTickValuesByHeight(tickValues, { height: 10, tickFontSize: 12 }))
           .to.be.an('array')
           .of.length.lessThan(tickValues.length);
       });
