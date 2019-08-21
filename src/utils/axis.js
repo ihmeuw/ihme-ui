@@ -95,7 +95,7 @@ export function calcLabelPosition(orientation, translate, padding, center) {
         x: translate.x,
         y: translate.y - padding.top,
         dX: center,
-        dY: '1em', // Shift text baseline down 1em
+        dY: '1em', // Text baseline is positioned at top edge of SVG. Shift down 1em.
         rotate: 0,
       };
     case 'bottom':
