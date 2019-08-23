@@ -22,6 +22,7 @@ import {
   CommonPropTypes,
   propsChanged,
   stateFromPropUpdates,
+  camelToKebabCase,
 } from '../../../utils';
 
 import styles from './axis.css';
@@ -38,7 +39,11 @@ export const AXIS_TYPES = {
  */
 export default class Axis extends React.PureComponent {
   static concatStyle(style) {
-    return trim(reduce(style, (accum, value, attr) => `${accum} ${attr}: ${value};`, ''));
+    return trim(reduce(
+      style,
+      (accum, value, attr) => `${accum} ${camelToKebabCase(attr)}: ${value};`,
+      ''
+    ));
   }
 
   constructor(props) {
@@ -91,13 +96,13 @@ export default class Axis extends React.PureComponent {
 
     const axis = AXIS_TYPES[orientation](scale);
 
+    axis.tickSize(tickSize); // default is 6px
+    axis.tickPadding(tickPadding); // default is 3px
     if (ticks) axis.ticks(ticks);
     if (tickArguments) axis.tickArguments(tickArguments);
     if (tickFormat) axis.tickFormat(tickFormat);
-    if (tickSize) axis.tickSize(tickSize);
     if (tickSizeInner) axis.tickSizeInner(tickSizeInner);
     if (tickSizeOuter) axis.tickSizeOuter(tickSizeOuter);
-    if (tickPadding) axis.tickPadding(tickPadding);
     if (tickValues) axis.tickValues(tickValues);
 
     this._axisSelection
@@ -112,8 +117,8 @@ export default class Axis extends React.PureComponent {
         ? this._axisSelection
           .selectAll('text')
           .style('text-anchor', 'end')
-          .attr('dx', '-.8em')
-          .attr('dy', '.15em')
+          .attr('dx', '-0.8em')
+          .attr('dy', '0.15em')
           .attr('transform', 'rotate(-45)')
         : this._axisSelection
           .selectAll('text')
@@ -127,8 +132,8 @@ export default class Axis extends React.PureComponent {
         ? this._axisSelection
           .selectAll('text')
           .style('text-anchor', 'end')
-          .attr('dx', '-.8em')
-          .attr('dy', '0.29em')
+          .attr('dx', '-0.65em')
+          .attr('dy', '0.45em')
           .attr('transform', 'rotate(45)')
         : this._axisSelection
           .selectAll('text')

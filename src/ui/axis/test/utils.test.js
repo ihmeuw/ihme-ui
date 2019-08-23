@@ -16,7 +16,7 @@ describe('<Axis /> utils', () => {
 
     const expectedResults = {
       top: { x: 50, y: 0, dX: 25, dY: '1em', rotate: 0 },
-      bottom: { x: 50, y: 100, dX: 25, dY: '-0.2em', rotate: 0 },
+      bottom: { x: 50, y: 100, dX: 25, dY: '-0.25em', rotate: 0 },
       left: { x: 50, y: 0, dX: -25, dY: '1em', rotate: 270 },
       right: { x: 50, y: -100, dX: 25, dY: '1em', rotate: 90 },
     };

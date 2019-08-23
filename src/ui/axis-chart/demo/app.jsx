@@ -68,6 +68,11 @@ const axisStyle = {
   fontSize: '11px',
 };
 
+const labelStyle = {
+  fontFamily: 'sans-serif',
+  fontSize: '16px',
+}
+
 const dataAccessors = { x: keyField, y: valueField, y0: 'value_lb', y1: 'value_ub' };
 const chartClassName = ['foo', 'bar'];
 
@@ -120,9 +125,24 @@ class App extends React.Component {
                   dataAccessors={dataAccessors}
                   onClick={()=>{console.log('click')}}
                 />
-                <XAxis style={axisStyle} label="Year" tickFormat={format("")} />
-                <XAxis style={axisStyle} label="Year" orientation="top" tickFormat={format("")} />
-                <YAxis style={axisStyle} label="Probability" />
+                <XAxis
+                  style={axisStyle}
+                  label="Year"
+                  labelStyle={labelStyle}
+                  tickFormat={format("")}
+                />
+                <XAxis
+                  style={axisStyle}
+                  label="Year"
+                  labelStyle={labelStyle}
+                  orientation="top"
+                  tickFormat={format("")}
+                />
+                <YAxis
+                  style={axisStyle}
+                  label="Probability"
+                  labelStyle={labelStyle}
+                />
               </AxisChart>
             </code></pre> */}
         <div style={{ textAlign: 'center', marginBottom: '20px' }}>
@@ -158,9 +178,24 @@ class App extends React.Component {
               dataAccessors={dataAccessors}
               onClick={()=>{console.log('click')}}
             />
-            <XAxis style={axisStyle} label="Year" tickFormat={format("")} />
-            <XAxis style={axisStyle} label="Year" orientation="top" tickFormat={format("")} />
-            <YAxis style={axisStyle} label="Probability" />
+            <XAxis
+              style={axisStyle}
+              label="Year"
+              labelStyle={labelStyle}
+              tickFormat={format("")}
+            />
+            <XAxis
+              style={axisStyle}
+              label="Year"
+              labelStyle={labelStyle}
+              orientation="top"
+              tickFormat={format("")}
+            />
+            <YAxis
+              style={axisStyle}
+              label="Probability"
+              labelStyle={labelStyle}
+            />
           </AxisChart>
         </div>
       </div>

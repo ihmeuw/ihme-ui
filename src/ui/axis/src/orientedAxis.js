@@ -99,6 +99,8 @@ export default function orientAxis(AxisComponent, orientation) {
   OrientedAxis.defaultProps = {
     tickFontFamily: 'Helvetica',
     tickFontSize: 12,
+    tickPadding: 3,
+    tickSize: 6,
   };
 
   OrientedAxis.propUpdates = {
