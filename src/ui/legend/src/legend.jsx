@@ -76,7 +76,7 @@ export default class Legend extends React.PureComponent {
         className={itemClassName}
         key={propResolver(item, labelKey)}
         item={item}
-        style={itemStyle}
+        style={item.itemStyle}
         {...itemProps}
       />
     );
