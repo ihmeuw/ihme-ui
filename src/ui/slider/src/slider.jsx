@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { scaleLinear } from 'd3';
 import bindAll from 'lodash/bindAll';
 import difference from 'lodash/difference';
+import isNil from 'lodash/isNil';
 import identity from 'lodash/identity';
 import inRange from 'lodash/inRange';
 import map from 'lodash/map';
@@ -136,7 +137,7 @@ export default class Slider extends React.PureComponent {
       // Check that the mouse X pos is within the handle extent,
       // and that the computed value is in the range list
       if (!inRange(pageX - handleExtent, nextPos - handleExtent)
-        || !this.state.range[index]) return;
+        || isNil(this.state.range[index])) return;
 
       this.updateValueFromEvent(event, index, key, this.props.onDrag);
     };
