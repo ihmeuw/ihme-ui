@@ -50,7 +50,9 @@ export default class Choropleth extends React.Component {
   constructor(props) {
     super(props);
 
-    const extractedGeoJSON = extractGeoJSON(presimplify(props.topology), props.layers);
+    const topology = presimplify(props.topology);
+
+    const extractedGeoJSON = extractGeoJSON(topology, props.layers);
     const bounds = concatAndComputeGeoJSONBounds(extractedGeoJSON);
 
     const scale = calcScale(props.width, props.height, bounds);
@@ -73,6 +75,7 @@ export default class Choropleth extends React.Component {
       translate,
       pathGenerator: this.createPathGenerator(scale, translate, this.clipExtent),
       cache: { ...extractedGeoJSON, },
+      topology,
       processedData: Choropleth.processData(props.data, props.keyField)
     };
 
@@ -113,12 +116,14 @@ export default class Choropleth extends React.Component {
       let topology;
       let cache;
       if (nextProps.topology === this.props.topology) {
-        topology = nextProps.topology;
+        topology = this.state.topology;
         cache = { ...this.state.cache };
       } else {
         topology = presimplify(nextProps.topology);
         cache = {};
       }
+
+      state.topology = topology;
 
       const uncachedLayers = filter(nextProps.layers, layer =>
         layer.type === 'mesh' || !has(cache[layer.type], layer.name)
