@@ -43,7 +43,8 @@
     "postversion": "git push --tags https://github.com/ihmeuw/ihme-ui.git master && npm publish",
     "test": "BABEL_ENV=test $(npm bin)/babel-node $(npm bin)/_mocha --require ./scripts/setup-jsdom.js `./scripts/get-test-directories.sh`",
     "test:travis": "npm run lint && npm run coverage:travis && npm run coverage:token",
-    "update:dep": "./scripts/update-package.sh"
+    "update:dep": "./scripts/update-package.sh",
+    "postinstall": "patch-package"
   },
   "devDependencies": {
     "autoprefixer": "^7.2.5",
@@ -77,6 +78,7 @@
     "jsdom": "^11.6.2",
     "mocha": "~5.2",
     "mustache": "~2.3",
+    "patch-package": "^6.2.1",
     "postcss": "^6.0.17",
     "postcss-loader": "^2.1.0",
     "react": "^16.2.0",
@@ -92,7 +94,7 @@
     "babel-plugin-transform-imports": "^1.5.1",
     "babel-runtime": "~6.6",
     "classnames": "~2.2",
-    "collections": "~5.1.5",
+    "collections": "^5.1.9",
     "d3": "^4.13.0",
     "interact.js": "~1.2",
     "lodash": "^4.17.15",
@@ -100,8 +102,8 @@
     "react-move": "^2.7.0",
     "react-virtualized": "^9.18.5",
     "react-virtualized-select": "^3.1.3",
-    "topojson-client": "^3.0.0",
-    "topojson-simplify": "^3.0.2"
+    "topojson-client": "3.1.0",
+    "topojson-simplify": "^3.0.3"
   },
   "peerDependencies": {
     "react": "16.x"
