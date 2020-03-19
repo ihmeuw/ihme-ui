@@ -83,7 +83,7 @@
     "postcss-loader": "^2.1.0",
     "react": "16.2.0",
     "react-docgen": "~2.13",
-    "react-dom": "16.2.0",
+    "react-dom": "16.2.1",
     "react-test-renderer": "16.2.0",
     "request": "~2.87.0",
     "sinon": "^2.4.1",
