@@ -1,0 +1,31 @@
+diff --git a/node_modules/topojson-client/.DS_Store b/node_modules/topojson-client/.DS_Store
+new file mode 100644
+index 0000000..a10211e
+Binary files /dev/null and b/node_modules/topojson-client/.DS_Store differ
+diff --git a/node_modules/topojson-client/dist/topojson-client.js b/node_modules/topojson-client/dist/topojson-client.js
+index 7921400..0ce4154 100644
+--- a/node_modules/topojson-client/dist/topojson-client.js
++++ b/node_modules/topojson-client/dist/topojson-client.js
+@@ -258,7 +258,8 @@ function extractArcs(topology, object, filter) {
+ 
+   geomsByArc.forEach(filter == null
+       ? function(geoms) { arcs.push(geoms[0].i); }
+-      : function(geoms) { if (filter(geoms[0].g, geoms[geoms.length - 1].g)) arcs.push(geoms[0].i); });
++      : function(geoms) { if (filter.apply(null, geoms.map(function(geom) { return geom.g }))) arcs.push(geoms[0].i); });
++
+ 
+   return arcs;
+ }
+diff --git a/node_modules/topojson-client/src/mesh.js b/node_modules/topojson-client/src/mesh.js
+index e0b7097..bd0277a 100644
+--- a/node_modules/topojson-client/src/mesh.js
++++ b/node_modules/topojson-client/src/mesh.js
+@@ -47,7 +47,7 @@ function extractArcs(topology, object, filter) {
+ 
+   geomsByArc.forEach(filter == null
+       ? function(geoms) { arcs.push(geoms[0].i); }
+-      : function(geoms) { if (filter(geoms[0].g, geoms[geoms.length - 1].g)) arcs.push(geoms[0].i); });
++      : function(geoms) { if (filter.apply(null, geoms.map(function(geom) { return geom.g }))) arcs.push(geoms[0].i); });
+ 
+   return arcs;
+ }
