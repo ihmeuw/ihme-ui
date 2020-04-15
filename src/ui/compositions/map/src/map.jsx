@@ -86,13 +86,11 @@ export default class Map extends React.Component {
     matches.forEach((feature) => {
       const { properties } = feature;
       const locId = propResolver(feature, geometryKeyField);
-
-      // If a locId exists the feature is not disputed.
-      if (locId) {
+      if (properties.claimants || properties.admins) {
+        claimants.addEach(properties.claimants || []);
+        admins.addEach(properties.admins || []);
+      } else if (locId) {
         nonDisputedLocations.add(locId);
-      } else {
-        claimants.addEach(properties.claimants);
-        admins.addEach(properties.admins);
       }
     });
 
