@@ -206,13 +206,21 @@ export default class Map extends React.Component {
     return meshType === Map.classifyArc(geometryKeyField, matches, keysOfSelectedLocations);
   }
 
+  layerStyle(layer) {
+    const { layerStyle } = this.props;
+    const styleReset = { stroke: 'none' };
+    if (typeof layerStyle === 'function') return { ...styleReset, ...layerStyle(layer) };
+    if (typeof layerStyle === 'object') return { ...styleReset, ...layerStyle };
+    return styleReset;
+  }
+
   createLayers(layers) {
     const styleReset = { stroke: 'none' };
     const features = map(layers, layer => (
       {
         name: layer,
         object: layer,
-        style: styleReset,
+        style: this.layerStyle(layer),
         selectedStyle: styleReset,
         type: 'feature',
       }
@@ -490,6 +498,13 @@ Map.propTypes = {
     PropTypes.string,
     PropTypes.func,
   ]).isRequired,
+
+  /**
+   * inline styles applied to layer
+   * if a function, passed layer;
+   * signature: (layer) => style object
+   */
+  layerStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
 
   /**
    * classname applied to div containing choropleth legend
