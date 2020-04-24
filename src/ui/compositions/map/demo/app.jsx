@@ -9,6 +9,7 @@ import {
   get as getValue,
   reduce,
   xor,
+  uniqueId,
 } from 'lodash';
 
 import Map from '../';
@@ -151,6 +152,47 @@ class App extends React.Component {
     });
   }
 
+  filterGeometries(key) {
+    return (geometries, feature) => {
+      const { claimants = [], admins = [] } = feature.properties;
+
+      if (key === 'disputes') {
+        geometries.push({
+          ...feature,
+          properties: {
+            disputed: true,
+            claimants,
+            admins,
+            loc_id: uniqueId('dispute'),
+          },
+        });
+      } else {
+        geometries.push({
+          ...feature,
+        });
+      }
+
+      return geometries;
+    };
+  }
+
+  prepTopology(topology) {
+    const { objects, ...restTopology } = topology;
+    return {
+      ...restTopology,
+      objects: reduce(objects, (results, { geometries, ...restObject }, key) => {
+        const filteredGeometries = geometries.reduce(this.filterGeometries(key), []);
+        if (filteredGeometries.length || key === 'disputes') {
+          results[key] = {
+            ...restObject,
+            geometries: filteredGeometries,
+          };
+        }
+        return results;
+      }, {}),
+    };
+  }
+
   render() {
     const { topology } = this.props;
     const { colorAccessor, data, mapLevel, range, selections, selectedChoroplethDomain } = this.state;
@@ -167,6 +209,7 @@ class App extends React.Component {
           focus={this.state.focus}
           geometryKeyField={`properties.${keyField}`}
           colorAccessor={colorAccessor}
+          layerStyle={layer => (layer === 'disputes') ? { fill: 'transparent' } : {}}
           keyField={keyField}
           onClick={this.onClick}
           onMouseOver={this.onMouseOver}
@@ -176,7 +219,7 @@ class App extends React.Component {
           selectedLocations={selections}
           sliderHandleFormat={numberFormat}
           topojsonObjects={MapLevel[mapLevel]}
-          topology={topology}
+          topology={this.prepTopology(topology)}
           unit="Probability of death"
           valueField={valueField}
         />
