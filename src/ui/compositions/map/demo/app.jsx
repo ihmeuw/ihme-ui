@@ -209,10 +209,7 @@ class App extends React.Component {
           focus={this.state.focus}
           geometryKeyField={`properties.${keyField}`}
           colorAccessor={colorAccessor}
-          layerStyle={(layer) => {
-            if (layer === 'disputes') return { fill: 'transparent' };
-            return {};
-          }}
+          layerStyle={layer => (layer === 'disputes') ? { fill: 'transparent' } : {}}
           keyField={keyField}
           onClick={this.onClick}
           onMouseOver={this.onMouseOver}
