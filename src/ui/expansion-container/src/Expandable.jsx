@@ -8,8 +8,8 @@ import { default as getValue } from 'lodash/get';
 import pick from 'lodash/pick';
 import { CommonPropTypes, CommonDefaultProps } from '../../../utils';
 import { getBackgroundColor } from '../../../utils/window';
+import { ExpansionContainerContext } from './ExpansionContainer';
 
-import { containerStore } from './ExpansionContainer';
 import styles from './expansion-container.css';
 
 function isFirefox(userAgent) {
@@ -31,18 +31,17 @@ const LAYOUT_STYLES = [
  *
  *
  * `<Expandable />` is a *mostly* drop in replacement for a layout `<div />` that gives its contents
- * expanding powers, and must accompany an `<ExpansionContainer />` of the same `group` (default
- * group is 'default'). Flex related layout styles are passed directly to a content `<div />`, and
+ * expanding powers, and must accompany an `<ExpansionContainer />`. Flex related layout styles are passed directly to a content `<div />`, and
  * additional styles like `border`, `margin`, etc. must be supplied via the `expandableClassName`
  * and `expandableStyle` props.
  *
  * Note: Transitions on the restore event do not execute on Firefox, and thus have been disabled.
  */
 export default class Expandable extends React.PureComponent {
-  constructor(props) {
+  constructor(props, context) {
     super(props);
 
-    this._expansionContainer = containerStore[props.group];
+    this._expansionContainer = context;
     this._expansionContainer.subscribe(this);
     this.state = {
       expanded: false,
@@ -342,6 +341,8 @@ export default class Expandable extends React.PureComponent {
   }
 }
 
+Expandable.contextType = ExpansionContainerContext;
+
 Expandable.propTypes = {
   children: PropTypes.node,
 
@@ -359,13 +360,6 @@ Expandable.propTypes = {
    * inline styles applied to div directly wrapping component to expand
    */
   expandableStyle: CommonPropTypes.style,
-
-  /**
-   * key used by `<Expandable />`s to register with `<ExpansionContainer />`;
-   * if more than one `<ExpansionContainer />` is mounted, `group` should be treated as required
-   * and unique per instance.
-   */
-  group: PropTypes.string,
 
   /**
    * do not render "expand/contract" icon
@@ -417,7 +411,6 @@ Expandable.propTypes = {
 };
 
 Expandable.defaultProps = {
-  group: 'default',
   iconSize: '20px',
   transition: 'all 0.5s ease',
   onMouseLeave: CommonDefaultProps.noop,

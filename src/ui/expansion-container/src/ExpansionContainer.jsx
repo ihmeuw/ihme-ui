@@ -9,9 +9,9 @@ import pull from 'lodash/pull';
 import without from 'lodash/without';
 import { CommonPropTypes } from '../../../utils';
 
-import styles from './expansion-container.css';
+export const ExpansionContainerContext = React.createContext({});
 
-export const containerStore = {};
+import styles from './expansion-container.css';
 
 /**
  * `import { ExpansionContainer } from 'ihme-ui'`
@@ -20,7 +20,6 @@ export const containerStore = {};
 export default class ExpansionContainer extends React.PureComponent {
   constructor(props) {
     super(props);
-    containerStore[props.group] = this;
     this.expandables = [];
     this.defaultState = this.state = {
       expanded: null,
@@ -40,11 +39,6 @@ export default class ExpansionContainer extends React.PureComponent {
       'restore',
       'containerRef',
     ]);
-  }
-
-  componentWillUnmount() {
-    containerStore[this.props.group] = null;
-    delete containerStore[this.props.group];
   }
 
   get boundingClientRect() {
@@ -104,6 +98,7 @@ export default class ExpansionContainer extends React.PureComponent {
     } = this.state;
 
     return (
+      <ExpansionContainerContext.Provider value={this}>
       <div
         ref={this.containerRef}
         className={classNames(styles['expansion-container'], className)}
@@ -122,6 +117,7 @@ export default class ExpansionContainer extends React.PureComponent {
           </div>
         )}
       </div>
+    </ExpansionContainerContext.Provider>
     );
   }
 }
@@ -139,13 +135,4 @@ ExpansionContainer.propTypes = {
 
   children: PropTypes.node,
 
-  /**
-   * key used by `<Expandable />`s to register with `<ExpansionContainer />`;
-   * if more than one `<ExpansionContainer />` is mounted, `group` should be treated as required and unique per instance.
-   */
-  group: PropTypes.string,
-};
-
-ExpansionContainer.defaultProps = {
-  group: 'default',
 };
