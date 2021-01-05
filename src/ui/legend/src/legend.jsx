@@ -124,7 +124,7 @@ Legend.propTypes = {
    * component (must be passable to React.createElement) to render for each item;
    * passed props `className`, `item`, `labelKey`, `LabelComponent`, `onClear`, `onClick`,
    * `onMouseLeave`, `onMouseMove`, `onMouseOver`, `shapeColorKey`, `shapeTypeKey`, `style`
-   * defaults to [LegendItem](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/legend/src/legend-item.jsx)
+   * defaults to [LegendItem](https://github.com/ihmeuw/ihme-ui/blob/main/src/ui/legend/src/legend-item.jsx)
    */
   ItemComponent: PropTypes.func,
 
@@ -205,7 +205,7 @@ Legend.propTypes = {
    * path to shape type in item objects (e.g., 'type', 'properties.type')
    * or a function to resolve the type
    * if a function: signature: (item) => {...}
-   * must be one of [supported shape types](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/shape.js#L23)
+   * must be one of [supported shape types](https://github.com/ihmeuw/ihme-ui/blob/main/src/utils/shape.js#L23)
    */
   shapeTypeKey: CommonPropTypes.dataAccessor.isRequired,
 
@@ -223,7 +223,7 @@ Legend.propTypes = {
   /**
    * component (must be passable to React.createElement) to render for the title;
    * passed props `className`, `items`, `style`, `title`
-   * defaults to [LegendTitle](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/legend/src/legend-title.jsx)
+   * defaults to [LegendTitle](https://github.com/ihmeuw/ihme-ui/blob/main/src/ui/legend/src/legend-title.jsx)
    */
   TitleComponent: PropTypes.func,
 

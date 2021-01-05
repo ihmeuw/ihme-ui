@@ -12,8 +12,8 @@ Property | Required | Type(s) | Defaults | Description
 `data` | true | array |  | array of datum objects
 `domain` | true | array |  | [min, max] for xScale; xScale positions density plot and provides axis
 `focus` |  | object |  | The datum object corresponding to the `<Shape />` currently focused.
-`focusedClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied if `<Shape />` has focus.
-`focusedStyle` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L16) |  | Inline styles applied to focused `<Shape />`.<br />If an object, spread into inline styles.<br />If a function, passed underlying datum corresponding to its `<Shape />`,<br />and return value is spread into inline styles;<br />signature: (datum) => obj
+`focusedClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/main/src/utils/props.js#L11) |  | className applied if `<Shape />` has focus.
+`focusedStyle` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/main/src/utils/props.js#L16) |  | Inline styles applied to focused `<Shape />`.<br />If an object, spread into inline styles.<br />If a function, passed underlying datum corresponding to its `<Shape />`,<br />and return value is spread into inline styles;<br />signature: (datum) => obj
 `height` |  | number |  | height of outermost svg
 `keyField` |  | string, func |  | uniquely identifying property of datum or function that accepts datum and returns unique value;<br />if not provided, density plot shapes are keyed as `${xValue}:${yValue}:${index}`
 `margins` |  | object | {<br />  top: 50,<br />  right: 100,<br />  bottom: 50,<br />  left: 100<br />} | margins to subtract from width and height

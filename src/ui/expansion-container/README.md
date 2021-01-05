@@ -9,8 +9,8 @@ ihme-ui provides two helpers for expanding a child component to fill the space t
 
 Property | Required | Type(s) | Defaults | Description
 :---    |:---      |:---     |:---      |:---
-`className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to outermost wrapping div
-`style` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L16) |  | inline styles applied to outermost wrapping div; `position: relative` is added automatically
+`className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/main/src/utils/props.js#L11) |  | className applied to outermost wrapping div
+`style` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/main/src/utils/props.js#L16) |  | inline styles applied to outermost wrapping div; `position: relative` is added automatically
 `children` |  | node |  |
 `group` |  | string | 'default' | key used by `<Expandable />`s to register with `<ExpansionContainer />`;<br />if more than one `<ExpansionContainer />` is mounted, `group` should be treated as required and unique per instance.
 
@@ -30,16 +30,16 @@ Note: Transitions on the restore event do not execute on Firefox, and thus have 
 Property | Required | Type(s) | Defaults | Description
 :---    |:---      |:---     |:---      |:---
 `children` |  | node |  |
-`className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to outermost containing div
-`expandableClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to div directly wrapping component to expand
-`expandableStyle` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L16) |  | inline styles applied to div directly wrapping component to expand
+`className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/main/src/utils/props.js#L11) |  | className applied to outermost containing div
+`expandableClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/main/src/utils/props.js#L11) |  | className applied to div directly wrapping component to expand
+`expandableStyle` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/main/src/utils/props.js#L16) |  | inline styles applied to div directly wrapping component to expand
 `group` |  | string | 'default' | key used by `<Expandable />`s to register with `<ExpansionContainer />`;<br />if more than one `<ExpansionContainer />` is mounted, `group` should be treated as required<br />and unique per instance.
 `hideIcon` |  | bool |  | do not render "expand/contract" icon
-`iconClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to "expand/contract" icon
-`iconStyle` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L16) |  | inline styles applied to "expand/contract" icon
+`iconClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/main/src/utils/props.js#L11) |  | className applied to "expand/contract" icon
+`iconStyle` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/main/src/utils/props.js#L16) |  | inline styles applied to "expand/contract" icon
 `iconSize` |  | string, number | '20px' | size of icon in px; applied to contentStyle as paddingRight and iconStyle as fontSize
 `onMouseLeave` |  | func | CommonDefaultProps.noop | onMouseLeave callback.<br />signature: (SyntheticEvent, instance) => {...}
 `onMouseMove` |  | func | CommonDefaultProps.noop | onMouseMove callback.<br />signature: (SyntheticEvent, instance) => {...}
 `onMouseOver` |  | func | CommonDefaultProps.noop | onMouseOver callback.<br />signature: (SyntheticEvent, instance) => {...}
-`style` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L16) |  | inline styles applied to outermost containing div
+`style` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/main/src/utils/props.js#L16) |  | inline styles applied to outermost containing div
 `transition` |  | string | 'all 0.5s ease' | CSS transition to apply to `<Expandable />` when transitioning in height/width

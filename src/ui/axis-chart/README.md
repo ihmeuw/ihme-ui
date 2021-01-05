@@ -7,7 +7,7 @@ Wraps and provides its child charting components with height, width, scales, and
 Property | Required | Type(s) | Defaults | Description
 :---    |:---      |:---     |:---      |:---
 `autoFormatAxes` |  | bool | false | auto-calculate chart padding needed for tick/axes labels and whether tick labels need rotation (will only be applied to axes whose scale type is categorical in nature (i.e., 'point', 'ordinal', 'band')).
-`className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to outermost svg element
+`className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/main/src/utils/props.js#L11) |  | className applied to outermost svg element
 `clipPath` |  | bool |  | apply clipping path to charting area
 `height` | true | number |  | pixel height of line chart
 `loading` |  | bool |  | delay rendering while fetching data

@@ -9,13 +9,13 @@ const replace = require('lodash/replace');
 
 const HEADER = `
 Property | Required | Type(s) | Defaults | Description
-:---    |:---      |:---     |:---      |:---       
+:---    |:---      |:---     |:---      |:---
 `;
 
 const COMMON_PROP_TYPES_TO_LINKS_MAP = {
-  'CommonPropTypes.className': '[CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11)',
-  'CommonPropTypes.style': '[CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L16)',
-  'CommonPropTypes.dataAccessor': '[CommonPropTypes.dataAccessor](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L28)',
+  'CommonPropTypes.className': '[CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/main/src/utils/props.js#L11)',
+  'CommonPropTypes.style': '[CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/main/src/utils/props.js#L16)',
+  'CommonPropTypes.dataAccessor': '[CommonPropTypes.dataAccessor](https://github.com/ihmeuw/ihme-ui/blob/main/src/utils/props.js#L28)',
 };
 
 /**

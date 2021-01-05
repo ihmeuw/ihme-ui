@@ -216,7 +216,7 @@ LegendItem.propTypes = {
    * path to shape type in item objects (e.g., 'type', 'properties.type')
    * or a function to resolve the type
    * if a function: signature: (item) => {...}
-   * must be one of [supported shape types](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/shape.js#L23)
+   * must be one of [supported shape types](https://github.com/ihmeuw/ihme-ui/blob/main/src/utils/shape.js#L23)
    */
   shapeTypeKey: CommonPropTypes.dataAccessor.isRequired,
 

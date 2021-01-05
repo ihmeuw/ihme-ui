@@ -4,18 +4,18 @@
 
 Property | Required | Type(s) | Defaults | Description
 :---    |:---      |:---     |:---      |:---
-`className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to outermost div
+`className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/main/src/utils/props.js#L11) |  | className applied to outermost div
 `colorAccessor` |  | string, func |  | if string, the color property of the datum object; if function, takes in datum object and returns a color string.
 `colorScale` | true | func |  | accepts value of `keyfield` (str), returns stroke color for line (str)
 `controls` |  | bool | false | show zoom controls
-`controlsClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to controls container div
-`controlsButtonClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to controls buttons
+`controlsClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/main/src/utils/props.js#L11) |  | className applied to controls container div
+`controlsButtonClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/main/src/utils/props.js#L11) |  | className applied to controls buttons
 `controlsButtonStyle` |  | object |  | inline styles to apply to controls buttons
 `controlsStyle` |  | object |  | inline styles to apply to outermost div
 `data` | true | array of object |  | array of datum objects
 `focus` |  | object |  | The datum object corresponding to the `<Path />` currently focused.
-`focusedClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied if `<Path />` has focus.
-`focusedStyle` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L16) |  | inline styles applied to focused `<Path />`<br />If an object, spread into inline styles.<br />If a function, passed underlying datum corresponding to its `<Path />`,<br />and return value is spread into inline styles;<br />signature: (datum) => obj
+`focusedClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/main/src/utils/props.js#L11) |  | className applied if `<Path />` has focus.
+`focusedStyle` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/main/src/utils/props.js#L16) |  | inline styles applied to focused `<Path />`<br />If an object, spread into inline styles.<br />If a function, passed underlying datum corresponding to its `<Path />`,<br />and return value is spread into inline styles;<br />signature: (datum) => obj
 `geometryKeyField` | true | string, func |  | uniquely identifying field of geometry objects;<br />if a function, will be called with the geometry object as first parameter<br />N.B.: the resolved value of this prop should match the resolved value of `props.keyField`<br />e.g., if data objects are of the following shape: { location_id: <number>, mean: <number> }<br />and if features within topojson are of the following shape: { type: <string>, properties: { location_id: <number> }, arcs: <array> }<br />`keyField` may be one of the following: 'location_id', or (datum) => datum.location_id<br />`geometryKeyField` may be one of the following: 'location_id' or (feature) => feature.properties.location_id
 `height` |  | number | 400 | pixel height of containing element
 `keyField` | true | string, func |  | unique key of datum;<br />if a function, will be called with the datum object as first parameter

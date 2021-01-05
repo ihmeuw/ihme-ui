@@ -4,10 +4,10 @@
 
 Property | Required | Type(s) | Defaults | Description
 :---    |:---      |:---     |:---      |:---
-`className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to outermost group element
+`className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/main/src/utils/props.js#L11) |  | className applied to outermost group element
 `height` |  | number | 30 | height of charting area, minus padding<br />required if translate is not provided
 `label` |  | string |  | the axis label
-`labelClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/master/src/utils/props.js#L11) |  | className applied to text element surrounding axis label
+`labelClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/main/src/utils/props.js#L11) |  | className applied to text element surrounding axis label
 `labelStyle` |  | object |  | inline styles applied to text element surrounding axis label
 `orientation` | true | one of: Object.keys(AXIS_TYPES) |  | where to position axis line; will position ticks accordingly<br />one of: "top", "right", "bottom", "left"
 `padding` |  | object | {<br />  top: 40,<br />  bottom: 40,<br />  left: 50,<br />  right: 50,<br />} | used to position label<br />keys: 'top', 'bottom', 'left', 'right'

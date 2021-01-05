@@ -106,7 +106,7 @@ Option.propTypes = {
 
   /**
    * tag name (JSX primitive) or React component to be rendered
-   * defaults to [`<Button />`](https://github.com/ihmeuw/ihme-ui/blob/master/src/ui/button/src/button.jsx)
+   * defaults to [`<Button />`](https://github.com/ihmeuw/ihme-ui/blob/main/src/ui/button/src/button.jsx)
    */
   type: PropTypes.oneOfType([
     PropTypes.string,
