@@ -99,25 +99,25 @@ export default class ExpansionContainer extends React.PureComponent {
 
     return (
       <ExpansionContainerContext.Provider value={this}>
-      <div
-        ref={this.containerRef}
-        className={classNames(styles['expansion-container'], className)}
-        style={containerStyle}
-      >
-        {children}
-        {!!expanded && (
-          <div className={styles['expandable-target']}>
-            <AutoSizer>
-              {({ width, height }) => {
-                if (width && height && includes(this.expandables, expanded)) {
-                  expanded.onResize(this.boundingClientRect);
-                }
-              }}
-            </AutoSizer>
-          </div>
-        )}
-      </div>
-    </ExpansionContainerContext.Provider>
+        <div
+          ref={this.containerRef}
+          className={classNames(styles['expansion-container'], className)}
+          style={containerStyle}
+        >
+          {children}
+          {!!expanded && (
+            <div className={styles['expandable-target']}>
+              <AutoSizer>
+                {({ width, height }) => {
+                  if (width && height && includes(this.expandables, expanded)) {
+                    expanded.onResize(this.boundingClientRect);
+                  }
+                }}
+              </AutoSizer>
+            </div>
+          )}
+        </div>
+      </ExpansionContainerContext.Provider>
     );
   }
 }
