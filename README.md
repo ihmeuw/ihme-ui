@@ -5,7 +5,6 @@
 ihme-ui is a collection of JavaScript utilities and React-based user interface elements and visualization components developed by the [Institute of Health Metrics and Evaluation](http://healthdata.org).
 This collection is used in IHME's [visualizations of global health metrics](http://www.healthdata.org/results/data-visualizations).
 
-###### WORK IN PROGRESS: Not stable until v1.0.0
 
 ---
 
@@ -17,7 +16,7 @@ npm install -S ihme-ui
 
 ## Getting started
 
-In it's most simple form, this library can be included in a `<script />` tag and accessed off of `window` as `ihmeUI`.
+In it's most basic form, this library can be included in a `<script />` tag and accessed off of `window` as `ihmeUI`.
 If you've installed the library from the [npm registry](https://www.npmjs.com/package/ihme-ui), you can pull the library out of your `node_modules` folder.
 If not, grab it off of the unoffical NPM CDN, [unpkg](https://unpkg.com/#/).
 
