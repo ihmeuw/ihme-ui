@@ -25,6 +25,8 @@ export default class AxisChart extends React.Component {
     super(props);
     const {
       autoFormatAxes,
+      axisStyle,
+      minTickLabelSpacing,
       children,
       height,
       padding,
@@ -40,6 +42,7 @@ export default class AxisChart extends React.Component {
         ? calcPadding({
           // eslint-disable-next-line react/prop-types
           children: React.Children.toArray(children),
+          minTickLabelSpacing,
           xDomain,
           xScaleType,
           yDomain,
@@ -47,9 +50,11 @@ export default class AxisChart extends React.Component {
           height,
           width,
           style,
+          axisStyle,
           initialPadding: padding
         })
         : [padding, false];
+
     const chartDimensions = calcChartDimensions(
       width,
       height,
@@ -69,7 +74,9 @@ export default class AxisChart extends React.Component {
   componentWillReceiveProps(nextProps) {
     const {
       autoFormatAxes,
+      axisStyle,
       children,
+      minTickLabelSpacing,
       xDomain,
       xScaleType,
       yDomain,
@@ -84,7 +91,7 @@ export default class AxisChart extends React.Component {
       this.props,
       nextProps,
       // eslint-disable-next-line max-len
-      ['autoFormatAxes', 'xDomain', 'xScaleType', 'yDomain', 'yScaleType', 'height', 'width', 'padding']
+      ['autoFormatAxes', 'axisStyle', 'minTickLabelSpacing', 'xDomain', 'xScaleType', 'yDomain', 'yScaleType', 'height', 'width', 'padding']
     )) {
       return;
     }
@@ -95,7 +102,9 @@ export default class AxisChart extends React.Component {
     )
       ? calcPadding({
         // eslint-disable-next-line react/prop-types
+        axisStyle,
         children: React.Children.toArray(children),
+        minTickLabelSpacing,
         xDomain,
         xScaleType,
         yDomain,
@@ -168,6 +177,7 @@ export default class AxisChart extends React.Component {
         <g transform={`translate(${padding.left}, ${padding.top})`}>
           {
             React.Children.map(props.children, (child) => child && React.cloneElement(child, {
+              style: props.axisStyle,
               scales,
               padding,
               rotateTickLabels: autoRotateTickLabels,
@@ -190,6 +200,11 @@ AxisChart.propTypes = {
   autoFormatAxes: PropTypes.bool,
 
   /**
+   * inline styles applied to axis component
+   */
+  axisStyle: CommonPropTypes.style,
+
+  /**
    * className applied to outermost svg element
    */
   className: CommonPropTypes.className,
@@ -208,6 +223,11 @@ AxisChart.propTypes = {
    * delay rendering while fetching data
    */
   loading: PropTypes.bool,
+
+  /**
+   * Minimum spacing (in px) between horizontal axis tick labels. Used to determine the width at which tick labels should rotate.
+   */
+  minTickLabelSpacing: PropTypes.number,
 
   /**
    * padding around the chart contents, space for Axis and Label
@@ -253,6 +273,7 @@ AxisChart.propTypes = {
 };
 
 AxisChart.defaultProps = {
+  minTickLabelSpacing: 4,
   autoFormatAxes: false,
   padding: {
     top: 20,

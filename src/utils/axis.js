@@ -30,9 +30,9 @@ export const DEFAULT_AXIS_PROPERTIES = {
   axisLabelFontSize: 16,
   height: 100,
   tickHeight: 10,
-  tickLabelFontFamily: 'Helvetica',
-  tickLabelFontSize: 11,
-  tickLabelFormat: null,
+  tickFontFamily: 'sans-serif',
+  tickFontSize: 10,
+  tickFormat: null,
   width: 230,
 };
 
@@ -261,12 +261,13 @@ function calcPaddingFromTickMarks(axes) {
  * @returns {[Object, Boolean]} Resultant padding and boolean indicating whether tick rotation is necessary.
  */
 function calcPaddingFromTicks({
+  axisStyle,
+  minTickLabelSpacing,
   xDomain,
   xScaleType,
   yDomain,
   yScaleType,
   width,
-  style,
   children,
 }) {
   // Find each oriented axis component, if any, from React children.
@@ -295,9 +296,9 @@ function calcPaddingFromTicks({
   const canAutoFormatYAxis = canAutoFormatAxes(yScaleType);
 
   // Determine axis style properties.
-  const tickLabelFontSize = get(style, 'fontSize', DEFAULT_AXIS_PROPERTIES.tickLabelFontSize);
-  const tickLabelFontFamily = get(style, 'fontFamily', DEFAULT_AXIS_PROPERTIES.tickLabelFontFamily);
-  const axisProperties = { ...DEFAULT_AXIS_PROPERTIES, tickLabelFontSize, tickLabelFontFamily };
+  const tickFontSize = get(axisStyle, 'fontSize', DEFAULT_AXIS_PROPERTIES.tickFontSize);
+  const tickFontFamily = get(axisStyle, 'fontFamily', DEFAULT_AXIS_PROPERTIES.tickFontFamily);
+  const axisProperties = { ...DEFAULT_AXIS_PROPERTIES, tickFontSize, tickFontFamily };
 
   // Determine if x-axis tick labels require rotation (not needed for y-axis since overlap is not a concern)
   // If both top & bottom axes exist and one requires rotation, then rotate both.
@@ -313,8 +314,15 @@ function calcPaddingFromTicks({
       axisProperties
     )
     : 0;
-  const numTicksThatFitOnTopAxis = calcNumTicksThatFit(widestTopAxisTickLabelLength, width);
-  const numTicksThatFitOnBottomAxis = calcNumTicksThatFit(widestBottomAxisTickLabelLength, width);
+
+  const leftAxisTickWidth = calcLengthOfLongestTickLabel(leftAxisTickValues, axisProperties) + leftAxisTickMarkPadding;
+  const leftAxisLabelWidth = getLabelPadding(leftAxis);
+  const rightAxisTickWidth = calcLengthOfLongestTickLabel(rightAxisTickValues, axisProperties) + rightAxisTickMarkPadding;
+  const rightAxisLabelWidth = getLabelPadding(rightAxis);
+  const approximateHorizontalAxisWidth = width - leftAxisTickWidth - leftAxisLabelWidth - rightAxisTickWidth - rightAxisLabelWidth;
+
+  const numTicksThatFitOnTopAxis = calcNumTicksThatFit(widestTopAxisTickLabelLength + minTickLabelSpacing, approximateHorizontalAxisWidth);
+  const numTicksThatFitOnBottomAxis = calcNumTicksThatFit(widestBottomAxisTickLabelLength + minTickLabelSpacing, approximateHorizontalAxisWidth);
 
   // TOP/BOTTOM: If ticks overlap, calculate the rotated length (i.e., at -45 deg.), but also subtract tick height.
   // RIGHT/LEFT: Ticks cannot overlap. Simply calculate the length of the string (i.e., at 90 deg.)
@@ -326,13 +334,13 @@ function calcPaddingFromTicks({
     autoRotate = true;
     padding = {
       top: (topAxis && canAutoFormatXAxis)
-        ? sizeOfLongestRotatedString(topAxisTickValues, tickLabelFontSize, TICK_LABEL_ROTATION_ANGLE) + topAxisTickMarkPadding
+        ? sizeOfLongestRotatedString(topAxisTickValues, tickFontSize, TICK_LABEL_ROTATION_ANGLE) + topAxisTickMarkPadding
         : 0,
       right: (rightAxis && canAutoFormatYAxis)
         ? calcLengthOfLongestTickLabel(rightAxisTickValues, axisProperties) + rightAxisTickMarkPadding
         : 0,
       bottom: (bottomAxis && canAutoFormatXAxis)
-        ? sizeOfLongestRotatedString(bottomAxisTickValues, tickLabelFontSize, TICK_LABEL_ROTATION_ANGLE) + bottomAxisTickMarkPadding
+        ? sizeOfLongestRotatedString(bottomAxisTickValues, tickFontSize, TICK_LABEL_ROTATION_ANGLE) + bottomAxisTickMarkPadding
         : 0,
       left: (leftAxis && canAutoFormatYAxis)
         ? calcLengthOfLongestTickLabel(leftAxisTickValues, axisProperties) + leftAxisTickMarkPadding
@@ -342,13 +350,13 @@ function calcPaddingFromTicks({
     autoRotate = false;
     padding = {
       top: (topAxis && canAutoFormatXAxis)
-        ? (tickLabelFontSize * FONT_HEIGHT_SCALING_FACTOR) + topAxisTickMarkPadding
+        ? (tickFontSize * FONT_HEIGHT_SCALING_FACTOR) + topAxisTickMarkPadding
         : 0,
       right: (rightAxis && canAutoFormatYAxis)
         ? calcLengthOfLongestTickLabel(rightAxisTickValues, axisProperties) + rightAxisTickMarkPadding
         : 0,
       bottom: (bottomAxis && canAutoFormatXAxis)
-        ? (tickLabelFontSize * FONT_HEIGHT_SCALING_FACTOR) + bottomAxisTickMarkPadding
+        ? (tickFontSize * FONT_HEIGHT_SCALING_FACTOR) + bottomAxisTickMarkPadding
         : 0,
       left: (leftAxis && canAutoFormatYAxis)
         ? calcLengthOfLongestTickLabel(leftAxisTickValues, axisProperties) + leftAxisTickMarkPadding
@@ -417,23 +425,25 @@ function mergePaddingsBy(paddings, customizer) {
  * @returns {[Object, Boolean]} Resultant padding and boolean indicating whether tick rotation is necessary.
  */
 export function calcPadding({
+  axisStyle,
   children,
+  minTickLabelSpacing,
   xDomain,
   xScaleType,
   yDomain,
   yScaleType,
   width,
-  style,
   initialPadding,
 }) {
   const paddingFromLabel = calcPaddingFromLabel(children);
   const [paddingFromTicks, autoRotateTickLabels] = calcPaddingFromTicks({
+    axisStyle,
+    minTickLabelSpacing,
     xDomain,
     xScaleType,
     yDomain,
     yScaleType,
     width,
-    style,
     children,
   });
   // Add padding needed for labels to padding needed for ticks.
