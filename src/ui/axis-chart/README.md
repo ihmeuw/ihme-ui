@@ -7,10 +7,12 @@ Wraps and provides its child charting components with height, width, scales, and
 Property | Required | Type(s) | Defaults | Description
 :---    |:---      |:---     |:---      |:---
 `autoFormatAxes` |  | bool | false | auto-calculate chart padding needed for tick/axes labels and whether tick labels need rotation (will only be applied to axes whose scale type is categorical in nature (i.e., 'point', 'ordinal', 'band')).
+`axisStyle`|  | [CommonPropTypes.style](../../../utils/props.js#L18) |  | inline styles applied to axis component
 `className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/main/src/utils/props.js#L11) |  | className applied to outermost svg element
 `clipPath` |  | bool |  | apply clipping path to charting area
 `height` | true | number |  | pixel height of line chart
 `loading` |  | bool |  | delay rendering while fetching data
+`minTickLabelSpacing` | | number | 4 | Minimum spacing (in px) between horizontal axis tick labels. Used to determine the width at which tick labels should rotate.
 `padding` |  | object | {<br />  top: 20,<br />  right: 20,<br />  bottom: 30,<br />  left: 50,<br />} | padding around the chart contents, space for Axis and Label
 `style` |  | object |  | inline styles to apply to outermost svg element
 `width` | true | number |  | pixel width of line chart
