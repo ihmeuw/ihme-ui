@@ -205,7 +205,9 @@ export default class BarChart extends React.PureComponent {
       padding: customPadding,
       chartHeight,
       chartWidth,
+      minTickLabelSpacing,
       rangeTickLabelFormat,
+      axisStyle,
     } = this.props;
 
     const chartRange = [0, this.computeRangeMax()];
@@ -227,6 +229,8 @@ export default class BarChart extends React.PureComponent {
         yDomain={vertical ? chartRange : categories}
         xScaleType={vertical ? 'band' : 'linear'}
         yScaleType={vertical ? 'linear' : 'band'}
+        axisStyle={axisStyle}
+        minTickLabelSpacing={minTickLabelSpacing}
       >
         <XAxis
           autoFilterTickValues={!vertical}
@@ -287,6 +291,11 @@ BarChart.propTypes = {
     domain: PropTypes.string,
     range: PropTypes.string
   }),
+
+  /**
+   * inline styles applied to axis component
+   */
+  axisStyle: CommonPropTypes.style,
 
   /**
    * Alignment of each bar within its band. If there is any padding between bars, this property
@@ -492,6 +501,11 @@ BarChart.propTypes = {
    * if passed a function, will be called with the current item obj
    */
   legendItemStyle: CommonPropTypes.style,
+
+  /**
+   * Minimum spacing (in px) between horizontal axis tick labels. Used to determine the width at which tick labels should rotate.
+   */
+  minTickLabelSpacing: PropTypes.number,
 
   /**
    * onClick callback applied to each `<Bar />`.
