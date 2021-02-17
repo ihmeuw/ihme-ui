@@ -256,6 +256,21 @@ function calcPaddingFromTickMarks(axes) {
 }
 
 /**
+ * Given an axis component w/ label, determine the padding needed for the label (based on font height and additional buffer).
+ * @param {Array} orientedAxisWithLabel - Opaque data structure as a flat array with keys assigned to each child.
+ * @returns {{top: Number, right: Number, bottom: Number, left: Number}} Padding offset from label.
+ */
+function getLabelPadding(orientedAxisWithLabel) {
+  const labelFontSize = parseFloat((get(
+    orientedAxisWithLabel,
+    ['props', 'labelStyle', 'fontSize'],
+    `${DEFAULT_AXIS_PROPERTIES.axisLabelFontSize}px`
+  )));
+  return (labelFontSize * FONT_HEIGHT_SCALING_FACTOR)
+  + parseFloat(ADDITIONAL_LABEL_PADDING);
+}
+
+/**
  * Calculate the amount of total padding needed and if tick values require rotation to fit into the available width.
  * @param {Object} - Variables on which padding is dependent.
  * @returns {[Object, Boolean]} Resultant padding and boolean indicating whether tick rotation is necessary.
@@ -364,21 +379,6 @@ function calcPaddingFromTicks({
     };
   }
   return [padding, autoRotate];
-}
-
-/**
- * Given an axis component w/ label, determine the padding needed for the label (based on font height and additional buffer).
- * @param {Array} orientedAxisWithLabel - Opaque data structure as a flat array with keys assigned to each child.
- * @returns {{top: Number, right: Number, bottom: Number, left: Number}} Padding offset from label.
- */
-function getLabelPadding(orientedAxisWithLabel) {
-  const labelFontSize = parseFloat((get(
-    orientedAxisWithLabel,
-    ['props', 'labelStyle', 'fontSize'],
-    `${DEFAULT_AXIS_PROPERTIES.axisLabelFontSize}px`
-  )));
-  return (labelFontSize * FONT_HEIGHT_SCALING_FACTOR)
-  + parseFloat(ADDITIONAL_LABEL_PADDING);
 }
 
 /**
