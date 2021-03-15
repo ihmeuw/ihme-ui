@@ -8,6 +8,7 @@ Property | Required | Type(s) | Default | Description
 :---    |:---      |:---     |:---      |:---
 `autoFormatAxes`|  | bool | true | auto-calculate chart padding needed for tick/axes labels and whether tick labels need rotation (will only be applied to axes whose scale type is categorical in nature (i.e., 'point', 'ordinal', 'band')).
 `axisLabels`| | { domain: string, range: string } | | label text for axes
+`axisStyle`|  | [CommonPropTypes.style](../../../utils/props.js#L18) |  | inline styles applied to axis component
 `align` |  | number | | Alignment of each bar within its band. If there is any padding between bars, this property specifies how that space will be allocated. The value must be in the range [0, 1], where: <br/> - 0 represents left alignment <br/> - 0.5 represents center alignment <br/> - 1 represents right alignment <br/> See: https://github.com/d3/d3-scale/blob/master/README.md#band_align
 `bandPadding` |  | number | | A convenience for setting the `bandInnerPadding` and `bandOuterPadding` to the same value. See: https://github.com/d3/d3-scale/blob/master/README.md#band_padding
 `bandInnerGroupPadding` | | number | | Padding between the bars of each group, specified as a proportion of the band width (i.e. the space allocated for each group).
@@ -35,6 +36,7 @@ Property | Required | Type(s) | Default | Description
 `legendListStyle` | | [CommonPropTypes.style](../../../utils/props.js#L18) | | inline styles applied to `<ul>`, which wraps legend items; if a function, passed items as argument
 `legendItemClassName` | | [CommonPropTypes.className](../../../utils/props.js#L13) | | classname applied to legend item elements
 `legendItemStyle` | | [CommonPropTypes.style](../../../utils/props.js#L18) | | inline styles applied to legend item elements; if passed an object, will be applied directly inline to the `<li>`; if passed a function, will be called with the current item obj
+`minTickLabelSpacing` | | number | 4 | Minimum spacing (in px) between horizontal axis tick labels. Used to determine the width at which tick labels should rotate.
 `onClick` |  | func | selects (or deselects) clicked bars | onClick callback applied to each `<Bar/>`. <br/> signature: (SyntheticEvent, datum, instance) => {...}
 `onMouseLeave` |  | func | | onMouseLeave callback applied to each `<Bar/>`. <br/> signature: (SyntheticEvent, datum, instance) => {...}
 `onMouseMove` |  | func | | onMouseMove callback applied to each `<Bar/>`. <br/> signature: (SyntheticEvent, datum, instance) => {...}
