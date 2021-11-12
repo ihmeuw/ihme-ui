@@ -222,6 +222,7 @@ class App extends React.Component {
           topology={this.prepTopology(topology)}
           unit="Probability of death"
           valueField={valueField}
+          zoomControlsClassName={'zoom-controls-class'}
         />
         <Button
           onClick={this.onToggleColorAccessor}

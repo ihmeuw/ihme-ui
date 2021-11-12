@@ -25,6 +25,9 @@
   /* override button's default justify-content: space-between */
   justify-content: center;
 
-  /* make smaller than default 27px */
-  height: 22px;
+  height: 40px;
+  margin: 1px;
+  padding: 4px;
+  width: 40px;
+  
 }

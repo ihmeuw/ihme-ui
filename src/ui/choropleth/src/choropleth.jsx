@@ -355,7 +355,6 @@ export default class Choropleth extends React.Component {
 
   render() {
     const { width, height } = this.props;
-
     return (
       <div
         className={classNames(style.common, this.props.className)}

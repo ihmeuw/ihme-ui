@@ -283,6 +283,7 @@ export default class Map extends React.Component {
       selectedLocations,
       topology,
       valueField,
+      zoomControlsButtonClassName,
       zoomControlsClassName,
       zoomControlsStyle,
     } = this.props;
@@ -293,6 +294,7 @@ export default class Map extends React.Component {
       <div className={classNames(styles.map, mapClassName)} style={mapStyle}>
         <ResponsiveContainer>
           <Choropleth
+            controlsButtonClassName={zoomControlsButtonClassName}
             colorAccessor={colorAccessor}
             colorScale={colorScale}
             controls
@@ -651,6 +653,14 @@ Map.propTypes = {
     PropTypes.string,
     PropTypes.func,
   ]).isRequired,
+
+  /**
+   * className applied to zoom controls buttons
+   */
+  zoomControlsButtonClassName: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+  ]),
 
   /**
    * className applied to controls container div
