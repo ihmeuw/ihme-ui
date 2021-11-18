@@ -29,9 +29,9 @@ export default class Slider extends React.Component {
     this.keyboardSliderMove = this.keyboardSliderMove.bind(this);
   }
 
-  rectWidth(which, edgePosition, containerWidth) {
+  rectWidth(whichSliderHandle, edgePosition, containerWidth) {
     /* eslint no-self-compare:0 */
-    if (which === 'left') return edgePosition || 0;
+    if (whichSliderHandle === 'left') return edgePosition || 0;
 
     // make certain both containerWidth and edgePosition are numbers
     // and not NaN (self-compare check)
@@ -44,7 +44,7 @@ export default class Slider extends React.Component {
     return 0;
   }
 
-  keyboardSliderMove(keyPressed, which) {
+  keyboardSliderMove(keyPressed, whichSliderHandle) {
     const {
       domain,
       onSliderMove,
@@ -59,7 +59,7 @@ export default class Slider extends React.Component {
     const percentChange = changeAmount / width;
     
     // Left slider was changed. Adjust lower domain.
-    if (which === 'x1') {
+    if (whichSliderHandle === 'x1') {
       // Right/Up Arrow and Page Up keys increment.
       if (keyPressed === 'ArrowRight' || keyPressed === 'ArrowUp' || keyPressed === 'PageUp') {
         let newLower = lowerExtent + percentChange;
@@ -71,18 +71,18 @@ export default class Slider extends React.Component {
       if (keyPressed === 'ArrowLeft' || keyPressed === 'ArrowDown' || keyPressed === 'PageDown') {
         let newLower = lowerExtent - percentChange;
         // prevent the slider handles from crossing
-        if (newLower > upperExtent) newLower = upperExtent; // correct?????????
+        if (newLower > upperExtent) newLower = upperExtent;
         lowerExtent = newLower;
       }
     }
 
     // Right slider was changed. Adjust upper domain.
-    if (which === 'x2') {
+    if (whichSliderHandle === 'x2') {
       // Right/Up Arrow and Page Up keys increment.
       if (keyPressed === 'ArrowRight' || keyPressed === 'ArrowUp' || keyPressed === 'PageUp') {
         let newUpper = upperExtent + percentChange;
         // prevent the slider handles from crossing
-        if (newUpper < lowerExtent) newUpper = lowerExtent; // correct??????????
+        if (newUpper < lowerExtent) newUpper = lowerExtent;
         upperExtent = newUpper;
       }
       // Left/Down Arrow and Page Down keys decrement.
@@ -107,9 +107,9 @@ export default class Slider extends React.Component {
   /**
    * Passed as moveHandler to individual brush handles
    * @param {Number} positionChange -> num pixels the handle has been dragged
-   * @param {String} which -> 'x1' or 'x2'
+   * @param {String} whichSliderHandle -> 'x1' or 'x2'
    */
-  decoratedSliderMove(positionChange, which) {
+  decoratedSliderMove(positionChange, whichSliderHandle) {
     const {
       domain,
       onSliderMove,
@@ -123,7 +123,7 @@ export default class Slider extends React.Component {
     const percentChange = positionChange / width;
     const tolerance = 0.005;
 
-    switch (which) {
+    switch (whichSliderHandle) {
       case 'x1':
         positionAsPercent = maybeSnapToBounds(
           tolerance,
@@ -188,7 +188,7 @@ export default class Slider extends React.Component {
         </rect>
         <SliderHandle
           ariaLabel="Change the minimum value displayed on the map."
-          which={'x1'}
+          whichSliderHandle={'x1'}
           position={leftEdgeinPx}
           label={minExtent}
           labelFormat={labelFormat}
@@ -208,7 +208,7 @@ export default class Slider extends React.Component {
         </rect>
         <SliderHandle
           ariaLabel="Change the maximum value displayed on the map."
-          which="x2"
+          whichSliderHandle="x2"
           position={rightEdgeInPx}
           label={maxExtent}
           labelFormat={labelFormat}
