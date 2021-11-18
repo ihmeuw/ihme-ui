@@ -86,7 +86,7 @@ export default class ChoroplethLegend extends React.PureComponent {
     const sliderHeight = 10 + (5 * zoom);
 
     return (
-      <svg width={width} height={height}>
+      <svg role="img" width={width} height={height}>
         <g transform={`translate(${margins.left}, ${margins.top})`}>
           <Scatter
             colorAccessor={colorAccessor}

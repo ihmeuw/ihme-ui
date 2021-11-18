@@ -7,6 +7,7 @@ import SvgText from '../../../svg-text';
 import style from './slider-handle.css';
 
 const propTypes = {
+  ariaLabel: PropTypes.string,
   /* top margin applied within svg document handle is placed within; used to calc origin offset */
   marginTop: PropTypes.number,
 
@@ -28,10 +29,14 @@ const propTypes = {
   /* fn of signature function(mouse::clientX, whichHandle) */
   onSliderMove: PropTypes.func,
 
+  /* used for keyboard interaction */
+  onSliderKeyboardMove: PropTypes.func,
+
   which: PropTypes.oneOf(['x1', 'x2'])
 };
 
 const defaultProps = {
+  ariaLabel: '',
   marginTop: 0,
   marginLeft: 0,
   position: 0,
@@ -47,10 +52,14 @@ export default class SliderHandle extends React.Component {
 
     this.storeReference = this.storeReference.bind(this);
     this.onHandleMove = this.onHandleMove.bind(this);
+    this.onSliderKeyDown = this.onSliderKeyDown.bind(this);
   }
 
   componentDidMount() {
     this.bindInteract(this._handle);
+
+    const sliderElement = document.querySelector(`#slider-${this.props.which}`);
+    sliderElement.addEventListener('keydown', this.onSliderKeyDown);
   }
 
   componentWillUnmount() {
@@ -60,6 +69,20 @@ export default class SliderHandle extends React.Component {
   onHandleMove(evt) {
     const { onSliderMove, which } = this.props;
     onSliderMove(evt.dx, which);
+  }
+
+  onSliderKeyDown(event) {
+    event.stopImmediatePropagation();
+    const { onSliderKeyboardMove, which } = this.props;
+    if (event.code === 'ArrowRight'
+      || event.code === 'ArrowDown'
+      || event.code === 'ArrowLeft'
+      || event.code === 'ArrowUp'
+      || event.code === 'PageUp'
+      || event.code === 'PageDown'
+    ) {
+      onSliderKeyboardMove(event.code, which);
+    }
   }
 
   storeReference(el) {
@@ -84,8 +107,12 @@ export default class SliderHandle extends React.Component {
 
     return (
       <g
+        aria-label={this.props.ariaLabel}
         className={classNames(style.handle)}
+        id={`slider-${which}`}
         ref={this.storeReference}
+        tabIndex={0}
+        onKeyDown={this.onSliderKeyDown}
       >
         <rect
           transform={`translate(${which === 'x1' ? -5 : 0}, -2.5)`}

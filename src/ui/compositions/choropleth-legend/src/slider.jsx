@@ -26,6 +26,7 @@ export default class Slider extends React.Component {
     super(props);
 
     this.decoratedSliderMove = this.decoratedSliderMove.bind(this);
+    this.keyboardSliderMove = this.keyboardSliderMove.bind(this);
   }
 
   rectWidth(which, edgePosition, containerWidth) {
@@ -41,6 +42,66 @@ export default class Slider extends React.Component {
     }
 
     return 0;
+  }
+
+  keyboardSliderMove(keyPressed, which) {
+    const {
+      domain,
+      onSliderMove,
+      rangeExtent: [minExtent, maxExtent],
+      width,
+    } = this.props;
+
+    let lowerExtent = percentOfRange(minExtent, domain);
+    let upperExtent = percentOfRange(maxExtent, domain);
+    // Page up/down increments/decrements by 10%, arrow keys increment/decrement by 1%.
+    const changeAmount = (keyPressed === 'PageUp' || keyPressed === 'PageDown') ? 10 : 1;
+    const percentChange = changeAmount / width;
+    
+    // Left slider was changed. Adjust lower domain.
+    if (which === 'x1') {
+      // Right/Up Arrow and Page Up keys increment.
+      if (keyPressed === 'ArrowRight' || keyPressed === 'ArrowUp' || keyPressed === 'PageUp') {
+        let newLower = lowerExtent + percentChange;
+        // prevent the slider handles from crossing
+        if (newLower > upperExtent) newLower = upperExtent;
+        lowerExtent = newLower;
+      }
+      // Left/Down Arrow and Page Down keys decrement.
+      if (keyPressed === 'ArrowLeft' || keyPressed === 'ArrowDown' || keyPressed === 'PageDown') {
+        let newLower = lowerExtent - percentChange;
+        // prevent the slider handles from crossing
+        if (newLower > upperExtent) newLower = upperExtent; // correct?????????
+        lowerExtent = newLower;
+      }
+    }
+
+    // Right slider was changed. Adjust upper domain.
+    if (which === 'x2') {
+      // Right/Up Arrow and Page Up keys increment.
+      if (keyPressed === 'ArrowRight' || keyPressed === 'ArrowUp' || keyPressed === 'PageUp') {
+        let newUpper = upperExtent + percentChange;
+        // prevent the slider handles from crossing
+        if (newUpper < lowerExtent) newUpper = lowerExtent; // correct??????????
+        upperExtent = newUpper;
+      }
+      // Left/Down Arrow and Page Down keys decrement.
+      if (keyPressed === 'ArrowLeft' || keyPressed === 'ArrowDown' || keyPressed === 'PageDown') {
+        let newUpper = upperExtent - percentChange;
+        // prevent the slider handles from crossing
+        if (newUpper < lowerExtent) newUpper = lowerExtent;
+        upperExtent = newUpper;
+      }
+    }
+
+    // if user is attempting to move slider outside of bounding domain of the data
+    // don't trigger new render or fire moveHandler
+    // while xScale is already clamped, this check prevents unnecessary render cycles
+    if (!isWithinRange(lowerExtent, [0, 1]) || !isWithinRange(upperExtent, [0, 1])) return;
+
+    // fire action handler passed in to <ChoroplethLegend />
+    // with updated range extent
+    onSliderMove([lowerExtent, upperExtent]);
   }
 
   /**
@@ -116,7 +177,7 @@ export default class Slider extends React.Component {
     const rightEdgeInPx = xScale(maxExtent);
 
     return (
-      <g transform={`translate(0, ${translateY * zoom})`}>
+      <g role="slider" transform={`translate(0, ${translateY * zoom})`}>
         <rect
           x="0px"
           height={`${height}px`}
@@ -126,11 +187,13 @@ export default class Slider extends React.Component {
         >
         </rect>
         <SliderHandle
+          ariaLabel="Change the minimum value displayed on the map."
           which={'x1'}
           position={leftEdgeinPx}
           label={minExtent}
           labelFormat={labelFormat}
           onSliderMove={this.decoratedSliderMove}
+          onSliderKeyboardMove={this.keyboardSliderMove}
           marginTop={marginTop}
           marginLeft={marginLeft}
           height={height}
@@ -144,11 +207,13 @@ export default class Slider extends React.Component {
         >
         </rect>
         <SliderHandle
+          ariaLabel="Change the maximum value displayed on the map."
           which="x2"
           position={rightEdgeInPx}
           label={maxExtent}
           labelFormat={labelFormat}
           onSliderMove={this.decoratedSliderMove}
+          onSliderKeyboardMove={this.keyboardSliderMove}
           marginTop={marginTop}
           marginLeft={marginLeft}
           height={height}
@@ -175,6 +240,9 @@ Slider.propTypes = {
 
   /* will be called with updated extent (as percentage of slider width) */
   onSliderMove: PropTypes.func,
+
+  /* will be called when keyboard is used to change slider handles */
+  onSliderKeyboardMove: PropTypes.func,
 
   /* [min, max] of domain (in data space) user has selected; used to position slider handles */
   rangeExtent: PropTypes.array.isRequired,
@@ -208,4 +276,5 @@ Slider.defaultProps = {
   marginLeft: 0,
   translateY: 1,
   onSliderMove: noop,
+  onSliderKeyboardMove: noop,
 };
