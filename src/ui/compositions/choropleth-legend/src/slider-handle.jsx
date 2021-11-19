@@ -14,6 +14,9 @@ const propTypes = {
   /* left margin applied within svg document handle is placed within; used to calc origin offset */
   marginLeft: PropTypes.number,
 
+  minValue: PropTypes.number,
+  maxValue: PropTypes.number,
+
   /* the height of element (path, line, rect) that the slider will sit atop, in px */
   height: PropTypes.number,
 
@@ -39,6 +42,8 @@ const defaultProps = {
   ariaLabel: '',
   marginTop: 0,
   marginLeft: 0,
+  minValue: 0,
+  maxValue: 1,
   position: 0,
   height: 15,
   label: null,
@@ -102,14 +107,18 @@ export default class SliderHandle extends React.Component {
   }
 
   render() {
-    const { position, whichSliderHandle, label, labelFormat, height } = this.props;
+    const { position, whichSliderHandle, label, maxValue, minValue, labelFormat, height } = this.props;
     const handleHeight = height + 5;
-
     return (
       <g
         aria-label={this.props.ariaLabel}
+        aria-valuemin={minValue}
+        aria-valuenow={label}
+        aria-valuetext={labelFormat(label)}
+        aria-valuemax={maxValue}
         className={classNames(style.handle)}
         id={`slider-${whichSliderHandle}`}
+        role="slider"
         ref={this.storeReference}
         tabIndex={0}
         onKeyDown={this.onSliderKeyDown}

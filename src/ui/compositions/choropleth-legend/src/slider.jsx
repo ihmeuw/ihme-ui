@@ -162,6 +162,7 @@ export default class Slider extends React.Component {
 
   render() {
     const {
+      domain,
       xScale,
       rangeExtent,
       width,
@@ -173,11 +174,12 @@ export default class Slider extends React.Component {
       zoom
     } = this.props;
     const [minExtent, maxExtent] = rangeExtent;
+    const [minDomain, maxDomain] = domain;
     const leftEdgeinPx = xScale(minExtent);
     const rightEdgeInPx = xScale(maxExtent);
 
     return (
-      <g role="slider" transform={`translate(0, ${translateY * zoom})`}>
+      <g transform={`translate(0, ${translateY * zoom})`}>
         <rect
           x="0px"
           height={`${height}px`}
@@ -196,6 +198,7 @@ export default class Slider extends React.Component {
           onSliderKeyboardMove={this.keyboardSliderMove}
           marginTop={marginTop}
           marginLeft={marginLeft}
+          minValue={minDomain}
           height={height}
         />
         <rect
@@ -216,6 +219,7 @@ export default class Slider extends React.Component {
           onSliderKeyboardMove={this.keyboardSliderMove}
           marginTop={marginTop}
           marginLeft={marginLeft}
+          maxValue={maxDomain}
           height={height}
         />
       </g>

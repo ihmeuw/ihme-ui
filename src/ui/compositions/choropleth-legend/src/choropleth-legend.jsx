@@ -57,6 +57,7 @@ export default class ChoroplethLegend extends React.PureComponent {
       focus,
       focusedClassName,
       focusedStyle,
+      legendAriaHideTickMarks,
       margins,
       colorAccessor,
       colorSteps,
@@ -86,7 +87,11 @@ export default class ChoroplethLegend extends React.PureComponent {
     const sliderHeight = 10 + (5 * zoom);
 
     return (
-      <svg role="img" width={width} height={height}>
+      <svg
+        aria-label={`Legend showing values from ${sliderHandleFormat(rangeExtent[0])} to ${sliderHandleFormat(rangeExtent[1])}.`}
+        height={height}
+        width={width}
+      >
         <g transform={`translate(${margins.left}, ${margins.top})`}>
           <Scatter
             colorAccessor={colorAccessor}
@@ -132,6 +137,7 @@ export default class ChoroplethLegend extends React.PureComponent {
             <XAxis
               autoFilterTickValues
               label={unit}
+              legendAriaHideTickMarks={legendAriaHideTickMarks}
               orientation="bottom"
               scales={scatterScaleMap}
               translate={axisTranslate}
@@ -219,6 +225,7 @@ ChoroplethLegend.propTypes = {
     PropTypes.string,
     PropTypes.func,
   ]),
+  legendAriaHideTickMarks: PropTypes.bool,
 
   /**
    * margins to subtract from width and height
@@ -331,6 +338,7 @@ ChoroplethLegend.defaultProps = {
     y: 20
   },
   colorSteps: defaultColorSteps,
+  legendAriaHideTickMarks: true,
   margins: {
     top: 50,
     right: 100,

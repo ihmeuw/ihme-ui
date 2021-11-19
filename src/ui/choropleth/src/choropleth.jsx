@@ -370,6 +370,8 @@ export default class Choropleth extends React.Component {
           onZoomReset={this.zoomReset}
         />}
         <svg
+          aria-label={this.props.ariaLabelMap}
+          role="img"
           ref={this.saveSvgRef}
           width={`${width}px`}
           height={`${height}px`}
@@ -384,6 +386,7 @@ export default class Choropleth extends React.Component {
 }
 
 Choropleth.propTypes = {
+  ariaLabelMap: PropTypes.string,
   /**
    * className applied to outermost div
    */
@@ -620,6 +623,7 @@ Choropleth.propTypes = {
 };
 
 Choropleth.defaultProps = {
+  ariaLabelMap: '',
   controls: false,
   height: 400,
   layers: [],

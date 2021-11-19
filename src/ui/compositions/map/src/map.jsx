@@ -267,6 +267,7 @@ export default class Map extends React.Component {
 
   renderMap() {
     const {
+      ariaLabelMap,
       colorAccessor,
       data,
       focus,
@@ -274,6 +275,7 @@ export default class Map extends React.Component {
       focusedStyle,
       keyField,
       geometryKeyField,
+      legendAriaHideTickMarks,
       mapClassName,
       mapStyle,
       onClick,
@@ -294,6 +296,7 @@ export default class Map extends React.Component {
       <div className={classNames(styles.map, mapClassName)} style={mapStyle}>
         <ResponsiveContainer>
           <Choropleth
+            ariaLabelMap={ariaLabelMap}
             controlsButtonClassName={zoomControlsButtonClassName}
             colorAccessor={colorAccessor}
             colorScale={colorScale}
@@ -307,6 +310,7 @@ export default class Map extends React.Component {
             geometryKeyField={geometryKeyField}
             keyField={keyField}
             layers={layers}
+            legendAriaHideTickMarks={legendAriaHideTickMarks}
             onClick={onClick}
             onMouseLeave={onMouseLeave}
             onMouseMove={onMouseMove}
@@ -335,6 +339,7 @@ export default class Map extends React.Component {
       legendClassName,
       legendMargins,
       legendStyle,
+      legendAriaHideTickMarks,
       onClick,
       onMouseLeave,
       onMouseMove,
@@ -370,6 +375,7 @@ export default class Map extends React.Component {
               focusedClassName={focusedClassName}
               focusedStyle={focusedStyle}
               keyField={keyField}
+              legendAriaHideTickMarks={legendAriaHideTickMarks}
               margins={legendMargins}
               onClick={onClick}
               onMouseLeave={onMouseLeave}
@@ -417,6 +423,7 @@ export default class Map extends React.Component {
 }
 
 Map.propTypes = {
+  ariaLabelMap: PropTypes.string,
   /**
    * [format of axis ticks](https://github.com/d3/d3-axis#axis_tickFormat)
    * implicitly defaults to [numberFormat](https://github.com/ihmeuw/ihme-ui/blob/docs/src/utils/numbers.js#L9)
@@ -528,6 +535,7 @@ Map.propTypes = {
    * inline style object applied to div containing choropleth legend
    */
   legendStyle: PropTypes.object,
+  legendAriaHideTickMarks: PropTypes.bool,
 
   /**
    * is data for this component currently being fetched
@@ -677,6 +685,7 @@ Map.propTypes = {
 };
 
 Map.defaultProps = {
+  ariaLabelMap: '',
   colorSteps: defaultColorSteps.slice().reverse(),
   extentPct: [0, 1],
   legendMargins: {
@@ -685,6 +694,7 @@ Map.defaultProps = {
     bottom: 0,
     left: 50,
   },
+  legendAriaHideTickMarks: true,
   loading: false,
   selectedLocations: [],
   topojsonObjects: ['national'],

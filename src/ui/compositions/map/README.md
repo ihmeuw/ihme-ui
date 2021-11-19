@@ -14,6 +14,7 @@ your topojson must conform to the following requirements:
 
 Property | Required | Type(s) | Defaults | Description
 :---    |:---      |:---     |:---      |:---
+`ariaLabelMap` | true | string | '' | the string describing the map for screen readers
 `axisTickFormat` |  | func |  | [format of axis ticks](https://github.com/d3/d3-axis#axis_tickFormat)<br />implicitly defaults to [numberFormat](https://github.com/ihmeuw/ihme-ui/blob/docs/src/utils/numbers.js#L9)
 `className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/main/src/utils/props.js#L11) |  | className applied to outermost wrapping div
 `colorAccessor` |  | string, func |  | if string, the color property of the datum object; if function, takes in datum object and returns a color string.
@@ -29,6 +30,7 @@ Property | Required | Type(s) | Defaults | Description
 `legendClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/main/src/utils/props.js#L11) |  | classname applied to div containing choropleth legend
 `legendMargins` |  | object | {<br />  top: 20,<br />  right: 50,<br />  bottom: 0,<br />  left: 50,<br />} | margins passed to `<ChoroplethLegend />`<br />subtracted from width and height of `<ChoroplethLegend />`
 `legendStyle` |  | object |  | inline style object applied to div containing choropleth legend
+`legendAriaHideTickMarks` | | boolean | true | Whether or not tick marks in the legend should be hidden from screen readers.
 `loading` |  | bool | false | is data for this component currently being fetched<br />will prevent component from updating (a la shouldComponentUpdate) if true
 `mapClassName` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/main/src/utils/props.js#L11) |  | className applied to div directly wrapping `<Choropleth />`
 `mapStyle` |  | [CommonPropTypes.style](https://github.com/ihmeuw/ihme-ui/blob/main/src/utils/props.js#L16) |  | inline styles applied to div directly wrapping `<Choropleth />`
