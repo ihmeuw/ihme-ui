@@ -65,25 +65,23 @@ import { AxisChart, linspace } from 'ihme-ui';
 4. Create a new ticket branch and check it out.
 `git checkout -b ticket-branch-name`
 5. Make your code changes. 
-6. From the terminal, navigate to whichever component you are changing.
-`cd src/ui/compositions/map`
-7. Run the demo for that component (e.g., map demo). You'll need to re-run this script every time you save additional changes to rebuild the demo. 
+6. Run the demo for that component (e.g., map demo). You'll need to re-run this script every time you save additional changes to rebuild the demo. 
 `npm run demo map`
-8. Open a browser window and enter the path to the demo. For example, http://localhost:8888//ihme-ui/src/ui/compositions/map/demo/index.html (Change the port number to whichever port you're using for local development in MAMP.)
-9. You'll need to refresh the browser every time you rebuild the demo.
-10. Stage changes and commit as necessary.
+7. Open a browser window and enter the path to the demo. For example, http://localhost:8888//ihme-ui/src/ui/compositions/map/demo/index.html (Change the port number to whichever port you're using for local development in MAMP.)
+8. You'll need to refresh the browser every time you rebuild the demo.
+9. Stage changes and commit as necessary.
 ```
 git status // to see changed files`
 git add filename.js // or git add . to add all modified files
 git commit -m "enter your commit message here" // commit your changes locally
 ```
-11. Push up your working branch in order to create a PR.
+10. Push up your working branch in order to create a PR.
 `git push -u origin working-branch-name`
-12. Go to IHME-UI in Github and click on Compare & Pull Request, then click New Pull Request. 
-13. Select your working branch and which branch you're making the request onto (typically main).
-14. Add a description of the changes.
-15. Add other IHME developers as reviewers
-16. Click Create Pull Request.  
+11. Go to IHME-UI in Github and click on Compare & Pull Request, then click New Pull Request. 
+12. Select your working branch and which branch you're making the request onto (typically main).
+13. Add a description of the changes.
+14. Add other IHME developers as reviewers
+15. Click Create Pull Request.  
 ---
 
 ## API Reference
