@@ -62,9 +62,7 @@ export default class SliderHandle extends React.Component {
 
   componentDidMount() {
     this.bindInteract(this._handle);
-
-    const sliderElement = document.querySelector(`#slider-${this.props.whichSliderHandle}`);
-    sliderElement.addEventListener('keydown', this.onSliderKeyDown);
+    this._handle.addEventListener('keydown', this.onSliderKeyDown);
   }
 
   componentWillUnmount() {
