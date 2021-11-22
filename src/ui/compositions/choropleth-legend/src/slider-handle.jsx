@@ -76,6 +76,7 @@ export default class SliderHandle extends React.Component {
 
   onSliderKeyDown(event) {
     event.stopImmediatePropagation();
+    event.preventDefault();
     const { onSliderKeyboardMove, whichSliderHandle } = this.props;
     if (event.code === 'ArrowRight'
       || event.code === 'ArrowDown'

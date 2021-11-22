@@ -326,6 +326,7 @@ export default class Map extends React.Component {
 
   renderLegend() {
     const {
+      ariaHideScatterGroup,
       axisTickFormat,
       colorAccessor,
       colorSteps,
@@ -365,6 +366,7 @@ export default class Map extends React.Component {
         <div className={styles['legend-wrapper']}>
           <ResponsiveContainer>
             <ChoroplethLegend
+              ariaHideScatterGroup={ariaHideScatterGroup}
               axisTickFormat={axisTickFormat}
               colorAccessor={colorAccessor}
               colorSteps={colorSteps}
@@ -423,6 +425,7 @@ export default class Map extends React.Component {
 }
 
 Map.propTypes = {
+  ariaHideScatterGroup: PropTypes.bool,
   ariaLabelMap: PropTypes.string,
   /**
    * [format of axis ticks](https://github.com/d3/d3-axis#axis_tickFormat)
@@ -685,6 +688,7 @@ Map.propTypes = {
 };
 
 Map.defaultProps = {
+  ariaHideScatterGroup: false,
   ariaLabelMap: '',
   colorSteps: defaultColorSteps.slice().reverse(),
   extentPct: [0, 1],

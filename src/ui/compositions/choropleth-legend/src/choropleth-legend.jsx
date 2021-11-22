@@ -49,6 +49,7 @@ export default class ChoroplethLegend extends React.PureComponent {
 
   render() {
     const {
+      ariaHideScatterGroup,
       axisTickFormat,
       axisTranslate,
       domain,
@@ -94,6 +95,7 @@ export default class ChoroplethLegend extends React.PureComponent {
       >
         <g transform={`translate(${margins.left}, ${margins.top})`}>
           <Scatter
+            ariaHideScatterGroup={ariaHideScatterGroup}
             colorAccessor={colorAccessor}
             colorScale={colorScale}
             data={data}
@@ -152,6 +154,7 @@ export default class ChoroplethLegend extends React.PureComponent {
 }
 
 ChoroplethLegend.propTypes = {
+  ariaHideScatterGroup: PropTypes.bool,
   /**
    * [format of axis ticks](https://github.com/d3/d3-axis#axis_tickFormat)
    */
@@ -332,6 +335,7 @@ ChoroplethLegend.propTypes = {
 };
 
 ChoroplethLegend.defaultProps = {
+  ariaHideScatterGroup: false,
   axisTickFormat: numberFormat,
   axisTranslate: {
     x: 0,

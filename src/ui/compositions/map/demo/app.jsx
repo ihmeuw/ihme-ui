@@ -202,6 +202,7 @@ class App extends React.Component {
     return (
       <div id="wrapper">
         <Map
+          ariaHideScatterGroup={true}
           ariaLabelMap="Demo map aria label"
           axisTickFormat={numberFormat}
           data={data}

@@ -14,6 +14,7 @@ your topojson must conform to the following requirements:
 
 Property | Required | Type(s) | Defaults | Description
 :---    |:---      |:---     |:---      |:---
+`ariaHideScatterGroup` | false | boolean | whether or not the scatter group should be hidden from screen readers. 
 `ariaLabelMap` | true | string | '' | the string describing the map for screen readers
 `axisTickFormat` |  | func |  | [format of axis ticks](https://github.com/d3/d3-axis#axis_tickFormat)<br />implicitly defaults to [numberFormat](https://github.com/ihmeuw/ihme-ui/blob/docs/src/utils/numbers.js#L9)
 `className` |  | [CommonPropTypes.className](https://github.com/ihmeuw/ihme-ui/blob/main/src/utils/props.js#L11) |  | className applied to outermost wrapping div
