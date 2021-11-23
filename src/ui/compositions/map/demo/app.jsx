@@ -202,6 +202,8 @@ class App extends React.Component {
     return (
       <div id="wrapper">
         <Map
+          ariaHideScatterGroup={true}
+          ariaLabelMap="Demo map aria label"
           axisTickFormat={numberFormat}
           data={data}
           domain={range}
@@ -222,6 +224,7 @@ class App extends React.Component {
           topology={this.prepTopology(topology)}
           unit="Probability of death"
           valueField={valueField}
+          zoomControlsClassName={'zoom-controls-class'}
         />
         <Button
           onClick={this.onToggleColorAccessor}

@@ -10,21 +10,25 @@
 .wrapper button:first-child {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
+  font-size: 20px;
 }
 
 .wrapper button:nth-child(2) {
   border-radius: 0;
+  font-size: 26px;
 }
 
 .wrapper button:last-child {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+  font-size: 26px;
 }
 
 .wrapper > .button {
   /* override button's default justify-content: space-between */
   justify-content: center;
-
-  /* make smaller than default 27px */
-  height: 22px;
+  height: 40px;
+  margin: 1px;
+  padding: 4px;
+  width: 40px;
 }

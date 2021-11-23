@@ -32,6 +32,7 @@ export default class Button extends React.PureComponent {
 
   render() {
     const {
+      ariaLabel,
       children,
       className,
       disabled,
@@ -52,6 +53,7 @@ export default class Button extends React.PureComponent {
 
     return (
       <button
+        aria-label={ariaLabel}
         style={this.combineStyles(styleList)}
         className={classNames(styles.common, styles[theme], className, {
           [disabledClassName]: disabled,
@@ -80,6 +82,7 @@ export default class Button extends React.PureComponent {
 }
 
 Button.propTypes = {
+  ariaLabel: PropTypes.string,
   /**
    * className applied to button
    */
@@ -153,6 +156,7 @@ Button.propTypes = {
 };
 
 Button.defaultProps = {
+  ariaLabel: '',
   disabledClassName: styles.disabled,
 };
 

@@ -49,6 +49,7 @@ export default class ChoroplethLegend extends React.PureComponent {
 
   render() {
     const {
+      ariaHideScatterGroup,
       axisTickFormat,
       axisTranslate,
       domain,
@@ -57,6 +58,7 @@ export default class ChoroplethLegend extends React.PureComponent {
       focus,
       focusedClassName,
       focusedStyle,
+      legendAriaHideTickMarks,
       margins,
       colorAccessor,
       colorSteps,
@@ -86,9 +88,14 @@ export default class ChoroplethLegend extends React.PureComponent {
     const sliderHeight = 10 + (5 * zoom);
 
     return (
-      <svg width={width} height={height}>
+      <svg
+        aria-label={`Legend showing values from ${sliderHandleFormat(rangeExtent[0])} to ${sliderHandleFormat(rangeExtent[1])}.`}
+        height={height}
+        width={width}
+      >
         <g transform={`translate(${margins.left}, ${margins.top})`}>
           <Scatter
+            ariaHideScatterGroup={ariaHideScatterGroup}
             colorAccessor={colorAccessor}
             colorScale={colorScale}
             data={data}
@@ -132,6 +139,7 @@ export default class ChoroplethLegend extends React.PureComponent {
             <XAxis
               autoFilterTickValues
               label={unit}
+              legendAriaHideTickMarks={legendAriaHideTickMarks}
               orientation="bottom"
               scales={scatterScaleMap}
               translate={axisTranslate}
@@ -146,6 +154,7 @@ export default class ChoroplethLegend extends React.PureComponent {
 }
 
 ChoroplethLegend.propTypes = {
+  ariaHideScatterGroup: PropTypes.bool,
   /**
    * [format of axis ticks](https://github.com/d3/d3-axis#axis_tickFormat)
    */
@@ -219,6 +228,7 @@ ChoroplethLegend.propTypes = {
     PropTypes.string,
     PropTypes.func,
   ]),
+  legendAriaHideTickMarks: PropTypes.bool,
 
   /**
    * margins to subtract from width and height
@@ -325,12 +335,14 @@ ChoroplethLegend.propTypes = {
 };
 
 ChoroplethLegend.defaultProps = {
+  ariaHideScatterGroup: false,
   axisTickFormat: numberFormat,
   axisTranslate: {
     x: 0,
     y: 20
   },
   colorSteps: defaultColorSteps,
+  legendAriaHideTickMarks: true,
   margins: {
     top: 50,
     right: 100,

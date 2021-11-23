@@ -57,7 +57,36 @@ In support of this, `ihme-ui` exposes both a CommonJS (i.e., `var ihmeUI = requi
 import { AxisChart, linspace } from 'ihme-ui';
 //...
 ```
-
+## Local development and posting pull requests
+1. In Github, click on the Code dropdown/button to clone the repo. You can use either https or ssh. 
+2. Open a terminal, navigate to where you have your repos saved, then clone.
+`git clone theUrlFromGithubgoes.here`
+3. Be sure to [set up a personal token](https://github.blog/2020-12-15-token-authentication-requirements-for-git-operations/); you'll need it to push up your working branch to the remote.
+4. Change to the ihme-ui directory and install dependencies. 
+```
+cd ihme-ui
+npm i
+```
+5. Create a new ticket branch and check it out.
+`git checkout -b ticket-branch-name`
+6. Make your code changes. 
+7. Run the demo for that component (e.g., map demo). You'll need to re-run this script every time you save additional changes to rebuild the demo. 
+`npm run demo map`
+8. Open a browser window and enter the path to the demo. For example, http://localhost:8888//ihme-ui/src/ui/compositions/map/demo/index.html (Change the port number to whichever port you're using for local development in MAMP.)
+9. You'll need to refresh the browser every time you rebuild the demo.
+10. Stage changes and commit as necessary.
+```
+git status // to see changed files`
+git add filename.js // or git add . to add all modified files
+git commit -m "enter your commit message here" // commit your changes locally
+```
+11. Push up your working branch in order to create a PR.
+`git push -u origin working-branch-name`
+12. Go to IHME-UI in Github and click on Compare & Pull Request, then click New Pull Request. 
+13. Select your working branch and which branch you're making the request onto (typically main).
+14. Add a description of the changes.
+15. Add other IHME developers as reviewers
+16. Click Create Pull Request.  
 ---
 
 ## API Reference

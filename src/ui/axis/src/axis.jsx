@@ -72,6 +72,7 @@ export default class Axis extends React.PureComponent {
   drawAxis() {
     const {
       className,
+      legendAriaHideTickMarks,
       orientation,
       rotateTickLabels,
       scale,
@@ -106,6 +107,7 @@ export default class Axis extends React.PureComponent {
     if (tickValues) axis.tickValues(tickValues);
 
     this._axisSelection
+      .attr('aria-hidden', `${legendAriaHideTickMarks}`)
       .attr('class', classNames(styles.common, className))
       .attr('transform', `translate(${translate.x}, ${translate.y})`)
       .attr('style', Axis.concatStyle(style))
@@ -239,6 +241,7 @@ Axis.propTypes = {
    * inline styles applied to text element surrounding axis label
    */
   labelStyle: PropTypes.object,
+  legendAriaHideTickMarks: PropTypes.bool,
 
   /**
    * where to position axis line; will position ticks accordingly
@@ -331,6 +334,7 @@ Axis.propTypes = {
 
 Axis.defaultProps = {
   height: 30,
+  legendAriaHideTickMarks: true,
   padding: {
     top: 40,
     bottom: 40,

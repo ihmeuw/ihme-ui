@@ -10,18 +10,21 @@ export default function Controls(props) {
   return (
     <div className={classNames(style.wrapper, props.className)} style={props.style}>
       <Button
+        ariaLabel="Zoom in"
         className={classNames(style.button, props.buttonClassName)}
         onClick={props.onZoomIn}
         style={props.buttonStyle}
         text="+"
       />
       <Button
+        ariaLabel="Default zoom level"
         className={classNames(style.button, props.buttonClassName)}
         onClick={props.onZoomReset}
         style={props.buttonStyle}
         text="•"
       />
       <Button
+        ariaLabel="Zoom out"
         className={classNames(style.button, props.buttonClassName)}
         onClick={props.onZoomOut}
         style={props.buttonStyle}

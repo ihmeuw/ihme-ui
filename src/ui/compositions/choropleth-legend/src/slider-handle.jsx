@@ -7,11 +7,15 @@ import SvgText from '../../../svg-text';
 import style from './slider-handle.css';
 
 const propTypes = {
+  ariaLabel: PropTypes.string,
   /* top margin applied within svg document handle is placed within; used to calc origin offset */
   marginTop: PropTypes.number,
 
   /* left margin applied within svg document handle is placed within; used to calc origin offset */
   marginLeft: PropTypes.number,
+
+  minValue: PropTypes.number,
+  maxValue: PropTypes.number,
 
   /* the height of element (path, line, rect) that the slider will sit atop, in px */
   height: PropTypes.number,
@@ -25,20 +29,26 @@ const propTypes = {
   /* label format function; given props.label as argument; defaults to identity function */
   labelFormat: PropTypes.func,
 
-  /* fn of signature function(mouse::clientX, whichHandle) */
+  /* fn of signature function(mouse::clientX, whichSliderHandle) */
   onSliderMove: PropTypes.func,
 
-  which: PropTypes.oneOf(['x1', 'x2'])
+  /* used for keyboard interaction */
+  onSliderKeyboardMove: PropTypes.func,
+
+  whichSliderHandle: PropTypes.oneOf(['x1', 'x2'])
 };
 
 const defaultProps = {
+  ariaLabel: '',
   marginTop: 0,
   marginLeft: 0,
+  minValue: 0,
+  maxValue: 1,
   position: 0,
   height: 15,
   label: null,
   labelFormat: (n) => n,
-  which: 'x1'
+  whichSliderHandle: 'x1'
 };
 
 export default class SliderHandle extends React.Component {
@@ -47,10 +57,12 @@ export default class SliderHandle extends React.Component {
 
     this.storeReference = this.storeReference.bind(this);
     this.onHandleMove = this.onHandleMove.bind(this);
+    this.onSliderKeyDown = this.onSliderKeyDown.bind(this);
   }
 
   componentDidMount() {
     this.bindInteract(this._handle);
+    this._handle.addEventListener('keydown', this.onSliderKeyDown);
   }
 
   componentWillUnmount() {
@@ -58,8 +70,23 @@ export default class SliderHandle extends React.Component {
   }
 
   onHandleMove(evt) {
-    const { onSliderMove, which } = this.props;
-    onSliderMove(evt.dx, which);
+    const { onSliderMove, whichSliderHandle } = this.props;
+    onSliderMove(evt.dx, whichSliderHandle);
+  }
+
+  onSliderKeyDown(event) {
+    event.stopImmediatePropagation();
+    event.preventDefault();
+    const { onSliderKeyboardMove, whichSliderHandle } = this.props;
+    if (event.code === 'ArrowRight'
+      || event.code === 'ArrowDown'
+      || event.code === 'ArrowLeft'
+      || event.code === 'ArrowUp'
+      || event.code === 'PageUp'
+      || event.code === 'PageDown'
+    ) {
+      onSliderKeyboardMove(event.code, whichSliderHandle);
+    }
   }
 
   storeReference(el) {
@@ -79,16 +106,24 @@ export default class SliderHandle extends React.Component {
   }
 
   render() {
-    const { position, which, label, labelFormat, height } = this.props;
+    const { position, whichSliderHandle, label, maxValue, minValue, labelFormat, height } = this.props;
     const handleHeight = height + 5;
-
     return (
       <g
+        aria-label={this.props.ariaLabel}
+        aria-valuemin={minValue}
+        aria-valuenow={label}
+        aria-valuetext={labelFormat(label)}
+        aria-valuemax={maxValue}
         className={classNames(style.handle)}
+        id={`slider-${whichSliderHandle}`}
+        role="slider"
         ref={this.storeReference}
+        tabIndex={0}
+        onKeyDown={this.onSliderKeyDown}
       >
         <rect
-          transform={`translate(${which === 'x1' ? -5 : 0}, -2.5)`}
+          transform={`translate(${whichSliderHandle === 'x1' ? -5 : 0}, -2.5)`}
           x={`${position}px`}
           height={`${handleHeight}px`}
           stroke="none"
@@ -98,9 +133,9 @@ export default class SliderHandle extends React.Component {
         </rect>
         <SvgText
           value={labelFormat(label)}
-          anchor={which === 'x1' ? 'end' : 'start'}
+          anchor={whichSliderHandle === 'x1' ? 'end' : 'start'}
           x={position}
-          dx={which === 'x1' ? -8 : 8}
+          dx={whichSliderHandle === 'x1' ? -8 : 8}
           y={14}
         />
       </g>

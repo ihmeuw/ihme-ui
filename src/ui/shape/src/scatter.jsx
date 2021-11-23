@@ -157,6 +157,7 @@ export default class Scatter extends React.PureComponent {
   renderScatter(data) {
     return (
       <g
+        aria-hidden={this.props.ariaHideScatterGroup}
         className={this.props.className && classNames(this.props.className)}
         clipPath={this.props.clipPathId && `url(#${this.props.clipPathId})`}
         style={this.combineStyles(this.props.style, this.props.data)}
@@ -208,6 +209,7 @@ Scatter.animatable = [
 ];
 
 Scatter.propTypes = {
+  ariaHideScatterGroup: PropTypes.bool,
   /**
    * Whether to animate the scatter component (using default `start`, `update` functions).
    * Optionally, an object that provides functions that dictate behavior of animations.
@@ -374,6 +376,7 @@ Scatter.propTypes = {
 };
 
 Scatter.defaultProps = {
+  ariaHideScatterGroup: false,
   animate: false,
   enter: undefined,
   fill: 'steelblue',
