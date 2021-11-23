@@ -31,7 +31,7 @@ describe('ChoroplethLegend <SliderHandle />', () => {
       <SliderHandle
         position={5}
         onSliderMove={onSliderMove}
-        which="x2"
+        whichSliderHandle="x2"
       />,
       { disableLifecycleMethods: true }
     );
