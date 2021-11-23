@@ -57,7 +57,7 @@ export default class Slider extends React.Component {
     // Page up/down increments/decrements by 10%, arrow keys increment/decrement by 1%.
     const changeAmount = (keyPressed === 'PageUp' || keyPressed === 'PageDown') ? 10 : 1;
     const percentChange = changeAmount / width;
-    
+
     // Left slider was changed. Adjust lower domain.
     if (whichSliderHandle === 'x1') {
       // Right/Up Arrow and Page Up keys increment.
