@@ -76,8 +76,6 @@ export default class SliderHandle extends React.Component {
   }
 
   onSliderKeyDown(event) {
-    event.stopImmediatePropagation();
-    event.preventDefault();
     const { onSliderKeyboardMove, whichSliderHandle } = this.props;
     if (event.code === 'ArrowRight'
       || event.code === 'ArrowDown'
@@ -86,6 +84,8 @@ export default class SliderHandle extends React.Component {
       || event.code === 'PageUp'
       || event.code === 'PageDown'
     ) {
+      event.stopPropagation();
+      event.preventDefault();
       onSliderKeyboardMove(event.code, whichSliderHandle);
     }
   }
