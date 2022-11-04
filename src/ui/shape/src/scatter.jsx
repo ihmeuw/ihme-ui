@@ -51,7 +51,7 @@ export default class Scatter extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.state = stateFromPropUpdates(Scatter.propUpdates, this.props, nextProps, this.state);
+    this.setState(stateFromPropUpdates(Scatter.propUpdates, this.props, nextProps, this.state));
   }
 
   static computeFill(props, datum) {
