@@ -77,7 +77,7 @@
     "eslint-plugin-import": "~1.8",
     "eslint-plugin-jsx-a11y": "~1.2",
     "eslint-plugin-react": "~5.1",
-    "jsdom": "^11.6.2",
+    "jsdom": "^16.5.0",
     "mocha": "~5.2",
     "mustache": "~2.3",
     "postcss": "^6.0.17",
