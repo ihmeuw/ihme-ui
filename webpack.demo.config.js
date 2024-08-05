@@ -43,6 +43,18 @@ module.exports = function(directory) {
               },
             },
           ]
+        },
+        {
+          test: /\.svg$/,
+          use: [
+            {
+              loader: '@svgr/webpack',
+              options: {
+                icon: true,
+              },
+            },
+            'url-loader',
+          ]
         }
       ]
     }

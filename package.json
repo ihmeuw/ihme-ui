@@ -49,6 +49,7 @@
     "postinstall": "patch-package"
   },
   "devDependencies": {
+    "@svgr/webpack": "^4.3.3",
     "autoprefixer": "^7.2.5",
     "babel-cli": "~6.26.0",
     "babel-core": "^6.26.3",
@@ -56,7 +57,9 @@
     "babel-istanbul": "~0.12.2",
     "babel-loader": "^7.1.2",
     "babel-plugin-css-modules-transform": "~1.2",
+    "babel-plugin-import": "1.13.5",
     "babel-plugin-lodash": "~3.2",
+    "babel-plugin-transform-imports": "^2.0.0",
     "babel-plugin-transform-object-rest-spread": "~6.22",
     "babel-plugin-transform-runtime": "~6.22",
     "babel-polyfill": "~6.22",
@@ -89,6 +92,7 @@
     "request": "~2.87.0",
     "sinon": "^2.4.1",
     "style-loader": "^0.20.1",
+    "url-loader": "^1.1.2",
     "webpack": "^3.10.0"
   },
   "dependencies": {

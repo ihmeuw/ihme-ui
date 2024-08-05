@@ -19,15 +19,46 @@ const buildConfig = _.mergeWith({}, config, {
   module: {
     rules: [
       {
-        test: /\.(jsx?)|(css)$/,
-        exclude: /node_modules/,
+        test: /\.jsx?$/,
+          exclude: /node_modules/,
+          use: [
+            { loader: 'babel-loader' },
+            { loader: path.resolve(__dirname, './scripts/html-pre-tag-loader') }
+          ]
+      },
+      {
+        test: /\.css$/,
+        use: [
+          { loader: 'style-loader' },
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 1,
+              localIdentName: '[name]__[local]___[hash:base64:5]',
+              modules: true,
+            },
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: [autoprefixer],
+            },
+          },
+        ]
+      },
+      {
+        test: /\.svg$/,
         use: [
           {
-            loader: 'babel-loader',
+            loader: '@svgr/webpack',
+            options: {
+              icon: true,
+            },
           },
-        ],
-      },
-    ],
+        'url-loader',
+        ]
+      }
+    ]
 
   },
   externals: {
