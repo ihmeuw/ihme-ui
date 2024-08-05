@@ -1,3 +1,22 @@
+.title-container {
+    color: #142027;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.title {
+    font-size: 19px;
+    font-weight: 600;
+    text-align: left;
+}
+
+.helper-text {
+    font-size: 14px;
+    font-weight: 400;
+    text-align: left;
+}
+
 .density-circle {
     fill-opacity: 0.3;
 }

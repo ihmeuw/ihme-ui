@@ -88,13 +88,19 @@ export default class ChoroplethLegend extends React.PureComponent {
 
     const sliderHeight = 10 + (5 * zoom);
 
+    const legendYStart = margins.top + 45;
+
     return (
       <svg
         aria-label={`Legend showing values from ${sliderHandleFormat(rangeExtent[0])} to ${sliderHandleFormat(rangeExtent[1])}.`}
         height={height}
         width={width}
       >
-        <g transform={`translate(${margins.left}, ${margins.top})`}>
+        <g className={styles['title-container']} transform="translate(0, 0)" >
+          <text className={styles.title} x="0" y="20">Legend</text>
+          <text className={styles['helper-text']} x="0" y="40"> Drag the slider to adjust the range.</text>
+        </g>
+        <g transform={`translate(${margins.left}, ${legendYStart})`}>
           <Scatter
             ariaHideScatterGroup={ariaHideScatterGroup}
             colorAccessor={colorAccessor}
@@ -116,13 +122,13 @@ export default class ChoroplethLegend extends React.PureComponent {
           <g transform={`translate(0, ${10 + (5 * zoom)})`}>
             {
               !colorAccessor
-              && <LinearGradient
-                colors={colorSteps}
-                x1={x1}
-                x2={x2}
-                width={adjustedWidth}
-                height={sliderHeight}
-              />
+                && <LinearGradient
+                  colors={colorSteps}
+                  x1={x1}
+                  x2={x2}
+                  width={adjustedWidth}
+                  height={sliderHeight}
+                />
             }
             <Slider
               domain={domain}
@@ -138,7 +144,6 @@ export default class ChoroplethLegend extends React.PureComponent {
               zoom={zoom}
             />
             <XAxis
-              autoFilterTickValues
               label={unit}
               legendAriaHideTickMarks={legendAriaHideTickMarks}
               orientation="bottom"

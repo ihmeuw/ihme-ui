@@ -396,14 +396,14 @@ export default class Map extends React.Component {
         </div>
         <div className={styles['button-wrapper']}>
           <Button
-            className={styles.button}
+            className={styles['choropleth-legend-button']}
             onClick={this.onSetScale}
-            text="Set scale"
+            text="SET SCALE"
           />
           <Button
-            className={styles.button}
+            className={styles['choropleth-legend-button']}
             onClick={this.onResetScale}
-            text="Reset"
+            text="RESET"
           />
         </div>
       </div>

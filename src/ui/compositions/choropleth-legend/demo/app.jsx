@@ -141,7 +141,7 @@ class App extends React.Component {
 </code></pre> */}
         <ChoroplethLegend
           margins={{
-            top: 50,
+            top: 70,
             right: 200,
             bottom: 50,
             left: 200

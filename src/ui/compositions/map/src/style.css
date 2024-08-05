@@ -1,13 +1,51 @@
-.button {
-    height: initial;
-    min-height: 27px;
-    max-height: 50%;
+.choropleth-legend-button {
+    height: 28px;
+    width: 113px;
+
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 13.06px;
+    letter-spacing: 0.05em;
+    text-align: center;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #1e7b53;
+    border-radius: 0px;
+    color: #1e7b53;
+    fill: #1e7b53;
+    background-color: #fffefc;
+}
+
+.choropleth-legend-button:hover, .choropleth-legend-button:focus, .choropleth-legend-button:hover:not(:disabled), .choropleth-legend-button:focus:not(:disabled) {
+    background-color: #1e7b53;
+    color: #fffefc;
+    fill: #fffefc;
+    cursor: pointer;
+}
+
+.choropleth-legend-button:active, .choropleth-legend-button:active:not(:disabled) {
+    background-color: #3e525e;
+    border-color: #3e525e;
+    cursor: pointer;
+    color: #fffefc;
+    fill: #fffefc;
+}
+
+.choropleth-legend-button:disabled {
+    background-color: #fffefc;
+    border-color: #677378;
+    color: #677378;
+    fill: #677378;
 }
 
 .button-wrapper {
     flex: 1 1 auto;
     flex-wrap: wrap;
     align-self: center;
+    margin: 40px 0px 0px 10px
 }
 
 .button-wrapper button:first-child {
@@ -18,7 +56,7 @@
     position: absolute;
     bottom: 0;
     left: 0;
-    height: 100px;
+    height: 140px;
     width: 100%;
     background-color: rgba(255, 255, 255, 0.6);
     display: flex;
