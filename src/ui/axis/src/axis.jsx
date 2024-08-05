@@ -177,7 +177,7 @@ export default class Axis extends React.PureComponent {
         <g ref={this.storeRef}></g>
         {label &&
           <text
-            className={labelClassName}
+            className={`${labelClassName} ${styles.label}`}
             style={labelStyle}
             x={labelPosition.x}
             y={labelPosition.y}
