@@ -1,3 +1,30 @@
+.legend-container {
+    overflow: visible !important;
+    width: 100%;
+}
+
+.title-container {
+    color: #142027;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.title {
+    font-size: 19px;
+    font-weight: 600;
+    text-align: left;
+}
+
+.helper-text {
+    font-size: 14px;
+    font-weight: 400;
+    overflow-wrap: break-word;
+    text-align: left;
+    white-space: nowrap;
+}
+
 .density-circle {
     fill-opacity: 0.3;
 }

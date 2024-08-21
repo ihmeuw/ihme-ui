@@ -1,34 +1,88 @@
 .wrapper {
   position: absolute;
   top: 1em;
-  left: 1em;
+  right: 1em;
 
+  background-color: #FFFEFC;
+  border: 1px solid #1E7B53;
+  color: #1E7B53;
+}
+
+.inner-wrapper {
   display: flex;
   flex-direction: column;
+  margin: 5px;
 }
 
-.wrapper button:first-child {
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  font-size: 20px;
+.title {
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  text-align: center;
 }
 
-.wrapper button:nth-child(2) {
-  border-radius: 0;
-  font-size: 26px;
+.label {
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 8.7px;
+  letter-spacing: 0.05em;
+  text-align: center;
 }
 
-.wrapper button:last-child {
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  font-size: 26px;
-}
-
-.wrapper > .button {
-  /* override button's default justify-content: space-between */
-  justify-content: center;
-  height: 40px;
-  margin: 1px;
+.control {
+  height: 45px !important;
   padding: 4px;
-  width: 40px;
+  width: 45px;
+
+  background-color: #fffefc !important;
+  border: 1px solid #1e7b53 !important;
+  border-radius: 0px !important;
+  color: #1e7b53 !important;
+  fill: #1e7b53 !important;
+
+  justify-content: center !important;
+}
+
+.control:nth-child(3) {
+  border-top: 0px !important;
+}
+
+.control:hover, .control:focus, .control:not(:disabled):hover, .control:not(:disabled):focus {
+  background-color: #1e7b53 !important;
+  color: #fffefc !important;
+  fill: #fffefc !important;
+  cursor: pointer;
+}
+
+.control:active, .control:not(:disabled):active {
+  background-color: #3e525e !important;
+  border-color: #3e525e !important;
+  color: #fffefc !important;
+  cursor: pointer;
+  fill: #fffefc !important;
+}
+
+.control:disabled {
+  background-color: #fffefc;
+  border-color: #677378;
+  color: #677378;
+}
+
+.icon {
+  height: 1em;
+  padding: 2px;
+  width: 1em;
+}
+
+.reset {
+  margin-top: 3px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 5px;
+}
+
+.reset .icon {
+  height: 1.75em;
+  width: 1.75em;
 }

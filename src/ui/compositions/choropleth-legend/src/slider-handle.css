@@ -2,3 +2,8 @@
   cursor: ew-resize;
   pointer-events: all;
 }
+
+.handle:focus {
+  outline: 1px solid #1E7B53;
+  outline-offset: 2px;
+}

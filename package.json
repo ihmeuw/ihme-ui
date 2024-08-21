@@ -23,7 +23,8 @@
     "Jim Vermillion <jam.mcmillion@gmail.com> (https://github.com/jimvermillion)",
     "Bao Dinh <bdinh@uw.edu> (https://github.com/bdinh)",
     "Ben Hurst <bhurst8@gmail.com> (https://github.com/benbenbuhben)",
-    "Melissa Lafranchise <pulchrit@gmail.com (https://github.com/pulchrit)"
+    "Melissa Lafranchise <pulchrit@gmail.com (https://github.com/pulchrit)",
+    "Lucy Bullen <lucy.d.bullen@gmail.com (https://github.com/loopdeluce)"
   ],
   "repository": "https://github.com/ihmeuw/ihme-ui.git",
   "bugs": "https://github.com/ihmeuw/ihme-ui/issues",
@@ -49,6 +50,7 @@
     "postinstall": "patch-package"
   },
   "devDependencies": {
+    "@svgr/webpack": "^4.3.3",
     "autoprefixer": "^7.2.5",
     "babel-cli": "~6.26.0",
     "babel-core": "^6.26.3",
@@ -56,7 +58,9 @@
     "babel-istanbul": "~0.12.2",
     "babel-loader": "^7.1.2",
     "babel-plugin-css-modules-transform": "~1.2",
+    "babel-plugin-import": "1.13.5",
     "babel-plugin-lodash": "~3.2",
+    "babel-plugin-transform-imports": "^2.0.0",
     "babel-plugin-transform-object-rest-spread": "~6.22",
     "babel-plugin-transform-runtime": "~6.22",
     "babel-polyfill": "~6.22",
@@ -72,7 +76,7 @@
     "d3-request": "~0.5",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.15.2",
-    "eslint": "^5.14.1",
+    "eslint": "^2.13.1",
     "eslint-config-airbnb": "9.0.1",
     "eslint-plugin-import": "~1.8",
     "eslint-plugin-jsx-a11y": "~1.2",
@@ -89,6 +93,7 @@
     "request": "~2.87.0",
     "sinon": "^2.4.1",
     "style-loader": "^0.20.1",
+    "url-loader": "^1.1.2",
     "webpack": "^3.10.0"
   },
   "dependencies": {

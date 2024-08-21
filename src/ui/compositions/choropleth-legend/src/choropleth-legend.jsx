@@ -90,6 +90,7 @@ export default class ChoroplethLegend extends React.PureComponent {
 
     return (
       <svg
+        className={styles['legend-container']}
         aria-label={`Legend showing values from ${sliderHandleFormat(rangeExtent[0])} to ${sliderHandleFormat(rangeExtent[1])}.`}
         height={height}
         width={width}
@@ -116,13 +117,13 @@ export default class ChoroplethLegend extends React.PureComponent {
           <g transform={`translate(0, ${10 + (5 * zoom)})`}>
             {
               !colorAccessor
-              && <LinearGradient
-                colors={colorSteps}
-                x1={x1}
-                x2={x2}
-                width={adjustedWidth}
-                height={sliderHeight}
-              />
+                && <LinearGradient
+                  colors={colorSteps}
+                  x1={x1}
+                  x2={x2}
+                  width={adjustedWidth}
+                  height={sliderHeight}
+                />
             }
             <Slider
               domain={domain}
@@ -138,7 +139,6 @@ export default class ChoroplethLegend extends React.PureComponent {
               zoom={zoom}
             />
             <XAxis
-              autoFilterTickValues
               label={unit}
               legendAriaHideTickMarks={legendAriaHideTickMarks}
               orientation="bottom"

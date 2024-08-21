@@ -18,3 +18,10 @@
   stroke: black;
   shape-rendering: crispEdges;
 }
+
+.label {
+  color: #142027;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+}
