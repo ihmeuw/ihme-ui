@@ -382,7 +382,10 @@ export default class Map extends React.Component {
       <div className={classNames(styles.legend, legendClassName)} style={legendStyle}>
         <div className={styles['legend-title-wrapper']}>
           <p className={styles['legend-title']}>Legend</p>
-          <p className={styles['helper-text']}> Drag the ends of the slider to adjust the range displayed on the map. Click "Set Scale" to re-apply the color scale. Click "Reset" to return to the default settings.</p>
+          <p className={styles['helper-text']}> Drag the ends of the slider to adjust the range
+            displayed on the map. Click "Set Scale" to re-apply the color scale.
+            Click "Reset" to return to the default settings.
+          </p>
         </div>
         <div className={styles['legend-button-wrapper']}>
           <div className={styles['legend-wrapper']}>
