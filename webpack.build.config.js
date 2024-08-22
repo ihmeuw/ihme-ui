@@ -19,32 +19,13 @@ const buildConfig = _.mergeWith({}, config, {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
-          exclude: /node_modules/,
-          use: [
-            { loader: 'babel-loader' },
-            { loader: path.resolve(__dirname, './scripts/html-pre-tag-loader') }
-          ]
-      },
-      {
-        test: /\.css$/,
+        test: /\.(jsx?)|(css)$/,
+        exclude: /node_modules/,
         use: [
-          { loader: 'style-loader' },
           {
-            loader: 'css-loader',
-            options: {
-              importLoaders: 1,
-              localIdentName: '[name]__[local]___[hash:base64:5]',
-              modules: true,
-            },
+            loader: 'babel-loader',
           },
-          {
-            loader: 'postcss-loader',
-            options: {
-              plugins: [autoprefixer],
-            },
-          },
-        ]
+        ],
       },
       {
         test: /\.svg$/,
@@ -55,11 +36,10 @@ const buildConfig = _.mergeWith({}, config, {
               icon: true,
             },
           },
-        'url-loader',
+          'url-loader',
         ]
       }
     ]
-
   },
   externals: {
     react: 'React',

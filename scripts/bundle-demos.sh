@@ -12,7 +12,7 @@ function run_webpack
   fi
 
   echo "Packing: ${demo_dir}"
-  $(npm bin)/webpack --env ${demo_dir} --config "./webpack.demo.config.js" --display-error-details
+  webpack --env ${demo_dir} --config "./webpack.demo.config.js" --display-error-details
 }
 
 for dir in $(find . -d -regex ".*/${1+$1/}demo"*); do
