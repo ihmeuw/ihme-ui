@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import { ReactComponent as ArrowsToCircle } from '../../../resources/arrows-to-circle.svg';
-import { ReactComponent as Plus } from '../../../resources/plus.svg';
-import { ReactComponent as Minus } from '../../../resources/minus.svg';
+import { ReactComponent as ArrowsToCircle } from '../../../../lib/resources/arrows-to-circle.svg';
+import { ReactComponent as Plus } from '../../../../lib/resources/plus.svg';
+import { ReactComponent as Minus } from '../../../../lib/resources/minus.svg';
 
 import style from './controls.css';
 import Button from '../../button';
